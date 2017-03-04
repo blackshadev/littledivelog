@@ -7,8 +7,8 @@
     <ProjectGuid>{06188072-CC48-45A8-A7BF-800E369CB359}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>divecomputer_test</RootNamespace>
-    <AssemblyName>divecomputer_test</AssemblyName>
+    <RootNamespace>DiveLogUploader</RootNamespace>
+    <AssemblyName>DiveLogUploader</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -67,6 +67,7 @@
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
+      <DesignTime>True</DesignTime>
     </Compile>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

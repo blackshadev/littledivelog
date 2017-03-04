@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "divecomputer_test", "divecomputer_test\divecomputer_test.csproj", "{06188072-CC48-45A8-A7BF-800E369CB359}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DiveLogUploader", "DiveLogUploader\DiveLogUploader.csproj", "{06188072-CC48-45A8-A7BF-800E369CB359}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibDiveComputer", "LibDiveComputer\LibDiveComputer.csproj", "{956A0320-E967-4F7A-A39E-980868ED395B}"
 EndProject

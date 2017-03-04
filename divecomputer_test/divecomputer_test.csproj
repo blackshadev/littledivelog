@@ -54,13 +54,6 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="libdivecomputer\common.cs" />
-    <Compile Include="libdivecomputer\context.cs" />
-    <Compile Include="libdivecomputer\descriptor.cs" />
-    <Compile Include="libdivecomputer\device.cs" />
-    <Compile Include="libdivecomputer\iterator.cs" />
-    <Compile Include="libdivecomputer\parser.cs" />
-    <Compile Include="libdivecomputer\test.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form1.resx">
@@ -75,7 +68,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
-    <None Include="libdivecomputer\COPYING" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -90,186 +82,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="libdivecomputer\bin\libdivecomputer-0.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\bin\libusb-1.0.dll">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\atomics.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\atomics_cobalt.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\buffer.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\citizen.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\citizen_aqualand.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\cochran.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\cochran_commander.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\common.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\context.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\cressi.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\cressi_edy.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\cressi_leonardo.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\datetime.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\descriptor.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\device.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\diverite.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\diverite_nitekq.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\divesystem.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\divesystem_idive.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\hw.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\hw_frog.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\hw_ostc.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\hw_ostc3.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\iterator.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\mares.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\mares_darwin.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\mares_iconhd.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\mares_nemo.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\mares_puck.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\oceanic.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\oceanic_atom2.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\oceanic_veo250.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\oceanic_vtpro.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\parser.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\reefnet.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\reefnet_sensus.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\reefnet_sensuspro.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\reefnet_sensusultra.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\shearwater.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\shearwater_petrel.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\shearwater_predator.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto_d9.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto_eon.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto_eonsteel.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto_solution.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto_vyper.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\suunto_vyper2.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\units.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\uwatec.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\uwatec_aladin.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\uwatec_memomouse.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\uwatec_meridian.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\uwatec_smart.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\version.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\zeagle.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\include\libdivecomputer\zeagle_n2ition3.h">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
-    <Content Include="libdivecomputer\lib\libdivecomputer.def">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Content>
+    <ProjectReference Include="..\LibDiveComputer\LibDiveComputer.csproj">
+      <Project>{956a0320-e967-4f7a-a39e-980868ed395b}</Project>
+      <Name>LibDiveComputer</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

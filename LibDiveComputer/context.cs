@@ -2,9 +2,9 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 
-using libdivecomputer;
+using LibDiveComputer;
 
-namespace libdivecomputer {
+namespace LibDiveComputer {
 
 	public class Context {
 

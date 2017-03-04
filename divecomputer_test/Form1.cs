@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using libdivecomputer;
+using LibDiveComputer;
 
 namespace divecomputer_test {
     public partial class Form1 : Form {
@@ -16,7 +16,7 @@ namespace divecomputer_test {
         }
 
         private void Form1_Load(object sender, EventArgs e) {
-            var descriptors = libdivecomputer.Descriptor.Descriptors();
+            var descriptors = Descriptor.Descriptors();
 
             var l = new List<string>();
             foreach(var descriptor in descriptors) {
@@ -26,7 +26,7 @@ namespace divecomputer_test {
 
             ComputerSelector.Items.AddRange(l.ToArray<string>());
 
-
+            LabelVersion.Text = "libdivelog v" + LibDiveComputer.Version.AsString;
 
         }
     }

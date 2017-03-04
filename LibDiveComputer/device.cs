@@ -10,12 +10,14 @@ namespace LibDiveComputer {
 
 		internal IntPtr m_device;
 
+        [Flags]
 		public enum dc_event_type_t {
 			DC_EVENT_WAITING = (1 << 0),
 			DC_EVENT_PROGRESS = (1 << 1),
 			DC_EVENT_DEVINFO = (1 << 2),
-			DC_EVENT_CLOCK = (1 << 3)
-		};
+			DC_EVENT_CLOCK = (1 << 3),
+            ALL = DC_EVENT_WAITING|DC_EVENT_CLOCK|DC_EVENT_DEVINFO|DC_EVENT_PROGRESS
+        };
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct dc_event_progress_t {
@@ -90,13 +92,30 @@ namespace LibDiveComputer {
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern IntPtr dc_buffer_get_data (IntPtr buffer);
 
-		public Device (Context context, Descriptor descriptor, string name)
+        public delegate void DeviceInfoEventHandler(dc_event_devinfo_t info);
+        public event DeviceInfoEventHandler OnDeviceInfo;
+
+        public delegate void ProgressEventHandler(dc_event_progress_t info);
+        public event ProgressEventHandler OnProgess;
+
+        public delegate void ClockEventHandler(dc_event_clock_t info);
+        public event ClockEventHandler OnClock;
+
+        public delegate void WaitingEventHandler();
+        public event WaitingEventHandler OnWaiting;
+
+
+
+
+        public Device (Context context, Descriptor descriptor, string name)
 		{
 			dc_status_t rc = dc_device_open (ref m_device, context.m_context, descriptor.m_descriptor, name);
 			if (rc != dc_status_t.DC_STATUS_SUCCESS) {
 				// TODO: Throw exception.
-				Console.WriteLine (rc.ToString());
+				throw new Exception(rc.ToString());
 			}
+
+            this.SetEvents(dc_event_type_t.ALL, HandleEvent, IntPtr.Zero);
 		}
 
 		~Device()
@@ -104,7 +123,37 @@ namespace LibDiveComputer {
 			dc_device_close (m_device);	
 		}
 
-		public dc_status_t SetEvents (dc_event_type_t events, dc_event_callback_t callback, IntPtr userdata)
+        private void HandleEvent(IntPtr device, dc_event_type_t type, IntPtr data, IntPtr userdata)
+        {
+            switch(type)
+            {
+                case dc_event_type_t.DC_EVENT_WAITING:
+                    if (OnWaiting == null) return;
+                    OnWaiting();
+                    break;
+                case dc_event_type_t.DC_EVENT_DEVINFO:
+                    if (OnDeviceInfo == null) return;
+                    var devinfo = (Device.dc_event_devinfo_t)Marshal.PtrToStructure(data, typeof(Device.dc_event_devinfo_t));
+                    OnDeviceInfo(devinfo);
+                    break;
+                case dc_event_type_t.DC_EVENT_PROGRESS:
+                    if (OnProgess == null) return;
+                    var progress = (Device.dc_event_progress_t)Marshal.PtrToStructure(data, typeof(Device.dc_event_progress_t));
+                    OnProgess(progress);
+                    break;
+                case dc_event_type_t.DC_EVENT_CLOCK:
+                    if (OnClock== null) return;
+                    var clock = (Device.dc_event_clock_t)Marshal.PtrToStructure(data, typeof(Device.dc_event_clock_t));
+                    OnClock(clock);
+                    break;
+                default:
+                    throw new Exception("Unknown event: " + type);
+
+
+            }
+        }
+
+		private dc_status_t SetEvents (dc_event_type_t events, dc_event_callback_t callback, IntPtr userdata)
 		{
 			return dc_device_set_events (m_device, events, callback, userdata);
 		}

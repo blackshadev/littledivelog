@@ -147,7 +147,7 @@ class Test {
 		device = new Device (context, descriptor, "/tmp/ttyS0");
 
 		//Device.dc_event_callback_t my_event_cb = new Device.dc_event_callback_t (event_cb);
-		device.SetEvents (Device.dc_event_type_t.DC_EVENT_PROGRESS, event_cb, IntPtr.Zero);
+		//device.SetEvents (Device.dc_event_type_t.DC_EVENT_PROGRESS, event_cb, IntPtr.Zero);
 
 /*		byte[] buffer = null;
 		device.Dump (ref buffer);

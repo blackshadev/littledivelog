@@ -77,6 +77,7 @@ namespace LibDiveComputer {
 				return Marshal.PtrToStringAnsi(ptr);
 			}
 		}
+        
 
 		public static IEnumerable<Descriptor> Descriptors()
 		{
@@ -90,8 +91,7 @@ namespace LibDiveComputer {
 			}
 
 			if (status != dc_status_t.DC_STATUS_SUCCESS && status != dc_status_t.DC_STATUS_DONE) {
-				// TODO: Throw exception.
-				Console.WriteLine (status.ToString());
+				throw new Exception(status.ToString());
 			}
 		}
         

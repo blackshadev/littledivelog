@@ -40,8 +40,7 @@ namespace LibDiveComputer {
 		{
 			dc_status_t rc = dc_context_new (ref m_context);
 			if (rc != dc_status_t.DC_STATUS_SUCCESS) {
-				// TODO: Throw exception.
-				Console.WriteLine (rc.ToString());
+				throw new Exception(rc.ToString());
 			}
 		}
 

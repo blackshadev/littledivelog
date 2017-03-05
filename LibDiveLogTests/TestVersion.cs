@@ -6,7 +6,7 @@ using System.Linq;
 namespace LibDiveLogTests
 {
     [TestClass]
-    public class Version
+    public class TestVersion
     {
         [TestMethod]
         public void VersionString()

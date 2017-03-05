@@ -48,7 +48,7 @@ namespace LibDiveComputer {
 		{
 			dc_context_free (m_context);
 		}
-
+        
 		public dc_loglevel_t loglevel
 		{
 			set
@@ -57,11 +57,13 @@ namespace LibDiveComputer {
 			}
 		}
 
-		public dc_logfunc_t logfunc
+        private dc_logfunc_t _logfunc;
+        public dc_logfunc_t logfunc
 		{
 			set
 			{
-				dc_context_set_logfunc (m_context, value, IntPtr.Zero);
+                _logfunc = value;
+                dc_context_set_logfunc (m_context, value, IntPtr.Zero);
 			}
 		}
 

@@ -110,7 +110,7 @@ class Test {
 		parser.SetData (data);
 
 		Parser.dc_datetime_t dt = new Parser.dc_datetime_t ();
-		parser.GetDatetime (ref dt);
+		//parser.GetDatetime (ref dt);
 		DateTime datetime = new DateTime (dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
 		Console.WriteLine("datetime={0}", datetime);
 
@@ -154,7 +154,7 @@ class Test {
 */
 
 		GCHandle gch = GCHandle.Alloc(device);
-		device.Foreach (dive_cb, GCHandle.ToIntPtr(gch));
+		//device.Foreach (dive_cb, GCHandle.ToIntPtr(gch));
 		gch.Free();
 
 		Console.WriteLine (descriptor.vendor + " " + descriptor.product);

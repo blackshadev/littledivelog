@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using LibDiveComputer;
+using System.IO;
 
 namespace LibDiveComputer {
 
@@ -105,6 +106,8 @@ namespace LibDiveComputer {
         public event WaitingEventHandler OnWaiting;
 
 
+        private dc_event_callback_t _eventCallback;
+        private dc_dive_callback_t _diveCallback;
 
 
         public Device (Context context, Descriptor descriptor, string name)
@@ -115,15 +118,24 @@ namespace LibDiveComputer {
 				throw new Exception(rc.ToString());
 			}
 
-            this.SetEvents(dc_event_type_t.ALL, HandleEvent, IntPtr.Zero);
-            this.Foreach(HandleDive, IntPtr.Zero);
-		}
+            _eventCallback = new dc_event_callback_t(HandleEvent);
+            _diveCallback = new dc_dive_callback_t(HandleDive);
+            
+        }
+
+        public void Start()
+        {
+            this.SetEvents(dc_event_type_t.ALL, _eventCallback, IntPtr.Zero);
+            dc_device_foreach(m_device, _diveCallback, IntPtr.Zero);
+        }
+
 
 		~Device()
 		{
 			dc_device_close (m_device);	
 		}
 
+        
         private void HandleEvent(IntPtr device, dc_event_type_t type, IntPtr data, IntPtr userdata)
         {
             switch(type)
@@ -153,23 +165,25 @@ namespace LibDiveComputer {
 
             }
         }
-
+        
         private int HandleDive(
             byte[] data, uint size,
             byte[] fingerprint, uint fsize,
             IntPtr userdata
         )
         {
+            var writer = new BinaryWriter(File.Open("current.bin", FileMode.Create));
+            writer.Write(data);
+            writer.Dispose();
+
             var parser = new Parser(this);
             parser.SetData(data);
-
-            Parser.dc_datetime_t dt = new Parser.dc_datetime_t();
-            parser.GetDatetime(ref dt);
-            DateTime datetime = new DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
+            
+            var datetime = parser.GetDatetime();
             Console.WriteLine("datetime={0}", datetime);
 
-            object maxdepth = new double();
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, (object)maxdepth);
+            double maxdepth = 0;
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, maxdepth);
             Console.WriteLine("maxdepth={0}", maxdepth);
             Console.WriteLine(maxdepth);
 
@@ -191,7 +205,7 @@ namespace LibDiveComputer {
 			return dc_device_read (m_device, address, data, size);
 		}
 
-		public dc_status_t Foreach (dc_dive_callback_t callback, IntPtr userdata)
+		private dc_status_t Foreach (dc_dive_callback_t callback, IntPtr userdata)
 		{
 			return dc_device_foreach (m_device, callback, userdata);
 		}

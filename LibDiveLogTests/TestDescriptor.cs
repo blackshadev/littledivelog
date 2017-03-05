@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace LibDiveLogTests
 {
     [TestClass]
-    public class Descriptor
+    public class TestDescriptor
     {
         [TestMethod]
         public void DescriptorList()

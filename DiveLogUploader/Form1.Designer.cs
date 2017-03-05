@@ -39,6 +39,7 @@
             this.LogLevelSelector = new System.Windows.Forms.ComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.DivecomputerWorker = new System.ComponentModel.BackgroundWorker();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -138,7 +139,7 @@
             // StateLabel
             // 
             this.StateLabel.AutoSize = true;
-            this.StateLabel.Location = new System.Drawing.Point(8, 60);
+            this.StateLabel.Location = new System.Drawing.Point(8, 86);
             this.StateLabel.Name = "StateLabel";
             this.StateLabel.Size = new System.Drawing.Size(0, 13);
             this.StateLabel.TabIndex = 4;
@@ -214,6 +215,11 @@
             this.panel2.Size = new System.Drawing.Size(289, 24);
             this.panel2.TabIndex = 0;
             // 
+            // DivecomputerWorker
+            // 
+            this.DivecomputerWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DivecomputerWorker_DoWork);
+            this.DivecomputerWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.DivecomputerWorker_RunWorkerCompleted);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -254,6 +260,7 @@
         private System.Windows.Forms.Label PortLabel;
         private System.Windows.Forms.ComboBox PortSelector;
         private System.Windows.Forms.Button RefreshPortButton;
+        private System.ComponentModel.BackgroundWorker DivecomputerWorker;
     }
 }
 

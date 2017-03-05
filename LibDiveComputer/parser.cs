@@ -206,15 +206,21 @@ namespace LibDiveComputer {
 			dc_parser_free (m_parser);
 		}
 
-		public dc_status_t SetData (byte[] data)
+		public void SetData (byte[] data)
 		{
-			return dc_parser_set_data (m_parser, data, (uint) data.Length);
+			var st = dc_parser_set_data (m_parser, data, (uint) data.Length);
+            if (st != dc_status_t.DC_STATUS_SUCCESS)
+                throw new Exception("Failed to set data: " + st);
 		}
 
-		public dc_status_t GetDatetime (ref dc_datetime_t datetime)
+		public DateTime GetDatetime ()
 		{
-			return dc_parser_get_datetime (m_parser, ref datetime);
-		}
+            var dt = new dc_datetime_t();
+            var st = dc_parser_get_datetime (m_parser, ref dt);
+            if (st != dc_status_t.DC_STATUS_SUCCESS)
+                throw new Exception("Failed to get datetime: " + st);
+            return new DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
+        }
 
 		public dc_status_t GetField (dc_field_type_t type, uint flags, [In,Out] object value)
 		{

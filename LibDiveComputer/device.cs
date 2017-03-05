@@ -116,6 +116,7 @@ namespace LibDiveComputer {
 			}
 
             this.SetEvents(dc_event_type_t.ALL, HandleEvent, IntPtr.Zero);
+            this.Foreach(HandleDive, IntPtr.Zero);
 		}
 
 		~Device()
@@ -151,6 +152,28 @@ namespace LibDiveComputer {
 
 
             }
+        }
+
+        private int HandleDive(
+            byte[] data, uint size,
+            byte[] fingerprint, uint fsize,
+            IntPtr userdata
+        )
+        {
+            var parser = new Parser(this);
+            parser.SetData(data);
+
+            Parser.dc_datetime_t dt = new Parser.dc_datetime_t();
+            parser.GetDatetime(ref dt);
+            DateTime datetime = new DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
+            Console.WriteLine("datetime={0}", datetime);
+
+            object maxdepth = new double();
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, (object)maxdepth);
+            Console.WriteLine("maxdepth={0}", maxdepth);
+            Console.WriteLine(maxdepth);
+
+            return 1;
         }
 
 		private dc_status_t SetEvents (dc_event_type_t events, dc_event_callback_t callback, IntPtr userdata)

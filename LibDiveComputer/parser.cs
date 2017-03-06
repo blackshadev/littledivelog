@@ -172,7 +172,7 @@ namespace LibDiveComputer {
 		static extern dc_status_t dc_parser_new (ref IntPtr parser, IntPtr device);
 
         [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
-        static extern dc_status_t dc_parser_new2(ref IntPtr parser, IntPtr context, IntPtr descriptor, uint devtime, uint systime);
+        static extern dc_status_t dc_parser_new2(ref IntPtr parser, IntPtr context, IntPtr descriptor, uint devtime, long systime);
 
         /*
                 [DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
@@ -209,7 +209,7 @@ namespace LibDiveComputer {
 			}
 		}
 
-        public Parser(Context ctx, Descriptor descr, uint devtime, uint systime)
+        public Parser(Context ctx, Descriptor descr, uint devtime, long systime)
         {
             dc_status_t rc = dc_parser_new2(ref m_parser, ctx.m_context, descr.m_descriptor, devtime, systime);
             if (rc != dc_status_t.DC_STATUS_SUCCESS) {

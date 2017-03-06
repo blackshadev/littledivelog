@@ -9,7 +9,10 @@ namespace LibDiveComputer {
 
 	public class Device {
 
-		internal IntPtr m_device;
+        public long systime {  get; protected set; }
+        public uint devtime { get; protected set; }
+
+        internal IntPtr m_device;
 
         [Flags]
 		public enum dc_event_type_t {
@@ -109,6 +112,8 @@ namespace LibDiveComputer {
         private dc_event_callback_t _eventCallback;
         private dc_dive_callback_t _diveCallback;
 
+        
+
 
         public Device (Context context, Descriptor descriptor, string name)
 		{
@@ -155,8 +160,11 @@ namespace LibDiveComputer {
                     OnProgess(progress);
                     break;
                 case dc_event_type_t.DC_EVENT_CLOCK:
-                    if (OnClock== null) return;
                     var clock = (Device.dc_event_clock_t)Marshal.PtrToStructure(data, typeof(Device.dc_event_clock_t));
+                    systime = clock.systime;
+                    devtime = clock.devtime;
+
+                    if (OnClock== null) return;
                     OnClock(clock);
                     break;
                 default:
@@ -165,14 +173,21 @@ namespace LibDiveComputer {
 
             }
         }
-        
+
+        public int iX = 0;
         private int HandleDive(
             byte[] data, uint size,
             byte[] fingerprint, uint fsize,
             IntPtr userdata
         )
         {
-            
+
+            //var wrtr = new BinaryWriter(File.Open("current_" + (iX++)  + ".bin", FileMode.Create));
+            //wrtr.Write(this.systime);
+            //wrtr.Write(this.devtime);
+            //wrtr.Write(data);
+            //wrtr.Dispose();
+
             var parser = new Parser(this);
             parser.SetData(data);
             

@@ -21,18 +21,23 @@ namespace LibDiveLogTests
             if (aladinDescriptor == null) Assert.Fail("Aladin Prime descriptor not found");
 
             var ctx = new Context();
-            var dev = new Device(ctx, aladinDescriptor, null);
-            var parser = new Parser(dev);
+            var parser = new Parser(ctx, aladinDescriptor, 1084257261, 1488814786);
 
             byte[] data = File.ReadAllBytes("./dumps/aladin_prime_dive.bin");
             parser.SetData(data);
+            
+            object maxdepth = (double)0.0d;
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, ref maxdepth);
+
+            object divetime = (UInt32)0;
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0, ref divetime);
 
             var dt = parser.GetDatetime();
-            Console.WriteLine(dt.ToString());
 
-            object maxdepth = new double();
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, (object)maxdepth);
-            Console.WriteLine(maxdepth);
+            Console.WriteLine(String.Format("datetime: {0}", dt.ToString()));
+            Console.WriteLine(String.Format("maxdepth: {0}", maxdepth));
+            Console.WriteLine(String.Format("divetime: {0}", divetime));
+
 
         }
     }

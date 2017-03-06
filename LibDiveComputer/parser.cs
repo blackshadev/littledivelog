@@ -31,7 +31,7 @@ namespace LibDiveComputer {
 			DC_SAMPLE_BEARING,
 			DC_SAMPLE_VENDOR
 		};
-
+        
 		public enum dc_field_type_t {
 			DC_FIELD_DIVETIME,
 			DC_FIELD_MAXDEPTH,
@@ -170,11 +170,15 @@ namespace LibDiveComputer {
 
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_new (ref IntPtr parser, IntPtr device);
-/*
-		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
-		static extern dc_family_t dc_parser_get_type (IntPtr parser);
-*/
-		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
+
+        [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
+        static extern dc_status_t dc_parser_new2(ref IntPtr parser, IntPtr context, IntPtr descriptor, uint devtime, uint systime);
+
+        /*
+                [DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
+                static extern dc_family_t dc_parser_get_type (IntPtr parser);
+        */
+        [DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_set_data (IntPtr parser, byte[] data, uint size);
 
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
@@ -183,14 +187,18 @@ namespace LibDiveComputer {
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_get_field (IntPtr parser, dc_field_type_t type, uint flags, IntPtr value);
 
-		[DllImport(Constants.LibPath, EntryPoint="dc_parser_get_field")]
-		static extern dc_status_t dc_parser_get_field2 (IntPtr parser, dc_field_type_t type, uint flags, [Out, MarshalAs(UnmanagedType.AsAny)] object value);
+		[DllImport(Constants.LibPath, EntryPoint="dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
+		static extern dc_status_t dc_parser_get_field_double (IntPtr parser, dc_field_type_t type, uint flags, ref double value);
 
-		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
+        [DllImport(Constants.LibPath, EntryPoint = "dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
+        static extern dc_status_t dc_parser_get_field_uint(IntPtr parser, dc_field_type_t type, uint flags, ref uint value);
+
+
+        [DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_samples_foreach (IntPtr parser, dc_sample_callback_t callback, IntPtr userdata);
 
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
-		static extern dc_status_t dc_parser_free (IntPtr parser);
+		static extern dc_status_t dc_parser_destroy(IntPtr parser);
 
 		public Parser (Device device)
 		{
@@ -201,9 +209,18 @@ namespace LibDiveComputer {
 			}
 		}
 
-		~Parser()
+        public Parser(Context ctx, Descriptor descr, uint devtime, uint systime)
+        {
+            dc_status_t rc = dc_parser_new2(ref m_parser, ctx.m_context, descr.m_descriptor, devtime, systime);
+            if (rc != dc_status_t.DC_STATUS_SUCCESS) {
+                // TODO: Throw exception.
+                throw new Exception(rc.ToString());
+            }
+        }
+
+        ~Parser()
 		{
-			dc_parser_free (m_parser);
+            dc_parser_destroy(m_parser);
 		}
 
 		public void SetData (byte[] data)
@@ -222,15 +239,24 @@ namespace LibDiveComputer {
             return new DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
         }
 
-		public dc_status_t GetField (dc_field_type_t type, uint flags, [In,Out] object value)
+		public dc_status_t GetField (dc_field_type_t type, uint flags, ref object value)
 		{
-			object o = value;
-			dc_status_t rc = dc_parser_get_field2 (m_parser, type, flags, value);
-			Console.WriteLine(o.GetType());
-			Console.WriteLine(Convert.ToDouble(o));
-			Console.WriteLine(value);
+            
+            dc_status_t rc = dc_status_t.DC_STATUS_UNSUPPORTED;
+            switch(type) {
+                case dc_field_type_t.DC_FIELD_MAXDEPTH:
+                    double _double_value = 0;
+                    rc = dc_parser_get_field_double(m_parser, type, flags, ref _double_value);
+                    value = _double_value;
+                    break;
+                case dc_field_type_t.DC_FIELD_DIVETIME:
+                    uint _uint_value = 0;
+                    rc = dc_parser_get_field_uint(m_parser, type, flags, ref _uint_value);
+                    value = _uint_value;
+                    break;
+            }
+            
 			return rc;
-			//return dc_parser_get_field2 (m_parser, type, flags, value);
 		}
 
 		public dc_status_t Foreach (dc_sample_callback_t callback, IntPtr userdata)

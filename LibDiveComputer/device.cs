@@ -172,20 +172,23 @@ namespace LibDiveComputer {
             IntPtr userdata
         )
         {
-            var writer = new BinaryWriter(File.Open("current.bin", FileMode.Create));
-            writer.Write(data);
-            writer.Dispose();
-
+            
             var parser = new Parser(this);
             parser.SetData(data);
             
             var datetime = parser.GetDatetime();
             Console.WriteLine("datetime={0}", datetime);
 
-            double maxdepth = 0;
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, maxdepth);
+            object maxdepth = new double();
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, ref maxdepth);
             Console.WriteLine("maxdepth={0}", maxdepth);
-            Console.WriteLine(maxdepth);
+
+            object divetime = new uint();
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0, ref divetime);
+            var _divetime = (uint)divetime;
+
+            Console.WriteLine("divetime={0}:{1}", (uint)_divetime / 60, (uint)_divetime % 60);
+
 
             return 1;
         }

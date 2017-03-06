@@ -115,7 +115,7 @@ class Test {
 		Console.WriteLine("datetime={0}", datetime);
 
 		object maxdepth = new double();
-		parser.GetField (Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, (object)maxdepth);
+		parser.GetField (Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, ref maxdepth);
 		Console.WriteLine("maxdepth={0}", maxdepth);
 		Console.WriteLine(maxdepth);
 

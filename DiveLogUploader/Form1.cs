@@ -161,6 +161,9 @@ namespace divecomputer_test {
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / (float)prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => { SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware)); };
+                args.device.OnClock += (clock) => {
+                    Console.WriteLine(String.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));
+                };
                 args.device.Start();
             } catch (Exception err) {
                 SetState("Error while opening device: " + err.Message, Color.Red);

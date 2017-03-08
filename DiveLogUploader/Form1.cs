@@ -170,6 +170,16 @@ namespace divecomputer_test {
             }
         }
 
+        private void DivecomputerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            Invoke(new Action(() => {
+                if (currentTask.ctx != null) currentTask.ctx.Dispose();
+                if(currentTask.device != null) currentTask.device.Dispose();
+                currentTask = null;
+                StartButton.Enabled = true;
+            }));
+        }
+
         private void SetState(string text, Color? color = null) 
         {
             Color c = color == null ? Color.Black : (Color)color;
@@ -201,11 +211,6 @@ namespace divecomputer_test {
                 LogTextBox.ScrollToCaret();
 
             }
-        }
-
-        private void DivecomputerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            Invoke(new Action(() => { StartButton.Enabled = true; }));
         }
     }
 }

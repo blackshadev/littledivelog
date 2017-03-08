@@ -24,7 +24,7 @@ namespace LibDiveLogTests
 
             var ctx = new Context();
             
-            var rdr = new BinaryReader(File.Open("./dumps/aladin_prime/current_0.bin", FileMode.Open));
+            var rdr = new BinaryReader(File.Open("./dumps/aladin_prime/current_1.bin", FileMode.Open));
             var systime = rdr.ReadInt64();
             var devtime = rdr.ReadUInt32();
             Data = rdr.ReadBytes((int)rdr.BaseStream.Length - 12);

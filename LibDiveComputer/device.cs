@@ -7,7 +7,7 @@ using System.IO;
 
 namespace LibDiveComputer {
 
-	public class Device {
+	public class Device : IDisposable {
 
         public long systime {  get; protected set; }
         public uint devtime { get; protected set; }
@@ -141,12 +141,7 @@ namespace LibDiveComputer {
             this.SetEvents(dc_event_type_t.ALL, _eventCallback, IntPtr.Zero);
             dc_device_foreach(m_device, _diveCallback, IntPtr.Zero);
         }
-
-
-		~Device()
-		{
-			dc_device_close (m_device);	
-		}
+        
 
         
         private void HandleEvent(IntPtr device, dc_event_type_t type, IntPtr data, IntPtr userdata)
@@ -209,10 +204,19 @@ namespace LibDiveComputer {
             object divetime = new uint();
             parser.GetField(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0, ref divetime);
             var _divetime = (uint)divetime;
-
             Console.WriteLine("divetime={0}:{1}", (uint)_divetime / 60, (uint)_divetime % 60);
+            
+            object tank = new Parser.dc_tank_t {  };
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_TANK, 0, ref tank);
+            var _tank = (Parser.dc_tank_t)tank;
+            Console.WriteLine($"Tank={_tank.beginpressure} bar; {_tank.endpressure}");
+
+            object mintemp = new double();
+            parser.GetField(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM, 0, ref tank);
+            Console.WriteLine($"mintemp={mintemp}");
 
 
+            Console.WriteLine("");
             return 1;
         }
 
@@ -257,6 +261,44 @@ namespace LibDiveComputer {
 			return rc;
 		}
 
-	};
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+
+                dc_device_close(m_device);
+                context = null;
+                name = null;
+                _eventCallback = null;
+                _diveCallback = null;
+
+                if (disposing)
+                {
+                    // Dispose managed objects
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        
+        ~Device()
+        {
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+            
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+    };
 
 };

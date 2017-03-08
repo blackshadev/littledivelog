@@ -6,7 +6,7 @@ using LibDiveComputer;
 
 namespace LibDiveComputer {
 
-	public class Context {
+	public class Context : IDisposable {
 
 		internal IntPtr m_context;
 
@@ -43,11 +43,6 @@ namespace LibDiveComputer {
 				throw new Exception(rc.ToString());
 			}
 		}
-
-		~Context()
-		{
-			dc_context_free (m_context);
-		}
         
 		public dc_loglevel_t loglevel
 		{
@@ -67,6 +62,42 @@ namespace LibDiveComputer {
 			}
 		}
 
-	};
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                dc_context_free(m_context);
+                _logfunc = null;
+                if (disposing)
+                {
+                    // Dispose managed state (managed objects).
+                }
+                
+
+                disposedValue = true;
+            }
+        }
+
+        
+        ~Context()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(false);
+        }
+
+        // This code added to correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            // Do not change this code. Put cleanup code in Dispose(bool disposing) above.
+            Dispose(true);
+            // TODO: uncomment the following line if the finalizer is overridden above.
+            // GC.SuppressFinalize(this);
+        }
+        #endregion
+
+    };
 
 };

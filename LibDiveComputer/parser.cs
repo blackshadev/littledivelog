@@ -20,7 +20,26 @@ namespace LibDiveComputer {
 			public int second;
 		};
 
-		public enum dc_sample_type_t {
+        [StructLayout(LayoutKind.Sequential)]
+        public struct dc_tank_t
+        {
+            public uint gasmix;  /* Gas mix index, or DC_GASMIX_UNKNOWN */
+            public dc_tankvolume_t type; /* Tank type */
+            public double volume;        /* Volume (liter) */
+            public double workpressure;  /* Work pressure (bar) */
+            public double beginpressure; /* Begin pressure (bar) */
+            public double endpressure;   /* End pressure (bar) */
+        }
+
+        
+        public enum dc_tankvolume_t
+        {
+            DC_TANKVOLUME_NONE,
+            DC_TANKVOLUME_METRIC,
+            DC_TANKVOLUME_IMPERIAL
+        }
+
+        public enum dc_sample_type_t {
 			DC_SAMPLE_TIME,
 			DC_SAMPLE_DEPTH,
 			DC_SAMPLE_PRESSURE,
@@ -33,14 +52,20 @@ namespace LibDiveComputer {
 		};
         
 		public enum dc_field_type_t {
-			DC_FIELD_DIVETIME,
-			DC_FIELD_MAXDEPTH,
-			DC_FIELD_AVGDEPTH,
-			DC_FIELD_GASMIX_COUNT,
-			DC_FIELD_GASMIX,
-			DC_FIELD_SALINITY,
-			DC_FIELD_ATMOSPHERIC
-		};
+            DC_FIELD_DIVETIME,
+            DC_FIELD_MAXDEPTH,
+            DC_FIELD_AVGDEPTH,
+            DC_FIELD_GASMIX_COUNT,
+            DC_FIELD_GASMIX,
+            DC_FIELD_SALINITY,
+            DC_FIELD_ATMOSPHERIC,
+            DC_FIELD_TEMPERATURE_SURFACE,
+            DC_FIELD_TEMPERATURE_MINIMUM,
+            DC_FIELD_TEMPERATURE_MAXIMUM,
+            DC_FIELD_TANK_COUNT,
+            DC_FIELD_TANK,
+            DC_FIELD_DIVEMODE
+        };
 
 		public enum parser_sample_event_t {
 			SAMPLE_EVENT_NONE,
@@ -187,7 +212,17 @@ namespace LibDiveComputer {
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_get_field (IntPtr parser, dc_field_type_t type, uint flags, IntPtr value);
 
-		[DllImport(Constants.LibPath, EntryPoint="dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
+        [DllImport(Constants.LibPath, EntryPoint = "dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
+        static extern dc_status_t dc_parser_get_field_object(IntPtr parser, dc_field_type_t type, uint flags, ref object value);
+
+        [DllImport(Constants.LibPath, EntryPoint = "dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
+        static extern dc_status_t dc_parser_get_field_tank(IntPtr parser, dc_field_type_t type, uint flags, ref dc_tank_t value);
+
+        [DllImport(Constants.LibPath, EntryPoint = "dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
+        static extern dc_status_t dc_parser_get_field_gasmix(IntPtr parser, dc_field_type_t type, uint flags, ref dc_gasmix_t value);
+
+
+        [DllImport(Constants.LibPath, EntryPoint="dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_get_field_double (IntPtr parser, dc_field_type_t type, uint flags, ref double value);
 
         [DllImport(Constants.LibPath, EntryPoint = "dc_parser_get_field", CallingConvention = CallingConvention.Cdecl)]
@@ -244,16 +279,30 @@ namespace LibDiveComputer {
             
             dc_status_t rc = dc_status_t.DC_STATUS_UNSUPPORTED;
             switch(type) {
+                case dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM:
                 case dc_field_type_t.DC_FIELD_MAXDEPTH:
                     double _double_value = 0;
                     rc = dc_parser_get_field_double(m_parser, type, flags, ref _double_value);
                     value = _double_value;
                     break;
+                case dc_field_type_t.DC_FIELD_GASMIX_COUNT:
+                case dc_field_type_t.DC_FIELD_TANK_COUNT:
                 case dc_field_type_t.DC_FIELD_DIVETIME:
                     uint _uint_value = 0;
                     rc = dc_parser_get_field_uint(m_parser, type, flags, ref _uint_value);
                     value = _uint_value;
                     break;
+                case dc_field_type_t.DC_FIELD_TANK:
+                    var _tank_value = new dc_tank_t { };
+                    rc = dc_parser_get_field_tank(m_parser, type, flags, ref _tank_value);
+                    value = _tank_value;
+                    break;
+                case dc_field_type_t.DC_FIELD_GASMIX:
+                    var _mix_value = new dc_gasmix_t { };
+                    rc = dc_parser_get_field_gasmix(m_parser, type, flags, ref _mix_value);
+                    value = _mix_value;
+                    break;
+
             }
             
 			return rc;

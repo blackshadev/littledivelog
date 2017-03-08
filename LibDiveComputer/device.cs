@@ -112,11 +112,19 @@ namespace LibDiveComputer {
         private dc_event_callback_t _eventCallback;
         private dc_dive_callback_t _diveCallback;
 
-        
+
+        protected Descriptor descriptor;
+        protected Context context;
+        protected string name;
+
 
 
         public Device (Context context, Descriptor descriptor, string name)
 		{
+            this.context = context;
+            this.descriptor = descriptor;
+            this.name = name;
+
 			dc_status_t rc = dc_device_open (ref m_device, context.m_context, descriptor.m_descriptor, name);
 			if (rc != dc_status_t.DC_STATUS_SUCCESS) {
 				// TODO: Throw exception.

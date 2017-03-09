@@ -81,5 +81,10 @@ namespace LibDiveComputer
     public class Sample
     {
         public bool Done { get; protected set; }
+        public uint Time;
+
+
+        public void ProcessSampleEvent(Parser.dc_sample_type_t t) { }
+        
     }
 }

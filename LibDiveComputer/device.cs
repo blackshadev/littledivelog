@@ -233,7 +233,7 @@ namespace LibDiveComputer {
             Console.WriteLine($"mintemp={mintemp}");
 
 
-            parser.Start();
+            parser.ReadSamples();
             
             return 1;
         }

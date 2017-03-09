@@ -70,7 +70,7 @@ namespace LibDiveComputer
             if(t.HasValue) dive.DiveTime = new TimeSpan(0, (int)t.Value / 60, (int)t.Value % 60);
             dive.MaxDepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH);
 
-            parser.Start();
+            parser.ReadSamples();
 
             return dive;
         }
@@ -80,6 +80,6 @@ namespace LibDiveComputer
 
     public class Sample
     {
-
+        public bool Done { get; protected set; }
     }
 }

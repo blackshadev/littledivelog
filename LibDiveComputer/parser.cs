@@ -3,6 +3,7 @@ using System.Collections;
 using System.Runtime.InteropServices;
 
 using LibDiveComputer;
+using System.Collections.Generic;
 
 namespace LibDiveComputer {
 
@@ -262,7 +263,7 @@ namespace LibDiveComputer {
 
         protected void HandleSampleData(Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata)
         {
-            
+            Console.WriteLine("here");
         }
 
         /// <summary>
@@ -279,11 +280,25 @@ namespace LibDiveComputer {
         /// <summary>
         /// Starts reading samples
         /// </summary>
-        public void Start()
+        public List<Sample> ReadSamples()
         {
+            var list = new List<Sample>();
+            Sample current = new Sample();
+            dc_sample_callback_t cb = delegate (Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata)
+            {
+                if (current != null) list.Add(current);
+                current = new Sample();
+                
+            };
+
+
             var rc = Foreach(SampleCallback, IntPtr.Zero);
+            if (current != null) list.Add(current);
+
             if (rc != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to read samples: " + rc);
+
+            return list;
         }
 
 		public DateTime GetDatetime ()

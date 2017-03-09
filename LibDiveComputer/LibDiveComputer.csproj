@@ -44,6 +44,7 @@
     <Compile Include="Context.cs" />
     <Compile Include="Descriptor.cs" />
     <Compile Include="Device.cs" />
+    <Compile Include="Dive.cs" />
     <Compile Include="Iterator.cs" />
     <Compile Include="Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

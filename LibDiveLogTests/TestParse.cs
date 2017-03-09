@@ -8,18 +8,23 @@ namespace LibDiveLogTests
     [TestClass]
     public class TestParse
     {
+        protected Descriptor aladinDescriptor;
+
+        [TestInitialize]
+        public void Init()
+        {
+            
+            foreach (Descriptor descr in Descriptor.Descriptors())
+            {
+                if (descr.vendor == "Uwatec" && descr.model == 0x13) aladinDescriptor = descr;
+            }
+        }
+
         protected byte[] Data;
         [TestMethod]
         public void DiveAladinPrime()
-        {
-            string target = "Aladin Prime";
-            Descriptor aladinDescriptor = null;
-
-            foreach(Descriptor descr in Descriptor.Descriptors()) {
-                if (descr.product == target) aladinDescriptor = descr;
-            }
-
-            // model 18, type = 196610
+            {
+            
             if (aladinDescriptor == null) Assert.Fail("Aladin Prime descriptor not found");
 
             var ctx = new Context();
@@ -30,22 +35,43 @@ namespace LibDiveLogTests
             Data = rdr.ReadBytes((int)rdr.BaseStream.Length - 12);
             rdr.Dispose();
 
-            var parser = new Parser(ctx, aladinDescriptor, devtime, systime );
+            var parser = new Parser(ctx, aladinDescriptor, devtime, systime);
             parser.SetData(Data);
             
-            object maxdepth = (double)0.0d;
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, ref maxdepth);
+            var maxdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0);
 
-            object divetime = (uint)0;
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0, ref divetime);
+            var divetime = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0);
+            
+            var mintemp = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM, 0);
+            
+            var mix = parser.GetField<Parser.dc_gasmix_t?>(Parser.dc_field_type_t.DC_FIELD_GASMIX, 0);
+            
+            var tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK, 0);
+
+            var avgdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_AVGDEPTH, 0);
 
             var dt = parser.GetDatetime();
 
-            var _divetime = (uint)divetime;
-            Console.WriteLine(String.Format("datetime: {0}", dt.ToString()));
-            Console.WriteLine(String.Format("maxdepth: {0}", maxdepth));
-            Console.WriteLine(String.Format("divetime: {0}:{1}", _divetime / 60, _divetime % 60));
-            Console.WriteLine(Data[5]);
+            Console.WriteLine($"datetime= {dt.ToString()}");
+            Console.WriteLine($"maxdepth= {maxdepth}");
+            Console.WriteLine($"avgdepth= {avgdepth}");
+            Console.WriteLine($"divetime= {divetime / 60}:{divetime % 60}");
+            Console.WriteLine($"mintemp= {mintemp}C");
+            Console.WriteLine($"gasmix= He:{mix.Value.helium*100}%; O:{mix.Value.oxygen *100}%; N:{mix.Value.nitrogen *100}%");
+            
+            Assert.AreEqual(tank.HasValue, false, "Shouldn't support tank");
+
+            Assert.AreEqual(mix.HasValue, true, "Should support mix");
+            Assert.AreEqual(mix.Value.helium, 0.0, "Invalid mix:helium");
+            Assert.AreEqual(mix.Value.oxygen, 0.21, "Invalid mix:helium");
+            Assert.AreEqual(mix.Value.nitrogen, 0.79, "Invalid mix:helium");
+
+            Assert.AreEqual(divetime, 1980u, "Invalid dive time");
+            Assert.AreEqual(mintemp, 19.2, "Invalid min temp");
+            Assert.AreEqual(maxdepth.Value, 3.49268292682927, 0.001, "Invalid max depth");
+
+            ctx.Dispose();
+            parser.Dispose();
 
         }
     }

@@ -109,41 +109,55 @@ namespace LibDiveComputer {
         public event WaitingEventHandler OnWaiting;
 
 
-        private dc_event_callback_t _eventCallback;
-        private dc_dive_callback_t _diveCallback;
+        /// <summary>
+        /// Delegate instances set as property to prevent the garbage collector from collecting it
+        /// </summary>
+        private dc_event_callback_t EventCallback;
+        private dc_dive_callback_t DiveCallback;
 
 
-        protected Descriptor descriptor;
-        protected Context context;
-        protected string name;
+        public Descriptor Descriptor { get; protected set; }
+        public Context Context { get; protected set; }
+        public string PortName { get; protected set; }
+        public uint? Serial { get; protected set; }
+        public uint? Model { get; protected set; }
+        public uint? Firmware { get; protected set; }
 
 
 
         public Device (Context context, Descriptor descriptor, string name)
 		{
-            this.context = context;
-            this.descriptor = descriptor;
-            this.name = name;
+            Context = context;
+            Descriptor = descriptor;
+            PortName = name;
 
 			dc_status_t rc = dc_device_open (ref m_device, context.m_context, descriptor.m_descriptor, name);
 			if (rc != dc_status_t.DC_STATUS_SUCCESS) {
-				// TODO: Throw exception.
 				throw new Exception(rc.ToString());
 			}
 
-            _eventCallback = new dc_event_callback_t(HandleEvent);
-            _diveCallback = new dc_dive_callback_t(HandleDive);
+            EventCallback = new dc_event_callback_t(HandleEvent);
+            DiveCallback = new dc_dive_callback_t(HandleDive);
             
         }
 
+        /// <summary>
+        /// Starts reading the device
+        /// </summary>
         public void Start()
         {
-            this.SetEvents(dc_event_type_t.ALL, _eventCallback, IntPtr.Zero);
-            dc_device_foreach(m_device, _diveCallback, IntPtr.Zero);
+            this.SetEvents(dc_event_type_t.ALL, EventCallback, IntPtr.Zero);
+            dc_device_foreach(m_device, DiveCallback, IntPtr.Zero);
         }
         
 
-        
+        /// <summary>
+        /// Handle incoming events
+        /// </summary>
+        /// <param name="device">Reference to the device</param>
+        /// <param name="type">Event type</param>
+        /// <param name="data">Event data</param>
+        /// <param name="userdata">User data</param>
         private void HandleEvent(IntPtr device, dc_event_type_t type, IntPtr data, IntPtr userdata)
         {
             switch(type)
@@ -155,6 +169,10 @@ namespace LibDiveComputer {
                 case dc_event_type_t.DC_EVENT_DEVINFO:
                     if (OnDeviceInfo == null) return;
                     var devinfo = (Device.dc_event_devinfo_t)Marshal.PtrToStructure(data, typeof(Device.dc_event_devinfo_t));
+                    Serial = devinfo.serial;
+                    Model = devinfo.model;
+                    Firmware = devinfo.firmware;
+
                     OnDeviceInfo(devinfo);
                     break;
                 case dc_event_type_t.DC_EVENT_PROGRESS:
@@ -194,29 +212,29 @@ namespace LibDiveComputer {
             var parser = new Parser(this);
             parser.SetData(data);
             
+            
+
             var datetime = parser.GetDatetime();
             Console.WriteLine("datetime={0}", datetime);
 
-            object maxdepth = new double();
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0, ref maxdepth);
+            var maxdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0);
             Console.WriteLine("maxdepth={0}", maxdepth);
 
-            object divetime = new uint();
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0, ref divetime);
-            var _divetime = (uint)divetime;
-            Console.WriteLine("divetime={0}:{1}", (uint)_divetime / 60, (uint)_divetime % 60);
+            var divetime = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0);
             
-            object tank = new Parser.dc_tank_t {  };
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_TANK, 0, ref tank);
-            var _tank = (Parser.dc_tank_t)tank;
-            Console.WriteLine($"Tank={_tank.beginpressure} bar; {_tank.endpressure}");
+            Console.WriteLine("divetime={0}:{1}", divetime / 60, divetime % 60);
+            
+            var tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK, 0);
+            
+            if(tank.HasValue)
+                Console.WriteLine($"Tank={tank.Value.beginpressure} bar; {tank.Value.endpressure}");
 
-            object mintemp = new double();
-            parser.GetField(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM, 0, ref tank);
+            var mintemp = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM, 0);
             Console.WriteLine($"mintemp={mintemp}");
 
 
-            Console.WriteLine("");
+            parser.Start();
+            
             return 1;
         }
 
@@ -270,10 +288,11 @@ namespace LibDiveComputer {
             {
 
                 dc_device_close(m_device);
-                context = null;
-                name = null;
-                _eventCallback = null;
-                _diveCallback = null;
+                m_device = IntPtr.Zero;
+                Context = null;
+                PortName = null;
+                EventCallback = null;
+                DiveCallback = null;
 
                 if (disposing)
                 {
@@ -283,18 +302,15 @@ namespace LibDiveComputer {
                 disposedValue = true;
             }
         }
-
-        
+                
         ~Device()
         {
             Dispose(false);
         }
-
-        // This code added to correctly implement the disposable pattern.
+        
         public void Dispose()
         {
             Dispose(true);
-            
             GC.SuppressFinalize(this);
         }
         #endregion

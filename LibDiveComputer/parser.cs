@@ -6,7 +6,7 @@ using LibDiveComputer;
 
 namespace LibDiveComputer {
 
-	public class Parser {
+	public class Parser : IDisposable {
 
 		internal IntPtr m_parser;
 
@@ -123,9 +123,9 @@ namespace LibDiveComputer {
 
 		[StructLayout(LayoutKind.Sequential)]
 		public struct dc_gasmix_t {
-			double helium;
-			double oxygen;
-			double nitrogen;
+			public double helium;
+            public double oxygen;
+            public double nitrogen;
 		};
 
 		[StructLayout(LayoutKind.Sequential)]
@@ -198,11 +198,7 @@ namespace LibDiveComputer {
 
         [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
         static extern dc_status_t dc_parser_new2(ref IntPtr parser, IntPtr context, IntPtr descriptor, uint devtime, long systime);
-
-        /*
-                [DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
-                static extern dc_family_t dc_parser_get_type (IntPtr parser);
-        */
+        
         [DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_set_data (IntPtr parser, byte[] data, uint size);
 
@@ -235,7 +231,18 @@ namespace LibDiveComputer {
 		[DllImport(Constants.LibPath, CallingConvention=CallingConvention.Cdecl)]
 		static extern dc_status_t dc_parser_destroy(IntPtr parser);
 
-		public Parser (Device device)
+        
+        /// <summary>
+        /// Delegate instances set as property to prevent the garbage collector from collecting it
+        /// </summary>
+        private dc_sample_callback_t SampleCallback;
+
+        protected Parser()
+        {
+            SampleCallback = new dc_sample_callback_t(HandleSampleData);
+        }
+
+        public Parser (Device device) : this()
 		{
 			dc_status_t rc = dc_parser_new (ref m_parser, device.m_device);
 			if (rc != dc_status_t.DC_STATUS_SUCCESS) {
@@ -244,7 +251,7 @@ namespace LibDiveComputer {
 			}
 		}
 
-        public Parser(Context ctx, Descriptor descr, uint devtime, long systime)
+        public Parser(Context ctx, Descriptor descr, uint devtime, long systime) : this()
         {
             dc_status_t rc = dc_parser_new2(ref m_parser, ctx.m_context, descr.m_descriptor, devtime, systime);
             if (rc != dc_status_t.DC_STATUS_SUCCESS) {
@@ -253,17 +260,31 @@ namespace LibDiveComputer {
             }
         }
 
-        ~Parser()
-		{
-            dc_parser_destroy(m_parser);
-		}
+        protected void HandleSampleData(Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata)
+        {
+            
+        }
 
+        /// <summary>
+        /// Sets dive data in the parser
+        /// </summary>
+        /// <param name="data">Dive data</param>
 		public void SetData (byte[] data)
 		{
 			var st = dc_parser_set_data (m_parser, data, (uint) data.Length);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to set data: " + st);
 		}
+
+        /// <summary>
+        /// Starts reading samples
+        /// </summary>
+        public void Start()
+        {
+            var rc = Foreach(SampleCallback, IntPtr.Zero);
+            if (rc != dc_status_t.DC_STATUS_SUCCESS)
+                throw new Exception("Failed to read samples: " + rc);
+        }
 
 		public DateTime GetDatetime ()
 		{
@@ -274,9 +295,9 @@ namespace LibDiveComputer {
             return new DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
         }
 
-		public dc_status_t GetField (dc_field_type_t type, uint flags, ref object value)
+		public T GetField<T>(dc_field_type_t type, uint flags = 0)
 		{
-            
+            object value = null;
             dc_status_t rc = dc_status_t.DC_STATUS_UNSUPPORTED;
             switch(type) {
                 case dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM:
@@ -302,17 +323,65 @@ namespace LibDiveComputer {
                     rc = dc_parser_get_field_gasmix(m_parser, type, flags, ref _mix_value);
                     value = _mix_value;
                     break;
-
             }
+
+            if (rc != dc_status_t.DC_STATUS_SUCCESS && rc != dc_status_t.DC_STATUS_UNSUPPORTED)
+                throw new Exception($"Error while getting field {type}, got {rc}");
+            if (rc == dc_status_t.DC_STATUS_UNSUPPORTED)
+                return default(T);
+
+            var t = typeof(T);
+            var u = Nullable.GetUnderlyingType(t);
+
+            if (u != null)
+            {
+                return (T)Convert.ChangeType(value, u);
+            }
+            else
+            {
+                return (T)Convert.ChangeType(value, t);
+            }
+
             
-			return rc;
 		}
 
-		public dc_status_t Foreach (dc_sample_callback_t callback, IntPtr userdata)
+		private dc_status_t Foreach (dc_sample_callback_t callback, IntPtr userdata)
 		{
 			return dc_parser_samples_foreach (m_parser, callback, userdata);
 		}
 
-	};
+        #region IDisposable Support
+        private bool disposedValue = false; // To detect redundant calls
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!disposedValue)
+            {
+                dc_parser_destroy(m_parser);
+                this.m_parser = IntPtr.Zero;
+                if (disposing)
+                {
+                    // managed objects
+                }
+
+                disposedValue = true;
+            }
+        }
+
+        
+        ~Parser()
+        {
+            Dispose(false);
+        }
+        
+        public void Dispose()
+        {
+        
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+        #endregion
+
+    };
 
 };

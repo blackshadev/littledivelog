@@ -70,13 +70,14 @@ namespace LibDiveComputer {
             if (!disposedValue)
             {
                 dc_context_free(m_context);
+                m_context = IntPtr.Zero;
                 _logfunc = null;
                 if (disposing)
                 {
                     // Dispose managed state (managed objects).
                 }
                 
-
+                
                 disposedValue = true;
             }
         }

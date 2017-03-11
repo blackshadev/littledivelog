@@ -19,6 +19,7 @@ namespace divecomputer_test {
             public Device device;
             public Descriptor descriptor;
             public string serialPort;
+            public Bundle bundle;
         }
 
         public Form1() {
@@ -131,20 +132,21 @@ namespace divecomputer_test {
         private void DivecomputerWorker_DoWork(object sender, DoWorkEventArgs e) {
             var args = currentTask;
             args.ctx = CreateContext(args.logLevel);
+            
             try {
                 args.device = new Device(args.ctx, args.descriptor, args.serialPort);
+                
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
                     SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
+                    args.bundle = new Bundle(args.device);
                 };
                 args.device.OnClock += (clock) => {
                     Console.WriteLine(String.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));
                 };
                 args.device.OnDive += (data, size, fingerprint, fsize, udata) => {
-                    var dive = Dive.Parse(args.device, fingerprint, data);
-                    Console.WriteLine($"Date: {dive.Date}");
-                    Console.WriteLine($"Depth: {dive.MaxDepth}");
+                    args.bundle.Add(Dive.Parse(args.device, data, fingerprint));
                 };
                 args.device.Start();
             } catch (Exception err) {

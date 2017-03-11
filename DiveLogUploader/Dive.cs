@@ -3,12 +3,17 @@ using System.Collections.Generic;
 
 namespace LibDiveComputer {
 
+    /// <summary>
+    /// Holds dive computer information
+    /// </summary>
     public class Computer {
         public string Name { get; protected set; }
         public string Vendor { get; protected set; }
         public uint Model { get; protected set; }
         public uint Type { get; protected set; }
         public uint? Serial { get; protected set; }
+        
+        
 
         public Computer(Descriptor descr) {
             Name = descr.product;
@@ -19,10 +24,41 @@ namespace LibDiveComputer {
 
         public Computer(Device dev) : this(dev.Descriptor) {
             Serial = dev.Serial;
-            Model = dev.Model.HasValue ? dev.Model.Value : Model;
+            Model = dev.Model ?? Model;
+        }
+        
+    }
+
+    /// <summary>
+    /// Holds computer and dives data
+    /// </summary>
+    public class Bundle {
+        public Computer Computer { get; protected set; }
+        public List<Dive> Dives { get; protected set; }
+        public DateTime ReadTime { get; protected set; }
+
+
+        protected Bundle() {
+            ReadTime = DateTime.Now;
+            Dives = new List<Dive>();
+        }
+
+        public Bundle(Device device) : this() {
+            Computer = new Computer(device);
+        }
+
+        public Bundle(Descriptor descr) : this() {
+            Computer = new Computer(descr);
+        }
+
+        public void Add(Dive d) {
+            Dives.Add(d);
         }
     }
 
+    /// <summary>
+    /// Holds information about a single dive
+    /// </summary>
     public class Dive {
 
         /// <summary>
@@ -48,17 +84,31 @@ namespace LibDiveComputer {
             Samples = new List<Sample>();
         }
 
-        public static Dive Parse(Device dev, byte[] fingerprint, byte[] data) {
+        /// <summary>
+        /// Parses all dives from a device
+        /// </summary>
+        /// <param name="dev">Device to parse as</param>
+        /// <param name="data">Dive data to parse</param>
+        /// <param name="fingerprint">Fingerprint of given device</param>
+        /// <returns>Filled instance of Dive</returns>
+        public static Dive Parse(Device dev, byte[] data, byte[] fingerprint = null) {
             var parser = new Parser(dev);
 
             var dive = Parse(parser, data);
-            dive.Fingerprint = Convert.ToBase64String(fingerprint);
+            if(dive != null)
+                dive.Fingerprint = Convert.ToBase64String(fingerprint);
 
             parser.Dispose();
 
             return dive;
         }
 
+        /// <summary>
+        /// Parses dive data with given parser
+        /// </summary>
+        /// <param name="parser">Parser to use </param>
+        /// <param name="data">Data to parse</param>
+        /// <returns>Filled instance of Dive</returns>
         private static Dive Parse(Parser parser, byte[] data) {
             var dive = new Dive();
             parser.SetData(data);
@@ -105,6 +155,9 @@ namespace LibDiveComputer {
         public uint Value;
     }
 
+    /// <summary>
+    /// Holds information about a sample within a dive
+    /// </summary>
     public class Sample {
         public uint Time;
         public double? Depth;
@@ -153,7 +206,7 @@ namespace LibDiveComputer {
                     break;
 
                 case Parser.dc_sample_type_t.DC_SAMPLE_EVENT:
-                    this.Events.Add(new Event {
+                    Events.Add(new Event {
                         Type = value.event_type,
                         Flags = value.event_flags,
                         Time = value.event_time,

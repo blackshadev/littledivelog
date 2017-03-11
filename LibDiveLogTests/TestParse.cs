@@ -1,34 +1,29 @@
-﻿using System;
+﻿using LibDiveComputer;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.IO;
-using LibDiveComputer;
 
-namespace LibDiveLogTests
-{
+namespace LibDiveLogTests {
+
     [TestClass]
-    public class TestParse
-    {
+    public class TestParse {
         protected Descriptor aladinDescriptor;
 
         [TestInitialize]
-        public void Init()
-        {
-            
-            foreach (Descriptor descr in Descriptor.Descriptors())
-            {
+        public void Init() {
+            foreach (Descriptor descr in Descriptor.Descriptors()) {
                 if (descr.vendor == "Uwatec" && descr.model == 0x13) aladinDescriptor = descr;
             }
         }
 
         protected byte[] Data;
+
         [TestMethod]
-        public void DiveAladinPrime()
-            {
-            
+        public void DiveAladinPrime() {
             if (aladinDescriptor == null) Assert.Fail("Aladin Prime descriptor not found");
 
             var ctx = new Context();
-            
+
             var rdr = new BinaryReader(File.Open("./dumps/aladin_prime/current_1.bin", FileMode.Open));
             var systime = rdr.ReadInt64();
             var devtime = rdr.ReadUInt32();
@@ -37,15 +32,15 @@ namespace LibDiveLogTests
 
             var parser = new Parser(ctx, aladinDescriptor, devtime, systime);
             parser.SetData(Data);
-            
+
             var maxdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0);
 
             var divetime = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0);
-            
+
             var mintemp = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM, 0);
-            
+
             var mix = parser.GetField<Parser.dc_gasmix_t?>(Parser.dc_field_type_t.DC_FIELD_GASMIX, 0);
-            
+
             var tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK, 0);
 
             var avgdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_AVGDEPTH, 0);
@@ -57,8 +52,8 @@ namespace LibDiveLogTests
             Console.WriteLine($"avgdepth= {avgdepth}");
             Console.WriteLine($"divetime= {divetime / 60}:{divetime % 60}");
             Console.WriteLine($"mintemp= {mintemp}C");
-            Console.WriteLine($"gasmix= He:{mix.Value.helium*100}%; O:{mix.Value.oxygen *100}%; N:{mix.Value.nitrogen *100}%");
-            
+            Console.WriteLine($"gasmix= He:{mix.Value.helium * 100}%; O:{mix.Value.oxygen * 100}%; N:{mix.Value.nitrogen * 100}%");
+
             Assert.AreEqual(tank.HasValue, false, "Shouldn't support tank");
 
             Assert.AreEqual(mix.HasValue, true, "Should support mix");
@@ -72,7 +67,6 @@ namespace LibDiveLogTests
 
             ctx.Dispose();
             parser.Dispose();
-
         }
     }
 }

@@ -1,22 +1,20 @@
-﻿using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+using System;
 using System.Collections.Generic;
 
-namespace LibDiveLogTests
-{
+namespace LibDiveLogTests {
+
     [TestClass]
-    public class TestDescriptor
-    {
+    public class TestDescriptor {
+
         [TestMethod]
-        public void DescriptorList()
-        {
+        public void DescriptorList() {
             var checkList = new List<string>();
             checkList.Add("suunto");
             checkList.Add("uwatec");
             checkList.Add("mares");
 
-            foreach (LibDiveComputer.Descriptor descr in LibDiveComputer.Descriptor.Descriptors())
-            {
+            foreach (LibDiveComputer.Descriptor descr in LibDiveComputer.Descriptor.Descriptors()) {
                 var idx = checkList.IndexOf(descr.vendor.ToLower());
                 if (idx > -1) checkList.RemoveAt(idx);
             }

@@ -102,9 +102,8 @@ namespace LibDiveComputer
         public TankPressure? Pressure;
         public List<Event> Events;
 
-        Sample(uint time)
+        public Sample()
         {
-            Time = time;
             Events = new List<Event>();
         }
 

@@ -293,8 +293,8 @@ namespace LibDiveComputer {
         public List<Sample> ReadSamples()
         {
             var list = new List<Sample>();
-            Sample current = new Sample();
-            dc_sample_callback_t cb = delegate (Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata)
+            Sample current = null;
+            SampleCallback = delegate (Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata)
             {
                 if (type == Parser.dc_sample_type_t.DC_SAMPLE_TIME)
                 {

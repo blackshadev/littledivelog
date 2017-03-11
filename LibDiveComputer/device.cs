@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Runtime.InteropServices;
+using System.Linq;
 
 using LibDiveComputer;
 using System.IO;
@@ -220,6 +221,9 @@ namespace LibDiveComputer {
             var maxdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH, 0);
             Console.WriteLine("maxdepth={0}", maxdepth);
 
+            var avgdepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_AVGDEPTH, 0);
+            Console.WriteLine("avgdepth={0}", avgdepth);
+
             var divetime = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME, 0);
             
             Console.WriteLine("divetime={0}:{1}", divetime / 60, divetime % 60);
@@ -233,8 +237,18 @@ namespace LibDiveComputer {
             Console.WriteLine($"mintemp={mintemp}");
 
 
-            parser.ReadSamples();
-            
+            var samples = parser.ReadSamples();
+            uint prev = 0;
+            uint[] distance = new uint[samples.Count - 1];
+            for(var iX = 0; iX < samples.Count; iX++)
+            {
+                if (iX > 0)
+                    distance[iX - 1] = samples[iX].Time - prev;
+                prev = samples[iX].Time;
+            }
+
+            var avg = distance.Select((i) => (double)i).Average();
+
             return 1;
         }
 

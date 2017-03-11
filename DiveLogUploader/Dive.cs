@@ -74,9 +74,9 @@ namespace LibDiveComputer {
         public double? SurfaceTemperature { get; protected set; }
         public double? AtmosphericPressure { get; protected set; }
 
-        public Parser.dc_tankvolume_t Tank { get; protected set; }
-        public Parser.dc_gasmix_t Gasmix { get; protected set; }
-        public Parser.dc_salinity_t Salinity { get; protected set; }
+        public Parser.dc_tank_t? Tank { get; protected set; }
+        public Parser.dc_gasmix_t? Gasmix { get; protected set; }
+        public Parser.dc_salinity_t? Salinity { get; protected set; }
 
         public List<Sample> Samples { get; protected set; }
 
@@ -115,29 +115,28 @@ namespace LibDiveComputer {
 
             dive.Date = parser.GetDatetime();
             var t = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME);
-            if (t.HasValue) dive.DiveTime = new TimeSpan(0, (int)t.Value / 60, (int)t.Value % 60);
+            if (t.HasValue) dive. DiveTime = new TimeSpan(0, (int)t.Value / 60, (int)t.Value % 60);
 
             dive.MaxDepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH);
-            dive.Tank = parser.GetField<Parser.dc_tankvolume_t>(Parser.dc_field_type_t.DC_FIELD_TANK);
-            dive.Gasmix = parser.GetField<Parser.dc_gasmix_t>(Parser.dc_field_type_t.DC_FIELD_GASMIX);
-            dive.Salinity = parser.GetField<Parser.dc_salinity_t>(Parser.dc_field_type_t.DC_FIELD_SALINITY);
+            dive.Tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK);
+            dive.Gasmix = parser.GetField<Parser.dc_gasmix_t?>(Parser.dc_field_type_t.DC_FIELD_GASMIX);
+            dive.Salinity = parser.GetField<Parser.dc_salinity_t?>(Parser.dc_field_type_t.DC_FIELD_SALINITY);
             dive.MaxTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MAXIMUM);
             dive.MinTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM);
             dive.SurfaceTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_SURFACE);
             dive.AtmosphericPressure = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_ATMOSPHERIC);
-
-            var list = new List<Sample>();
+            
             Sample current = null;
             parser.OnSampleEvent += delegate (Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata) {
                 if (type == Parser.dc_sample_type_t.DC_SAMPLE_TIME) {
-                    if (current != null) list.Add(current);
+                    if (current != null) dive.Samples.Add(current);
                     current = new Sample();
                 }
                 current.ProcessSampleEvent(type, value);
             };
 
             parser.Start();
-            if (current != null) list.Add(current);
+            if (current != null) dive.Samples.Add(current);
 
             return dive;
         }
@@ -149,6 +148,7 @@ namespace LibDiveComputer {
     }
 
     public struct Event {
+        public string Name;
         public Parser.parser_sample_event_t Type;
         public Parser.parser_sample_flags_t Flags;
         public uint Time;
@@ -195,7 +195,7 @@ namespace LibDiveComputer {
                     break;
 
                 case Parser.dc_sample_type_t.DC_SAMPLE_RBT:
-                    this.RBT = value.rbt;
+                    RBT = value.rbt;
                     break;
 
                 case Parser.dc_sample_type_t.DC_SAMPLE_PRESSURE:
@@ -207,6 +207,7 @@ namespace LibDiveComputer {
 
                 case Parser.dc_sample_type_t.DC_SAMPLE_EVENT:
                     Events.Add(new Event {
+                        Name = Parser.dc_sample_event_type_names[(int)value.event_type],
                         Type = value.event_type,
                         Flags = value.event_flags,
                         Time = value.event_time,

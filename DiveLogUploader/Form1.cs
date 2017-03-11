@@ -1,9 +1,11 @@
 ﻿using LibDiveComputer;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.IO.Ports;
 using System.Linq;
 using System.Windows.Forms;
@@ -103,6 +105,13 @@ namespace divecomputer_test {
                 StateLabel.ForeColor = Color.Red;
                 return;
             }
+            if (SaveFileText.Text == null || SaveFileText.Text == "") {
+                StateLabel.Text = "No save path selected";
+                StateLabel.ForeColor = Color.Red;
+                return;
+            }
+
+
             StateLabel.ForeColor = Color.Black;
 
             var kvpComputer = (KeyValuePair<Descriptor, string>)ComputerSelector.SelectedItem;
@@ -146,20 +155,37 @@ namespace divecomputer_test {
                     Console.WriteLine(String.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));
                 };
                 args.device.OnDive += (data, size, fingerprint, fsize, udata) => {
-                    args.bundle.Add(Dive.Parse(args.device, data, fingerprint));
+                    args.bundle.Add(
+                        Dive.Parse(args.device, data, fingerprint)
+                    );
                 };
                 args.device.Start();
+
+                var txt = JsonConvert.SerializeObject(
+                    args.bundle, 
+                    Formatting.Indented,
+                    new JsonSerializerSettings {
+                        NullValueHandling = NullValueHandling.Ignore
+                    }
+                );
+
+                File.WriteAllText(SaveFileText.Text, txt);
+                SetState("Saved to file");
             } catch (Exception err) {
                 SetState("Error while opening device: " + err.Message, Color.Red);
             }
+
+            SetProgress(0, false);
         }
 
         private void DivecomputerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
             Invoke(new Action(() => {
                 if (currentTask.ctx != null) currentTask.ctx.Dispose();
                 if (currentTask.device != null) currentTask.device.Dispose();
+                currentTask.bundle = null;
                 currentTask = null;
                 StartButton.Enabled = true;
+                Progress.Visible = false;
             }));
         }
 
@@ -173,11 +199,11 @@ namespace divecomputer_test {
             }
         }
 
-        private void SetProgress(int progress) {
+        private void SetProgress(int progress, bool visible = true) {
             if (InvokeRequired) {
                 Invoke(new Action(() => { SetProgress(progress); }));
             } else {
-                Progress.Visible = true;
+                Progress.Visible = visible;
                 Progress.Value = progress;
             }
         }
@@ -189,6 +215,13 @@ namespace divecomputer_test {
                 LogTextBox.AppendText(String.Format("[{0}]: {1}\n", DateTime.Now, txt));
                 LogTextBox.SelectionStart = LogTextBox.Text.Length;
                 LogTextBox.ScrollToCaret();
+            }
+        }
+
+        private void BrowseButton_Click(object sender, EventArgs e) {
+            SaveFileDialog.FileName = SaveFileText.Text;
+            if (SaveFileDialog.ShowDialog() == DialogResult.OK) {
+                SaveFileText.Text = SaveFileDialog.FileName;
             }
         }
     }

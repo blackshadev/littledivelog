@@ -6,6 +6,18 @@ namespace LibDiveComputer {
     public class Parser : IDisposable {
         internal IntPtr m_parser;
 
+        public static readonly string[] dc_sample_event_type_names = new string[] {
+            "none", "deco", "rbt", "ascent", "ceiling", "workload", "transmitter",
+            "violation", "bookmark", "surface", "safety stop", "gaschange",
+            "safety stop (voluntary)", "safety stop (mandatory)", "deepstop",
+            "ceiling (safety stop)", "floor", "divetime", "maxdepth",
+            "OLF", "PO2", "airtime", "rgbm", "heading", "tissue level warning",
+            "gaschange2"
+        };
+        public static readonly string[] dc_sample_deco_type = new string[] {
+            "ndl", "safety", "deco", "deep"
+        };
+
         [StructLayout(LayoutKind.Sequential)]
         public struct dc_datetime_t {
             public int year;

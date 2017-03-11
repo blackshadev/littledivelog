@@ -28,6 +28,8 @@
             this.VersionLabel = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.SaveFileText = new System.Windows.Forms.TextBox();
+            this.SaveFileLabel = new System.Windows.Forms.Label();
             this.RefreshPortButton = new System.Windows.Forms.Button();
             this.PortLabel = new System.Windows.Forms.Label();
             this.PortSelector = new System.Windows.Forms.ComboBox();
@@ -40,6 +42,8 @@
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.DivecomputerWorker = new System.ComponentModel.BackgroundWorker();
+            this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.BrowseButton = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -63,7 +67,7 @@
             this.ComputerSelector.FormattingEnabled = true;
             this.ComputerSelector.Location = new System.Drawing.Point(66, 32);
             this.ComputerSelector.Name = "ComputerSelector";
-            this.ComputerSelector.Size = new System.Drawing.Size(207, 21);
+            this.ComputerSelector.Size = new System.Drawing.Size(258, 21);
             this.ComputerSelector.TabIndex = 1;
             // 
             // VersionLabel
@@ -71,7 +75,7 @@
             this.VersionLabel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.VersionLabel.Location = new System.Drawing.Point(0, 0);
             this.VersionLabel.Name = "VersionLabel";
-            this.VersionLabel.Size = new System.Drawing.Size(289, 24);
+            this.VersionLabel.Size = new System.Drawing.Size(338, 24);
             this.VersionLabel.TabIndex = 2;
             this.VersionLabel.Text = "_version_";
             this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -84,11 +88,14 @@
             this.tabControl1.Location = new System.Drawing.Point(0, 0);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(289, 138);
+            this.tabControl1.Size = new System.Drawing.Size(338, 161);
             this.tabControl1.TabIndex = 3;
             // 
             // tabPage1
             // 
+            this.tabPage1.Controls.Add(this.BrowseButton);
+            this.tabPage1.Controls.Add(this.SaveFileText);
+            this.tabPage1.Controls.Add(this.SaveFileLabel);
             this.tabPage1.Controls.Add(this.RefreshPortButton);
             this.tabPage1.Controls.Add(this.PortLabel);
             this.tabPage1.Controls.Add(this.PortSelector);
@@ -100,17 +107,36 @@
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage1.Size = new System.Drawing.Size(281, 112);
+            this.tabPage1.Size = new System.Drawing.Size(330, 135);
             this.tabPage1.TabIndex = 0;
             this.tabPage1.Text = "Computer";
             this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // SaveFileText
+            // 
+            this.SaveFileText.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.SaveFileText.Location = new System.Drawing.Point(66, 59);
+            this.SaveFileText.Name = "SaveFileText";
+            this.SaveFileText.ReadOnly = true;
+            this.SaveFileText.Size = new System.Drawing.Size(174, 20);
+            this.SaveFileText.TabIndex = 9;
+            // 
+            // SaveFileLabel
+            // 
+            this.SaveFileLabel.AutoSize = true;
+            this.SaveFileLabel.Location = new System.Drawing.Point(6, 62);
+            this.SaveFileLabel.Name = "SaveFileLabel";
+            this.SaveFileLabel.Size = new System.Drawing.Size(46, 13);
+            this.SaveFileLabel.TabIndex = 8;
+            this.SaveFileLabel.Text = "Save as";
             // 
             // RefreshPortButton
             // 
             this.RefreshPortButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.RefreshPortButton.BackgroundImage = global::DiveLogUploader.Properties.Resources.faRefresh;
             this.RefreshPortButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.RefreshPortButton.Location = new System.Drawing.Point(254, 6);
+            this.RefreshPortButton.Location = new System.Drawing.Point(303, 6);
             this.RefreshPortButton.Name = "RefreshPortButton";
             this.RefreshPortButton.Size = new System.Drawing.Size(21, 21);
             this.RefreshPortButton.TabIndex = 7;
@@ -133,13 +159,13 @@
             this.PortSelector.FormattingEnabled = true;
             this.PortSelector.Location = new System.Drawing.Point(66, 6);
             this.PortSelector.Name = "PortSelector";
-            this.PortSelector.Size = new System.Drawing.Size(182, 21);
+            this.PortSelector.Size = new System.Drawing.Size(231, 21);
             this.PortSelector.TabIndex = 6;
             // 
             // StateLabel
             // 
             this.StateLabel.AutoSize = true;
-            this.StateLabel.Location = new System.Drawing.Point(8, 86);
+            this.StateLabel.Location = new System.Drawing.Point(6, 112);
             this.StateLabel.Name = "StateLabel";
             this.StateLabel.Size = new System.Drawing.Size(0, 13);
             this.StateLabel.TabIndex = 4;
@@ -147,9 +173,9 @@
             // StartButton
             // 
             this.StartButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.StartButton.Location = new System.Drawing.Point(198, 60);
+            this.StartButton.Location = new System.Drawing.Point(246, 86);
             this.StartButton.Name = "StartButton";
-            this.StartButton.Size = new System.Drawing.Size(75, 23);
+            this.StartButton.Size = new System.Drawing.Size(78, 23);
             this.StartButton.TabIndex = 2;
             this.StartButton.Text = "Start";
             this.StartButton.UseVisualStyleBackColor = true;
@@ -159,9 +185,9 @@
             // 
             this.Progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.Progress.Location = new System.Drawing.Point(9, 60);
+            this.Progress.Location = new System.Drawing.Point(9, 86);
             this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(183, 23);
+            this.Progress.Size = new System.Drawing.Size(231, 23);
             this.Progress.TabIndex = 3;
             this.Progress.Visible = false;
             // 
@@ -172,7 +198,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(281, 112);
+            this.tabPage2.Size = new System.Drawing.Size(283, 115);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Log";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -183,7 +209,7 @@
             this.LogTextBox.Location = new System.Drawing.Point(3, 24);
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(275, 85);
+            this.LogTextBox.Size = new System.Drawing.Size(277, 88);
             this.LogTextBox.TabIndex = 0;
             this.LogTextBox.Text = "";
             // 
@@ -193,7 +219,7 @@
             this.LogLevelSelector.FormattingEnabled = true;
             this.LogLevelSelector.Location = new System.Drawing.Point(3, 3);
             this.LogLevelSelector.Name = "LogLevelSelector";
-            this.LogLevelSelector.Size = new System.Drawing.Size(275, 21);
+            this.LogLevelSelector.Size = new System.Drawing.Size(277, 21);
             this.LogLevelSelector.TabIndex = 1;
             this.LogLevelSelector.SelectedValueChanged += new System.EventHandler(this.LogLevelSelector_SelectedValueChanged);
             // 
@@ -203,16 +229,16 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(289, 138);
+            this.panel1.Size = new System.Drawing.Size(338, 161);
             this.panel1.TabIndex = 2;
             // 
             // panel2
             // 
             this.panel2.Controls.Add(this.VersionLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 138);
+            this.panel2.Location = new System.Drawing.Point(0, 161);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(289, 24);
+            this.panel2.Size = new System.Drawing.Size(338, 24);
             this.panel2.TabIndex = 0;
             // 
             // DivecomputerWorker
@@ -220,12 +246,27 @@
             this.DivecomputerWorker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.DivecomputerWorker_DoWork);
             this.DivecomputerWorker.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.DivecomputerWorker_RunWorkerCompleted);
             // 
+            // SaveFileDialog
+            // 
+            this.SaveFileDialog.Filter = "JSON Files (*.json)|*.json";
+            // 
+            // BrowseButton
+            // 
+            this.BrowseButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.BrowseButton.Location = new System.Drawing.Point(246, 59);
+            this.BrowseButton.Name = "BrowseButton";
+            this.BrowseButton.Size = new System.Drawing.Size(78, 23);
+            this.BrowseButton.TabIndex = 10;
+            this.BrowseButton.Text = "Browse...";
+            this.BrowseButton.UseVisualStyleBackColor = true;
+            this.BrowseButton.Click += new System.EventHandler(this.BrowseButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(289, 162);
+            this.ClientSize = new System.Drawing.Size(338, 185);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.MaximizeBox = false;
@@ -261,6 +302,10 @@
         private System.Windows.Forms.ComboBox PortSelector;
         private System.Windows.Forms.Button RefreshPortButton;
         private System.ComponentModel.BackgroundWorker DivecomputerWorker;
+        private System.Windows.Forms.Label SaveFileLabel;
+        private System.Windows.Forms.TextBox SaveFileText;
+        private System.Windows.Forms.SaveFileDialog SaveFileDialog;
+        private System.Windows.Forms.Button BrowseButton;
     }
 }
 

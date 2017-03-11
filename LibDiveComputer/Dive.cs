@@ -75,16 +75,77 @@ namespace LibDiveComputer
             return dive;
         }
         
+    }
 
+    public struct TankPressure
+    {
+        public uint Tank;
+        public double Value;
+    }
+
+    public struct Event
+    {
+        public string Name;
+        public uint Type;
+        public uint Time;
+        public uint Flags;
+        public uint Value;
     }
 
     public class Sample
     {
-        public bool Done { get; protected set; }
         public uint Time;
+        public double? Depth;
+        public uint? Bearing;
+        public double? Temperature;
+        public uint? Heartbeat;
+        public TankPressure? Pressure;
+        public List<Event> Events;
 
+        Sample(uint time)
+        {
+            Time = time;
+            Events = new List<Event>();
+        }
 
-        public void ProcessSampleEvent(Parser.dc_sample_type_t t) { }
+        public void ProcessSampleEvent(Parser.dc_sample_type_t t, Parser.dc_sample_value_t value) {
+            switch(t)
+            {
+                case Parser.dc_sample_type_t.DC_SAMPLE_TIME:
+                    Time = value.time;
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_DEPTH:
+                    Depth = value.depth;
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_BEARING:
+                    Bearing = value.bearing;
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_TEMPERATURE:
+                    Temperature = value.temperature;
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_HEARTBEAT:
+                    Heartbeat = value.heartbeat;
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_PRESSURE:
+                    Pressure = new TankPressure
+                    {
+                        Tank = value.pressure_tank,
+                        Value = value.pressure_value
+                    };
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_EVENT:
+                    this.Events.Add(new Event
+                    {
+                        Name = Parser.EventNames[value.event_type],
+                        Type = value.event_type,
+                        Time = value.event_time,
+                        Flags = value.event_flags,
+                        Value = value.event_value
+                    });
+                    break;
+            }
+
+        }
         
     }
 }

@@ -11,6 +11,16 @@ namespace LibDiveComputer {
 
 		internal IntPtr m_parser;
 
+        public static readonly string[] EventNames = new string[]
+        {
+            "none", "deco", "rbt", "ascent", "ceiling", "workload", "transmitter",
+            "violation", "bookmark", "surface", "safety stop", "gaschange",
+            "safety stop (voluntary)", "safety stop (mandatory)", "deepstop",
+            "ceiling (safety stop)", "floor", "divetime", "maxdepth",
+            "OLF", "PO2", "airtime", "rgbm", "heading", "tissue level warning",
+            "gaschange2"
+        };
+
 		[StructLayout(LayoutKind.Sequential)]
 		public struct dc_datetime_t {
 			public int year;
@@ -286,8 +296,12 @@ namespace LibDiveComputer {
             Sample current = new Sample();
             dc_sample_callback_t cb = delegate (Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata)
             {
-                if (current != null) list.Add(current);
-                current = new Sample();
+                if (type == Parser.dc_sample_type_t.DC_SAMPLE_TIME)
+                {
+                    if(current != null) list.Add(current);
+                    current = new Sample();
+                }
+                current.ProcessSampleEvent(type, value);
                 
             };
 

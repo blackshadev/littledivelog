@@ -1,4 +1,5 @@
-﻿using LibDiveComputer;
+﻿using DiveLogUploader;
+using LibDiveComputer;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;

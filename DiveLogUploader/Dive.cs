@@ -1,7 +1,8 @@
-﻿using System;
+﻿using LibDiveComputer;
+using System;
 using System.Collections.Generic;
 
-namespace LibDiveComputer {
+namespace DiveLogUploader {
 
     /// <summary>
     /// Holds dive computer information

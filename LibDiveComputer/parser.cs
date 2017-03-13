@@ -60,7 +60,12 @@ namespace LibDiveComputer {
             DC_SAMPLE_RBT,
             DC_SAMPLE_HEARTBEAT,
             DC_SAMPLE_BEARING,
-            DC_SAMPLE_VENDOR
+            DC_SAMPLE_VENDOR,
+            DC_SAMPLE_SETPOINT,
+            DC_SAMPLE_PPO2,
+            DC_SAMPLE_CNS,
+            DC_SAMPLE_DECO,
+            DC_SAMPLE_GASMIX
         };
 
         public enum dc_field_type_t {
@@ -207,10 +212,7 @@ namespace LibDiveComputer {
 
             [FieldOffset(0)]
             public uint bearing;
-
-            /*[FieldOffset(0)]
-			public dc_vendor_t vendor;*/
-
+            
             [FieldOffset(0)]
             public uint vendor_type;
 
@@ -219,7 +221,28 @@ namespace LibDiveComputer {
 
             [FieldOffset(8)]
             public IntPtr vendor_data;
-        };
+
+            [FieldOffset(0)]
+            public double setpoint;
+
+            [FieldOffset(0)]
+            public double ppo2;
+
+            [FieldOffset(0)]
+            public double cns;
+
+            [FieldOffset(0)]
+            public int deco_type;
+
+            [FieldOffset(4)]
+            public int deco_time;
+
+            [FieldOffset(8)]
+            public double deco_depth;
+            
+            [FieldOffset(0)]
+            uint gasmix; /* Gas mix index */
+    };
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void dc_sample_callback_t(dc_sample_type_t type, dc_sample_value_t value, IntPtr userdata);

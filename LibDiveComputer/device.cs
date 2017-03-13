@@ -144,6 +144,10 @@ namespace LibDiveComputer {
             DiveCallback = new dc_dive_callback_t(HandleDive);
         }
 
+        public void SetFingerprint(byte[] fingerprint) {
+            dc_device_set_fingerprint(m_device, fingerprint, (uint)fingerprint.Length);
+        }
+
         /// <summary>
         /// Starts reading the device
         /// </summary>
@@ -160,7 +164,7 @@ namespace LibDiveComputer {
         /// <param name="data">Event data</param>
         /// <param name="userdata">User data</param>
         private void HandleEvent(IntPtr device, dc_event_type_t type, IntPtr data, IntPtr userdata) {
-            switch (type) {
+            switch (type) { 
                 case dc_event_type_t.DC_EVENT_WAITING:
                     if (OnWaiting != null) return;
                     OnWaiting();

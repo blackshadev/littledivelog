@@ -166,6 +166,9 @@ namespace DiveLogUploader {
         public double? Temperature;
         public uint? Heartbeat;
         public uint? RBT;
+        public double? PPO2;
+        public double? CNS;
+
         public TankPressure? Pressure;
         public List<Event> Events;
 
@@ -214,6 +217,12 @@ namespace DiveLogUploader {
                         Time = value.event_time,
                         Value = value.event_value
                     });
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_PPO2:
+                    PPO2 = value.ppo2;
+                    break;
+                case Parser.dc_sample_type_t.DC_SAMPLE_CNS:
+                    CNS = value.cns;
                     break;
             }
         }

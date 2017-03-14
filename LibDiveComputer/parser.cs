@@ -294,7 +294,7 @@ namespace LibDiveComputer {
         /// </summary>
         private dc_sample_callback_t SampleCallback;
 
-        private IntPtr DataPtr = IntPtr.Zero;
+        private GCHandle? DataPtr;
 
         protected Parser() {
             SampleCallback = new dc_sample_callback_t(HandleSampleData);
@@ -333,13 +333,12 @@ namespace LibDiveComputer {
 		public void SetData(byte[] data) {
             if (disposedValue) throw new ObjectDisposedException("Parser");
 
-            if (DataPtr != IntPtr.Zero)
-                GCHandle.FromIntPtr(DataPtr).Free();
+            if (DataPtr.HasValue)
+                DataPtr.Value.Free();
 
-            var _handle = GCHandle.Alloc(data);
-            DataPtr = GCHandle.ToIntPtr(_handle);
-
-            var st = dc_parser_set_data(m_parser, DataPtr, (uint)data.Length);
+            DataPtr = GCHandle.Alloc(data, GCHandleType.Pinned);
+            
+            var st = dc_parser_set_data(m_parser, DataPtr.Value.AddrOfPinnedObject(), (uint)data.Length);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to set data: " + st);
         }
@@ -447,9 +446,9 @@ namespace LibDiveComputer {
                     dc_parser_destroy(m_parser);
                     m_parser = IntPtr.Zero;
                 }
-                if(DataPtr != IntPtr.Zero) {
-                    GCHandle.FromIntPtr(DataPtr).Free();
-                    DataPtr = IntPtr.Zero;
+                if(DataPtr.HasValue) {
+                    DataPtr.Value.Free();
+                    DataPtr = null;
                 }
 
                 if (disposing) {

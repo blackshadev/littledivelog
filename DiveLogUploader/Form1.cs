@@ -166,15 +166,20 @@ namespace divecomputer_test {
             
             try {
                 args.device = new Device(args.ctx, args.descriptor, args.serialPort);
-                
+                args.device.SetFingerprint(Convert.FromBase64String("gyKmKA=="));
+
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
                     SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
                     args.bundle = new Bundle(args.device);
+                    var old = args.fingerprint;
                     GetFingerprint();
-                    if (args.fingerprint != null)
-                        args.device.SetFingerprint(Convert.FromBase64String(args.fingerprint));
+                    //if (args.fingerprint != old) {
+                        
+                        //args.device.Cancel();
+                        //args.device.Start();
+                    //}
                 };
                 args.device.OnClock += (clock) => {
                     Console.WriteLine(String.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));

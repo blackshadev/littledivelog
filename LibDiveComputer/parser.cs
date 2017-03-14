@@ -254,7 +254,7 @@ namespace LibDiveComputer {
         private static extern dc_status_t dc_parser_new2(ref IntPtr parser, IntPtr context, IntPtr descriptor, uint devtime, long systime);
 
         [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
-        private static extern dc_status_t dc_parser_set_data(IntPtr parser, byte[] data, uint size);
+        private static extern dc_status_t dc_parser_set_data(IntPtr parser, IntPtr data, uint size);
 
         [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern dc_status_t dc_parser_get_datetime(IntPtr parser, ref dc_datetime_t datetime);
@@ -294,6 +294,8 @@ namespace LibDiveComputer {
         /// </summary>
         private dc_sample_callback_t SampleCallback;
 
+        private IntPtr DataPtr = IntPtr.Zero;
+
         protected Parser() {
             SampleCallback = new dc_sample_callback_t(HandleSampleData);
         }
@@ -319,6 +321,8 @@ namespace LibDiveComputer {
         public event SampleEventHandler OnSampleEvent;
 
         protected void HandleSampleData(Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata) {
+            if (disposedValue) throw new ObjectDisposedException("Parser");
+
             OnSampleEvent?.Invoke(type, value, userdata);
         }
 
@@ -327,7 +331,15 @@ namespace LibDiveComputer {
         /// </summary>
         /// <param name="data">Dive data</param>
 		public void SetData(byte[] data) {
-            var st = dc_parser_set_data(m_parser, data, (uint)data.Length);
+            if (disposedValue) throw new ObjectDisposedException("Parser");
+
+            if (DataPtr != IntPtr.Zero)
+                GCHandle.FromIntPtr(DataPtr).Free();
+
+            var _handle = GCHandle.Alloc(data);
+            DataPtr = GCHandle.ToIntPtr(_handle);
+
+            var st = dc_parser_set_data(m_parser, DataPtr, (uint)data.Length);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to set data: " + st);
         }
@@ -336,12 +348,16 @@ namespace LibDiveComputer {
         /// Starts reading samples, todo not place it in parser
         /// </summary>
         public void Start() {
+            if (disposedValue) throw new ObjectDisposedException("Parser");
+
             var rc = Foreach(SampleCallback, IntPtr.Zero);
             if (rc != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to read samples: " + rc);
         }
 
         public DateTime GetDatetime() {
+            if (disposedValue) throw new ObjectDisposedException("Parser");
+
             var dt = new dc_datetime_t();
             var st = dc_parser_get_datetime(m_parser, ref dt);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
@@ -350,6 +366,8 @@ namespace LibDiveComputer {
         }
 
         public T GetField<T>(dc_field_type_t type, uint flags = 0) {
+            if (disposedValue) throw new ObjectDisposedException("Parser");
+
             object value = null;
             dc_status_t rc = dc_status_t.DC_STATUS_UNSUPPORTED;
             switch (type) {
@@ -414,6 +432,8 @@ namespace LibDiveComputer {
         }
 
         private dc_status_t Foreach(dc_sample_callback_t callback, IntPtr userdata) {
+            if (disposedValue) throw new ObjectDisposedException("Parser");
+
             return dc_parser_samples_foreach(m_parser, callback, userdata);
         }
 
@@ -423,8 +443,15 @@ namespace LibDiveComputer {
 
         protected virtual void Dispose(bool disposing) {
             if (!disposedValue) {
-                dc_parser_destroy(m_parser);
-                this.m_parser = IntPtr.Zero;
+                if (m_parser != IntPtr.Zero) {
+                    dc_parser_destroy(m_parser);
+                    m_parser = IntPtr.Zero;
+                }
+                if(DataPtr != IntPtr.Zero) {
+                    GCHandle.FromIntPtr(DataPtr).Free();
+                    DataPtr = IntPtr.Zero;
+                }
+
                 if (disposing) {
                     // managed objects
                 }

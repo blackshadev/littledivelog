@@ -50,6 +50,9 @@
     <Compile Include="Version.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="lib\bin\libdivecomputer-0.6.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="lib\bin\libdivecomputer-0.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

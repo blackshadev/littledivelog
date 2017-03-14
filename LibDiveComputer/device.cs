@@ -145,7 +145,9 @@ namespace LibDiveComputer {
         }
 
         public void SetFingerprint(byte[] fingerprint) {
-            dc_device_set_fingerprint(m_device, fingerprint, (uint)fingerprint.Length);
+            var rc = dc_device_set_fingerprint(m_device, fingerprint, (uint)fingerprint.Length);
+            if (rc != dc_status_t.DC_STATUS_SUCCESS)
+                throw new Exception("Unable to set fingerprint: " + rc);
         }
 
         /// <summary>

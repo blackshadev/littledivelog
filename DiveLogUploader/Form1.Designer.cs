@@ -69,6 +69,7 @@
             this.ComputerSelector.Name = "ComputerSelector";
             this.ComputerSelector.Size = new System.Drawing.Size(428, 21);
             this.ComputerSelector.TabIndex = 1;
+            this.ComputerSelector.SelectedIndexChanged += new System.EventHandler(this.ComputerSelector_Changed);
             // 
             // VersionLabel
             // 
@@ -132,6 +133,7 @@
             this.SaveFileText.ReadOnly = true;
             this.SaveFileText.Size = new System.Drawing.Size(344, 20);
             this.SaveFileText.TabIndex = 9;
+            this.SaveFileText.TextChanged += new System.EventHandler(this.SaveFileText_Changed);
             // 
             // SaveFileLabel
             // 
@@ -172,6 +174,7 @@
             this.PortSelector.Name = "PortSelector";
             this.PortSelector.Size = new System.Drawing.Size(401, 21);
             this.PortSelector.TabIndex = 6;
+            this.PortSelector.SelectedIndexChanged += new System.EventHandler(this.PortSelector_Changed);
             // 
             // StateLabel
             // 
@@ -209,7 +212,7 @@
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(330, 135);
+            this.tabPage2.Size = new System.Drawing.Size(500, 145);
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Log";
             this.tabPage2.UseVisualStyleBackColor = true;
@@ -220,7 +223,7 @@
             this.LogTextBox.Location = new System.Drawing.Point(3, 24);
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(324, 108);
+            this.LogTextBox.Size = new System.Drawing.Size(494, 118);
             this.LogTextBox.TabIndex = 0;
             this.LogTextBox.Text = "";
             // 
@@ -230,7 +233,7 @@
             this.LogLevelSelector.FormattingEnabled = true;
             this.LogLevelSelector.Location = new System.Drawing.Point(3, 3);
             this.LogLevelSelector.Name = "LogLevelSelector";
-            this.LogLevelSelector.Size = new System.Drawing.Size(324, 21);
+            this.LogLevelSelector.Size = new System.Drawing.Size(494, 21);
             this.LogLevelSelector.TabIndex = 1;
             this.LogLevelSelector.SelectedValueChanged += new System.EventHandler(this.LogLevelSelector_SelectedValueChanged);
             // 

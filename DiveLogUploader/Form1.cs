@@ -17,7 +17,38 @@ namespace divecomputer_test {
 
     public partial class Form1 : Form {
 
-        private class TargetObject {
+        private class Session {
+            public string serialPort;
+            public string computer;
+            public string destination;
+            protected Configuration config;
+
+            public Session() {
+                config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+            }
+
+            public void Save() {
+                if (config.AppSettings.Settings["last_session"] == null)
+                    config.AppSettings.Settings.Add("last_session", "{}");
+                config.AppSettings.Settings["last_session"].Value = JsonConvert.SerializeObject(this);
+                config.Save(ConfigurationSaveMode.Modified);
+            }
+
+            public void Load() {
+                string sData = null;
+                try {
+                    sData = config.AppSettings.Settings["last_session"].Value;
+                } catch (Exception) { }
+
+                if (sData == null) return;
+                var sess = JsonConvert.DeserializeObject<Session>(sData);
+                serialPort = sess.serialPort;
+                computer = sess.computer;
+                destination = sess.destination;
+            }
+        }
+
+        private class TargetObject  {
             public dc_loglevel_t logLevel;
             public Context ctx;
             public Device device;
@@ -31,6 +62,9 @@ namespace divecomputer_test {
             InitializeComponent();
         }
 
+        private Session session = new Session();
+        
+
         private Context CreateContext(dc_loglevel_t logLevel) {
             var ctx = new Context();
             ctx.logfunc = (IntPtr context, dc_loglevel_t loglevel, string file, uint line, string function, string message, IntPtr userdata) => {
@@ -43,22 +77,27 @@ namespace divecomputer_test {
         private void Form1_Load(object sender, EventArgs e) {
             VersionLabel.Text = "libdivelog v" + LibDiveComputer.Version.AsString;
 
+            session.Load();
+            
             LoadSerialPorts();
             LoadComputerSelector();
             LoadLogLevelList();
+            SaveFileText.Text = session.destination ?? "";
         }
 
         private void LoadSerialPorts() {
             PortSelector.Items.Clear();
             PortSelector.DisplayMember = "Value";
             PortSelector.ValueMember = "Key";
-
+            
             var ports = SerialPort.GetPortNames();
             // Use KeyValuePairs just in case the portName is not the same as the address to use it
             var kvps = ports.Select((s) => new KeyValuePair<string, string>(s, s));
 
+            
             foreach (var kvp in kvps) {
                 PortSelector.Items.Add(kvp);
+                if (session.serialPort == kvp.Value) PortSelector.SelectedItem = kvp;
             }
         }
 
@@ -73,8 +112,10 @@ namespace divecomputer_test {
                 select new KeyValuePair<Descriptor, string>(s, s.vendor + " " + s.product)
             );
 
-            foreach (var kvp in list)
+            foreach (var kvp in list) {
                 ComputerSelector.Items.Add(kvp);
+                if (session.computer == kvp.Value) ComputerSelector.SelectedItem = kvp;
+            }
         }
 
         private void LoadLogLevelList() {
@@ -130,6 +171,7 @@ namespace divecomputer_test {
             StartButton.Enabled = false;
             DivecomputerWorker.RunWorkerAsync();
         }
+        
 
         private TargetObject currentTask;
 
@@ -166,8 +208,7 @@ namespace divecomputer_test {
             
             try {
                 args.device = new Device(args.ctx, args.descriptor, args.serialPort);
-                args.device.SetFingerprint(Convert.FromBase64String("gyKmKA=="));
-
+                
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
@@ -258,6 +299,26 @@ namespace divecomputer_test {
             if (SaveFileDialog.ShowDialog() == DialogResult.OK) {
                 SaveFileText.Text = SaveFileDialog.FileName;
             }
+        }
+
+        private void PortSelector_Changed(object sender, EventArgs e) {
+            session.serialPort = PortSelector.SelectedItem == null ? null : ((KeyValuePair<string, string>)PortSelector.SelectedItem).Key;
+            session.Save();
+        }
+
+        private void ComputerSelector_Changed(object sender, EventArgs e) {
+            if (ComputerSelector.SelectedItem == null) session.computer = null;
+            else {
+                var comp = (KeyValuePair<Descriptor, string>)ComputerSelector.SelectedItem;
+                session.computer = comp.Value;
+            }
+
+            session.Save();
+        }
+
+        private void SaveFileText_Changed(object sender, EventArgs e) {
+            session.destination = SaveFileText.Text;
+            session.Save();
         }
     }
 }

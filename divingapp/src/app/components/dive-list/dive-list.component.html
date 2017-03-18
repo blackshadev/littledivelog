@@ -1,0 +1,11 @@
+<table class="table table-hover">
+    <thead>
+        <tr><td>Date</td><td>Divetime</td></tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let dive of dives" (click)="select(dive)" [ngClass]="{ 'active': dive === selectedDive }">
+            <td>{{ dive.date | date: "y-MM-dd HH:mm:ss"}}</td>
+            <td>{{ dive.divetime }}</td>
+        </tr>
+    </tbody>
+</table>

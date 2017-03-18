@@ -1,0 +1,58 @@
+function formatNumber(n: number) {
+    return ("0" + n).slice(-2);
+}
+
+export class Duration {
+    hours: number;
+    minutes: number;
+    seconds: number;
+
+    constructor(seconds: number);
+    constructor(hours: number, minutes: number, seconds: number);
+    constructor(minutes: number, seconds: number);
+    constructor(...all: number[]);
+    constructor(...all: number[]) {
+        this.seconds = all.length > 0 ? all[all.length - 1] % 60 : 0;
+        this.minutes = all.length > 1 ? ((all[all.length - 1] / 60)|0 + all[all.length - 2]) % 60 : 0;
+        this.hours   = all.length > 2 ? (((all[all.length - 1] / 60)|0 + all[all.length - 2]) / 60)|0 + all[all.length - 3] : 0;
+    }
+
+    static Parse(str: String): Duration {
+        let parts = str.split(":").map((s) => parseInt(s));
+        let d = new Duration(...parts);
+        return d;
+    }
+
+    toString() {
+        return `${formatNumber(this.hours)}:${formatNumber(this.minutes)}:${formatNumber(this.seconds)}`;
+    }
+}
+
+export class Dive  {
+    date: Date;
+    divetime: Duration;
+    maxDepth: number;
+    samples: any[]
+
+    static Parse(d: IDive) : Dive {
+        let dive = new Dive;
+        dive.date = new Date(d.Date);
+        dive.divetime = Duration.Parse(d.DiveTime);
+        dive.maxDepth = d.MaxDepth;
+        dive.samples = d.Samples;
+        return dive;
+    }
+
+    static ParseAll(arr: IDive[]) : Dive[] {
+        return arr.map((d) => Dive.Parse(d));
+    }
+}
+
+export interface IDive {
+    Date: string;
+    DiveTime: string;
+    MaxDepth: number;
+    Samples: ISample[]
+}
+
+type ISample = any;

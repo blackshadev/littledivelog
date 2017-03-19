@@ -9,6 +9,8 @@ export class DiveService {
 
     constructor(private http: Http) {}
 
+    private dives: Dive[];
+
     async getDives() : Promise<Dive[]> {
         return this.http.get(
             "/assets/sample-dives.json"
@@ -16,4 +18,13 @@ export class DiveService {
             (d) => Dive.ParseAll(d.json().Dives)
         );
     }
+    
+     async getDive(id: number) : Promise<Dive> {
+        return this.http.get(
+            "/assets/sample-dives.json"
+        ).toPromise().then(
+            (d) => Dive.Parse(id, d.json().Dives[id])
+        );
+    }
+
 }

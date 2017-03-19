@@ -3,7 +3,7 @@
         <tr><td>Date</td><td>Divetime</td></tr>
     </thead>
     <tbody>
-        <tr *ngFor="let dive of dives" (click)="select(dive)" [ngClass]="{ 'active': dive === selectedDive }">
+        <tr *ngFor="let dive of dives" (click)="select(dive)" [ngClass]="{ 'active': selectedDive !== undefined && dive.id === selectedDive.id }">
             <td>{{ dive.date | date: "y-MM-dd HH:mm:ss"}}</td>
             <td>{{ dive.divetime }}</td>
         </tr>

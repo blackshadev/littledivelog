@@ -29,13 +29,15 @@ export class Duration {
 }
 
 export class Dive  {
+    id: number;
     date: Date;
     divetime: Duration;
     maxDepth: number;
     samples: any[]
 
-    static Parse(d: IDive) : Dive {
+    static Parse(id: number, d: IDive) : Dive {
         let dive = new Dive;
+        dive.id = id;
         dive.date = new Date(d.Date);
         dive.divetime = Duration.Parse(d.DiveTime);
         dive.maxDepth = d.MaxDepth;
@@ -44,7 +46,8 @@ export class Dive  {
     }
 
     static ParseAll(arr: IDive[]) : Dive[] {
-        return arr.map((d) => Dive.Parse(d));
+        let iX = 0;
+        return arr.map((d) => Dive.Parse(iX++, d));
     }
 }
 

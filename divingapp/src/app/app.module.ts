@@ -10,6 +10,7 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
+import { HideWhenMobileDirective } from './directives/hide-when.directive';
 
 
 @NgModule({
@@ -19,7 +20,8 @@ import { MenuComponent } from './components/menu/menu.component';
     DiveListComponent,
     DiveDetailComponent,
     DashboardComponent,
-    MenuComponent
+    MenuComponent,
+    HideWhenMobileDirective
   ],
   imports: [
     BrowserModule,

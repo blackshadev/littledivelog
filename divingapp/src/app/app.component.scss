@@ -5,5 +5,10 @@ body {
 }
 
 .content {
-    padding-left: 155px;
+    transition: padding 1s;
+    padding-left: $width-menu-expanded;
+
+    &.menu-collapsed {
+        padding-left: $width-menu-collapsed;
+    }
 }

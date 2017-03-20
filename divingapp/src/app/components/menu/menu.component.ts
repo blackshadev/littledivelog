@@ -1,4 +1,5 @@
-import {ViewChild, Component,  OnInit,  ElementRef} from '@angular/core';
+import {ViewChild, Component,  OnInit,  ElementRef, Output} from '@angular/core';
+import { EventEmitter } from '@angular/forms/src/facade/async';
 
 @Component({
   selector: 'app-menu',
@@ -7,21 +8,22 @@ import {ViewChild, Component,  OnInit,  ElementRef} from '@angular/core';
 })
 export class MenuComponent implements OnInit {
   
-  @ViewChild('menuContainer') menuContainer: ElementRef; 
+  @ViewChild('menuContainer') menuContainer: ElementRef;
+  @Output() ontoggle = new EventEmitter<boolean>();
 
   constructor() {}
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   toggle() {
     let hElm = (<HTMLElement>this.menuContainer.nativeElement);
-    if(hElm.classList.contains("collapsed")) {
+    let isCollapsed = hElm.classList.contains("collapsed");
+    if(isCollapsed) {
       hElm.classList.remove("collapsed");
     } else {
       hElm.classList.add("collapsed");
     }
-    console.log("Toggle", hElm.className);
-;  }
+    this.ontoggle.emit(!isCollapsed);
+  }
 
 }

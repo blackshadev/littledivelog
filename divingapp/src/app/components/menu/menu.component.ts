@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {ViewChild, Component,  OnInit,  ElementRef} from '@angular/core';
 
 @Component({
   selector: 'app-menu',
@@ -6,10 +6,22 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./menu.component.scss']
 })
 export class MenuComponent implements OnInit {
+  
+  @ViewChild('menuContainer') menuContainer: ElementRef; 
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
   }
+
+  toggle() {
+    let hElm = (<HTMLElement>this.menuContainer.nativeElement);
+    if(hElm.classList.contains("collapsed")) {
+      hElm.classList.remove("collapsed");
+    } else {
+      hElm.classList.add("collapsed");
+    }
+    console.log("Toggle", hElm.className);
+;  }
 
 }

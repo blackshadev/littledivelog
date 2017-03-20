@@ -1,8 +1,11 @@
-<div class="menu-container">
+<div class="menu-container" #menuContainer>
   <nav>
     <ul class="nav nav-pills nav-stacked">
-      <li><a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']"><i class="fa fa-dashboard"></i><span>Dashboard</span></a></li>
-      <li><a [routerLink]="['dive']" [routerLinkActive]="['is-active']"><i class="fa fa-tint"></i><span>Dives</span></a></li>
+      <li><a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-dashboard"></i><span>Dashboard</span></a></li>
+      <li><a [routerLink]="['dive']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-tint"></i><span>Dives</span></a></li>
     </ul>
   </nav>
+  <div class="toggle-container">
+    <a (click)="toggle()"><i class="fa fa-fw fa-chevron-left"></i></a>
+  </div>
 </div>

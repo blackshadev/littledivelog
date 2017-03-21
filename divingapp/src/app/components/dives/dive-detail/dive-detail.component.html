@@ -1,27 +1,39 @@
-<form class="form-horizontal" *ngIf="dive !== undefind">
+<form class="form-horizontal dive-details" *ngIf="dive !== undefind">
     <div class="form-group">
         <label class="col-sm-2 control-label">Date</label>
         <div class="col-sm-10">
-        <p class="form-control-static">{{ dive.date | date: "y-MM-dd HH:mm:ss"}}</p>
+            <input type="datetime-local" class="form-control" [ngModel]="dive.date | date: 'y-MM-ddTHH:mm:ss'" (ngModelChange)="updateDate($event)" name="date" required /> <!--  | date: 'y-MM-dd HH:mm:ss' -->
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label">Dive time</label>
         <div class="col-sm-10">
-        <p class="form-control-static">{{dive.divetime }}</p>
+            <input type="text" class="form-control" [ngModel]="dive.divetime" name="divetime" (ngModelChange)="updateDiveTime($event)" required />
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label">Max depth</label>
         <div class="col-sm-10">
-        <p class="form-control-static">{{ dive.maxDepth | number: "1.1-1"}}m</p>
+            <input type="text" class="form-control" [ngModel]='dive.maxDepth | number: "1.1-1"' (ngModelChange)="dive.maxDepth = $event" name="maxDepth" required /> <!-- number: "1.1-1" -->
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-sm-2 control-label">Divespot</label>
+        <div class="col-sm-10">
+            
+            <div class="input-group">
+                <input type="text" class="form-control" [(ngModel)]="dive.placeName" name="placeName" />
+                <span class="input-group-btn" style="width:0px;"></span>
+                <input type="text" class="form-control" [(ngModel)]="dive.placeCountry" name="placeCountry" />
+            </div>
+            
         </div>
     </div>
     <div class="form-group">
         <label class="col-sm-2 control-label">Samples</label>
         <div class="col-sm-10">
-        <p class="form-control-static">{{dive.samples.length }}</p>
+            <p class="form-control-static">{{dive.samples.length }}</p>
         </div>
     </div>
-    
-</form>
+    {{diagnostic}}
+</form> 

@@ -33,7 +33,18 @@ export class Dive  {
     date: Date;
     divetime: Duration;
     maxDepth: number;
-    samples: any[]
+    samples: any[];
+    placeName: string;
+    placeCountry: string;
+
+    toJSON() : IDive {
+        return {
+            Date: this.date.toISOString(),
+            DiveTime: this.divetime.toString(),
+            MaxDepth: this.maxDepth,
+            Samples: this.samples
+        }
+    }
 
     static Parse(id: number, d: IDive) : Dive {
         let dive = new Dive;

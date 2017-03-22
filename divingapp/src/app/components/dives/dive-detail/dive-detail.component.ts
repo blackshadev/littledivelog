@@ -1,6 +1,7 @@
+import {NgForm} from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DiveService } from '../../../services/dive.service';
+import { DiveStore } from '../../../services/dive.service';
 import { Dive, Duration } from '../../../shared/dive';
 import {OnInit, Component,  Input} from '@angular/core';
 
@@ -15,7 +16,7 @@ export class DiveDetailComponent implements OnInit {
   @Input() dive: Dive;
 
   constructor(
-    private service: DiveService
+    private service: DiveStore
   ) {}
 
   ngOnInit(): void {}
@@ -27,6 +28,11 @@ export class DiveDetailComponent implements OnInit {
       maxDepth: this.dive.maxDepth,
       place: this.dive.placeName + " " + this.dive.placeCountry
     }); 
+  }
+
+  onSubmit(f: NgForm) {
+    console.log(f.value);
+    if(!f.valid) console.error("INVALID");
   }
 
   updateDate(txt: string) {

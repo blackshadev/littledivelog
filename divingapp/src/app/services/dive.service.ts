@@ -3,16 +3,25 @@ import { Dive, IDive } from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
+import { BehaviorSubject } from "rxjs/Rx";
 
 @Injectable()
-export class DiveService  {
+export class DiveStore  {
 
-    constructor(private http: Http) {}
+    constructor(
+        private http: Http
+    ) {
+        this.ensureDives();
+    }
 
-    private dives: Dive[];
+    private __dives: Dive[];
+    private _dives: BehaviorSubject<Dive[]> = new BehaviorSubject([]);
+
+
+    get dives() { return this._dives.asObservable(); }
 
     async ensureDives() {
-        if(this.dives) return;
+        if(this.__dives) return;
 
         let local = localStorage.getItem("_dives");
         let dives : IDive[];
@@ -28,22 +37,32 @@ export class DiveService  {
             dives = JSON.parse(local);
         }
 
-        this.dives = Dive.ParseAll(dives);
+        this.__dives = Dive.ParseAll(dives);
+        this._dives.next(this.__dives);
+
     }
 
     async saveDive(d: Dive) {
         this.dives[d.id] = d;
-        localStorage.setItem("_dives", JSON.stringify(this.dives.map((d) => d.toJSON())));
+        localStorage.setItem("_dives", 
+            JSON.stringify(this._dives.getValue().map((d) => d.toJSON()))
+        );
     }
 
-    async getDives() : Promise<Dive[]> {
+    async getDive(id: number) {
         await this.ensureDives();
-        return this.dives;
+        
+        return this.__dives[id];
     }
+
+    // async getDives() : Promise<Dive[]> {
+    //     await this.ensureDives();
+    //     return this.dives;
+    // }
     
-    async getDive(id: number) : Promise<Dive> {
-        await this.ensureDives();
-        return this.dives[id];
-    }
+    // async getDive(id: number) : Promise<Dive> {
+    //     await this.ensureDives();
+    //     return this.dives[id];
+    // }
 
 }

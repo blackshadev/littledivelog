@@ -1,6 +1,6 @@
 import { Router } from '@angular/router';
 import { EventEmitter } from '@angular/forms/src/facade/async';
-import { DiveService } from '../../../services/dive.service';
+import { DiveStore } from '../../../services/dive.service';
 import { Dive } from '../../../shared/dive';
 import { Component, Input, OnInit, Output } from '@angular/core';
 import { Location } from '@angular/common';
@@ -14,19 +14,14 @@ import { Location } from '@angular/common';
 export class DiveListComponent implements OnInit {
   title = 'Dive list';
 
-  dives: Dive[];
   @Input() selectedDive : Dive;
   @Output() onDiveSelected = new EventEmitter<Dive>();
 
   constructor(
     private location: Location,
     private router: Router,
-    private diveService: DiveService
+    private diveStore: DiveStore
   ) {}
-
-  getDives() {
-    this.diveService.getDives().then((d) => { this.dives = d; });
-  }
 
   select(dive: Dive) {
     this.location.go(`/dive/${dive.id}`);
@@ -35,6 +30,5 @@ export class DiveListComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.getDives();
   }
 }

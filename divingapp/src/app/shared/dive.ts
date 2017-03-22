@@ -37,6 +37,8 @@ export class Dive  {
     placeName: string;
     placeCountry: string;
 
+    get place() { return (this.placeName || "") + (this.placeCountry ? (", " + this.placeCountry) : ""); }
+
     toJSON() : IDive {
         return {
             Date: this.date.toISOString(),

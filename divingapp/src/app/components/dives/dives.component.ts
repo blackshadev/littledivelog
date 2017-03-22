@@ -1,7 +1,7 @@
 import { Subscription } from 'rxjs/Rx';
 import { Dive } from '../../shared/dive';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DiveService } from '../../services/dive.service';
+import { DiveStore } from '../../services/dive.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
@@ -15,7 +15,7 @@ export class DivesComponent implements OnInit, OnDestroy {
   private subs: Subscription[] = [];
     
   constructor(
-    private service: DiveService, 
+    private service: DiveStore, 
     private route: ActivatedRoute,
     private router: Router
   ) {}

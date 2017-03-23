@@ -6,7 +6,7 @@
         <tr *ngFor="let dive of diveStore.dives | async" (click)="select(dive)" [ngClass]="{ 'active': selectedDive !== undefined && dive.id === selectedDive.id }">
             <td>{{ dive.date | date: "y-MM-dd HH:mm:ss"}}</td>
             <td>{{ dive.divetime }}</td>
-            <td>{{ dive.place }}</td>
+            <td>{{ dive.placeStr }}</td>
         </tr>
     </tbody>
 </table>

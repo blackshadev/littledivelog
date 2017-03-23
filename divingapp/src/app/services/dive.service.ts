@@ -1,5 +1,5 @@
 import { Http } from '@angular/http';
-import { Dive, IDive } from '../shared/dive';
+import { Dive, IDiveRecordDC, IDive } from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
@@ -24,7 +24,7 @@ export class DiveStore  {
         if(this.__dives) return;
 
         let local = localStorage.getItem("_dives");
-        let dives : IDive[];
+        let dives : IDiveRecordDC[] | IDive[];
 
         if(!local) {
 
@@ -32,21 +32,24 @@ export class DiveStore  {
                 "/assets/sample-dives.json"
             ).toPromise();
             dives = resp.json().Dives;
+            this.__dives = Dive.ParseAllDC(<IDiveRecordDC[]>dives);
             
         } else {
             dives = JSON.parse(local);
+            this.__dives = Dive.ParseAll(<IDive[]>dives);
         }
 
-        this.__dives = Dive.ParseAll(dives);
         this._dives.next(this.__dives);
 
     }
 
     async saveDive(d: Dive) {
-        this.dives[d.id] = d;
+        this.__dives[d.id] = d;
+        
         localStorage.setItem("_dives", 
             JSON.stringify(this._dives.getValue().map((d) => d.toJSON()))
         );
+        
     }
 
     async getDive(id: number) {

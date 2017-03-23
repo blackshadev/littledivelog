@@ -3,27 +3,36 @@
     <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.date.valid }">
         <label class="col-sm-2 control-label">Date</label>
         <div class="col-sm-10">
-            <input class="form-control" [ngModel]="dive.date | date: 'y-MM-dd HH:mm:ss'" formControlName="date" /> <!--  | date: 'y-MM-dd HH:mm:ss' -->
-            <small class="help-text on-error">
+            <input class="form-control" formControlName="date" /> <!--  | date: 'y-MM-dd HH:mm:ss' -->
+            <small class="help-text on-error" *ngIf="form.controls.date.errors?.required">
                 Date is required
+            </small>
+            <small class="help-text on-error" *ngIf="form.controls.date.errors?.invalid">
+                Date must be a valid date, eg 2017-07-22 22:59:59
             </small>
         </div>
     </div>
     <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.divetime.valid }">
         <label class="col-sm-2 control-label">Dive time</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [ngModel]="dive.divetime" formControlName="divetime" />
-            <small class="help-text on-error">
+            <input type="text" class="form-control" formControlName="divetime" />
+            <small class="help-text on-error" *ngIf="form.controls.divetime.errors?.required">
                 Divetime is required
+            </small>
+            <small class="help-text on-error" *ngIf="form.controls.divetime.errors?.invalid">
+                Divetime must be a valid duration; eg. 00:00:00
             </small>
         </div>
     </div>
     <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.maxDepth.valid }">
         <label class="col-sm-2 control-label">Max depth</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [ngModel]='dive.maxDepth | number: "1.1-1"' formControlName="maxDepth" /> <!-- number: "1.1-1" -->
-            <small class="help-text on-error">
+            <input type="text" class="form-control" formControlName="maxDepth" /> <!-- number: "1.1-1" -->
+            <small class="help-text on-error" *ngIf="form.controls.maxDepth.errors?.required">
                 Max depth is required
+            </small>
+            <small class="help-text on-error" *ngIf="form.controls.maxDepth.errors?.pattern">
+                Max depth must be a valid numer; eg. 10.05
             </small>
         </div>
     </div>
@@ -32,9 +41,9 @@
         <div class="col-sm-10">
             
             <div class="input-group" style="width: 100%" formGroupName="place">
-                <input type="text" class="form-control" [ngModel]="dive.placeName" formControlName="name" />
+                <input type="text" class="form-control" formControlName="name" />
                 <span class="input-group-btn" style="width:0px;"></span>
-                <input type="text" class="form-control" [ngModel]="dive.placeCountry" formControlName="country" />
+                <input type="text" class="form-control" formControlName="country" />
             </div>
             <small class="help-text on-error">
                 Both or none need to be filled
@@ -48,5 +57,4 @@
             <p class="form-control-static">{{dive.samples.length }}</p>
         </div>
     </div>
-    {{diagnostic}}
 </form> 

@@ -6,7 +6,7 @@ import { DiveListComponent } from './components/dives/dive-list/dive-list.compon
 import { DivesComponent } from './components/dives/dives.component';
 import { DiveStore } from './services/dive.service';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
@@ -26,6 +26,7 @@ import { HideWhenMobileDirective } from './directives/hide-when.directive';
   imports: [
     BrowserModule,
     FormsModule,
+    ReactiveFormsModule ,
     HttpModule,
     AppRoutingModule
   ],

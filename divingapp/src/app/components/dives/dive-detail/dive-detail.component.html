@@ -1,36 +1,44 @@
-<form  #f="ngForm" class="form-horizontal dive-details" *ngIf="dive !== undefind" (ngSubmit)="onSubmit(f)">
-    <button class="btn btn-primary" type="submit" [disabled]="!f.valid" title="Save dive"><i class="fa fa-floppy-o"></i></button>
-    <div [ngClass]="{ 'form-group':true, 'has-error': !date.valid }">
+<form  [formGroup]="form" class="form-horizontal dive-details" *ngIf="dive !== undefind" (ngSubmit)="onSubmit(form)">
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid" title="Save dive"><i class="fa fa-floppy-o"></i></button>
+    <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.date.valid }">
         <label class="col-sm-2 control-label">Date</label>
         <div class="col-sm-10">
-            <input class="form-control" [ngModel]="dive.date | date: 'y-MM-dd HH:mm:ss'" name="date"  #date="ngModel" required /> <!--  | date: 'y-MM-dd HH:mm:ss' -->
-            <small [ngClass]="{ 'hide':  date.valid, 'help-block': !date.valid }">
+            <input class="form-control" [ngModel]="dive.date | date: 'y-MM-dd HH:mm:ss'" formControlName="date" /> <!--  | date: 'y-MM-dd HH:mm:ss' -->
+            <small class="help-text on-error">
                 Date is required
             </small>
         </div>
     </div>
-    <div class="form-group">
+    <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.divetime.valid }">
         <label class="col-sm-2 control-label">Dive time</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [ngModel]="dive.divetime" name="divetime" required />
-            
+            <input type="text" class="form-control" [ngModel]="dive.divetime" formControlName="divetime" />
+            <small class="help-text on-error">
+                Divetime is required
+            </small>
         </div>
     </div>
-    <div class="form-group">
+    <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.maxDepth.valid }">
         <label class="col-sm-2 control-label">Max depth</label>
         <div class="col-sm-10">
-            <input type="text" class="form-control" [ngModel]='dive.maxDepth | number: "1.1-1"' name="maxDepth" required /> <!-- number: "1.1-1" -->
+            <input type="text" class="form-control" [ngModel]='dive.maxDepth | number: "1.1-1"' formControlName="maxDepth" /> <!-- number: "1.1-1" -->
+            <small class="help-text on-error">
+                Max depth is required
+            </small>
         </div>
     </div>
-    <div class="form-group">
+    <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.place.valid  }">
         <label class="col-sm-2 control-label">Divespot</label>
         <div class="col-sm-10">
             
-            <div class="input-group">
-                <input type="text" class="form-control" [ngModel]="dive.placeName" name="placeName" />
+            <div class="input-group" style="width: 100%" formGroupName="place">
+                <input type="text" class="form-control" [ngModel]="dive.placeName" formControlName="name" />
                 <span class="input-group-btn" style="width:0px;"></span>
-                <input type="text" class="form-control" [ngModel]="dive.placeCountry" name="placeCountry" />
+                <input type="text" class="form-control" [ngModel]="dive.placeCountry" formControlName="country" />
             </div>
+            <small class="help-text on-error">
+                Both or none need to be filled
+            </small>
             
         </div>
     </div>

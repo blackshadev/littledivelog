@@ -1,4 +1,4 @@
-import {NgForm} from '@angular/forms';
+import {Validators, FormBuilder,  FormGroup,   NgForm} from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveStore } from '../../../services/dive.service';
@@ -15,11 +15,30 @@ import 'rxjs/add/operator/switchMap';
 export class DiveDetailComponent implements OnInit {
   @Input() dive: Dive;
 
+  public form: FormGroup;
+
   constructor(
-    private service: DiveStore
+    private service: DiveStore,
+    private _fb: FormBuilder
   ) {}
 
-  ngOnInit(): void {}
+  ngOnInit(): void {
+     this.form = this._fb.group({
+            date: ['', [Validators.required]],
+            divetime: ['', [Validators.required]],
+            maxDepth: ['', [Validators.required]],
+            place: this._fb.group({
+                name: ['', Validators.required],
+                country: ['',Validators.required]
+            }, {
+              validator: (g: FormGroup) => {
+                console.log(g.controls.name.value);
+                return !(g.controls.name.value || "").length === !(g.controls.country.value || "").length
+              }
+            })
+        });
+
+  }
 
   get diagnostic() { 
     return JSON.stringify({
@@ -35,11 +54,4 @@ export class DiveDetailComponent implements OnInit {
     if(!f.valid) console.error("INVALID");
   }
 
-  updateDate(txt: string) {
-    this.dive.date = new Date(txt);
-  }
-
-  updateDiveTime(txt: string) {
-    this.dive.divetime = Duration.Parse(txt);
-  }
 }

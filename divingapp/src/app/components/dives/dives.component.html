@@ -6,14 +6,14 @@
     <div class="col-md-6" [hide-when-mobile]="dive !== undefined">
       <div class="panel panel-primary">
         <div class="panel-body">
-          <dive-list (onDiveSelected)="dive=$event" [selectedDive]="dive"></dive-list>
+          <app-dive-list (onDiveSelected)="dive=$event" [selectedDive]="dive"></app-dive-list>
         </div>
       </div>
     </div>
     <div class="col-md-6" [hide-when-mobile]="dive === undefined">
       <div class="panel panel-primary">
         <div class="panel-body">
-          <dive-detail [dive]="dive"></dive-detail>
+          <app-dive-detail [dive]="dive"></app-dive-detail>
         </div>
       </div>
     </div>

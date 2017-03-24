@@ -7,7 +7,7 @@ import { Location } from '@angular/common';
 
 
 @Component({
-  selector: 'dive-list',
+  selector: 'app-dive-list',
   templateUrl: './dive-list.component.html',
   styleUrls: ['./dive-list.component.css']
 })

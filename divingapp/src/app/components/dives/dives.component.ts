@@ -5,7 +5,7 @@ import { DiveStore } from '../../services/dive.service';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'dives',
+  selector: 'app-dives',
   templateUrl: './dives.component.html',
   styleUrls: ['./dives.component.css']
 })
@@ -13,9 +13,9 @@ export class DivesComponent implements OnInit, OnDestroy {
 
   private dive: Dive;
   private subs: Subscription[] = [];
-    
+
   constructor(
-    private service: DiveStore, 
+    private service: DiveStore,
     private route: ActivatedRoute,
     private router: Router
   ) {}
@@ -23,8 +23,8 @@ export class DivesComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.subs.push(
       this.route.params
-        .switchMap((params: Params) => 
-          params["id"] === undefined ? Promise.resolve(undefined) : this.service.getDive(+params["id"])
+        .flatMap((params: Params) =>
+          params['id'] === undefined ? Promise.resolve(undefined) : this.service.getDive(+params['id'])
         ).subscribe(dive => this.dive = dive
         )
     );

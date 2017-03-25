@@ -1,6 +1,10 @@
+
 function formatNumber(n: number) {
     return ('0' + n).slice(-2);
 }
+
+
+export type TSample = any;
 
 export class Duration {
     hours: number;
@@ -39,7 +43,7 @@ export class Dive implements IDive {
     date: Date;
     divetime: Duration;
     maxDepth: number;
-    samples: any[];
+    samples: TSample[];
     place: { name: string; country: string; };
     tanks: ITank[];
 

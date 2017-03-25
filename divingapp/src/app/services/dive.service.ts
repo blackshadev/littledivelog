@@ -1,12 +1,15 @@
 import { Http } from '@angular/http';
-import { Dive, IDiveRecordDC, IDive } from '../shared/dive';
+import { Dive, IDive, IDiveRecordDC, TSample } from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
-import { BehaviorSubject } from "rxjs/Rx";
+import { BehaviorSubject } from 'rxjs/Rx';
+
 
 @Injectable()
 export class DiveStore  {
+    private __dives: Dive[];
+    private _dives: BehaviorSubject<Dive[]> = new BehaviorSubject([]);
 
     constructor(
         private http: Http
@@ -14,26 +17,25 @@ export class DiveStore  {
         this.ensureDives();
     }
 
-    private __dives: Dive[];
-    private _dives: BehaviorSubject<Dive[]> = new BehaviorSubject([]);
-
 
     get dives() { return this._dives.asObservable(); }
 
     async ensureDives() {
-        if(this.__dives) return;
+        if (this.__dives) {
+            return;
+        }
 
-        let local = localStorage.getItem("_dives");
-        let dives : IDiveRecordDC[] | IDive[];
+        const local = localStorage.getItem('_dives');
+        let dives: IDiveRecordDC[] | IDive[];
 
-        if(!local) {
+        if (!local) {
 
-            let resp = await this.http.get(
-                "/assets/sample-dives.json"
+            const resp = await this.http.get(
+                '/assets/sample-dives.json'
             ).toPromise();
             dives = resp.json().Dives;
             this.__dives = Dive.ParseAllDC(<IDiveRecordDC[]>dives);
-            
+
         } else {
             dives = JSON.parse(local);
             this.__dives = Dive.ParseAll(<IDive[]>dives);
@@ -45,27 +47,23 @@ export class DiveStore  {
 
     async saveDive(d: Dive) {
         this.__dives[d.id] = d;
-        
-        localStorage.setItem("_dives", 
+
+        localStorage.setItem('_dives',
             JSON.stringify(this._dives.getValue().map((d) => d.toJSON()))
         );
-        
+
     }
 
-    async getDive(id: number) {
+    async getDive(dive_id: number) {
         await this.ensureDives();
-        
-        return this.__dives[id];
+
+        return this.__dives[dive_id];
     }
 
-    // async getDives() : Promise<Dive[]> {
-    //     await this.ensureDives();
-    //     return this.dives;
-    // }
-    
-    // async getDive(id: number) : Promise<Dive> {
-    //     await this.ensureDives();
-    //     return this.dives[id];
-    // }
+    async getSamples(dive_id: number): Promise<TSample[]> {
+        await this.ensureDives();
+
+        return this.__dives[dive_id].samples;
+    }
 
 }

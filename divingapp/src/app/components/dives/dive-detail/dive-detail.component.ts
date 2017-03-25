@@ -23,6 +23,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   @Input() dive: Dive;
 
   public form: FormGroup;
+  CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
 
   constructor(
     private service: DiveStore,
@@ -47,6 +48,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           }
         }),
         tank: this._fb.group({
+          volume: ['', [Validators.required, CustomValidators.integer]],
           pressureStart: ['', [Validators.required, CustomValidators.decimal]],
           pressureEnd: ['', [Validators.required, CustomValidators.decimal]],
           pressureType: ['', [Validators.required, Validators.pattern(/bar|psi/)]],
@@ -72,10 +74,11 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           country: this.dive.place.country
         },
         tank: {
-          pressureStart: 0,
-          pressureEnd: 0,
-          pressureType: 'bar',
-          airPercentage: 21
+          volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
+          airPercentage: this.dive.tanks.length ? this.dive.tanks[0].oxygen : '',
+          pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.start : '',
+          pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
+          pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
         },
         buddy: ''
       });
@@ -105,8 +108,18 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       name: dat.place.name || undefined,
       country: dat.place.country || undefined
     };
-    d.samples = this.dive.samples;
 
+    d.tanks = [{
+      oxygen: dat.tank.airPercentage,
+      volume: dat.tank.volume,
+      pressure: {
+        start: dat.tank.pressureStart,
+        end: dat.tank.pressureEnd,
+        type: dat.tank.pressureType,
+      }
+    }];
+
+    d.samples = this.dive.samples;
     // this.dive = d;
     this.service.saveDive(d);
   }

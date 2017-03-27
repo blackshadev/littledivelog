@@ -11,7 +11,8 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
 import { HideWhenMobileDirective } from './directives/hide-when.directive';
-
+import { NgSelectComponent } from './components/controls/ng-select/ng-select.component';
+import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 
 @NgModule({
   declarations: [
@@ -21,14 +22,16 @@ import { HideWhenMobileDirective } from './directives/hide-when.directive';
     DiveDetailComponent,
     DashboardComponent,
     MenuComponent,
-    HideWhenMobileDirective
+    HideWhenMobileDirective,
+    NgSelectComponent
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    ReactiveFormsModule ,
+    ReactiveFormsModule,
     HttpModule,
-    AppRoutingModule
+    AppRoutingModule,
+    Ng2AutoCompleteModule
   ],
   providers: [
     DiveStore

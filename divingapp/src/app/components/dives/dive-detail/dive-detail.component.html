@@ -152,6 +152,17 @@
                 </div>
             </div>
 
+            <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.test.valid  }">
+                <label class="col-sm-2 control-label">Select test</label>
+                <div class="col-sm-10">
+                    <input auto-complete class="form-control" (valueChanged)="form.controls.test.setValue($event)" [source]="testSource" accept-user-input="false" />
+                </div>
+            </div>
+
+            <pre>
+                {{ diagnostic | json }}
+            </pre>
+
         </div>
         
         <div role="tabpanel" class="tab-pane" id="profile">

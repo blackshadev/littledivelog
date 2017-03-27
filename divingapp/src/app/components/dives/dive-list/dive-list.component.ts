@@ -1,8 +1,7 @@
 import { Router } from '@angular/router';
-import { EventEmitter } from '@angular/forms/src/facade/async';
 import { DiveStore } from '../../../services/dive.service';
 import { Dive } from '../../../shared/dive';
-import { Component, Input, OnInit, Output } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 
 
@@ -14,7 +13,7 @@ import { Location } from '@angular/common';
 export class DiveListComponent implements OnInit {
   title = 'Dive list';
 
-  @Input() selectedDive : Dive;
+  @Input() selectedDive: Dive;
   @Output() onDiveSelected = new EventEmitter<Dive>();
 
   constructor(

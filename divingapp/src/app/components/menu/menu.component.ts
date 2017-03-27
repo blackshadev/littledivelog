@@ -1,5 +1,5 @@
-import {ViewChild, Component,  OnInit,  ElementRef, Output} from '@angular/core';
-import { EventEmitter } from '@angular/forms/src/facade/async';
+import {ViewChild, Component,  OnInit,  ElementRef, Output, EventEmitter} from '@angular/core';
+
 
 @Component({
   selector: 'app-menu',

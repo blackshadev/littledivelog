@@ -25,6 +25,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   public form: FormGroup;
   CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
 
+  testSource: string[] = ['One', 'Two', 'Three'];
+
   constructor(
     private service: DiveStore,
     private _fb: FormBuilder
@@ -55,7 +57,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           airPercentage: ['', [Validators.required, CustomValidators.integer]]
         }),
         buddy: [''],
-        tag: ['']
+        tag: [''],
+        test: ['']
      });
   }
 
@@ -82,19 +85,14 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
         },
         buddy: '',
-        tag: ''
+        tag: '',
+        test: ''
       });
     }
   }
 
   get diagnostic() {
-    return JSON.stringify(this.form.value);
-    // return JSON.stringify({
-    //   date: this.dive.date,
-    //   divetime: this.dive.divetime,
-    //   maxDepth: this.dive.maxDepth,
-    //   place: this.dive.placeStr
-    // });
+    return this.form.value;
   }
 
   onSubmit() {

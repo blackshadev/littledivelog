@@ -5,22 +5,26 @@ import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
 import { BehaviorSubject, Observable } from 'rxjs/Rx';
 
+interface ICountry {
+    code: string;
+    description: string;
+};
 
 @Injectable()
 export class DiveStore  {
     private __dives: Dive[];
     private _dives: BehaviorSubject<Dive[]> = new BehaviorSubject([]);
-    private __countries: string[];
+    private __countries: ICountry[];
 
     constructor(
         private http: Http
     ) {
         this.ensureDives();
-        this.ensureCountries();
+        this.getCountries();
     }
 
     get countries() {
-        return Observable.fromPromise(this.ensureCountries());
+        return Observable.fromPromise(this.getCountries());
     }
     get dives() { return this._dives.asObservable(); }
 
@@ -48,29 +52,36 @@ export class DiveStore  {
         this._dives.next(this.__dives);
     }
 
-    async ensureCountries(): Promise<string[]> {
+    async getCountries(): Promise<ICountry[]> {
         if (this.__countries) {
             return this.__countries;
         }
 
         this.__countries = [
-            'Netherlands',
-            'Germany',
-            'Egypth',
-            'Greece'
+            { code: 'NL', description: 'Netherlands' },
+            { code: 'DE', description: 'Germany' },
+            { code: 'EG', description: 'Egypth' },
+            { code: 'GR', description: 'Greece' },
         ];
 
         return this.__countries;
     }
 
-    async getDivespots(c: string) {
+    async getDiveSpots(c: string): Promise<string[]> {
+        switch (c) {
+            case 'NL': return ['De beldert', 'Heidemeer'];
+            case 'EG': return ['Fanadir Dagt'];
+            case 'DE': return [];
+            case 'GR': return [];
+        }
+        return [];
     }
 
     async saveDive(d: Dive) {
         this.__dives[d.id] = d;
 
         localStorage.setItem('_dives',
-            JSON.stringify(this._dives.getValue().map((d) => d.toJSON()))
+            JSON.stringify(this._dives.getValue().map((_d) => _d.toJSON()))
         );
 
     }

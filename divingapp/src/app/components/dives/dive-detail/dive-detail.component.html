@@ -128,7 +128,15 @@
                 <div class="col-sm-10">
                     
                     <div class="input-group" style="width: 100%" formGroupName="place">
-                        <input type="text" class="form-control" formControlName="name" placeholder="Dive spot name" />
+                        <input auto-complete
+                            type="text" 
+                            class="form-control"
+                            placeholder="Name" 
+                            (valueChanged)="selectDivespot($event)" 
+                            [source]="getDivespots.bind(this)"
+                            [value]="dive.place.name"
+                            [accept-user-input]="true" 
+                        />
                         <span class="input-group-btn" style="width:0px;"></span>
                         <input auto-complete
                             type="text" 
@@ -137,7 +145,8 @@
                             (valueChanged)="selectCountry($event)" 
                             [source]="getCountries.bind(this)"
                             [value]="dive.place.country"
-                            accept-user-input="false" 
+                            list-formatter="description"
+                            select-value-of="code"
                         />
                     </div>
                     <small class="help-text on-error">

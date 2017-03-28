@@ -96,14 +96,24 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   getCountries(keyword: string) {
     const re = new RegExp(keyword, 'i');
     return this.service.countries.map((countries) => {
-      return countries.filter((v) => re.test(v));
+      return countries.filter((v) => re.test(v.code) || re.test(v.description));
     });
   }
 
+  getDivespots(keyword: string) {
+    const re = new RegExp(keyword, 'i');
+    const c = (<FormGroup> this.form.controls.place).controls.country.value;
+    return Observable.fromPromise(this.service.getDiveSpots(c)).map((spots) => {
+      return spots.filter((v) => re.test(v));
+    });
+  }
+
+  selectDivespot(spot: string) {
+    (<FormGroup> this.form.controls.place).controls.name.setValue(spot);
+  }
+
   selectCountry(c: string) {
-    console.log(this, c);
     (<FormGroup> this.form.controls.place).controls.country.setValue(c);
-    console.log(c);
   }
 
   onSubmit() {

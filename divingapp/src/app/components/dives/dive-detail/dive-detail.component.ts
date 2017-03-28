@@ -25,8 +25,6 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   public form: FormGroup;
   CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
 
-  testSource: string[] = ['One', 'Two', 'Three'];
-
   constructor(
     private service: DiveStore,
     private _fb: FormBuilder
@@ -93,6 +91,19 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   get diagnostic() {
     return this.form.value;
+  }
+
+  getCountries(keyword: string) {
+    const re = new RegExp(keyword, 'i');
+    return this.service.countries.map((countries) => {
+      return countries.filter((v) => re.test(v));
+    });
+  }
+
+  selectCountry(c: string) {
+    console.log(this, c);
+    (<FormGroup> this.form.controls.place).controls.country.setValue(c);
+    console.log(c);
   }
 
   onSubmit() {

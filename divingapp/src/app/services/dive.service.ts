@@ -3,26 +3,30 @@ import { Dive, IDive, IDiveRecordDC, TSample } from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
-import { BehaviorSubject } from 'rxjs/Rx';
+import { BehaviorSubject, Observable } from 'rxjs/Rx';
 
 
 @Injectable()
 export class DiveStore  {
     private __dives: Dive[];
     private _dives: BehaviorSubject<Dive[]> = new BehaviorSubject([]);
+    private __countries: string[];
 
     constructor(
         private http: Http
     ) {
         this.ensureDives();
+        this.ensureCountries();
     }
 
-
+    get countries() {
+        return Observable.fromPromise(this.ensureCountries());
+    }
     get dives() { return this._dives.asObservable(); }
 
     async ensureDives() {
         if (this.__dives) {
-            return;
+            return ;
         }
 
         const local = localStorage.getItem('_dives');
@@ -42,7 +46,24 @@ export class DiveStore  {
         }
 
         this._dives.next(this.__dives);
+    }
 
+    async ensureCountries(): Promise<string[]> {
+        if (this.__countries) {
+            return this.__countries;
+        }
+
+        this.__countries = [
+            'Netherlands',
+            'Germany',
+            'Egypth',
+            'Greece'
+        ];
+
+        return this.__countries;
+    }
+
+    async getDivespots(c: string) {
     }
 
     async saveDive(d: Dive) {

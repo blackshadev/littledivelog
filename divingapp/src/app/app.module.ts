@@ -11,7 +11,6 @@ import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
 import { HideWhenMobileDirective } from './directives/hide-when.directive';
-import { NgSelectComponent } from './components/controls/ng-select/ng-select.component';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 
 @NgModule({
@@ -22,8 +21,7 @@ import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
     DiveDetailComponent,
     DashboardComponent,
     MenuComponent,
-    HideWhenMobileDirective,
-    NgSelectComponent
+    HideWhenMobileDirective
   ],
   imports: [
     BrowserModule,

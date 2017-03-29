@@ -1,5 +1,5 @@
 <form  [formGroup]="form" class="form-horizontal dive-details" *ngIf="dive !== undefind" (ngSubmit)="onSubmit(form)">
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid && form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i></button>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i></button>
 
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
@@ -135,7 +135,7 @@
                             (valueChanged)="selectDivespot($event)" 
                             [source]="getDivespots.bind(this)"
                             [value]="dive.place.name"
-                            [accept-user-input]="true" 
+                            accept-user-input="true" 
                         />
                         <span class="input-group-btn" style="width:0px;"></span>
                         <input auto-complete
@@ -172,7 +172,12 @@
             <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.test.valid  }">
                 <label class="col-sm-2 control-label">Select test</label>
                 <div class="col-sm-10">
-                    <!--<input auto-complete class="form-control" (valueChanged)="form.controls.test.setValue($event)" [source]="testSource" accept-user-input="false" />-->
+                    <app-autocomplete 
+                        list-formatter="description"
+                        select-value-of="code"
+                        inputClass="form-control" 
+                        [source]="service.countries"
+                    ></app-autocomplete>
                 </div>
             </div>
 

@@ -1,0 +1,8 @@
+<input auto-complete
+  [ngClass]="inputClass"
+  [source]="filter.bind(this)"
+  select-value-of="key"
+  list-formatter="value"
+  (valueChanged)="valueSelected($event)"
+  [disabled]="disabled"
+/>

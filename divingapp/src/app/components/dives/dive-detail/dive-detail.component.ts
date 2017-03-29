@@ -64,16 +64,15 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!this.dive) {
-      this.form.reset();
-    } else {
+    this.form.reset();
+    if (this.dive) {
       this.form.setValue({
         date: moment(this.dive.date).format('DD-MM-YYYY HH:mm:ss'),
         divetime: this.dive.divetime.toString(),
         maxDepth: this.dive.maxDepth.toFixed(1),
         place: {
-          name: this.dive.place.name,
-          country: this.dive.place.country
+          name: this.dive.place.name || '',
+          country: this.dive.place.country || ''
         },
         tank: {
           volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
@@ -90,7 +89,29 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   get diagnostic() {
-    return this.form.value;
+    function getDirtyValues(cg: FormGroup) {
+      const dirtyValues = {};  // initialize empty object
+      Object.keys(cg.controls).forEach((c) => {
+
+        const currentControl = cg.controls[c];
+
+        if (currentControl.dirty) {
+          if ((<FormGroup> currentControl).controls) { // check for nested controlGroups
+            dirtyValues[c] = getDirtyValues(<FormGroup> currentControl);  // recursion for nested controlGroups
+          } else {
+            dirtyValues[c] = true;  // simple control
+          }
+        }
+
+      });
+      return dirtyValues;
+    }
+
+    return {
+      value: this.form.value,
+      formDirty: this.form.dirty,
+      dirty: getDirtyValues(this.form),
+    };
   }
 
   getCountries(keyword: string) {
@@ -109,11 +130,15 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   selectDivespot(spot: string) {
-    (<FormGroup> this.form.controls.place).controls.name.setValue(spot);
+    const ctrl = (<FormGroup> this.form.controls.place).controls.name;
+    ctrl.setValue(spot);
+    ctrl.markAsDirty();
   }
 
   selectCountry(c: string) {
-    (<FormGroup> this.form.controls.place).controls.country.setValue(c);
+    const ctrl = (<FormGroup> this.form.controls.place).controls.country;
+    ctrl.setValue(c);
+    ctrl.markAsDirty();
   }
 
   onSubmit() {

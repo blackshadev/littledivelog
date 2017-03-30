@@ -1,8 +1,12 @@
-<input auto-complete
+<input #input
+  auto-complete
   [ngClass]="inputClass"
   [source]="filter.bind(this)"
-  select-value-of="key"
+  [value]="value"
+  [placeholder]="placeholder"
   list-formatter="value"
+  tab-to-select="false"
+  (blur)="inputblur($event)"
   (valueChanged)="valueSelected($event)"
   [disabled]="disabled"
 />

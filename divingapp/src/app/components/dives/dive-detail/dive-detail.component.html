@@ -127,18 +127,15 @@
                 <label class="col-sm-2 control-label">Divespot</label>
                 <div class="col-sm-10">
                     
-                    <div class="input-group" style="width: 100%" formGroupName="place">
-                        <input auto-complete
-                            type="text" 
-                            class="form-control"
-                            placeholder="Name" 
-                            (valueChanged)="selectDivespot($event)" 
+                    <div class="input-group manual-radius" style="width: 100%" formGroupName="place">
+                        <app-autocomplete 
+                            placeholder="Name"
+                            inputClass="form-control left-control"
+                            formControlName="name"
                             [source]="getDivespots.bind(this)"
-                            [value]="dive.place.name"
-                            accept-user-input="true" 
-                        />
+                        ></app-autocomplete>
                         <span class="input-group-btn" style="width:0px;"></span>
-                        <input auto-complete
+                        <!--<input auto-complete
                             type="text" 
                             class="form-control" 
                             placeholder="Country" 
@@ -147,7 +144,17 @@
                             [value]="dive.place.country"
                             list-formatter="description"
                             select-value-of="code"
-                        />
+                        />-->
+                        <app-autocomplete 
+                            placeholder="Country"
+                            inputClass="form-control right-control"
+                            (valueChanged)="selectCountry($event)"
+                            [value]="dive.place.country"
+                            [source]="getCountries.bind(this)"
+                            display-item="description"
+                            key-item="code"
+                            forceSelection="true"
+                        ></app-autocomplete>
                     </div>
                     <small class="help-text on-error">
                         Both or none need to be filled
@@ -166,18 +173,6 @@
                 <label class="col-sm-2 control-label">Tags</label>
                 <div class="col-sm-10">
                     <input class="form-control" formControlName="tag" placeholder="Night" />
-                </div>
-            </div>
-
-            <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.test.valid  }">
-                <label class="col-sm-2 control-label">Select test</label>
-                <div class="col-sm-10">
-                    <app-autocomplete 
-                        list-formatter="description"
-                        select-value-of="code"
-                        inputClass="form-control" 
-                        [source]="service.countries"
-                    ></app-autocomplete>
                 </div>
             </div>
 

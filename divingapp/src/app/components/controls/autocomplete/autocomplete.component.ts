@@ -1,6 +1,14 @@
-import { Component, OnInit, Input, HostBinding, forwardRef } from '@angular/core';
+import { Component, OnInit, Input, HostBinding, forwardRef, EventEmitter, Output, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { Observable } from "rxjs/Rx";
+import { Observable } from 'rxjs/Rx';
+
+interface IItem {
+  key: any;
+  value: any;
+  isNew: boolean;
+}
+
+type SourceFunction = (keyword: string) => Promise<any[]>;
 
 @Component({
   selector: 'app-autocomplete',
@@ -15,66 +23,124 @@ import { Observable } from "rxjs/Rx";
   ]
 })
 export class AutocompleteComponent implements OnInit, ControlValueAccessor {
+  @Output() changed = new EventEmitter<any>();
+
   @Input() inputClass: string;
-  @Input() set source(v: Observable<any[]>) {
-    if (!(v instanceof Observable)) {
-      this._source = Observable.of(v);
-    } else {
-      this._source = v;
+  @Input() set source(v: SourceFunction) {
+    if (!(v instanceof Function)) {
+      throw new Error('Expected source to be a async function');
     }
+    this._source = v;
   }
 
-  get source() {
-    return this._source !== undefined ? this._source : Observable.of([]);
+  // tslint:disable-next-line:no-input-rename
+  @Input('display-item') set displayItem(v: string) {
+    this._displayItem = v;
+    this.updateGetItem();
+  }
+  // tslint:disable-next-line:no-input-rename
+  @Input('key-item') set keyItem(v: any) {
+    this._keyItem = v;
+    this.updateGetItem();
   }
 
-  private _source: Observable<any[]> = Observable.of([]);
-  // tslint:disable-next-line:no-input-rename
-  @Input('display-item') displayItem: any;
-  // tslint:disable-next-line:no-input-rename
-  @Input('select-value-of') selectValueOf: any;
-  @Input() set value(v: string) {
+  @Input() set value(v: any) {
+    const eInput = this.inputElement.nativeElement as HTMLInputElement;
+    eInput.value = v || '';
+
+    if (this._value === v) {
+      return;
+    }
+
     this._value = v;
+    this.changed.emit(v);
     this.onChange(v);
     this.onTouched();
   }
+  get value(): any {
+    return this._value;
+  }
+
   @Input() disabled = false;
+  @Input() placeholder: string;
+  @Input() forceSelection = false;
 
-  private _value: string;
-  private onChange: any = () => { };
-  private onTouched: any = () => { };
+  private _source: SourceFunction;
+  private _value: any;
+  private _displayItem: string;
+  private _keyItem: string;
+  private _selectedValue: IItem;
+  private _items: IItem[] = [];
+  @ViewChild('input') private inputElement: ElementRef;
 
-  constructor() { }
+  private getItem: (isNew: boolean, v: any) => IItem;
+  private onChange: (v: string) => void = () => { };
+  private onTouched: () => void = () => { };
+
+  constructor() {
+    this.updateGetItem();
+  }
 
   ngOnInit() {}
 
-  private valueSelected(v: string) {
-    console.log(v);
+  private valueSelected(v: IItem) {
+    this.value = v.key;
   }
 
-  private changeValue(v) {
-    this._value = v;
+  private inputblur(e: Event) {
+    const eInp = this.inputElement.nativeElement as HTMLInputElement;
 
-  }
-
-  private getDisplayItem(v: any) {
-    return this.displayItem ? v[this.displayItem] : v.toString();
+    if (this.forceSelection) {
+      this.value = this._items.length ? this._items[0].key : '';
+    } else {
+      this.value = eInp.value;
+    }
   }
 
   private filter(keyword) {
-    const re = new RegExp(keyword, 'i');
-    console.log(this.source);
-    return this.source.map((items) => {
-      const arr = items.map((v) => {
-        return {
-          value: this.getDisplayItem(v)
-        };
-      }).filter((k) => {
-        return re.test(k.value);
+    const newItem = { value: keyword, isNew: true, key: keyword };
+
+    return new Observable((obs) => {
+      if (!this.forceSelection) {
+        obs.next([newItem]);
+      }
+
+      const p = this._source(keyword);
+      if (!(p instanceof Promise)) {
+        console.error('Expected source function to be async (must return a promise)');
+        obs.error(new Error('Expected source function to be async (must return a promise)'));
+        obs.complete();
+        return;
+      }
+
+      p.then((vals: any[]) => {
+        const items = vals.map((v, iX) => {
+          return this.getItem(false, v);
+        });
+
+        if (!this.forceSelection && keyword.length && (!items.length || items[0].value !== keyword)) {
+          items.unshift(newItem);
+        }
+
+        this._items = items;
+        obs.next(items);
+        obs.complete();
+      }).catch((err) => {
+
+        console.error(err);
+        obs.error(err);
+        obs.complete();
       });
-      console.log(arr);
-      return arr;
     });
+
+  }
+
+  private updateGetItem() {
+    this.getItem = new Function('isNew', 'v', `return {
+      isNew: isNew,
+      value: v${this._displayItem ? '.' + this._displayItem : ''},
+      key: v${this._keyItem ? '.' + this._keyItem : ''} 
+    }`) as (v: any, isNew: boolean) => { key: any, value: any, isNew: boolean };
   }
 
   writeValue(obj: any): void {
@@ -89,6 +155,4 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
-
-
 }

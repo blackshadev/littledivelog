@@ -1,4 +1,18 @@
 
+:host /deep/ .manual-radius {
+    & /deep/ .left-control {
+        border-radius: 4px 0 0 4px !important;
+    }
+
+    & /deep/ .right-control {
+        border-radius: 0 4px 4px 0 !important;
+    }
+
+    & /deep/ .middle-control {
+        border-radius: 0px !important;
+    }
+}
+
 .dive-details {
 
     .tab-pane {

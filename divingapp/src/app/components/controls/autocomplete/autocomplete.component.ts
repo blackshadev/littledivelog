@@ -1,4 +1,15 @@
-import { Component, OnInit, Input, HostBinding, forwardRef, EventEmitter, Output, HostListener, ElementRef, ViewChild } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  HostBinding,
+  forwardRef,
+  EventEmitter,
+  Output,
+  HostListener,
+  ElementRef,
+  ViewChild
+} from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
@@ -23,7 +34,7 @@ type SourceFunction = (keyword: string) => Promise<any[]>;
   ]
 })
 export class AutocompleteComponent implements OnInit, ControlValueAccessor {
-  @Output() changed = new EventEmitter<any>();
+  @Output() change = new EventEmitter<any>();
 
   @Input() inputClass: string;
   @Input() set source(v: SourceFunction) {
@@ -53,7 +64,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }
 
     this._value = v;
-    this.changed.emit(v);
+    this.change.emit(v);
     this.onChange(v);
     this.onTouched();
   }
@@ -84,6 +95,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {}
 
   private valueSelected(v: IItem) {
+    this._items = [v];
     this.value = v.key;
   }
 

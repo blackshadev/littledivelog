@@ -14,6 +14,7 @@ import { HideWhenMobileDirective } from './directives/hide-when/hide-when.direct
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { MyAutoCompletionDirective } from './directives/auto-complete/my-auto-completion.directive';
 import { AutocompleteComponent } from './components/controls/autocomplete/autocomplete.component';
+import { TagsComponent } from './components/controls/tags/tags.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AutocompleteComponent } from './components/controls/autocomplete/autoco
     MenuComponent,
     HideWhenMobileDirective,
     MyAutoCompletionDirective,
-    AutocompleteComponent
+    AutocompleteComponent,
+    TagsComponent
   ],
   imports: [
     BrowserModule,

@@ -128,18 +128,6 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     return spots.filter((v) => re.test(v));
   }
 
-  selectDivespot(spot: string) {
-    const ctrl = (<FormGroup> this.form.controls.place).controls.name;
-    ctrl.setValue(spot);
-    ctrl.markAsDirty();
-  }
-
-  selectCountry(c: string) {
-    const ctrl = (<FormGroup> this.form.controls.place).controls.country;
-    ctrl.setValue(c);
-    ctrl.markAsDirty();
-  }
-
   onSubmit() {
     const dat = this.form.value;
     const d = new Dive;

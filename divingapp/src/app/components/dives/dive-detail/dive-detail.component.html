@@ -135,16 +135,6 @@
                             [source]="getDivespots.bind(this)"
                         ></app-autocomplete>
                         <span class="input-group-btn" style="width:0px;"></span>
-                        <!--<input auto-complete
-                            type="text" 
-                            class="form-control" 
-                            placeholder="Country" 
-                            (valueChanged)="selectCountry($event)" 
-                            [source]="getCountries.bind(this)"
-                            [value]="dive.place.country"
-                            list-formatter="description"
-                            select-value-of="code"
-                        />-->
                         <app-autocomplete 
                             placeholder="Country"
                             inputClass="form-control right-control"

@@ -1,5 +1,34 @@
 <div class="tags">
-  <span class="label" *ngFor="let tag of tags" [style.background-color]="tag.color">
+  <span class="label" 
+      *ngFor="let tag of tags; let iX = index;" 
+      [style.background-color]="tag.color"
+      [style.color]="fontColor(tag.color)"
+    >
     {{tag.text}}
+    <a (click)="removeTag(iX)">
+      <i class="glyphicon glyphicon-remove"></i>
+    </a>
   </span>
+</div>
+
+<app-autocomplete
+  *ngIf="source !== undefined"
+  inputClass="form-control"
+  [source]="source"
+  (change)="addTag($event)"
+  forceSelection="false"
+></app-autocomplete>
+<div *ngIf="source === undefined" class="input-group">
+  <span class="input-group-btn">
+    <button
+        (click)="addTag({ 'text': tagInput.value, 'color': randomColor() })"
+        class="btn btn-default"
+        type="button"
+      >
+      <i class="glyphicon glyphicon-plus"></i>
+    </button>
+  </span>
+  <input #tagInput
+    class="form-control"
+  />
 </div>

@@ -1,0 +1,18 @@
+@import "../../shared/global.scss";
+
+@media screen and (min-width: 992px) {
+    .dive-list {
+        border-right: 1px solid $color-accent;
+    }
+}
+
+.panel {
+    border-color: $color-accent;
+}
+
+.panel-body {
+    padding: 0;
+}
+.dive-list,.dive-detail {
+    padding: 0;
+}

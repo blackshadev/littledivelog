@@ -7,7 +7,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 @Component({
   selector: 'app-dives',
   templateUrl: './dives.component.html',
-  styleUrls: ['./dives.component.css']
+  styleUrls: ['./dives.component.scss']
 })
 export class DivesComponent implements OnInit, OnDestroy {
 

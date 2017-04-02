@@ -12,3 +12,7 @@ body {
         padding-left: $width-menu-collapsed;
     }
 }
+
+/deep/ ng2-auto-complete, /deep/ .ng2-auto-complete {
+    z-index: 5 !important;
+}

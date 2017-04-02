@@ -3,6 +3,10 @@ function formatNumber(n: number) {
     return ('0' + n).slice(-2);
 }
 
+export interface ITag {
+    color: string;
+    text: string;
+}
 
 export type TSample = any;
 
@@ -46,6 +50,8 @@ export class Dive implements IDive {
     samples: TSample[];
     place: { name: string; country: string; };
     tanks: ITank[];
+    tags: ITag[];
+    buddies: ITag[];
 
 
     get placeStr() { return (this.place.name || '') + (this.place.country ? (', ' + this.place.country) : ''); }
@@ -74,6 +80,8 @@ export class Dive implements IDive {
             country: d.place.country || ''
         };
         dive.tanks = d.tanks || [];
+        dive.buddies = d.buddies || [];
+        dive.tags = d.tags || [];
         return dive;
     }
 
@@ -94,7 +102,9 @@ export class Dive implements IDive {
             maxDepth: this.maxDepth,
             samples: this.samples,
             place: this.place,
-            tanks: this.tanks
+            tanks: this.tanks,
+            tags: this.tags,
+            buddies: this.buddies
         };
     }
 
@@ -121,6 +131,8 @@ export interface IDive {
         country: string;
     };
     tanks: ITank[];
+    buddies: ITag[];
+    tags: ITag[]
 }
 
 export interface IDiveRecordDC {

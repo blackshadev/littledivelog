@@ -54,9 +54,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           pressureType: ['', [Validators.required, Validators.pattern(/bar|psi/)]],
           airPercentage: ['', [Validators.required, CustomValidators.integer]]
         }),
-        buddy: [''],
-        tag: [''],
-        test: ['']
+        buddies: [''],
+        tags: ['']
      });
   }
 
@@ -81,9 +80,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
           pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
         },
-        buddy: '',
-        tag: '',
-        test: ''
+        buddies: this.dive.buddies,
+        tags: this.dive.tags
       });
     }
   }
@@ -153,6 +151,9 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     }];
 
     d.samples = this.dive.samples;
+    d.tags = this.dive.tags;
+    d.buddies = this.dive.buddies;
+
     // this.dive = d;
     this.service.saveDive(d);
   }

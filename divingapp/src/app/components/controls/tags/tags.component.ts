@@ -1,3 +1,4 @@
+import { leftpad } from '../../../shared/formatters';
 import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
@@ -28,7 +29,7 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
 
   @ViewChild('tagInput')
   private tagInput: ElementRef;
-  private onChange: (v: string) => void = () => { };
+  private onChange: (v: ITag[]) => void = () => { };
   private onTouched: () => void = () => { };
 
   constructor() {
@@ -61,9 +62,9 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
   }
 
   private randomColor() {
-    const r = Math.floor(Math.random() * 255).toString(16);
-    const g = Math.floor(Math.random() * 255).toString(16);
-    const b = Math.floor(Math.random() * 255).toString(16);
+    const r = leftpad(2, Math.floor(Math.random() * 255).toString(16));
+    const g = leftpad(2, Math.floor(Math.random() * 255).toString(16));
+    const b = leftpad(2, Math.floor(Math.random() * 255).toString(16));
     return `#${r}${g}${b}`;
   }
 
@@ -71,14 +72,28 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
     this.tags.push(v);
     const el = this.tagInput.nativeElement as HTMLInputElement;
     el.value = '';
+    this.doChange();
+    this.doTouched();
   }
 
   private removeTag(iX: number) {
     this.tags.splice(iX, 1);
+    this.doChange();
+    this.doTouched();
+  }
+
+  private doChange() {
+    this.onChange(this.tags);
+    this.change.emit(this.tags);
+  }
+
+  private doTouched() {
+    this.onTouched();
+    this.touched.emit();
   }
 
   writeValue(obj: any): void {
-    // this.tags = obj;
+    this.tags = obj;
   }
   registerOnChange(fn: any): void {
     this.onChange = fn;

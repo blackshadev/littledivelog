@@ -63,6 +63,10 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    this.reset();
+  }
+
+  protected reset() {
     this.form.reset();
     if (this.dive) {
       this.form.setValue({
@@ -80,8 +84,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
           pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
         },
-        buddies: this.dive.buddies,
-        tags: this.dive.tags
+        buddies: this.dive.buddies.slice(0),
+        tags: this.dive.tags.slice(0)
       });
     }
   }
@@ -154,8 +158,9 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.tags = this.dive.tags;
     d.buddies = this.dive.buddies;
 
-    // this.dive = d;
     this.service.saveDive(d);
+    this.dive = d;
+    this.reset();
   }
 
 }

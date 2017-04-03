@@ -34,16 +34,7 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
 
   constructor() {
     this.tags = ([
-      {
-        text: 'Deco',
-        color: '#ff0000'
-      }, {
-        text: 'Night',
-        color: '#000000'
-      }, {
-        text: 'Club',
-        color: '#cccccc'
-      }
+     
     ]);
   }
 
@@ -61,7 +52,7 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
     return (yiq >= 128) ? 'black' : 'white';
   }
 
-  private randomColor() {
+  private randomColor(): string {
     const r = leftpad(2, Math.floor(Math.random() * 255).toString(16));
     const g = leftpad(2, Math.floor(Math.random() * 255).toString(16));
     const b = leftpad(2, Math.floor(Math.random() * 255).toString(16));

@@ -64,6 +64,9 @@ export class Dive implements IDive {
         dive.maxDepth = d.MaxDepth;
         dive.samples = d.Samples;
         dive.place = { name: '', country: '' };
+        dive.tags = [];
+        dive.buddies = [];
+        dive.tanks = [];
 
         return dive;
     }

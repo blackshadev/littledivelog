@@ -6,13 +6,17 @@
     }
 }
 
-.panel {
-    border-color: $color-accent;
+.container-fluid {
+    padding-left: 0;
+    padding-right: 0;
 }
 
-.panel-body {
-    padding: 0;
+.dive-list {
+    position: relative;
+    height: 100%;
+    min-height: 100vh;
 }
+
 .dive-list,.dive-detail {
     padding: 0;
 }

@@ -1,15 +1,8 @@
-<h1>
-  {{title}}
-</h1>
 <div class="container-fluid">
-  <div class="panel panel-primary">
-    <div class="panel-body">
-      <div class="dive-list col-md-6 col-sm-12" [hide-when-mobile]="dive !== undefined">
-        <app-dive-list (onDiveSelected)="dive=$event" [selectedDive]="dive"></app-dive-list>
-      </div>
-      <div class="dive-detail col-md-6 col-sm-12" [hide-when-mobile]="dive === undefined">
-        <app-dive-detail [dive]="dive"></app-dive-detail>
-      </div>
-    </div>
+  <div class="dive-list col-md-6 col-sm-12" [hide-when-mobile]="dive !== undefined">
+    <app-dive-list (onDiveSelected)="dive=$event" [selectedDive]="dive"></app-dive-list>
+  </div>
+  <div class="dive-detail col-md-6 col-sm-12" [hide-when-mobile]="dive === undefined">
+    <app-dive-detail [dive]="dive"></app-dive-detail>
   </div>
 </div>

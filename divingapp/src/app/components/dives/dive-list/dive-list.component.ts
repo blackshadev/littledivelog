@@ -8,7 +8,7 @@ import { Location } from '@angular/common';
 @Component({
   selector: 'app-dive-list',
   templateUrl: './dive-list.component.html',
-  styleUrls: ['./dive-list.component.css']
+  styleUrls: ['./dive-list.component.scss']
 })
 export class DiveListComponent implements OnInit {
   title = 'Dive list';

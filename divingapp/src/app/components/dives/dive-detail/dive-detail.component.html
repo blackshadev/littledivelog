@@ -3,6 +3,7 @@
         <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-repeat"></i> Reset</button>
         <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i> Save</button>
     </div>
+    <div class="clear-fix visible-xs-block"></div>
     <div class="form-content">
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">

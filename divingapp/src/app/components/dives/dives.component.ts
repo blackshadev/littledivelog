@@ -21,13 +21,18 @@ export class DivesComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.subs.push(
-      this.route.params
-        .flatMap((params: Params) =>
-          params['id'] === undefined ? Promise.resolve(undefined) : this.service.getDive(+params['id'])
-        ).subscribe(dive => this.dive = dive
-        )
-    );
+    if (this.route.snapshot.data && this.route.snapshot.data.isNew) {
+      this.dive = Dive.New();
+    } else {
+      this.subs.push(
+        this.route.params.flatMap(
+          (params: Params) => {
+            return params['id'] === undefined ?
+              Promise.resolve(undefined) :
+              this.service.getDive(+params['id']);
+          }).subscribe(dive => this.dive = dive)
+      );
+    }
   }
 
   ngOnDestroy(): void {

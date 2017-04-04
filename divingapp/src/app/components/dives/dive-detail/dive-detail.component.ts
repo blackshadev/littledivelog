@@ -70,9 +70,9 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     this.form.reset();
     if (this.dive) {
       this.form.setValue({
-        date: moment(this.dive.date).format('DD-MM-YYYY HH:mm:ss'),
-        divetime: this.dive.divetime.toString(),
-        maxDepth: this.dive.maxDepth.toFixed(1),
+        date: this.dive.date ? moment(this.dive.date).format('DD-MM-YYYY HH:mm:ss') : '',
+        divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
+        maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
         place: {
           name: this.dive.place.name || '',
           country: this.dive.place.country || ''

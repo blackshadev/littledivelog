@@ -56,6 +56,20 @@ export class Dive implements IDive {
 
     get placeStr() { return (this.place.name || '') + (this.place.country ? (', ' + this.place.country) : ''); }
 
+    static New() {
+        const dive = new Dive;
+        dive.date = new Date();
+        dive.divetime = new Duration(0);
+        dive.maxDepth = 0;
+        dive.samples = [];
+        dive.place = { name: '', country: '' };
+        dive.tags = [];
+        dive.buddies = [];
+        dive.tanks = [];
+
+        return dive;
+    }
+
     static ParseDC(d: IDiveRecordDC, id?: number): Dive {
         const dive = new Dive;
         dive.id = id;

@@ -78,7 +78,12 @@ export class DiveStore  {
     }
 
     async saveDive(d: Dive) {
-        this.__dives[d.id] = d;
+        if (d.id === undefined) {
+            d.id = this.__dives.length;
+            this.__dives.push(d);
+        } else {
+            this.__dives[d.id] = d;
+        }
 
         localStorage.setItem('_dives',
             JSON.stringify(this._dives.getValue().map((_d) => _d.toJSON()))

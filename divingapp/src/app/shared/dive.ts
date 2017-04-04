@@ -21,7 +21,6 @@ export class Duration {
         return d;
     }
 
-
     constructor(seconds: number);
     // tslint:disable-next-line:unified-signatures
     constructor(minutes: number, seconds: number);

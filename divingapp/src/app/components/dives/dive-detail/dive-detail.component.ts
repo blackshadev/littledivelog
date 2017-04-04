@@ -155,8 +155,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     }];
 
     d.samples = this.dive.samples;
-    d.tags = this.dive.tags;
-    d.buddies = this.dive.buddies;
+    d.tags = dat.tags;
+    d.buddies = dat.buddies;
 
     this.service.saveDive(d);
     this.dive = d;

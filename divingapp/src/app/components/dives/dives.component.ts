@@ -11,7 +11,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 })
 export class DivesComponent implements OnInit, OnDestroy {
 
-  private dive: Dive;
+  public dive: Dive;
   private subs: Subscription[] = [];
 
   constructor(

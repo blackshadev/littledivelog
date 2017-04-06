@@ -19,7 +19,7 @@ export class DiveListComponent implements OnInit {
   constructor(
     private location: Location,
     private router: Router,
-    private diveStore: DiveStore
+    public diveStore: DiveStore
   ) {}
 
   select(dive: Dive) {

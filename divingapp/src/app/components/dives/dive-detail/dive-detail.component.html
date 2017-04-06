@@ -1,4 +1,4 @@
-<form  [formGroup]="form" class="form-horizontal dive-details" *ngIf="dive !== undefind" (ngSubmit)="onSubmit(form)">
+<form  [formGroup]="form" class="form-horizontal dive-details" *ngIf="dive !== undefined" (ngSubmit)="onSubmit(form)">
     <div class="detail-menu">
         <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-repeat"></i> Reset</button>
         <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i> Save</button>

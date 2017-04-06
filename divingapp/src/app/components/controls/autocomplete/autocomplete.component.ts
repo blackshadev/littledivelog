@@ -94,12 +94,12 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {}
 
-  private valueSelected(v: IItem) {
+  public  valueSelected(v: IItem) {
     this._items = [v];
     this.value = v.key;
   }
 
-  private inputblur(e: Event) {
+  public  inputblur(e: Event) {
     const eInp = this.inputElement.nativeElement as HTMLInputElement;
 
     if (this.forceSelection) {
@@ -109,7 +109,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }
   }
 
-  private filter(keyword) {
+  public filter(keyword) {
     const newItem = { value: keyword, isNew: true, key: keyword };
 
     return new Observable((obs) => {
@@ -155,16 +155,16 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }`) as (v: any, isNew: boolean) => { key: any, value: any, isNew: boolean };
   }
 
-  writeValue(obj: any): void {
+  public writeValue(obj: any): void {
     this._value = obj;
   }
-  registerOnChange(fn: any): void {
+  public registerOnChange(fn: any): void {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  public registerOnTouched(fn: any): void {
     this.onTouched = fn;
   }
-  setDisabledState(isDisabled: boolean): void {
+  public setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
 }

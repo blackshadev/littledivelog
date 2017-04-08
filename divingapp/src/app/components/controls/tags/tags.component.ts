@@ -12,34 +12,12 @@ interface ITag {
   selector: 'app-tags',
   templateUrl: './tags.component.html',
   styleUrls: ['./tags.component.scss'],
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => TagsComponent),
-      multi: true
-    }
-  ]
+  providers: []
 })
-export class TagsComponent implements OnInit, ControlValueAccessor {
-  @Input() source: Observable<ITag[]>;
-  @Input() tags: ITag[];
-
-  @Output() change = new EventEmitter<ITag[]>();
-  @Output() touched = new EventEmitter<ITag[]>();
-
-  @ViewChild('tagInput')
-  private tagInput: ElementRef;
-  private onChange: (v: ITag[]) => void = () => { };
-  private onTouched: () => void = () => { };
-
-  constructor() {
-    this.tags = ([
-     
-    ]);
-  }
-
-  ngOnInit() {
-  }
+export class TagsComponent {
+  @Input() canremove = false;
+  @Input() tags: ITag[] = [];
+  @Output() onremove = new EventEmitter();
 
   private fontColor(color: string) {
     if (color[0] === '#') {
@@ -51,49 +29,4 @@ export class TagsComponent implements OnInit, ControlValueAccessor {
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     return (yiq >= 128) ? 'black' : 'white';
   }
-
-  private randomColor(): string {
-    const r = leftpad(2, Math.floor(Math.random() * 255).toString(16));
-    const g = leftpad(2, Math.floor(Math.random() * 255).toString(16));
-    const b = leftpad(2, Math.floor(Math.random() * 255).toString(16));
-    return `#${r}${g}${b}`;
-  }
-
-  private addTag(v: ITag) {
-    this.tags.push(v);
-    const el = this.tagInput.nativeElement as HTMLInputElement;
-    el.value = '';
-    this.doChange();
-    this.doTouched();
-  }
-
-  private removeTag(iX: number) {
-    this.tags.splice(iX, 1);
-    this.doChange();
-    this.doTouched();
-  }
-
-  private doChange() {
-    this.onChange(this.tags);
-    this.change.emit(this.tags);
-  }
-
-  private doTouched() {
-    this.onTouched();
-    this.touched.emit();
-  }
-
-  writeValue(obj: any): void {
-    this.tags = obj;
-  }
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-  setDisabledState(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
-  }
-
 }

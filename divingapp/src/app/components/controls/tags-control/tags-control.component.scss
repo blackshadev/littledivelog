@@ -1,0 +1,14 @@
+.tags {
+    margin-bottom: 3px;
+
+    .label {
+        margin-right: 3px;
+        padding: .4em .7em .5em;
+        display: inline-block;
+
+        a {
+            color: inherit;
+            cursor: pointer;
+        }
+    }
+}

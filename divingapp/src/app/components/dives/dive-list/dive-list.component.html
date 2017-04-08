@@ -8,13 +8,19 @@
 </div>
 <table class="table table-hover">
     <thead>
-        <tr><td>Date</td><td>Divetime</td><td>Divespot</td></tr>
+        <tr>
+            <td>Date</td>
+            <td>Divetime</td>
+            <td>Tags</td>
+            <td class="hidden-xs hidden-md">Divespot</td>
+        </tr>
     </thead>
     <tbody>
         <tr *ngFor="let dive of diveStore.dives | async" (click)="select(dive)" [ngClass]="{ 'active': selectedDive !== undefined && dive.id === selectedDive.id }">
             <td>{{ dive.date | date: "y-MM-dd HH:mm:ss"}}</td>
             <td>{{ dive.divetime }}</td>
-            <td>{{ dive.placeStr }}</td>
+            <td><app-tags [tags]="dive.tags"></app-tags></td>
+            <td class="hidden-xs hidden-md">{{ dive.placeStr }}</td>
         </tr>
     </tbody>
 </table>

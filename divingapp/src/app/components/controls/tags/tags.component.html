@@ -5,30 +5,9 @@
       [style.color]="fontColor(tag.color)"
     >
     {{tag.text}}
-    <a (click)="removeTag(iX)">
-      <i class="glyphicon glyphicon-remove"></i>
-    </a>
+    <a 
+      *ngIf="canremove"
+      (click)="onremove.emit({ tag: tag, index: iX })"
+    ><i class="fa fa-remove"></i></a>
   </span>
-</div>
-
-<app-autocomplete
-  *ngIf="source !== undefined"
-  inputClass="form-control"
-  [source]="source"
-  (change)="addTag($event)"
-  forceSelection="false"
-></app-autocomplete>
-<div *ngIf="source === undefined" class="input-group">
-  <span class="input-group-btn">
-    <button
-        (click)="addTag({ 'text': tagInput.value, 'color': randomColor() })"
-        class="btn btn-default"
-        type="button"
-      >
-      <i class="glyphicon glyphicon-plus"></i>
-    </button>
-  </span>
-  <input #tagInput
-    class="form-control"
-  />
 </div>

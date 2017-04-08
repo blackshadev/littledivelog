@@ -10,7 +10,7 @@ import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
-import { HideWhenMobileDirective } from './directives/hide-when/hide-when.directive';
+import { HideWhenMobileDirective, HideWhenDesktopDirective } from './directives/hide-when/hide-when.directive';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { MyAutoCompletionDirective } from './directives/auto-complete/my-auto-completion.directive';
 import { AutocompleteComponent } from './components/controls/autocomplete/autocomplete.component';
@@ -26,6 +26,7 @@ import { TagsControlComponent } from './components/controls/tags-control/tags-co
     DashboardComponent,
     MenuComponent,
     HideWhenMobileDirective,
+    HideWhenDesktopDirective,
     MyAutoCompletionDirective,
     AutocompleteComponent,
     TagsComponent,

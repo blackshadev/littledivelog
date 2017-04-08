@@ -10,24 +10,13 @@ import { Location } from '@angular/common';
   templateUrl: './dive-list.component.html',
   styleUrls: ['./dive-list.component.scss']
 })
-export class DiveListComponent implements OnInit {
+export class DiveListComponent  {
   title = 'Dive list';
 
   @Input() selectedDive: Dive;
-  @Output() onDiveSelected = new EventEmitter<Dive>();
 
   constructor(
-    private location: Location,
-    private router: Router,
     public diveStore: DiveStore
   ) {}
 
-  select(dive: Dive) {
-    this.location.go(`/dive/${dive.id}`);
-    this.selectedDive = dive;
-    this.onDiveSelected.emit(dive);
-  }
-
-  ngOnInit(): void {
-  }
 }

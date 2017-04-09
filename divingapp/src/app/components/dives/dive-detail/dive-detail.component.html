@@ -174,14 +174,7 @@
             </div>
             
             <div role="tabpanel" class="tab-pane" id="profile">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label">Samples</label>
-                    <div class="col-sm-10">
-                        <p class="form-control-static">
-                            {{dive.samples.length}}
-                        </p>
-                    </div>
-                </div>
+                <app-dive-profile #diveProfile [dive]="dive"></app-dive-profile>
             </div>
 
             <div role="tabpanel" class="tab-pane" id="debug">

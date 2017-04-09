@@ -16,6 +16,8 @@ import { MyAutoCompletionDirective } from './directives/auto-complete/my-auto-co
 import { AutocompleteComponent } from './components/controls/autocomplete/autocomplete.component';
 import { TagsComponent } from './components/controls/tags/tags.component';
 import { TagsControlComponent } from './components/controls/tags-control/tags-control.component';
+import { DiveProfileComponent } from './components/controls/dive-profile/dive-profile.component';
+import * as $ from 'jquery';
 
 @NgModule({
   declarations: [
@@ -31,6 +33,7 @@ import { TagsControlComponent } from './components/controls/tags-control/tags-co
     AutocompleteComponent,
     TagsComponent,
     TagsControlComponent,
+    DiveProfileComponent,
   ],
   imports: [
     BrowserModule,

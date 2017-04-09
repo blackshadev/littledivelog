@@ -8,7 +8,12 @@ export interface ITag {
     text: string;
 }
 
-export type TSample = any;
+export interface TSample {
+    Time: number;
+    Depth: number;
+    Temperature: number;
+    Events: any[];
+}
 
 export class Duration {
     hours: number;

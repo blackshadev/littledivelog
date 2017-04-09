@@ -1,10 +1,10 @@
-
+import { DiveProfileComponent } from '../../controls/dive-profile/dive-profile.component';
 import { Validators, FormBuilder, FormGroup, NgForm, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveStore } from '../../../services/dive.service';
 import { Dive, Duration } from '../../../shared/dive';
-import { SimpleChanges, OnInit, Component, Input, OnChanges } from '@angular/core';
+import { SimpleChanges, OnInit, Component, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import * as moment from 'moment';
 
 import 'rxjs/add/operator/switchMap';
@@ -19,15 +19,17 @@ declare function $(...args: any[]): any;
   styleUrls: ['./dive-detail.component.scss']
 })
 export class DiveDetailComponent implements OnInit, OnChanges {
-
   @Input() dive: Dive;
 
   public form: FormGroup;
   CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
 
+  @ViewChild("diveProfile") private diveProfile: DiveProfileComponent;
+
   constructor(
     private service: DiveStore,
-    private _fb: FormBuilder
+    private _fb: FormBuilder,
+    private hostElement: ElementRef,
   ) {
      this.form = this._fb.group({
         date: ['', [Validators.required, CustomValidators.datetime]],
@@ -60,6 +62,10 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+    $(this.hostElement.nativeElement).on('shown.bs.tab', 'a[data-toggle="tab"][aria-controls="profile"]', () => {
+      console.log("OpenDiveProfile");
+      this.diveProfile.resize();
+    })
   }
 
   ngOnChanges(changes: SimpleChanges): void {

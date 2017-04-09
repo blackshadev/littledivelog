@@ -45,24 +45,32 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     const height = eCanvas.height;
     const width = eCanvas.width;
     const offset = {
-      x: 10,
-      y: 10
+      x: { min: 35, max: 10 },
+      y: { min: 10, max: 10 },
     };
+    
+    const maxDepth = Math.max.apply(Math, this.samples.map((s) => s.Depth));
+    
 
-    const wRatio = (width - offset.x * 2) / this.samples.length;
-    const hRatio = (height - offset.y * 2) / Math.max.apply(Math, this.samples.map((s) => s.Depth));
+    const wRatio = (width - offset.x.min - offset.x.max ) / this.samples.length;
+    const hRatio = (height - offset.y.min - offset.y.max ) / maxDepth;
     
     const stepSize =  this.samples.length;
     ctx.clearRect(0, 0, width, height);
-    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingEnabled = false;
+    ctx.font = "11px Arial";
+    
+    ctx.fillText("0 m", 5, 15);
+    ctx.fillText(`${maxDepth.toFixed(1)} m`, 5, height - offset.y.max);
+    
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 1;
     ctx.beginPath();
     if(this.samples.length) {
-      ctx.lineTo(offset.x, this.samples[0].Depth * hRatio + offset.y);
+      ctx.lineTo(offset.x.min, this.samples[0].Depth * hRatio + offset.y.min);
     }
     for(let iX = 1; iX < this.samples.length; iX++) {
-      ctx.lineTo(offset.x + iX * wRatio, this.samples[iX].Depth * hRatio + offset.y);
+      ctx.lineTo(offset.x.min + iX * wRatio, this.samples[iX].Depth * hRatio + offset.y.min);
     }
     ctx.stroke();
     ctx.closePath(); 

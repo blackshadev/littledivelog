@@ -1,14 +1,16 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component, ViewChild, ElementRef, HostListener, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  @ViewChild("appContainer") container: ElementRef; 
+export class AppComponent implements OnInit {
+
+  @ViewChild("appContainer") container: ElementRef;
+  isCollapsed: boolean = false;
+
   toggleMenuCollapsed(isCollapsed: boolean) {
-    console.log("collapsed", isCollapsed);
     let hElm = <HTMLElement>this.container.nativeElement;
     if(isCollapsed) {
       hElm.classList.add("menu-collapsed");
@@ -16,4 +18,9 @@ export class AppComponent {
       hElm.classList.remove("menu-collapsed");
     }
   }
+  
+  ngOnInit(): void {
+    this.isCollapsed = window.innerWidth < 992;
+  }
+  
 }

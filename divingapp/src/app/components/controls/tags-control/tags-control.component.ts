@@ -76,7 +76,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     this.doTouched();
   }
 
-  private removeTag(iX: number) {
+  public removeTag(iX: number) {
     this.tags.splice(iX, 1);
     this.doChange();
     this.doTouched();

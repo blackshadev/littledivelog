@@ -1,4 +1,4 @@
-import {ViewChild, Component,  OnInit,  ElementRef, Output, EventEmitter} from '@angular/core';
+import { ViewChild, Component, OnInit, ElementRef, Output, EventEmitter, Input } from '@angular/core';
 
 
 @Component({
@@ -10,20 +10,24 @@ export class MenuComponent implements OnInit {
   
   @ViewChild('menuContainer') menuContainer: ElementRef;
   @Output() ontoggle = new EventEmitter<boolean>();
+  @Input() set state(v: boolean) {
+    this.toggle(v);
+  }
 
   constructor() {}
 
   ngOnInit() {}
 
-  toggle() {
+  toggle(state?: boolean) {
     let hElm = (<HTMLElement>this.menuContainer.nativeElement);
     let isCollapsed = hElm.classList.contains("collapsed");
-    if(isCollapsed) {
-      hElm.classList.remove("collapsed");
-    } else {
+    state = state === undefined ? !isCollapsed : state;
+    if(state) {
       hElm.classList.add("collapsed");
+    } else {
+      hElm.classList.remove("collapsed");
     }
-    this.ontoggle.emit(!isCollapsed);
+    this.ontoggle.emit(state);
   }
 
 }

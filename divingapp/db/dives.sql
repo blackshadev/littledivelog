@@ -1,22 +1,32 @@
+create extension  pgcrypto ;
+
 create table users (
     user_id         serial                                          not null
   , email           text                                            not null
   , password        text                                            not null
+  , salt            text                                            not null
   , name            text                                            not null
   
   , inserted        timestamp   default timeszone('UTC', now())     not null
   , primary key(user_id)
 );
 
+create table sessions (
+    session_id      uuid        default gen_random_uuid()           not null
+  , user_id         int         references users(user_id)           not null
+  , ip              text                                            not null
+  , inserted        timestamp   default timeszone('UTC', now())     not null
+)
+
 create table countries (
-    country_code    char(2)                                         not null
+    iso2            char(2)                                         not null
   , name    	    text                                            not null
   , primary key(country_code) 
 )
 
 create table places (
     place_id        serial                                          not null
-  , country_code    char(2)     references countries(country_code)  not null
+  , country_code    char(2)     references countries(iso2)          not null
   , name            text                                            not null 
   , primary key(place_id)
 )
@@ -28,7 +38,7 @@ create table dives (
   , divetime        int                                             not null
   , max_depth       numeric(6, 3)                                   not null
   , samples         bjson       default '[]'                        not null
-  , country_code    char(2)     references countries(country_code)      null
+  , country_code    char(2)     references countries(iso2)              null
   , place_id        int         references places(place_id)             null
   
   , inserted        timestamp   default timeszone('UTC', now())     not null

@@ -63,6 +63,13 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     ctx.fillText("0 m", 5, 15);
     ctx.fillText(`${maxDepth.toFixed(1)} m`, 5, height - offset.y.max);
     
+    ctx.strokeStyle = "#2980B9";
+    ctx.beginPath();
+    ctx.moveTo(offset.x.min, height - offset.y.max);
+    ctx.lineTo(width - offset.x.max, height - offset.y.max);
+    ctx.stroke();
+    ctx.closePath();
+
     ctx.strokeStyle = "#000000";
     ctx.lineWidth = 1;
     ctx.beginPath();

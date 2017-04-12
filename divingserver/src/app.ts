@@ -7,7 +7,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use("/:session/dive/", dives.router);
 app.param("session", (req, res, next, id) => {
-    console.log("adding session to locals");
     res.locals.session = id;
     next();
 });

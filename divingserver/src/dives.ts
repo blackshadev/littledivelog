@@ -5,8 +5,8 @@ export const router  = express.Router();
 
 router.get("/", async (req, res) => {
     let dives: QueryResult = await req.app.locals.dbcall(
-        "select * from dives",
-        [],
+        "select * from get_dives($1)",
+        [res.locals.session],
     );
 
     res.json(
@@ -15,15 +15,26 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-    console.log("locals", res.locals);
 
-    let dives: QueryResult = await req.app.locals.dbcall(
-        "select * from dives where dive_id=$1",
-        [req.params.id],
+    const dives: QueryResult = await req.app.locals.dbcall(
+        "select * from get_dives($1) where dive_id=$2",
+        [res.locals.session, req.params.id],
     );
 
     res.json(
         dives.rows,
+    );
+});
+
+router.get("/:id/samples", async (req, res) => {
+
+    const samples: QueryResult = await req.app.locals.dbcall(
+        "select samples from dives d join sessions s on s.user_id = d.user_id where s.session_id = $1 and dive_id=$2",
+        [res.locals.session, req.params.id],
+    );
+
+    res.json(
+        samples.rows,
     );
 });
 

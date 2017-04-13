@@ -4,8 +4,8 @@ import * as express from "express";
 export const router  = express.Router();
 
 router.get("/", async (req, res) => {
-    let dives: QueryResult = await req.app.locals.dbcall(
-        "select * from get_dives($1)",
+    const dives: QueryResult = await req.app.locals.dbcall(
+        "select dive_id, date, tags, place from get_dives($1)",
         [res.locals.session],
     );
 
@@ -16,7 +16,7 @@ router.get("/", async (req, res) => {
 
 router.get("/:id", async (req, res) => {
 
-    const dives: QueryResult = await req.app.locals.dbcall(
+    const dives: QueryResult = await req.app.locals.db.call(
         "select * from get_dives($1) where dive_id=$2",
         [res.locals.session, req.params.id],
     );
@@ -28,7 +28,7 @@ router.get("/:id", async (req, res) => {
 
 router.get("/:id/samples", async (req, res) => {
 
-    const samples: QueryResult = await req.app.locals.dbcall(
+    const samples: QueryResult = await req.app.locals.db.call(
         "select samples from dives d join sessions s on s.user_id = d.user_id where s.session_id = $1 and dive_id=$2",
         [res.locals.session, req.params.id],
     );
@@ -37,4 +37,3 @@ router.get("/:id/samples", async (req, res) => {
         samples.rows,
     );
 });
-

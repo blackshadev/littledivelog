@@ -1,20 +1,22 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as dives from "./dives";
-import * as db from "./pg";
+import * as imp from "./import";
+import { DbAdapter } from "./pg";
 
 const app = express();
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: "500mb" }));
 app.use("/:session/dive/", dives.router);
+app.use("/:session/import/", imp.router);
 app.param("session", (req, res, next, id) => {
     res.locals.session = id;
     next();
 });
-app.locals.dbcall = db.call;
+const db = new DbAdapter();
+app.locals.db = db;
 
 async function start() {
     await db.connect();
-    console.log("Connected to db")
     await new Promise((resolve, reject) => {
         app.listen(3000, (err) => {
             if (err) {
@@ -24,7 +26,7 @@ async function start() {
             }
         });
     });
-    console.log('Example app listening on port 3000!')
+    console.log('DiveServer listening on 3000');
 }
 
 start();

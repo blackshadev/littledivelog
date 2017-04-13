@@ -10,9 +10,6 @@ const cnf = {
   user: "divelog",
 };
 
-const pool = new pg.Pool(
-    cnf,
-);
 
 enum ConnectionState {
     Disconnected,
@@ -20,14 +17,69 @@ enum ConnectionState {
     Connected,
 }
 
-export async function call(sql: string, params: any[]): Promise<pg.QueryResult> {
-    return pool.query(sql, params);
+interface IBulkInsertParams {
+    chunkSize?: number;
+    data: any[];
+    table: string;
+    mapping: {
+        [fieldname: string]: {
+            field: string;
+            transform?: (val: any, row: any) => any;
+            sql?: string;
+        };
+    };
 }
 
-export async function connect() {
-    return pool.connect();
-}
+export class DbAdapter {
+    private pool: pg.Pool;
 
-export async function disconnect() {
-    return pool.end();
+    constructor() {
+        this.pool = new pg.Pool(cnf);
+    }
+    public async call(sql: string, params: any[]): Promise<pg.QueryResult> {
+        return this.pool.query(sql, params);
+    }
+
+    public async connect() {
+        return this.pool.connect();
+    }
+
+    public async disconnect() {
+        return this.pool.end();
+    }
+
+    public async bulkInsert(oPar: IBulkInsertParams): Promise<pg.QueryResult> {
+        oPar.chunkSize = 50;
+        const params: any[] = [];
+        const sqlRows: string[] = [];
+        const fields = Object.keys(oPar.mapping);
+        const baseSql = `insert into ${oPar.table} (${fields.join(", ")}) values`;
+        for (let iX = 0; iX < oPar.data.length; iX++) {
+            const row = oPar.data[iX];
+            sqlRows.push(
+                `(
+                    ${
+                        fields.map(
+                            (fld) => {
+                                let val = row[oPar.mapping[fld].field];
+                                if (oPar.mapping[fld].transform) {
+                                    val = oPar.mapping[fld].transform(val, row);
+                                }
+
+                                params.push(val);
+                                const iXParam = "$" + params.length;
+                                if (oPar.mapping[fld].sql !== undefined) {
+                                    return oPar.mapping[fld].sql.replace("{value}", iXParam);
+                                }
+                                return iXParam;
+                            },
+                        )
+                    }
+                )`,
+            );
+        }
+
+        return this.call(`${baseSql} ${sqlRows.join(",")}`, params);
+    }
+
 }

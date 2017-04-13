@@ -18,7 +18,7 @@ select dive_id
      , divetime
      , max_depth
      , (
-         select row_to_json(b)
+         select COALESCE(row_to_json(b), '{ "country_code": null, "name": null, "place_id": null }')
            from (
                select p.country_code, p.name, p.place_id 
                  from places p
@@ -26,7 +26,7 @@ select dive_id
            ) b
        ) as place
      , (	
-         select array_to_json(array_agg(row_to_json(b)))
+         select COALESCE(array_to_json(array_agg(row_to_json(b))), '[]')
            from (
              select tag.color, tag.text
                from dive_tags d_t
@@ -35,7 +35,7 @@ select dive_id
            ) b
        ) as tags
      , (	
-         select array_to_json(array_agg(row_to_json(b)))
+         select COALESCE(array_to_json(array_agg(row_to_json(b))), '[]')
            from (
              select bud.color, bud.text
                from dive_buddies d_b

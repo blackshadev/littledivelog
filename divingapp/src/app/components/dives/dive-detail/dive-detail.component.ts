@@ -63,7 +63,6 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     $(this.hostElement.nativeElement).on('shown.bs.tab', 'a[data-toggle="tab"][aria-controls="profile"]', () => {
-      console.log("OpenDiveProfile");
       this.diveProfile.resize();
     })
   }

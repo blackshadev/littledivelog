@@ -1,6 +1,7 @@
+import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { DiveStore } from '../../../services/dive.service';
-import { Dive } from '../../../shared/dive';
+import { Dive, IDive } from '../../../shared/dive';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 
@@ -14,9 +15,17 @@ export class DiveListComponent  {
   title = 'Dive list';
 
   @Input() selectedDive: Dive;
+  dives: Dive[];
 
   constructor(
     public diveStore: DiveStore
-  ) {}
+  ) {
+    diveStore.getDives().subscribe(
+      (d) => {
+        this.dives = d;
+      },
+      (e) => {}
+    );
+  }
 
 }

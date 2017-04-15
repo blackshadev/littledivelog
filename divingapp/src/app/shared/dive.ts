@@ -20,10 +20,16 @@ export class Duration {
     minutes: number;
     seconds: number;
 
-    static Parse(str: String): Duration {
-        const parts = str.split(':').map((s) => parseInt(s, 10));
-        const d = new Duration(...parts);
-        return d;
+    static Parse(str: Duration|string|number): Duration {
+        if(typeof(str) === "string") {
+                const parts = str.split(':').map((s) => parseInt(s, 10));
+                const d = new Duration(...parts);
+                return d;
+        } else if(typeof(str) === "number") {
+            return new Duration(str);
+        } else
+            return str;
+
     }
 
     constructor(seconds: number);
@@ -44,9 +50,13 @@ export class Duration {
         return `${formatNumber(this.hours)}:${formatNumber(this.minutes)}:${formatNumber(this.seconds)}`;
     }
 
+    valueOf() {
+        return this.seconds + this.minutes * 60 + this.hours * (60 * 60);
+    }
+
 }
 
-export class Dive implements IDive {
+export class Dive {
     id: number;
     date: Date;
     divetime: Duration;
@@ -90,12 +100,14 @@ export class Dive implements IDive {
     }
 
     static Parse(d: IDive): Dive {
+        console.log(d);
         const dive = new Dive;
-        dive.id = d.id;
+        dive.id = d.dive_id;
         dive.date = new Date(<string>d.date);
-        dive.divetime = Duration.Parse(<string>d.divetime);
+        dive.divetime = Duration.Parse(d.divetime);
         dive.maxDepth = d.maxDepth;
         dive.samples = d.samples;
+        d.place = d.place || { name: '', country: '' };
         dive.place = {
             name: d.place.name || '',
             country: d.place.country || ''
@@ -117,9 +129,9 @@ export class Dive implements IDive {
 
     toJSON(): IDive {
         return {
-            id: this.id,
+            dive_id: this.id,
             date: this.date.toISOString(),
-            divetime: this.divetime.toString(),
+            divetime: this.divetime.valueOf(),
             maxDepth: this.maxDepth,
             samples: this.samples,
             place: this.place,
@@ -142,18 +154,18 @@ export interface ITank {
 }
 
 export interface IDive {
-    id: number;
+    dive_id: number;
     date: Date|string;
-    divetime: Duration|string;
-    maxDepth: number;
-    samples: any[];
+    divetime: Duration|string|number;
+    tags: ITag[]
     place: {
         name: string;
         country: string;
     };
-    tanks: ITank[];
-    buddies: ITag[];
-    tags: ITag[]
+    maxDepth?: number;
+    samples?: any[];
+    tanks?: ITank[];
+    buddies?: ITag[];
 }
 
 export interface IDiveRecordDC {

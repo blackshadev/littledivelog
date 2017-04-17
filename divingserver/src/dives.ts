@@ -1,5 +1,6 @@
+import { DbAdapter } from './pg';
 import { QueryResult } from "@types/pg";
-import * as express from "express";
+import * as express from 'express';
 
 export const router  = express.Router();
 
@@ -24,6 +25,33 @@ router.get("/:id", async (req, res) => {
     res.json(
         dives.rows[0],
     );
+});
+
+const illegalFields = new Set(["dive_id", "inserted", "updated"]);
+router.put("/:id", async (req, res) => {
+    const db = req.app.locals.db as DbAdapter;
+    const useridDs = await db.call(`select user_id from sessions where session_id=$1`, [res.locals.session]);
+    const userid = useridDs.rows[0].user_id;
+
+    const body = req.body;
+    let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
+    const params = [];
+    for (const k in body) {
+        if (body.hasOwnProperty(k)) {
+            sql += `, ${k}=$${params.push(body[k])}`;
+        }
+    }
+    sql += ` where dive_id=$${params.push(req.params.id)} and user_id=$${params.push(userid)}`;
+    const result: QueryResult = await req.app.locals.db.call(
+        sql,
+        params,
+    );
+    if (result.rowCount === 0) {
+        throw new Error("No such dive found");
+    }
+    res.json({
+        updated: true,
+    });
 });
 
 router.get("/:id/samples", async (req, res) => {

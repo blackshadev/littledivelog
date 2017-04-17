@@ -106,10 +106,10 @@ export class Dive {
         dive.divetime = Duration.Parse(d.divetime);
         dive.maxDepth = Number(d.max_depth);
         dive.samples = d.samples;
-        d.place = d.place || { name: '', country: '' };
+        d.place = d.place || { name: '', country_code: '' };
         dive.place = {
             name: d.place.name || '',
-            country: d.place.country || ''
+            country: d.place.country_code || ''
         };
         dive.tanks = d.tanks || [];
         dive.buddies = d.buddies || [];
@@ -133,7 +133,10 @@ export class Dive {
             divetime: this.divetime.valueOf(),
             max_depth: this.maxDepth,
             samples: this.samples,
-            place: this.place,
+            place: {
+                name: this.place.name,
+                country_code: this.place.country,
+            },
             tanks: this.tanks,
             tags: this.tags,
             buddies: this.buddies
@@ -157,9 +160,9 @@ export interface IDbDive {
     date: Date|string;
     divetime: Duration|string|number;
     tags: ITag[]
-    place: {
+    place?: {
         name: string;
-        country: string;
+        country_code: string;
     };
     max_depth?: number;
     samples?: any[];

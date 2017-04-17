@@ -40,6 +40,7 @@ create table if not exists dives (
   , country_code    char(2)     references countries(iso2)                          null
   , place_id        int         references places(place_id)                         null
   
+  , updated         timestamp   default (current_timestamp at time zone 'UTC')  not null
   , inserted        timestamp   default (current_timestamp at time zone 'UTC')  not null
   , primary key(dive_id)  
 );

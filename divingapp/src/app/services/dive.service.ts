@@ -89,18 +89,12 @@ export class DiveStore  {
         return [];
     }
 
-    async saveDive(d: Dive) {
-        // if (d.id === undefined) {
-        //     d.id = this.__dives.length;
-        //     this.__dives.push(d);
-        // } else {
-        //     this.__dives[d.id] = d;
-        // }
-
-        // localStorage.setItem('_dives',
-        //     JSON.stringify(this._dives.getValue().map((_d) => _d.toJSON()))
-        // );
-
+    async saveDive(dive: Dive): Promise<any> {
+        let d = dive.toJSON();
+        return this.http.put(
+            `${this.serverURL}/${this.session}/dive/${d.dive_id}/`,
+            d
+        ).toPromise();
     }
 
     getDive(dive_id: number): Observable<Dive> {
@@ -119,10 +113,8 @@ export class DiveStore  {
                 `${this.serverURL}/${this.session}/dive/${dive_id}/samples/`
             ).toPromise(
             ).then(
-                (res: Response) => { 
-
+                (res: Response) => {
                     let b = res.json();
-                    console.log(b);
                     return b as TSample[];
                 }
             );

@@ -22,7 +22,7 @@ router.get("/:id", async (req, res) => {
     );
 
     res.json(
-        dives.rows,
+        dives.rows[0],
     );
 });
 

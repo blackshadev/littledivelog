@@ -105,11 +105,12 @@ export class DiveStore  {
     }
 
     getDive(dive_id: number): Observable<Dive> {
+        console.log( `${this.serverURL}/${this.session}/dive/${dive_id}/`);
         return this.http.get(
-                `${this.serverURL}/${this.session}/dive/`
+                `${this.serverURL}/${this.session}/dive/${dive_id}/`
             ).map(
                 (res: Response) => { 
-                    let r = res.json().data;
+                    let r = res.json();
                     return Dive.Parse(r);
                 }
             ).catch(this.handleError);

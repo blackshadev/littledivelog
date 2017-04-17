@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
 import { DiveStore } from '../../../services/dive.service';
-import { Dive, IDive } from '../../../shared/dive';
+import { Dive, IDbDive } from '../../../shared/dive';
 import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
 import { Location } from '@angular/common';
 

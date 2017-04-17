@@ -1,5 +1,5 @@
 import { Http, Response } from '@angular/http';
-import { Dive,  IDive,  IDiveRecordDC,  TSample} from '../shared/dive';
+import { Dive,  IDbDive,  IDiveRecordDC,  TSample} from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
@@ -30,12 +30,11 @@ export class DiveStore  {
     }
 
     getDives(): Observable<Dive[]> {
-        console.log("Get");
         return this.http.get(
                 `${this.serverURL}/${this.session}/dive/`
             ).map(
                 (res: Response): Dive[] => { 
-                    let dives: IDive[] = res.json() || [];
+                    let dives: IDbDive[] = res.json() || [];
                     return Dive.ParseAll(dives);
                 }
             ).catch(this.handleError);
@@ -105,7 +104,6 @@ export class DiveStore  {
     }
 
     getDive(dive_id: number): Observable<Dive> {
-        console.log( `${this.serverURL}/${this.session}/dive/${dive_id}/`);
         return this.http.get(
                 `${this.serverURL}/${this.session}/dive/${dive_id}/`
             ).map(
@@ -117,10 +115,17 @@ export class DiveStore  {
     }
 
     async getSamples(dive_id: number): Promise<TSample[]> {
-        // await this.ensureDives();
+        return this.http.get(
+                `${this.serverURL}/${this.session}/dive/${dive_id}/samples/`
+            ).toPromise(
+            ).then(
+                (res: Response) => { 
 
-        // return this.__dives[dive_id].samples;
-        return Promise.resolve([]);
+                    let b = res.json();
+                    console.log(b);
+                    return b as TSample[];
+                }
+            );
     }
     
     private handleError(error: Response|any) {

@@ -26,7 +26,7 @@ export class Duration {
                 const d = new Duration(...parts);
                 return d;
         } else if(typeof(str) === "number") {
-            return new Duration(str);
+            return new Duration(0, 0, str);
         } else
             return str;
 
@@ -99,13 +99,12 @@ export class Dive {
         return dive;
     }
 
-    static Parse(d: IDive): Dive {
-        console.log(d);
+    static Parse(d: IDbDive): Dive {
         const dive = new Dive;
         dive.id = d.dive_id;
         dive.date = new Date(<string>d.date);
         dive.divetime = Duration.Parse(d.divetime);
-        dive.maxDepth = d.maxDepth;
+        dive.maxDepth = Number(d.max_depth);
         dive.samples = d.samples;
         d.place = d.place || { name: '', country: '' };
         dive.place = {
@@ -123,16 +122,16 @@ export class Dive {
         return arr.map((d) => Dive.ParseDC(d, iX++));
     }
 
-    static ParseAll(arr: IDive[]): Dive[] {
+    static ParseAll(arr: IDbDive[]): Dive[] {
         return arr.map(d => Dive.Parse(d));
     }
 
-    toJSON(): IDive {
+    toJSON(): IDbDive {
         return {
             dive_id: this.id,
             date: this.date.toISOString(),
             divetime: this.divetime.valueOf(),
-            maxDepth: this.maxDepth,
+            max_depth: this.maxDepth,
             samples: this.samples,
             place: this.place,
             tanks: this.tanks,
@@ -153,7 +152,7 @@ export interface ITank {
     };
 }
 
-export interface IDive {
+export interface IDbDive {
     dive_id: number;
     date: Date|string;
     divetime: Duration|string|number;
@@ -162,7 +161,7 @@ export interface IDive {
         name: string;
         country: string;
     };
-    maxDepth?: number;
+    max_depth?: number;
     samples?: any[];
     tanks?: ITank[];
     buddies?: ITag[];

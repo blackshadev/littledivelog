@@ -34,6 +34,6 @@ router.get("/:id/samples", async (req, res) => {
     );
 
     res.json(
-        samples.rows,
+        samples.rows[0],
     );
 });

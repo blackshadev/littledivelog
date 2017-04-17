@@ -5,7 +5,7 @@ export const router  = express.Router();
 
 router.get("/", async (req, res) => {
     const dives: QueryResult = await req.app.locals.db.call(
-        "select dive_id, date, tags, place from get_dives($1)",
+        "select dive_id, divetime, date, tags, place from get_dives($1)",
         [res.locals.session],
     );
 

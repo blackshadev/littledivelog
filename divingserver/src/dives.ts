@@ -27,7 +27,13 @@ router.get("/:id", async (req, res) => {
     );
 });
 
-const illegalFields = new Set(["dive_id", "inserted", "updated"]);
+const fields = {
+    dive: {
+        dive_id: "dive_id",
+        divetime: "divetime",
+    }
+};
+
 router.put("/:id", async (req, res) => {
     const db = req.app.locals.db as DbAdapter;
     const useridDs = await db.call(`select user_id from sessions where session_id=$1`, [res.locals.session]);

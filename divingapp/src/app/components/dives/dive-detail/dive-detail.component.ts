@@ -80,7 +80,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
         place: {
           name: this.dive.place.name || '',
-          country: this.dive.place.country || ''
+          country: this.dive.place.country_code || ''
         },
         tank: {
           volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
@@ -146,7 +146,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.maxDepth = Number(dat.maxDepth);
     d.place = {
       name: dat.place.name || undefined,
-      country: dat.place.country || undefined
+      country_code: dat.place.country || undefined
     };
 
     d.tanks = [{
@@ -163,7 +163,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.tags = dat.tags;
     d.buddies = dat.buddies;
 
-    this.service.saveDive(d);
+    this.service.saveDive(d.toJSON(), d.id);
     this.dive = d;
     this.reset();
   }

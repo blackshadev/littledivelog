@@ -89,11 +89,11 @@ export class DiveStore  {
         return [];
     }
 
-    async saveDive(dive: Dive): Promise<any> {
-        let d = dive.toJSON();
+    async saveDive(dive: Partial<IDbDive>, dive_id?:number): Promise<any> {
+        console.log(dive);
         return this.http.put(
-            `${this.serverURL}/${this.session}/dive/${d.dive_id}/`,
-            d
+            `${this.serverURL}/${this.session}/dive/${dive_id}/`,
+            dive
         ).toPromise();
     }
 

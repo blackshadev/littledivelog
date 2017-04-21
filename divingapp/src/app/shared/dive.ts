@@ -3,9 +3,22 @@ function formatNumber(n: number) {
     return ('0' + n).slice(-2);
 }
 
+export interface IPlace {
+    place_id?: number;
+    country_code: string;
+    name: string;
+}
+
 export interface ITag {
     color: string;
     text: string;
+    tag_id?: number;
+}
+
+export interface IBuddy {
+    color: string;
+    text: string;
+    buddy_id?: number;
 }
 
 export interface TSample {
@@ -62,13 +75,13 @@ export class Dive {
     divetime: Duration;
     maxDepth: number;
     samples: TSample[];
-    place: { name: string; country: string; };
+    place: IPlace;
     tanks: ITank[];
     tags: ITag[];
     buddies: ITag[];
 
 
-    get placeStr() { return (this.place.name || '') + (this.place.country ? (', ' + this.place.country) : ''); }
+    get placeStr() { return (this.place.name || '') + (this.place.country_code ? (', ' + this.place.country_code) : ''); }
 
     static New() {
         const dive = new Dive;
@@ -76,7 +89,7 @@ export class Dive {
         dive.divetime = new Duration(0);
         dive.maxDepth = 0;
         dive.samples = [];
-        dive.place = { name: '', country: '' };
+        dive.place = { name: '', country_code: '' };
         dive.tags = [];
         dive.buddies = [];
         dive.tanks = [];
@@ -91,7 +104,7 @@ export class Dive {
         dive.divetime = Duration.Parse(d.DiveTime);
         dive.maxDepth = d.MaxDepth;
         dive.samples = d.Samples;
-        dive.place = { name: '', country: '' };
+        dive.place = { name: '', country_code: '' };
         dive.tags = [];
         dive.buddies = [];
         dive.tanks = [];
@@ -109,7 +122,7 @@ export class Dive {
         d.place = d.place || { name: '', country_code: '' };
         dive.place = {
             name: d.place.name || '',
-            country: d.place.country_code || ''
+            country_code: d.place.country_code || ''
         };
         dive.tanks = d.tanks || [];
         dive.buddies = d.buddies || [];
@@ -134,8 +147,9 @@ export class Dive {
             max_depth: this.maxDepth,
             samples: this.samples,
             place: {
+                place_id: this.place.place_id,
                 name: this.place.name,
-                country_code: this.place.country,
+                country_code: this.place.country_code,
             },
             tanks: this.tanks,
             tags: this.tags,
@@ -160,10 +174,7 @@ export interface IDbDive {
     date: Date|string;
     divetime: Duration|string|number;
     tags: ITag[]
-    place?: {
-        name: string;
-        country_code: string;
-    };
+    place?: IPlace;
     max_depth?: number;
     samples?: any[];
     tanks?: ITank[];

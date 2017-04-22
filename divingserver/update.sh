@@ -1,5 +1,5 @@
 #!/bin/sh
 sudo stop diveserver
-sudo -u littledev git pull
-sudo -u littledev tsc
+sudo -u littledev.nl git pull
+sudo -u littledev.nl tsc
 sudo start diveserver

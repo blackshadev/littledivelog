@@ -89,8 +89,7 @@ export class DiveStore  {
         return [];
     }
 
-    async saveDive(dive: Partial<IDbDive>, dive_id?:number): Promise<any> {
-        console.log(dive);
+    async saveDive(dive: Partial<IDbDive>, dive_id?: number): Promise<any> {
         return this.http.put(
             `${this.serverURL}/${this.session}/dive/${dive_id}/`,
             dive

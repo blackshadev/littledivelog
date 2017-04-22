@@ -49,6 +49,7 @@ router.put("/:id", async (req, res) => {
         sql,
         params,
     );
+    console.log(result);
     if (result.rowCount === 0) {
         throw new Error("No such dive found");
     }

@@ -56,14 +56,14 @@ router.put("/:id", async (req, res) => {
 
     body.tags.forEach((tag) => {
         batch.add(
-            "insert into tags (text, color) returning * values ($1, $2)",
+            "insert into tags (text, color) values ($1, $2) returning *",
             [tag.text, tag.color],
             (ds) => { tag.tag_id = ds.rows[0].tag_id; },
         );
     });
     body.buddies.forEach((buddy) => {
         batch.add(
-            "insert into buddies (text, color) returning * values ($1, $2)",
+            "insert into buddies (text, color) values ($1, $2) returning *",
             [buddy.text, buddy.color],
             (ds) => { buddy.buddy_id = ds.rows[0].buddy_id; },
         );

@@ -35,6 +35,7 @@ export class SqlBatch {
         const client = await database.getConnection();
         await client.query("begin");
         try {
+            console.log(this.statements);
             for (const stmt of this.statements) {
                 await stmt.executeClient(client);
             }

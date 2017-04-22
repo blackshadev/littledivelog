@@ -163,7 +163,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.tags = dat.tags;
     d.buddies = dat.buddies;
 
-    this.service.saveDive(d.toJSON(), d.id);
+    this.service.saveDive(d.toJSON(), d.id).then((v) => console.log("done", v)).catch((e) => console.log("error", e));
     this.dive = d;
     this.reset();
   }

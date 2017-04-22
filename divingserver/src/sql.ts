@@ -8,6 +8,7 @@ export class SQLStatement {
     public ondone: (ds: pg.QueryResult) => void = () => { /* done */ };
 
     public async executeClient(cl: pg.Client): Promise<pg.QueryResult> {
+        console.log("exec", this.sql, this.parameters);
         const res = await cl.query(this.sql, this.parameters);
         this.ondone(res);
         return res;

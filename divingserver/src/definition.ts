@@ -27,48 +27,6 @@ export interface IJoinFieldDef extends IFieldDef {
     itemsDef: string;
 }
 
-export class SQLStatement {
-    public static insertQuery(f: FormDef) {
-        const stmt = new SQLStatement();
-        const fldNames: string[] = [];
-
-        for (const fld of f.fields) {
-            if (fld instanceof ValueFieldDef) {
-                fldNames.push(fld.databaseField);
-                stmt.parameters.push(
-                    new Function("d", `d[${fld.formField}]`) as (d: object) => any,
-                );
-            }
-        }
-
-        stmt.sql = `insert into ${f.table} (
-                ${fldNames.join(",")}
-            ) values (
-                ${fldNames.map((_, iX) => `$${iX + 1}`).join(",")}
-            )`;
-        return stmt;
-    }
-
-    public static deleteQuery(f: FormDef) {
-        // todo
-    }
-
-    public sql: string;
-    public parameters: Array<(d: object) => any> = [];
-
-    public apply(d: object): [string, any[]] {
-        return [this.sql, this.parameters.map((p) => p(d))];
-    }
-
-}
-
-export class SqlBatch {
-    protected statements: SQLStatement[] = [];
-    public add(stmt: SQLStatement) {
-        this.statements.push(stmt);
-    }
-}
-
 export class FormDef {
     public static Add(name: string, f: IFormDef) {
         all[name] = FormDef.Create(f);

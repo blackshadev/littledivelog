@@ -14,7 +14,6 @@ app.param("session", (req, res, next, id) => {
 });
 
 async function start() {
-    await database.connect();
     await new Promise((resolve, reject) => {
         app.listen(3000, (err) => {
             if (err) {

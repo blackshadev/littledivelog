@@ -39,11 +39,11 @@ class DbAdapter {
         return this.pool.query(sql, params);
     }
 
-    public async connect() {
+    public async getConnection(): Promise<pg.Client> {
         return this.pool.connect();
     }
 
-    public async disconnect() {
+    public async stop() {
         return this.pool.end();
     }
 

@@ -26,7 +26,7 @@ export class SqlBatch {
             stmt = new SQLStatement();
             stmt.sql = sql;
             stmt.parameters = params || [];
-            stmt.ondone = ondone;
+            stmt.ondone = ondone || stmt.ondone;
         }
         this.statements.push(stmt);
     }

@@ -33,6 +33,7 @@ export class SqlBatch {
 
     public async execute() {
         const client = await database.getConnection();
+        let error: Error;
         await client.query("begin");
         try {
             console.log(this.statements);
@@ -41,9 +42,13 @@ export class SqlBatch {
             }
             await client.query("commit");
         } catch (err) {
+            error = err;
             await client.query("rollback");
         } finally {
             client.release();
+        }
+        if (error !== undefined) {
+            throw error;
         }
     }
 }

@@ -10,7 +10,6 @@ const cnf = {
   user: "divelog",
 };
 
-
 enum ConnectionState {
     Disconnected,
     Connecting,
@@ -30,7 +29,7 @@ interface IBulkInsertParams {
     };
 }
 
-export class DbAdapter {
+class DbAdapter {
     private pool: pg.Pool;
 
     constructor() {
@@ -54,8 +53,7 @@ export class DbAdapter {
         const sqlRows: string[] = [];
         const fields = Object.keys(oPar.mapping);
         const baseSql = `insert into ${oPar.table} (${fields.join(", ")}) values`;
-        for (let iX = 0; iX < oPar.data.length; iX++) {
-            const row = oPar.data[iX];
+        for (const row of oPar.data) {
             sqlRows.push(
                 `(
                     ${
@@ -83,3 +81,4 @@ export class DbAdapter {
     }
 
 }
+export const database: DbAdapter = new DbAdapter();

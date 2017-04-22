@@ -2,7 +2,7 @@ import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as dives from "./dives";
 import * as imp from "./import";
-import { DbAdapter } from "./pg";
+import { database } from "./pg";
 
 const app = express();
 app.use(bodyParser.json({ limit: "500mb" }));
@@ -12,11 +12,9 @@ app.param("session", (req, res, next, id) => {
     res.locals.session = id;
     next();
 });
-const db = new DbAdapter();
-app.locals.db = db;
 
 async function start() {
-    await db.connect();
+    await database.connect();
     await new Promise((resolve, reject) => {
         app.listen(3000, (err) => {
             if (err) {
@@ -26,7 +24,7 @@ async function start() {
             }
         });
     });
-    console.log('DiveServer listening on 3000');
+    console.log("DiveServer listening on 3000");
 }
 
 start();

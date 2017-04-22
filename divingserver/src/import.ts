@@ -1,6 +1,6 @@
 import { QueryResult } from "@types/pg";
 import * as express from "express";
-import { DbAdapter } from "./pg";
+import { database } from "./pg";
 
 export const router  = express.Router();
 
@@ -33,12 +33,11 @@ interface IComputerImport {
 }
 
 router.post("/", async (req, res) => {
-    const db = req.app.locals.db as DbAdapter;
-    const useridDs = await db.call(`select user_id from sessions where session_id=$1`, [res.locals.session]);
+    const useridDs = await database.call(`select user_id from sessions where session_id=$1`, [res.locals.session]);
     const userid = useridDs.rows[0].user_id;
 
     const d = req.body as IComputerImport;
-    const qs = await db.bulkInsert({
+    const qs = await database.bulkInsert({
         data: d.Dives,
         mapping: {
             date: { field: "Date" },

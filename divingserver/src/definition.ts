@@ -3,26 +3,70 @@ const all: { [name: string]: FormDef } = {};
 
 export interface IFormDef {
     table: string;
-    fields: {
-        [fldName: string]: IFieldDef;
-    };
+    fields: IAnyFieldDef[];
 }
 
-export type IFieldDef = IValueFieldDef|IJoinFieldDef|IFormFieldDef;
+export type IAnyFieldDef = IValueFieldDef|IJoinFieldDef|IFormFieldDef;
 
-export interface IFormFieldDef {
+export interface IFieldDef {
+    formField: string;
+}
+
+export interface IFormFieldDef extends IFieldDef {
     itemsDef: string|IFormDef;
 }
 
-export interface IValueFieldDef {
-    field: string;
+export interface IValueFieldDef extends IFieldDef {
+    dbField?: string;
     isPrimary?: boolean;
 }
 
-export interface IJoinFieldDef {
+export interface IJoinFieldDef extends IFieldDef {
     joinTable?: string;
     detailTable: string;
-    itemsDef: string|IFormDef;
+    itemsDef: string;
+}
+
+export class SQLStatement {
+    public static insertQuery(f: FormDef) {
+        const stmt = new SQLStatement();
+        const fldNames: string[] = [];
+
+        for (const fld of f.fields) {
+            if (fld instanceof ValueFieldDef) {
+                fldNames.push(fld.databaseField);
+                stmt.parameters.push(
+                    new Function("d", `d[${fld.formField}]`) as (d: object) => any,
+                );
+            }
+        }
+
+        stmt.sql = `insert into ${f.table} (
+                ${fldNames.join(",")}
+            ) values (
+                ${fldNames.map((_, iX) => `$${iX + 1}`).join(",")}
+            )`;
+        return stmt;
+    }
+
+    public static deleteQuery(f: FormDef) {
+        // todo
+    }
+
+    public sql: string;
+    public parameters: Array<(d: object) => any> = [];
+
+    public apply(d: object): [string, any[]] {
+        return [this.sql, this.parameters.map((p) => p(d))];
+    }
+
+}
+
+export class SqlBatch {
+    protected statements: SQLStatement[] = [];
+    public add(stmt: SQLStatement) {
+        this.statements.push(stmt);
+    }
 }
 
 export class FormDef {
@@ -30,24 +74,25 @@ export class FormDef {
         all[name] = FormDef.Create(f);
     }
 
+    public static Get(name: string): FormDef {
+        return all[name];
+    }
+
     public static Create(f: IFormDef): FormDef {
         const def = new FormDef();
         def.table = f.table;
-        def.fields = [];
-        for (const k in f.fields) {
-            if (f.fields.hasOwnProperty(k)) {
-                def.fields.push(FieldDef.Create(f.fields[k]));
-            }
-        }
+        def.fields = f.fields.map(
+            (fld) => FieldDef.Create(fld),
+        );
 
         return def;
     }
 
-    protected table: string;
-    protected fields: FieldDef[];
-    protected pkFields: string[];
+    public table: string;
+    public fields: FieldDef[];
+    public pkFields: string[];
 
-    protected createUpdateSQL() {
+    public updateSQL() {
         const flds: string[] = [];
 
         return `update ${this.table} set ${flds.join(", ")}`;
@@ -55,9 +100,9 @@ export class FormDef {
 }
 
 export class FieldDef {
-    public static Create(f: IFieldDef): FieldDef {
+    public static Create(f: IAnyFieldDef): FieldDef {
         let field: FieldDef;
-        if ((f as IValueFieldDef).field) {
+        if ((f as IValueFieldDef).formField) {
             field = ValueFieldDef.Create(f as IValueFieldDef);
         } else if ((f as IJoinFieldDef).detailTable) {
             field = JoinFieldDef.Create(f as IJoinFieldDef);
@@ -65,20 +110,20 @@ export class FieldDef {
             throw new Error("No valid field given");
         }
 
-        field.name = name;
+        field.formField = f.formField;
         return field;
     }
-    protected name: string;
+    public formField: string;
 }
 
 export class ValueFieldDef extends FieldDef {
     public static Create(f: IValueFieldDef): ValueFieldDef {
         const fld = new ValueFieldDef();
-        fld.field = f.field;
+        fld.databaseField = f.formField || f.dbField;
         return fld;
     }
 
-    protected field: string;
+    public databaseField: string;
 }
 
 export class JoinFieldDef  extends FieldDef {
@@ -90,45 +135,45 @@ export class JoinFieldDef  extends FieldDef {
         return fld;
     }
 
-    protected joinTable?: string;
-    protected detailTable: string;
-    protected itemsDef: string|FormDef;
+    public joinTable?: string;
+    public detailTable: string;
+    public itemsDef: string|FormDef;
 
 }
 
 FormDef.Add(
     "dives",
     {
-        fields: {
-            buddies: { itemsDef: "tags", joinTable: "dive_buddies" },
-            date: { field: "date" },
-            dive_id: { field: "dive_id", isPrimary: true } ,
-            divetime: { field: "divetime" },
-            max_depth: { field: "max_depth" },
-            tags: { itemsDef: "tags", joinTable: "dive_tags", detailTable: "tags" },
-        },
+        fields: [
+            { formField: "buddies", itemsDef: "tags", joinTable: "dive_buddies" },
+            { formField: "date" },
+            { formField: "dive_id", isPrimary: true } ,
+            { formField: "divetime" },
+            { formField: "max_depth" },
+            { formField: "tags", itemsDef: "tags", joinTable: "dive_tags", detailTable: "tags" },
+        ],
         table: "dives",
     },
 );
 FormDef.Add(
     "buddy",
     {
-        fields: {
-            buddy_id: { field: "buddy_id", isPrimary: true },
-            color: { field: "color" },
-            text: { field: "name" },
-        },
+        fields: [
+            { formField: "buddy_id", isPrimary: true },
+            { formField: "color" },
+            { formField: "text", dbField: "name" },
+        ],
         table: "buddies",
     },
 );
 FormDef.Add(
     "tags",
     {
-        fields: {
-            color: { field: "color" },
-            tag_id: { field: "tag_id", isPrimary: true },
-            text: { field: "text" },
-        },
+        fields: [
+            { formField: "color" },
+            { formField: "tag_id", isPrimary: true },
+            { formField: "text" },
+        ],
         table: "tags",
     },
 );

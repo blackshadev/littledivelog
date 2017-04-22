@@ -6,7 +6,7 @@ import { database } from "./pg";
 export const router  = express.Router();
 
 router.get("/", async (req, res) => {
-    const dives: QueryResult = await req.app.locals.db.call(
+    const dives: QueryResult = await database.call(
         "select dive_id, divetime, date, tags, place from get_dives($1)",
         [res.locals.session],
     );
@@ -39,7 +39,7 @@ router.put("/:id", async (req, res) => {
     const flds = ["date", "divetime", "max_depth"];
     const params = [];
     for (const fld of flds) {
-        sql += `${fld} = ${params.push(fld)}`;
+        sql += `, ${fld} = ${params.push(fld)}`;
     }
     sql += ` where dive_id=${params.push(req.params.id)} and user_id = ${params.push(userid)}`;
 

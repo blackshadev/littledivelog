@@ -39,7 +39,7 @@ router.put("/:id", async (req, res) => {
     const flds = ["date", "divetime", "max_depth"];
     const params = [];
     for (const fld of flds) {
-        sql += `, ${fld} = ${params.push(flds[fld])}`;
+        sql += `, ${fld} = $${params.push(body[fld])}`;
     }
     sql += ` where dive_id=${params.push(req.params.id)} and user_id = ${params.push(userid)}`;
 

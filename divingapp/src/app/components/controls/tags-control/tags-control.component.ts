@@ -4,6 +4,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
 interface ITag {
+  id?: number;
   text: string;
   color: string;
 }
@@ -33,18 +34,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   private onTouched: () => void = () => { };
 
   constructor() {
-    this.tags = ([
-      {
-        text: 'Deco',
-        color: '#ff0000'
-      }, {
-        text: 'Night',
-        color: '#000000'
-      }, {
-        text: 'Club',
-        color: '#cccccc'
-      }
-    ]);
+    this.tags = [];
   }
 
   ngOnInit() {

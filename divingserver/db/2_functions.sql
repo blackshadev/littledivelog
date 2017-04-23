@@ -28,7 +28,7 @@ select dive_id
      , (	
          select COALESCE(array_to_json(array_agg(row_to_json(b))), '[]')
            from (
-             select tag.color, tag.text
+             select tag.tag_id, tag.color, tag.text
                from dive_tags d_t
                join tags tag on d_t.tag_id = tag.tag_id
               where d_t.dive_id = d.dive_id
@@ -37,7 +37,7 @@ select dive_id
      , (	
          select COALESCE(array_to_json(array_agg(row_to_json(b))), '[]')
            from (
-             select bud.color, bud.text
+             select bud.buddy_id, bud.color, bud.text
                from dive_buddies d_b
                join buddies bud on d_b.buddy_id = bud.buddy_id
               where d_b.dive_id = d.dive_id

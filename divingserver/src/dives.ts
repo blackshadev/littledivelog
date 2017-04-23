@@ -1,8 +1,8 @@
-import { SqlBatch } from './sql';
 import { QueryResult } from "@types/pg";
 import * as express from "express";
 import { isPrimitive } from "util";
 import { database } from "./pg";
+import { SqlBatch } from "./sql";
 
 export const router  = express.Router();
 
@@ -55,6 +55,10 @@ router.put("/:id", async (req, res) => {
     batch.add("delete from dive_buddies where dive_id=$1", [req.params.id]);
 
     body.tags.forEach((tag) => {
+        if (tag.tag_id === undefined) {
+            return;
+        }
+
         batch.add(
             "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
             [tag.text, tag.color, userid],
@@ -64,6 +68,10 @@ router.put("/:id", async (req, res) => {
         );
     });
     body.buddies.forEach((buddy) => {
+        if (buddy.buddy_id === undefined) {
+            return;
+        }
+
         batch.add(
             "insert into buddies (text, color, user_id) values ($1, $2, $3) returning *",
             [buddy.text, buddy.color, userid],

@@ -159,6 +159,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     }];
 
     d.samples = this.dive.samples;
+    console.log(d.tags);
     d.tags = dat.tags;
     d.buddies = dat.buddies;
 

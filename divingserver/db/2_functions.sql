@@ -46,6 +46,7 @@ select dive_id
   from dives d
   join sessions s on d.user_id = s.user_id
  where s.session_id = p_session_id
+ order by d.date desc
  $$
  language sql
  strict;

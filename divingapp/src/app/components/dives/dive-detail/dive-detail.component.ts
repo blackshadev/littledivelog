@@ -4,12 +4,10 @@ import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveStore } from '../../../services/dive.service';
 import { Dive, Duration } from '../../../shared/dive';
-import { SimpleChanges, OnInit, Component, Input, OnChanges, ViewChild, ElementRef } from '@angular/core';
+import { SimpleChanges, OnInit, Component, Input, OnChanges, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
-
 import 'rxjs/add/operator/switchMap';
 import { CustomValidators } from 'app/shared/validators';
-
 
 declare function $(...args: any[]): any;
 
@@ -20,6 +18,7 @@ declare function $(...args: any[]): any;
 })
 export class DiveDetailComponent implements OnInit, OnChanges {
   @Input() dive: Dive;
+  @Output() onDiveSaved = new EventEmitter<Dive>();
 
   public form: FormGroup;
   CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
@@ -163,7 +162,17 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.tags = dat.tags;
     d.buddies = dat.buddies;
 
-    this.service.saveDive(d.toJSON(), d.id).then((v) => console.log("done", v)).catch((e) => console.log("error", e));
+    this.service.saveDive(
+      d.toJSON(),
+      d.id
+    ).then(
+      (v) => {
+        this.onDiveSaved.emit(d);
+      }
+    ).catch(
+      (e) => console.log("error", e)
+    );
+    
     this.dive = d;
     this.reset();
   }

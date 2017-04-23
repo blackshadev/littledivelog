@@ -4,12 +4,15 @@ import { database } from "./pg";
 
 export class SQLStatement {
     public sql: string;
-    public parameters: string[];
+    public parameters: Array<string|(() => any)>;
     public ondone: (ds: pg.QueryResult) => void = () => { /* done */ };
 
     public async executeClient(cl: pg.Client): Promise<pg.QueryResult> {
-        console.log("exec", this.sql, this.parameters);
-        const res = await cl.query(this.sql, this.parameters);
+        const res = await cl.query(
+            this.sql,
+            this.parameters.map(
+                (v) => typeof(v) === "function" ? v() : v)
+            );
         this.ondone(res);
         return res;
     }

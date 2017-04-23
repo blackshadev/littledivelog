@@ -78,7 +78,7 @@ export class Dive {
     place: IPlace;
     tanks: ITank[];
     tags: ITag[];
-    buddies: ITag[];
+    buddies: IBuddy[];
 
 
     get placeStr() { return (this.place.name || '') + (this.place.country_code ? (', ' + this.place.country_code) : ''); }

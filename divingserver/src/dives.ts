@@ -55,7 +55,7 @@ router.put("/:id", async (req, res) => {
     batch.add("delete from dive_buddies where dive_id=$1", [req.params.id]);
 
     body.tags.forEach((tag) => {
-        if (tag.tag_id === undefined) {
+        if (tag.tag_id !== undefined) {
             return;
         }
 
@@ -68,7 +68,7 @@ router.put("/:id", async (req, res) => {
         );
     });
     body.buddies.forEach((buddy) => {
-        if (buddy.buddy_id === undefined) {
+        if (buddy.buddy_id !== undefined) {
             return;
         }
 

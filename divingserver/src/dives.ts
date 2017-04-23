@@ -72,8 +72,9 @@ router.put("/:id", async (req, res) => {
         );
     });
 
-    console.log(body.tags);
+    console.log("tags", body.tags);
     body.tags.forEach((tag) => {
+        console.log(tag);
         batch.add(
             "insert into dive_tags (dive_id, tag_id) values ($1, $2)",
             [req.params.id, tag.tag_id],

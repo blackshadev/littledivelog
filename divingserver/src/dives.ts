@@ -58,7 +58,10 @@ router.put("/:id", async (req, res) => {
         batch.add(
             "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
             [tag.text, tag.color, userid],
-            (ds) => { tag.tag_id = ds.rows[0].tag_id; },
+            (ds) => {
+                tag.tag_id = ds.rows[0].tag_id;
+                console.log(tag);
+            },
         );
     });
     body.buddies.forEach((buddy) => {
@@ -69,6 +72,7 @@ router.put("/:id", async (req, res) => {
         );
     });
 
+    console.log(body.tags);
     body.tags.forEach((tag) => {
         batch.add(
             "insert into dive_tags (dive_id, tag_id) values ($1, $2)",

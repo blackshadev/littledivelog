@@ -56,15 +56,15 @@ router.put("/:id", async (req, res) => {
 
     body.tags.forEach((tag) => {
         batch.add(
-            "insert into tags (text, color) values ($1, $2) returning *",
-            [tag.text, tag.color],
+            "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
+            [tag.text, tag.color, userid],
             (ds) => { tag.tag_id = ds.rows[0].tag_id; },
         );
     });
     body.buddies.forEach((buddy) => {
         batch.add(
-            "insert into buddies (text, color) values ($1, $2) returning *",
-            [buddy.text, buddy.color],
+            "insert into buddies (text, color, user_id) values ($1, $2, $3) returning *",
+            [buddy.text, buddy.color, userid],
             (ds) => { buddy.buddy_id = ds.rows[0].buddy_id; },
         );
     });

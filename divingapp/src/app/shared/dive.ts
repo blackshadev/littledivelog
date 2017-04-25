@@ -34,14 +34,15 @@ export class Duration {
     seconds: number;
 
     static Parse(str: Duration|string|number): Duration {
-        if(typeof(str) === "string") {
+        if (typeof(str) === 'string') {
                 const parts = str.split(':').map((s) => parseInt(s, 10));
                 const d = new Duration(...parts);
                 return d;
-        } else if(typeof(str) === "number") {
+        } else if (typeof(str) === 'number') {
             return new Duration(0, 0, str);
-        } else
+        } else {
             return str;
+        }
 
     }
 

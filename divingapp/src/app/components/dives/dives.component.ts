@@ -14,7 +14,7 @@ export class DivesComponent implements OnInit, OnDestroy {
 
   public dive: Dive;
   private subs: Subscription[] = [];
-  @ViewChild("diveList") private diveList: DiveListComponent;
+  @ViewChild('diveList') private diveList: DiveListComponent;
 
 
   constructor(

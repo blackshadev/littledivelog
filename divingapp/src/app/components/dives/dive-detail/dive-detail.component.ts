@@ -23,7 +23,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   public form: FormGroup;
   CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
 
-  @ViewChild("diveProfile") private diveProfile: DiveProfileComponent;
+  @ViewChild('diveProfile') private diveProfile: DiveProfileComponent;
 
   constructor(
     private service: DiveStore,
@@ -170,9 +170,9 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         this.onDiveSaved.emit(d);
       }
     ).catch(
-      (e) => console.log("error", e)
+      (e) => console.log('error', e)
     );
-    
+
     this.dive = d;
     this.reset();
   }

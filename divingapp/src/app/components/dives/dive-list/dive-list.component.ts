@@ -30,7 +30,7 @@ export class DiveListComponent  {
 
   updateDive(d: Dive) {
     for (let iX = 0; iX < this.dives.length; iX++) {
-      if(this.dives[iX].id === d.id) {
+      if (this.dives[iX].id === d.id) {
         this.dives[iX] = d;
       }
     }

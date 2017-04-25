@@ -16,8 +16,8 @@ interface ICountry {
 @Injectable()
 export class DiveStore  {
     private __countries: ICountry[];
-    private session: string = "464debe8-8620-4cbb-8eb0-3c2656521ac9";
-    private serverURL = "https://dive.littledev.nl/api"
+    private session = '464debe8-8620-4cbb-8eb0-3c2656521ac9';
+    private serverURL = 'https://dive.littledev.nl/api'
 
     constructor(
         private http: Http
@@ -33,8 +33,8 @@ export class DiveStore  {
         return this.http.get(
                 `${this.serverURL}/${this.session}/dive/`
             ).map(
-                (res: Response): Dive[] => { 
-                    let dives: IDbDive[] = res.json() || [];
+                (res: Response): Dive[] => {
+                    const dives: IDbDive[] = res.json() || [];
                     return Dive.ParseAll(dives);
                 }
             ).catch(this.handleError);
@@ -69,12 +69,13 @@ export class DiveStore  {
             return this.__countries;
         }
 
-        this.__countries = [
-            { code: 'NL', description: 'Netherlands' },
-            { code: 'DE', description: 'Germany' },
-            { code: 'EG', description: 'Egypth' },
-            { code: 'GR', description: 'Greece' },
-        ];
+        const res = await this.http.get(
+            `${this.serverURL}/country/`
+        ).toPromise();
+        const all: { iso2: string, name: string }[] = res.json() || [];
+        this.__countries = all.map(
+            (c) => { return { code: c.iso2, description: c.name }; }
+        );
 
         return this.__countries;
     }
@@ -90,7 +91,7 @@ export class DiveStore  {
     }
 
     async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {
-        console.log(dive);
+
         return this.http.put(
             `${this.serverURL}/${this.session}/dive/${dive_id}/`,
             dive
@@ -101,8 +102,8 @@ export class DiveStore  {
         return this.http.get(
                 `${this.serverURL}/${this.session}/dive/${dive_id}/`
             ).map(
-                (res: Response) => { 
-                    let r = res.json();
+                (res: Response) => {
+                    const r = res.json();
                     return Dive.Parse(r);
                 }
             ).catch(this.handleError);
@@ -114,12 +115,12 @@ export class DiveStore  {
             ).toPromise(
             ).then(
                 (res: Response) => {
-                    let b = res.json();
+                    const b = res.json();
                     return b as TSample[];
                 }
             );
     }
-    
+
     private handleError(error: Response|any) {
         // In a real world app, you might use a remote logging infrastructure
         let errMsg: string;

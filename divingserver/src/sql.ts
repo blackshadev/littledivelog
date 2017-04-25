@@ -1,4 +1,3 @@
-import * as bluebird from "bluebird";
 import * as pg from "pg";
 import { database } from "./pg";
 
@@ -11,7 +10,7 @@ export class SQLStatement {
         const res = await cl.query(
             this.sql,
             this.parameters.map(
-                (v) => typeof(v) === "function" ? v() : v)
+                (v) => typeof(v) === "function" ? v() : v),
             );
         this.ondone(res);
         return res;

@@ -81,13 +81,13 @@ export class DiveStore  {
     }
 
     async getDiveSpots(c: string): Promise<string[]> {
-        switch (c) {
-            case 'NL': return ['De beldert', 'Heidemeer'];
-            case 'EG': return ['Fanadir Dagt'];
-            case 'DE': return [];
-            case 'GR': return [];
-        }
-        return [];
+        const res = await this.http.get(
+            `${this.serverURL}/${this.session}/place/${c}`
+        ).toPromise();
+        const all: { place_id: string, name: string, country_code }[] = res.json() || [];
+        return all.map(
+            (p) => p.name
+        );
     }
 
     async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {

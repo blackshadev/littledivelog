@@ -7,7 +7,7 @@ export const router  = express.Router();
 router.get("/", async (req, res) => {
 
     const buds: QueryResult = await database.call(
-        `select *
+        `select bud.*
            from buddies bud
            join sessions ses on ses.user_id = bud.user_id
           where ses.session_id = $1

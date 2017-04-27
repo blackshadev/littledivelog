@@ -42,7 +42,6 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
 
   public async getData(keyword: string): Promise<ITag[]> {
     const res = await this.source(keyword);
-    console.log(keyword, res);
     return res;
   }
 
@@ -64,7 +63,11 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     return `#${r}${g}${b}`;
   }
 
-  private addTag(v: ITag) {
+  public pickTag(e: ITag) {
+    console.log(e);
+  }
+
+  public addTag(v: ITag) {
     this.tags.push(v);
     if (this.tagInput) {
       const el = this.tagInput.nativeElement as HTMLInputElement;

@@ -34,7 +34,7 @@ type SourceFunction = (keyword: string) => Promise<any[]>;
   ]
 })
 export class AutocompleteComponent implements OnInit, ControlValueAccessor {
-  @Output() change = new EventEmitter<any>();
+  @Output() changed = new EventEmitter<any>();
 
   @Input() inputClass: string;
   @Input() set source(v: SourceFunction) {
@@ -64,7 +64,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }
 
     this._value = v;
-    this.change.emit(v);
+    this.changed.emit(v);
     this.onChange(v);
     this.onTouched();
   }
@@ -96,17 +96,17 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
   public  valueSelected(v: IItem) {
     this._items = [v];
-    this.value = v.key;
+    // this.value = v.key;
   }
 
   public  inputblur(e: Event) {
     const eInp = this.inputElement.nativeElement as HTMLInputElement;
 
-    if (this.forceSelection) {
-      this.value = this._items.length ? this._items[0].key : '';
-    } else {
-      this.value = eInp.value;
-    }
+    // if (this.forceSelection) {
+    //   this.value = this._items.length ? this._items[0].key : '';
+    // } else {
+    //   this.value = eInp.value;
+    // }
   }
 
   public filter(keyword) {
@@ -145,6 +145,11 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
       });
     });
 
+  }
+
+  public valueFormatter(d: any) {
+    console.log("format", d);
+    return d.value;
   }
 
   private updateGetItem() {

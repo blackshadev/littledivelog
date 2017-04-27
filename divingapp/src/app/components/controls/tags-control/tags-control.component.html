@@ -8,6 +8,7 @@
   *ngIf="source !== undefined"
   inputClass="form-control"
   [source]="getData.bind(this)"
+  (changed)="pickTag($event)"
   display-item="text"
   forceSelection="false"
 ></app-autocomplete>

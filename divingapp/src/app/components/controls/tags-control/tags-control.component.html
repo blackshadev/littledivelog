@@ -7,8 +7,8 @@
 <app-autocomplete
   *ngIf="source !== undefined"
   inputClass="form-control"
-  [source]="source"
-  (change)="addTag($event)"
+  [source]="getData.bind(this)"
+  display-item="text"
   forceSelection="false"
 ></app-autocomplete>
 <div *ngIf="source === undefined" class="input-group">

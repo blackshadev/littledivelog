@@ -19,7 +19,7 @@ export class TagsComponent {
   @Input() tags: ITag[] = [];
   @Output() onremove = new EventEmitter();
 
-  private fontColor(color: string) {
+  public fontColor(color: string) {
     if (color[0] === '#') {
       color = color.substr(1);
     }

@@ -1,5 +1,5 @@
 import { Http, Response } from '@angular/http';
-import { Dive,  IDbDive,  IDiveRecordDC,  TSample} from '../shared/dive';
+import { Dive, IBuddy, IDbDive, IDiveRecordDC, IPlace, TSample } from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
@@ -80,14 +80,12 @@ export class DiveStore  {
         return this.__countries;
     }
 
-    async getDiveSpots(c: string): Promise<string[]> {
+    async getDiveSpots(c: string): Promise<IPlace[]> {
         const res = await this.http.get(
             `${this.serverURL}/${this.session}/place/${c}`
         ).toPromise();
-        const all: { place_id: string, name: string, country_code }[] = res.json() || [];
-        return all.map(
-            (p) => p.name
-        );
+        const all: IPlace[] = res.json() || [];
+        return all;
     }
 
     async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {
@@ -98,15 +96,26 @@ export class DiveStore  {
         ).toPromise();
     }
 
-    getDive(dive_id: number): Observable<Dive> {
-        return this.http.get(
-                `${this.serverURL}/${this.session}/dive/${dive_id}/`
-            ).map(
-                (res: Response) => {
-                    const r = res.json();
-                    return Dive.Parse(r);
-                }
-            ).catch(this.handleError);
+    async getBuddies(): Promise<IBuddy[]> {
+        const req = await this.http.get(
+            `${this.serverURL}/${this.session}/buddy/`
+        ).toPromise();
+        return req.json() as IBuddy[];
+    }
+
+    async getTags(): Promise<IBuddy[]> {
+        const req = await this.http.get(
+            `${this.serverURL}/${this.session}/tag/`
+        ).toPromise();
+        return req.json();
+    }
+
+    async getDive(dive_id: number): Promise<Dive> {
+        const res = await this.http.get(
+            `${this.serverURL}/${this.session}/dive/${dive_id}/`
+        ).toPromise();
+        const r = res.json();
+        return Dive.Parse(r);
     }
 
     async getSamples(dive_id: number): Promise<TSample[]> {

@@ -22,7 +22,7 @@ interface ITag {
   ]
 })
 export class TagsControlComponent implements OnInit, ControlValueAccessor {
-  @Input() source: Observable<ITag[]>;
+  @Input() source: (keyword: string) => Promise<ITag[]>;
   @Input() tags: ITag[];
 
   @Output() change = new EventEmitter<ITag[]>();
@@ -38,6 +38,12 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   }
 
   ngOnInit() {
+  }
+
+  public async getData(keyword: string): Promise<ITag[]> {
+    const res = await this.source(keyword);
+    console.log(keyword, res);
+    return res;
   }
 
   private fontColor(color: string) {
@@ -60,8 +66,10 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
 
   private addTag(v: ITag) {
     this.tags.push(v);
-    const el = this.tagInput.nativeElement as HTMLInputElement;
-    el.value = '';
+    if (this.tagInput) {
+      const el = this.tagInput.nativeElement as HTMLInputElement;
+      el.value = '';
+    }
     this.doChange();
     this.doTouched();
   }

@@ -151,7 +151,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     this.getItem = new Function('isNew', 'v', `return {
       isNew: isNew,
       value: v${this._displayItem ? '.' + this._displayItem : ''},
-      key: v${this._keyItem ? '.' + this._keyItem : ''} 
+      key: v${this._keyItem ? '.' + this._keyItem : ''}
     }`) as (v: any, isNew: boolean) => { key: any, value: any, isNew: boolean };
   }
 

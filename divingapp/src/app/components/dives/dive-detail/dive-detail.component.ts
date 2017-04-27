@@ -121,17 +121,78 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getCountries(keyword: string) {
-    const re = new RegExp(keyword, 'i');
-    const countries = await this.service.getCountries();
-    return countries.filter((v) => re.test(v.code) || re.test(v.description));
+    const cntries = await this.service.getCountries();
+    const fuse = new Fuse(
+        cntries, {
+            threshold: 0.6,
+            distance: 100,
+            location: 0,
+            shouldSort: true,
+            maxPatternLength: 32,
+            keys: [
+                { name: 'code', weight: 0.7 },
+                { name: 'description', weight: 0.3 },
+            ]
+        }
+    );
+    return fuse.search(keyword);
   }
 
   async getDivespots(keyword: string) {
-    const re = new RegExp(keyword, 'i');
     const c = (<FormGroup> this.form.controls.place).controls.country.value;
     const spots = await this.service.getDiveSpots(c);
 
-    return spots.filter((v) => re.test(v));
+    const fuse = new Fuse(
+        spots, {
+            threshold: 0.6,
+            distance: 100,
+            location: 0,
+            shouldSort: true,
+            maxPatternLength: 32,
+            keys: [
+                'name',
+            ]
+        }
+    );
+    return fuse.search(keyword).slice(0, 10);
+  }
+
+  async getBuddies(keyword: string) {
+    const buds = await this.service.getBuddies();
+    console.log(buds);
+
+    const fuse = new Fuse(
+        buds, {
+            threshold: 0.6,
+            distance: 100,
+            location: 0,
+            shouldSort: true,
+            maxPatternLength: 32,
+            keys: [
+                'text',
+            ]
+        }
+    );
+    return keyword ? fuse.search(keyword).slice(0, 10) : buds.slice(0, 10);
+
+  }
+
+  async getTags(keyword: string) {
+    const tags = await this.service.getTags();
+
+    const fuse = new Fuse(
+        tags, {
+            threshold: 0.6,
+            distance: 100,
+            location: 0,
+            shouldSort: true,
+            maxPatternLength: 32,
+            keys: [
+                'text',
+            ]
+        }
+    );
+    return fuse.search(keyword).slice(0, 10);
   }
 
   onSubmit() {

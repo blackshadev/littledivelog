@@ -1,5 +1,5 @@
 import { Http, Response } from '@angular/http';
-import { Dive, IBuddy, IDbDive, IDiveRecordDC, IPlace, TSample } from '../shared/dive';
+import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, TSample } from '../shared/dive';
 import { Injectable } from '@angular/core';
 
 import 'rxjs/add/operator/toPromise';
@@ -103,7 +103,7 @@ export class DiveStore  {
         return req.json() as IBuddy[];
     }
 
-    async getTags(): Promise<IBuddy[]> {
+    async getTags(): Promise<IDiveTag[]> {
         const req = await this.http.get(
             `${this.serverURL}/${this.session}/tag/`
         ).toPromise();

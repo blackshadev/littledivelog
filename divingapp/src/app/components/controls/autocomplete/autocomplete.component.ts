@@ -56,9 +56,6 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   }
 
   @Input() set value(v: any) {
-    const eInput = this.inputElement.nativeElement as HTMLInputElement;
-    eInput.value = v || '';
-
     if (this._value === v) {
       return;
     }
@@ -70,6 +67,9 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   }
   get value(): any {
     return this._value;
+  }
+  get viewValue(): any {
+    return this._selectedValue ? this._selectedValue.value : this._value;
   }
 
   @Input() disabled = false;
@@ -94,19 +94,20 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {}
 
-  public  valueSelected(v: IItem) {
+  public valueSelected(v: IItem) {
     this._items = [v];
-    // this.value = v.key;
+    this._selectedValue = v;
+    this.value = v.key;
   }
 
-  public  inputblur(e: Event) {
+  public inputblur(e: Event) {
     const eInp = this.inputElement.nativeElement as HTMLInputElement;
 
-    // if (this.forceSelection) {
-    //   this.value = this._items.length ? this._items[0].key : '';
-    // } else {
-    //   this.value = eInp.value;
-    // }
+    if (this.forceSelection) {
+      this.value = this._items.length ? this._items[0].key : '';
+    } else {
+      this.value = eInp.value;
+    }
   }
 
   public filter(keyword) {
@@ -145,11 +146,6 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
       });
     });
 
-  }
-
-  public valueFormatter(d: any) {
-    console.log("format", d);
-    return d.value;
   }
 
   private updateGetItem() {

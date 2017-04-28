@@ -1,13 +1,8 @@
+import { ITag } from '../tags/tags.component';
 import { leftpad } from '../../../shared/formatters';
 import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
-
-interface ITag {
-  id?: number;
-  text: string;
-  color: string;
-}
 
 @Component({
   selector: 'app-tags-control',
@@ -24,6 +19,7 @@ interface ITag {
 export class TagsControlComponent implements OnInit, ControlValueAccessor {
   @Input() source: (keyword: string) => Promise<ITag[]>;
   @Input() tags: ITag[];
+  @Input() placeholder: string;
 
   @Output() change = new EventEmitter<ITag[]>();
   @Output() touched = new EventEmitter<ITag[]>();
@@ -41,7 +37,13 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   }
 
   public async getData(keyword: string): Promise<ITag[]> {
-    const res = await this.source(keyword);
+    const map = {};
+    for (const tag of this.tags) {
+      map[tag.id] = true;
+    }
+    let res = await this.source(keyword);
+    res = res.filter((v) => !v.id || !map[v.id]);
+    console.log(map, res);
     return res;
   }
 
@@ -63,12 +65,9 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     return `#${r}${g}${b}`;
   }
 
-  public pickTag(e: ITag) {
-    console.log(e);
-  }
-
   public addTag(v: ITag) {
     this.tags.push(v);
+
     if (this.tagInput) {
       const el = this.tagInput.nativeElement as HTMLInputElement;
       el.value = '';

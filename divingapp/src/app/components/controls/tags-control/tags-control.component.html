@@ -8,8 +8,8 @@
   *ngIf="source !== undefined"
   inputClass="form-control"
   [source]="getData.bind(this)"
-  (changed)="pickTag($event)"
   display-item="text"
+  [placeholder]="placeholder"
   forceSelection="false"
 ></app-autocomplete>
 <div *ngIf="source === undefined" class="input-group">
@@ -23,6 +23,7 @@
     </button>
   </span>
   <input #tagInput
+    [placeholder]="placeholder"
     class="form-control"
   />
 </div>

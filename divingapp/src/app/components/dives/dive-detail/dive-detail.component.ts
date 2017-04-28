@@ -1,3 +1,4 @@
+import { ITag } from '../../controls/tags/tags.component';
 import { DiveProfileComponent } from '../../controls/dive-profile/dive-profile.component';
 import { Validators, FormBuilder, FormGroup, NgForm, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
@@ -88,8 +89,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
           pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
           pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
         },
-        buddies: this.dive.buddies.slice(0),
-        tags: this.dive.tags.slice(0)
+        buddies: this.dive.buddies.map((b) => { return { id: b.buddy_id, text: b.text, color: b.color  }; }),
+        tags: this.dive.tags.map((b) => { return { id: b.tag_id, text: b.text, color: b.color  }; }),
       });
     }
   }
@@ -159,7 +160,6 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   async getBuddies(keyword: string) {
     const buds = await this.service.getBuddies();
-    console.log(buds);
 
     const fuse = new Fuse(
         buds, {
@@ -173,8 +173,14 @@ export class DiveDetailComponent implements OnInit, OnChanges {
             ]
         }
     );
-    return keyword ? fuse.search(keyword).slice(0, 10) : buds.slice(0, 10);
-
+    const list = keyword ? fuse.search(keyword).slice(0, 10) : buds.slice(0, 10);
+    return list.map((b) => {
+      return {
+        id: b.buddy_id,
+        text: b.text,
+        color: b.color,
+      };
+    });
   }
 
   async getTags(keyword: string) {
@@ -192,7 +198,14 @@ export class DiveDetailComponent implements OnInit, OnChanges {
             ]
         }
     );
-    return fuse.search(keyword).slice(0, 10);
+    const list = keyword ? fuse.search(keyword).slice(0, 10) : tags.slice(0, 10);
+    return list.map((b) => {
+      return {
+        id: b.tag_id,
+        text: b.text,
+        color: b.color,
+      };
+    });
   }
 
   onSubmit() {
@@ -220,8 +233,24 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     }];
 
     d.samples = this.dive.samples;
-    d.tags = dat.tags;
-    d.buddies = dat.buddies;
+    d.tags = (dat.tags as ITag[]).map(
+      (t) => {
+        return {
+          tag_id: t.id,
+          text: t.text,
+          color: t.color,
+        };
+      }
+    );
+    d.buddies = (dat.buddies as ITag[]).map(
+      (t) => {
+        return {
+          buddy_id: t.id,
+          text: t.text,
+          color: t.color,
+        };
+      }
+    );
 
     this.service.saveDive(
       d.toJSON(),

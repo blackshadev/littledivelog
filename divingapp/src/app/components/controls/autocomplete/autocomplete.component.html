@@ -2,10 +2,9 @@
   auto-complete
   [ngClass]="inputClass"
   [source]="filter.bind(this)"
-  [value]="value"
+  [value]="viewValue"
   [placeholder]="placeholder"
-  [list-formatter]="valueFormatter"
-  [value-formatter]="valueFormatter"
+  list-formatter="value"
   tab-to-select="false"
   (blur)="inputblur($event)"
   (valueChanged)="valueSelected($event)"

@@ -3,7 +3,8 @@ import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output,
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 
-interface ITag {
+export interface ITag {
+  id?: number;
   text: string;
   color: string;
 }

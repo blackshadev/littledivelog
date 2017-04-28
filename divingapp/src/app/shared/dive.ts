@@ -9,7 +9,7 @@ export interface IPlace {
     name: string;
 }
 
-export interface ITag {
+export interface IDiveTag {
     color: string;
     text: string;
     tag_id?: number;
@@ -78,7 +78,7 @@ export class Dive {
     samples: TSample[];
     place: IPlace;
     tanks: ITank[];
-    tags: ITag[];
+    tags: IDiveTag[];
     buddies: IBuddy[];
 
 
@@ -174,12 +174,12 @@ export interface IDbDive {
     dive_id: number;
     date: Date|string;
     divetime: Duration|string|number;
-    tags: ITag[]
+    tags: IDiveTag[]
     place?: IPlace;
     max_depth?: number;
     samples?: any[];
     tanks?: ITank[];
-    buddies?: ITag[];
+    buddies?: IDiveTag[];
 }
 
 export interface IDiveRecordDC {

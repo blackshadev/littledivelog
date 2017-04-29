@@ -165,7 +165,7 @@ export interface ITank {
     oxygen: number;
     pressure: {
         type: 'bar'|'psi';
-        start: number;
+        begin: number;
         end: number;
     };
 }

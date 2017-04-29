@@ -30,18 +30,22 @@ create table if not exists places (
   , primary key(place_id)
 );
 
-  create type pressure_unit as enum(
-      'psi'
-    , 'bar'
-  );
-
-create type tank as (
-    volume        int
-  , ogygen        int
-  , beginPressure int
-  , endPressure   int
-  , unit          pressure_unit
+create type pressure_unit as enum(
+    'psi'
+  , 'bar'
 );
+
+create type pressure as (
+    "begin"           int
+  , "end"             int
+  , "type"            pressure_unit
+);
+
+  create type tank as (
+      volume        int
+    , oxygen        int
+    , pressure      pressure
+  );
 
 create table if not exists dives (
     dive_id         serial                                                      not null

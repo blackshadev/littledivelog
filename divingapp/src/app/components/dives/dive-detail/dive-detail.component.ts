@@ -74,6 +74,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   protected reset() {
     this.form.reset();
     if (this.dive) {
+      console.log(this.dive.tanks);
       this.form.setValue({
         date: this.dive.date ? moment(this.dive.date).format('DD-MM-YYYY HH:mm:ss') : '',
         divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
@@ -85,7 +86,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         tank: {
           volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
           airPercentage: this.dive.tanks.length ? this.dive.tanks[0].oxygen : '',
-          pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.start : '',
+          pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.begin : '',
           pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
           pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
         },
@@ -234,7 +235,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       oxygen: dat.tank.airPercentage,
       volume: dat.tank.volume,
       pressure: {
-        start: dat.tank.pressureStart,
+        begin: dat.tank.pressureStart,
         end: dat.tank.pressureEnd,
         type: dat.tank.pressureType,
       }

@@ -1,11 +1,12 @@
 create type dive_record as(
     dive_id		int
-  , date		timestamp
+  , date		  text
   , divetime	int
   , max_depth	numeric(6, 3)
-  , place		json
-  , tags		json
-  , buddies 	json
+  , place		  json
+  , tags		  json
+  , buddies   json
+  , tanks     json
 );
 
 create or replace function get_dives(
@@ -43,6 +44,7 @@ select dive_id
               where d_b.dive_id = d.dive_id
            ) b
        ) as buddies
+     , to_json(d.tanks) 
   from dives d
   join sessions s on d.user_id = s.user_id
  where s.session_id = p_session_id
@@ -50,3 +52,4 @@ select dive_id
  $$
  language sql
  strict;
+ 

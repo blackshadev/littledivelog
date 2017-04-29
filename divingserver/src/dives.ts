@@ -40,6 +40,7 @@ router.put("/:id", async (req, res) => {
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
     const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
+    console.log(flds);
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;
     }

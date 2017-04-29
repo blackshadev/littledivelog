@@ -41,11 +41,11 @@ create type pressure as (
   , "type"            pressure_unit
 );
 
-  create type tank as (
-      volume        int
-    , oxygen        int
-    , pressure      pressure
-  );
+create type tank as (
+    volume        int
+  , oxygen        int
+  , pressure      pressure
+);
 
 create table if not exists dives (
     dive_id         serial                                                      not null

@@ -74,7 +74,6 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   protected reset() {
     this.form.reset();
     if (this.dive) {
-      console.log(this.dive.tanks);
       this.form.setValue({
         date: this.dive.date ? moment(this.dive.date).format('DD-MM-YYYY HH:mm:ss') : '',
         divetime: this.dive.divetime ? this.dive.divetime.toString() : '',

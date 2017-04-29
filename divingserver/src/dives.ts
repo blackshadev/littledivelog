@@ -39,7 +39,6 @@ router.put("/:id", async (req, res) => {
         // tslint:disable-next-line:max-line-length
         return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
     }).join('","')}"}`;
-    console.log(body.tanks);
 
     const batch = new SqlBatch();
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";

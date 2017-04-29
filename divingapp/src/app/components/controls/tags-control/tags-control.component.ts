@@ -1,3 +1,4 @@
+import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { ITag } from '../tags/tags.component';
 import { leftpad } from '../../../shared/formatters';
 import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
@@ -19,13 +20,15 @@ import { Observable } from 'rxjs/Rx';
 export class TagsControlComponent implements OnInit, ControlValueAccessor {
   @Input() source: (keyword: string) => Promise<ITag[]>;
   @Input() tags: ITag[];
-  @Input() placeholder: string;
+  @Input() placeholder = '';
 
   @Output() change = new EventEmitter<ITag[]>();
   @Output() touched = new EventEmitter<ITag[]>();
 
   @ViewChild('tagInput')
   private tagInput: ElementRef;
+  @ViewChild('tagAutocomplete')
+  private tagAutocomplete: AutocompleteComponent;
   private onChange: (v: ITag[]) => void = () => { };
   private onTouched: () => void = () => { };
 
@@ -36,14 +39,19 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   ngOnInit() {
   }
 
+  public newTag(value: string): ITag {
+    return { color: this.randomColor(), text: value };
+  }
+
   public async getData(keyword: string): Promise<ITag[]> {
     const map = {};
     for (const tag of this.tags) {
       map[tag.id] = true;
     }
     let res = await this.source(keyword);
-    res = res.filter((v) => !v.id || !map[v.id]);
-    console.log(map, res);
+    res = res.filter((v) => {
+      return !v.id || !map[v.id]
+    });
     return res;
   }
 
@@ -71,6 +79,8 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     if (this.tagInput) {
       const el = this.tagInput.nativeElement as HTMLInputElement;
       el.value = '';
+    } else if (this.tagAutocomplete) {
+      this.tagAutocomplete.clear();
     }
     this.doChange();
     this.doTouched();

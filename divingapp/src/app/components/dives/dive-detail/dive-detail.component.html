@@ -139,6 +139,7 @@
                                 inputClass="form-control left-control"
                                 formControlName="name"
                                 [source]="getDivespots.bind(this)"
+                                [newItem]="newDiveSpot.bind(this)"
                                 display-item="name"
                                 key-item="name"
                             ></app-autocomplete>
@@ -175,6 +176,7 @@
                     <div class="col-sm-10">
                         <app-tags-control
                             formControlName="tags"
+                            placeholder="Deco"
                             [source]="getTags.bind(this)"
                         ></app-tags-control>
                     </div>

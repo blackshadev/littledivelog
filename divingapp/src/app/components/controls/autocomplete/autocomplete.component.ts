@@ -59,25 +59,35 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     if (this._value === v) {
       return;
     }
-
+    this._selectedValue = undefined;
     this._value = v;
     this.changed.emit(v);
     this.onChange(v);
     this.onTouched();
   }
   get value(): any {
-    return this._value;
+    return this._selectedValue ? this._selectedValue.key : this._value;
   }
   get viewValue(): any {
     return this._selectedValue ? this._selectedValue.value : this._value;
   }
 
+  @Input() newItem: (keyword: string) => any;
   @Input() disabled = false;
-  @Input() placeholder: string;
-  @Input() forceSelection = false;
+  @Input() placeholder = '';
+  @Input() set forceSelection(v: any) {
+    if (typeof(v) === 'string') {
+      v = v === 'true' || v === '1';
+    }
+    this._forceSelection = v;
+  }
+  get forceSelection(): any {
+    return this._forceSelection;
+  }
 
+  private _forceSelection: boolean;
   private _source: SourceFunction;
-  private _value: any;
+  private _value: any = '';
   private _displayItem: string;
   private _keyItem: string;
   private _selectedValue: IItem;
@@ -105,16 +115,23 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
     if (this.forceSelection) {
       this.value = this._items.length ? this._items[0].key : '';
-    } else {
-      this.value = eInp.value;
     }
   }
 
-  public filter(keyword) {
-    const newItem = { value: keyword, isNew: true, key: keyword };
+  public clear(): void {
+    this._selectedValue = undefined;
+    this._value = '';
+    this.inputElement.nativeElement.value = '';
+  }
+
+  public filter(keyword: string) {
+    let newItem: IItem|undefined;
+    if (this.newItem && keyword.length) {
+      newItem = this.getItem(true, this.newItem(keyword));
+    }
 
     return new Observable((obs) => {
-      if (!this.forceSelection) {
+      if (newItem) {
         obs.next([newItem]);
       }
 
@@ -131,7 +148,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
           return this.getItem(false, v);
         });
 
-        if (!this.forceSelection && keyword.length && (!items.length || items[0].value !== keyword)) {
+        if (newItem !== undefined && (!items.length || newItem.value !== items[0].value)) {
           items.unshift(newItem);
         }
 

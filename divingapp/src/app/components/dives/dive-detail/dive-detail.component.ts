@@ -4,7 +4,7 @@ import { Validators, FormBuilder, FormGroup, NgForm, FormControl } from '@angula
 import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveStore } from '../../../services/dive.service';
-import { Dive, Duration } from '../../../shared/dive';
+import { Dive, Duration, IPlace } from '../../../shared/dive';
 import { SimpleChanges, OnInit, Component, Input, OnChanges, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
 import 'rxjs/add/operator/switchMap';
@@ -156,6 +156,14 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         }
     );
     return fuse.search(keyword).slice(0, 10);
+  }
+
+  newDiveSpot(name: string): IPlace {
+    const c = (<FormGroup> this.form.controls.place).controls.country.value;
+    return {
+      country_code: c,
+      name: name
+    };
   }
 
   async getBuddies(keyword: string) {

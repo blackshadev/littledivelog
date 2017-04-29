@@ -6,9 +6,12 @@
 
 <app-autocomplete
   *ngIf="source !== undefined"
+  #tagAutocomplete
   inputClass="form-control"
   [source]="getData.bind(this)"
   display-item="text"
+  [newItem]="newTag.bind(this)"
+  (changed)="addTag($event)"
   [placeholder]="placeholder"
   forceSelection="false"
 ></app-autocomplete>

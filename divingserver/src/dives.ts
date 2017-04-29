@@ -37,7 +37,7 @@ router.put("/:id", async (req, res) => {
     const body = req.body;
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
-        return `(${tank.volume},${tank.oxygen},\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\")`;
+        return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
     }).join('","')}"}`;
     console.log(body.tanks);
 

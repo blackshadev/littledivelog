@@ -38,7 +38,7 @@ router.put("/:id", async (req, res) => {
 
     const batch = new SqlBatch();
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
-    const flds = ["date", "divetime", "max_depth"];
+    const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;

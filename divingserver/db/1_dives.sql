@@ -30,6 +30,19 @@ create table if not exists places (
   , primary key(place_id)
 );
 
+  create type pressure_unit as enum(
+      'psi'
+    , 'bar'
+  );
+
+create type tank as (
+    volume        int
+  , ogygen        int
+  , beginPressure int
+  , endPressure   int
+  , unit          pressure_unit
+);
+
 create table if not exists dives (
     dive_id         serial                                                      not null
   , user_id         int         references users(user_id)                       not null
@@ -39,10 +52,12 @@ create table if not exists dives (
   , samples         json        default '[]'                                    not null
   , country_code    char(2)     references countries(iso2)                          null
   , place_id        int         references places(place_id)                         null
-  
+  , tanks           tank[]                                                      not null 
+
   , updated         timestamp   default (current_timestamp at time zone 'UTC')  not null
   , inserted        timestamp   default (current_timestamp at time zone 'UTC')  not null
   , primary key(dive_id)  
+  , check(array_length(tanks, 1) > 0)
 );
 
 create table if not exists buddies (

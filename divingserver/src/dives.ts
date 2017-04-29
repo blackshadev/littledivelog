@@ -35,12 +35,15 @@ router.put("/:id", async (req, res) => {
     const userid = useridDs.rows[0].user_id;
 
     const body = req.body;
+    body.tanks = body.tanks.map((tank) => {
+        // tslint:disable-next-line:max-line-length
+        return `(${tank.volume},${tank.oxygen},(${tank.pressure.begin}, ${tank.pressure.end}, '${tank.pressure.type}'))`;
+    });
 
     const batch = new SqlBatch();
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
     const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
-    console.log(flds);
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;
     }

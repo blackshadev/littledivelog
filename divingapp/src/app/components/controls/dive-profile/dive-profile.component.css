@@ -1,3 +1,11 @@
-canvas {
-    background-color: lightblue;
+
+.line {
+    fill: none;
+    stroke: black;
+}
+
+.group-line {
+    fill: none;
+    stroke: black;
+    background: #0ff;
 }

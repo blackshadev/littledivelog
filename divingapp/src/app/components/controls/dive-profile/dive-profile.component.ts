@@ -1,6 +1,7 @@
 import { Dive, TSample } from '../../../shared/dive';
 import { DiveStore } from '../../../services/dive.service';
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
+import * as d3 from 'd3';
 
 @Component({
   selector: 'app-dive-profile',
@@ -8,97 +9,115 @@ import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, HostLis
   styleUrls: ['./dive-profile.component.css']
 })
 export class DiveProfileComponent implements OnInit, AfterViewInit {
-
   get dive() { return this._dive; }
   @Input() set dive(v: Dive) {
     this._dive = v;
-    this.getSamples();
+    this.update();
   }
 
   samples: TSample[];
   private _dive: Dive;
-
-  @ViewChild("profileCanvas") canvas: ElementRef;
-  private context: CanvasRenderingContext2D;
+  private svg: d3.Selection<any, any, null, undefined>;
+  private groups: {
+    line: d3.Selection<any, any, null, undefined>,
+    axis: d3.Selection<any, any, null, undefined>,
+  };
+  private _margin = {
+    left: 20,
+    right: 20,
+    top: 20,
+    bottom: 20,
+  };
+  private _boundingbox = {
+    width: 0,
+    height: 0,
+  };
+  private _scale: {
+    x: d3.ScaleLinear<number, number>,
+    y: d3.ScaleLinear<number, number>,
+  };
+  private _line: d3.Line<TSample>;
+  private _data: TSample[] = [];
 
   constructor(
     private service: DiveStore,
-  ) { }
+    private elRef: ElementRef,
+  ) {
+    this._scale = {
+      x: d3.scaleLinear(),
+      y: d3.scaleLinear(),
+    };
+    this._line = d3.line<TSample>()
+      .curve(d3.curveBasis)
+      .x((d) => this._scale.x(d.Time))
+      .y((d) => this._scale.y(d.Depth));
+    this.svg = d3.select(this.elRef.nativeElement)
+      .append('svg');
+    this.groups = {
+      line: this.svg.append('g').attr('class', 'group-line'),
+      axis: this.svg.append('g').attr('class', 'group-axis'),
+    };
+    this.groups.line.attr('transform', `translate(${this._margin.left},${this._margin.top})`)
+  }
 
-  ngOnInit() {
+  ngAfterViewInit(): void {
+    this.groups.line.append('path')
+      .attr('class', 'line')
+      .style('fill', 'none')
+      .style('stroke', 'black');
     this.resize();
   }
-  
-  ngAfterViewInit(): void {
-    let canvas = this.canvas.nativeElement;
-    this.context = canvas.getContext("2d");
+
+  ngOnInit() {
+    this.paint()
   }
 
   private async getSamples() {
-    this.samples = await this.service.getSamples(this._dive.id);
+    return await this.service.getSamples(this._dive.id);
+  }
+
+  public async update() {
+    const dat = await this.getSamples();
+    this.setData(dat);
     this.paint();
   }
 
-  public paint() {
-    const eCanvas = this.canvas.nativeElement as HTMLCanvasElement;
-    const ctx = this.context;
-    const height = eCanvas.height;
-    const width = eCanvas.width;
-    const offset = {
-      x: { min: 35, max: 10 },
-      y: { min: 10, max: 10 },
-    };
-    
-    const maxDepth = Math.max.apply(Math, this.samples.map((s) => s.Depth));
-    
 
-    const wRatio = (width - offset.x.min - offset.x.max ) / this.samples.length;
-    const hRatio = (height - offset.y.min - offset.y.max ) / maxDepth;
-    
-    const stepSize =  this.samples.length;
-    ctx.clearRect(0, 0, width, height);
-    ctx.imageSmoothingEnabled = false;
-    ctx.font = "11px Arial";
-    
-    ctx.fillText("0 m", 5, 15);
-    ctx.fillText(`${maxDepth.toFixed(1)} m`, 5, height - offset.y.max);
-    
-    ctx.strokeStyle = "#2980B9";
-    ctx.beginPath();
-    ctx.moveTo(offset.x.min, height - offset.y.max);
-    ctx.lineTo(width - offset.x.max, height - offset.y.max);
-    ctx.stroke();
-    ctx.closePath();
-
-    ctx.strokeStyle = "#000000";
-    ctx.lineWidth = 1;
-    ctx.beginPath();
-    if(this.samples.length) {
-      ctx.lineTo(offset.x.min, this.samples[0].Depth * hRatio + offset.y.min);
-    }
-    for(let iX = 1; iX < this.samples.length; iX++) {
-      ctx.lineTo(offset.x.min + iX * wRatio, this.samples[iX].Depth * hRatio + offset.y.min);
-    }
-    ctx.stroke();
-    ctx.closePath(); 
+  public setData(data: TSample[]) {
+    this._data = data;
+    this._scale.x.domain([0, d3.max(data, (d) => d.Time)]);
+    this._scale.y.domain([
+      d3.min(data, (d) => d.Depth),
+      d3.max(data, (d) => d.Depth)
+    ]);
   }
 
-  private _delayTime = 250;
-  private _delayHandle;
-  delayedPaint() {
-    if(this._delayHandle !== undefined) {
-      clearTimeout(this._delayHandle);
-    }
-    this._delayHandle = setTimeout(() => this.paint(), this._delayTime);
+  public paint() {
+    const all = this.groups.line.selectAll('path');
+    all.data([this._data]);
+
+    all.enter().append('path');
+
+    all.transition()
+      .ease(d3.easeLinear)
+      .duration(1000)
+      .attr('d', this._line(this._data))
+
+    all.exit().remove();
   }
 
   @HostListener('window:resize', ['$event'])
   public resize() {
-    const canvas = this.canvas.nativeElement as HTMLCanvasElement;
-    const parent = canvas.parentElement.parentElement;
-    canvas.width = parent.clientWidth;
-    canvas.height = canvas.width / 2;
-    this.delayedPaint();
+    const el = (this.elRef.nativeElement as Element).parentElement;
+    const width = el.clientWidth;
+    const height = width / 2;
+    this.svg.attr('width', width);
+    this.svg.attr('height', height);
+    this._boundingbox.width = width - this._margin.left - this._margin.right;
+    this._boundingbox.height = height - this._margin.top - this._margin.bottom;
+    this._scale.x.range([0, this._boundingbox.width]);
+    this._scale.y.range([0, this._boundingbox.height]);
+    this.paint();
   }
 
 }

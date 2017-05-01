@@ -1,11 +1,19 @@
 
-.line {
+/deep/ .line {
     fill: none;
     stroke: black;
 }
 
-.group-line {
+/deep/ .group-line {
     fill: none;
     stroke: black;
     background: #0ff;
+}
+
+/deep/ .group-left-axis {
+    
+}
+
+/deep/ .group-focus line {
+    stroke: #3EC9CB;
 }

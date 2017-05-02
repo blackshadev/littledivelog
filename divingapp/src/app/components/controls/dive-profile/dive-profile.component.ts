@@ -1,7 +1,7 @@
 import { debounce } from '../../../shared/common';
 import { Dive, TSample } from '../../../shared/dive';
 import { DiveStore } from '../../../services/dive.service';
-import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, HostListener } from '@angular/core';
+import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, HostListener, EventEmitter, Output } from '@angular/core';
 import * as d3 from 'd3';
 
 
@@ -12,6 +12,10 @@ import * as d3 from 'd3';
 })
 export class DiveProfileComponent implements OnInit, AfterViewInit {
   get dive() { return this._dive; }
+
+  @Output() onselect = new EventEmitter<TSample|undefined>();
+  @Output() onhover = new EventEmitter<TSample>();
+
   @Input() set dive(v: Dive) {
     this._dive = v;
     this.update();
@@ -130,6 +134,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     if (d === undefined) {
       return;
     }
+    this.onhover.emit(d);
 
     const focusCrosshair = {
       x: this.groups.hover.select('line.x'),
@@ -165,6 +170,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       this.selectedIndex === undefined ? 'none' : 'inline'
     );
 
+    this.onselect.emit(this._data[index]);
     if (this.selectedIndex !== undefined && this._data[index] !== undefined) {
       const d = this._data[index];
       const pos = {

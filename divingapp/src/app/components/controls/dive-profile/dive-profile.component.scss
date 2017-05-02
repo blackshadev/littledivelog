@@ -1,3 +1,4 @@
+@import "../../../shared/global.scss";
 
 /deep/ .line {
     fill: none;
@@ -17,7 +18,7 @@
 /deep/ .group-hover {
     display: none;
     line {
-        stroke: #3EC9CB;
+        stroke: lighten($color-accent, 25%);
     }
 }
 
@@ -26,7 +27,7 @@
 
     circle {
         fill: none;
-        stroke: black;
+        stroke: $color-accent;
         stroke-width: 3px;
     }
 }

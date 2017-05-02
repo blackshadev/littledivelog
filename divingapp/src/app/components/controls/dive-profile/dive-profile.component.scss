@@ -1,0 +1,32 @@
+
+/deep/ .line {
+    fill: none;
+    stroke: black;
+}
+
+/deep/ .group-line {
+    fill: none;
+    stroke: black;
+    background: #0ff;
+}
+
+/deep/ .group-left-axis {
+    
+}
+
+/deep/ .group-hover {
+    display: none;
+    line {
+        stroke: #3EC9CB;
+    }
+}
+
+/deep/ .group-select {
+    display: none;
+
+    circle {
+        fill: none;
+        stroke: black;
+        stroke-width: 3px;
+    }
+}

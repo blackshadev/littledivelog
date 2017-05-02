@@ -144,8 +144,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   }
 
   private createSelection() {
-    this.groups.hover.append('circle')
-      .attr('r', 5);
+    this.groups.select.append('circle').attr('r', 5);
     this.svg.on('click', () => {
       const mouse = d3.mouse(this.svg.node());
       if (mouse) {
@@ -168,9 +167,13 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
     if (this.selectedIndex !== undefined && this._data[index] !== undefined) {
       const d = this._data[index];
-      this.groups.select
-        .attr('cx', this._scale.x(d.Time))
-        .attr('cy', this._scale.y(d.Depth))
+      const pos = {
+        x: this._scale.x(d.Time) + this._margin.left,
+        y: this._scale.y(d.Depth) + this._margin.top,
+      };
+      this.groups.select.select('circle')
+        .attr('cx', pos.x)
+        .attr('cy', pos.y);
     }
   }
 

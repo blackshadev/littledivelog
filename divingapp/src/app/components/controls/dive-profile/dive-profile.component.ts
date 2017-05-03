@@ -26,6 +26,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   private svg: d3.Selection<any, any, null, undefined>;
   private groups: {
     line: d3.Selection<any, any, null, undefined>,
+    events: d3.Selection<any, any, null, undefined>,
     leftAxis: d3.Selection<any, any, null, undefined>,
     topAxis: d3.Selection<any, any, null, undefined>,
     hover: d3.Selection<any, any, null, undefined>,
@@ -47,6 +48,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   };
   private _line: d3.Line<TSample>;
   private _data: TSample[] = [];
+  private _eventLocations: number[] = [];
   private _axes: {
     left: d3.Axis<number|{valueOf(): number}>,
     top: d3.Axis<number|{valueOf(): number}>,
@@ -70,7 +72,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       .append('svg');
     this.groups = {
       line: this.svg.append('g').attr('class', 'group-line'),
-      leftAxis: this.svg.append('g').attr('class', 'group-left-axis'),
+      events: this.svg.append('g').attr('class', 'group-events'),
+      leftAxis: this.svg.append('g').attr('class', 'group-left-axis').attr('transform', 'translate(50, 20)'),
       topAxis: this.svg.append('g').attr('class', 'group-top-axis'),
       hover: this.svg.append('g').attr('class', 'group-hover'),
       select: this.svg.append('g').attr('class', 'group-select'),
@@ -193,9 +196,19 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     this.paint();
   }
 
+  private getEvents() {
+    this._eventLocations.length = 0;
+    for (let iX = 0; iX < this._data.length; iX++) {
+      if (this._data[iX].Events.length) {
+        this._eventLocations.push(iX);
+      }
+    }
+  }
+
   public setData(data: TSample[]) {
     this.select(undefined);
     this._data = data;
+    this.getEvents();
     this._scale.x.domain([0, d3.max(data, (d) => d.Time)]);
     this._scale.y.domain([
       d3.min(data, (d) => d.Depth),
@@ -205,17 +218,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
   public paint() {
     this.repaintAxes();
-    const all = this.groups.line.selectAll('path');
-    all.data([this._data]);
-
-    all.enter().append('path');
-
-    all.transition()
-      .ease(d3.easeLinear)
-      .duration(1000)
-      .attr('d', this._line(this._data));
-
-    all.exit().remove();
+    this.repaintLine();
+    this.repaintEvents();
   }
 
   @HostListener('window:resize', ['$event'])
@@ -237,12 +241,44 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   }
 
   protected repaintAxes() {
-    this.groups.leftAxis.attr('transform', 'translate(50, 20)')
     const all = this.groups.leftAxis.selectAll();
-    all.remove();
     this.groups.leftAxis.call(
       this._axes.left
     );
+  }
+
+  protected repaintLine() {
+    const line = this.groups.line.selectAll('path');
+    line.data([this._data]);
+
+    line.enter().append('path');
+
+    line.transition()
+      .ease(d3.easeLinear)
+      .duration(1000)
+      .attr('d', this._line(this._data));
+
+    line.exit().remove();
+  }
+
+  protected repaintEvents() {
+    const events = this.groups.events.selectAll('circle');
+    events.data([this._eventLocations]);
+
+    events.enter()
+      .append('circle')
+      .attr('cx', (iX: number) => this._scale.x(this._data[iX].Time))
+      .attr('cy', (iX: number) => this._scale.y(this._data[iX].Depth))
+      .attr('r', '2')
+      ;
+
+    events.transition()
+      .ease(d3.easeLinear)
+      .duration(1000)
+      .attr('cx', (iX: number) => this._scale.x(this._data[iX].Time))
+      .attr('cy', (iX: number) => this._scale.y(this._data[iX].Depth));
+
+    events.exit().remove();
   }
 
 }

@@ -1,37 +1,33 @@
 @import "../../../shared/global.scss";
 
-/deep/ .line {
-    fill: none;
-    stroke: black;
-}
+.graph {
 
-/deep/ .group-line {
-    fill: none;
-    stroke: black;
-    background: #0ff;
-}
+    /deep/ g.graph {
+        /deep/ .line path {
+            fill: none;
+            stroke: black;
+        }
 
-/deep/ .group-left-axis {
-    
-}
+        /deep/ .hover {
+            display: none;
+            line {
+                stroke: lighten($color-accent, 25%);
+            }
+        }
 
-/deep/ .group-hover {
-    display: none;
-    line {
-        stroke: lighten($color-accent, 25%);
+        /deep/ .select {
+            display: none;
+
+            circle {
+                fill: none;
+                stroke: $color-accent;
+                stroke-width: 3px;
+            }
+        }
+
+        /deep/ .events cicle {
+            fill: yellow;
+        }
+
     }
-}
-
-/deep/ .group-select {
-    display: none;
-
-    circle {
-        fill: none;
-        stroke: $color-accent;
-        stroke-width: 3px;
-    }
-}
-
-/deep/ .group-events cicle {
-    fill: black;
 }

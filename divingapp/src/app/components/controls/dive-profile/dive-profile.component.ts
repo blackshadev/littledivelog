@@ -13,18 +13,19 @@ import * as d3 from 'd3';
 export class DiveProfileComponent implements OnInit, AfterViewInit {
   get dive() { return this._dive; }
 
-  @Output() onselect = new EventEmitter<TSample|undefined>();
-  @Output() onhover = new EventEmitter<TSample>();
+  @Output() onselect = new EventEmitter<{ item: TSample|undefined, index: number }>();
+  @Output() onhover = new EventEmitter<{ item: TSample, index: number }>();
 
   @Input() set dive(v: Dive) {
     this._dive = v;
     this.update();
   }
 
-  samples: TSample[];
-  private _dive: Dive;
-  private svg: d3.Selection<any, any, null, undefined>;
-  private groups: {
+  protected samples: TSample[];
+  protected _dive: Dive;
+  protected svg: d3.Selection<any, any, null, undefined>;
+  protected groups: {
+    graph: d3.Selection<any, any, null, undefined>,
     line: d3.Selection<any, any, null, undefined>,
     events: d3.Selection<any, any, null, undefined>,
     leftAxis: d3.Selection<any, any, null, undefined>,
@@ -32,33 +33,35 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     hover: d3.Selection<any, any, null, undefined>,
     select: d3.Selection<any, any, null, undefined>,
   };
-  private _margin = {
+  protected _margin = {
     left: 60,
     right: 20,
     top: 20,
     bottom: 20,
   };
-  private _boundingbox = {
+  protected _boundingbox = {
     width: 0,
     height: 0,
   };
-  private _scale: {
+  protected _scale: {
     x: d3.ScaleLinear<number, number>,
     y: d3.ScaleLinear<number, number>,
   };
-  private _line: d3.Line<TSample>;
-  private _data: TSample[] = [];
-  private _eventLocations: number[] = [];
-  private _axes: {
+  protected _line: d3.Line<TSample>;
+  protected _data: TSample[] = [];
+  protected _eventLocations: number[] = [];
+  protected _axes: {
     left: d3.Axis<number|{valueOf(): number}>,
     top: d3.Axis<number|{valueOf(): number}>,
   };
-  private bisect = d3.bisector<TSample, number>((d: TSample) => d.Time).left;
-  private selectedIndex: number;
+  protected bisect = d3.bisector<TSample, number>((d: TSample) => d.Time).left;
+  protected selectedIndex: number;
+  @ViewChild('container') protected container: ElementRef;
+  protected isReady = false;
 
   constructor(
-    private service: DiveStore,
-    private elRef: ElementRef,
+    protected service: DiveStore,
+    protected parentEl: ElementRef,
   ) {
     this._scale = {
       x: d3.scaleLinear(),
@@ -68,99 +71,16 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       .curve(d3.curveCardinal)
       .x((d) => this._scale.x(d.Time))
       .y((d) => this._scale.y(d.Depth));
-    this.svg = d3.select(this.elRef.nativeElement)
-      .append('svg');
-    this.groups = {
-      line: this.svg.append('g').attr('class', 'group-line'),
-      events: this.svg.append('g').attr('class', 'group-events'),
-      leftAxis: this.svg.append('g').attr('class', 'group-left-axis').attr('transform', 'translate(50, 20)'),
-      topAxis: this.svg.append('g').attr('class', 'group-top-axis'),
-      hover: this.svg.append('g').attr('class', 'group-hover'),
-      select: this.svg.append('g').attr('class', 'group-select'),
-    };
-    this._axes = {
-      left: d3.axisLeft(this._scale.y),
-      top: d3.axisTop(this._scale.x),
-    };
 
-    // translate line away from axes
-    this.groups.line.attr('transform', `translate(${this._margin.left},${this._margin.top})`);
-
-    this.createHover();
-    this.createSelection();
   }
 
   ngAfterViewInit(): void {
-    this.groups.line.append('path')
-      .attr('class', 'line');
+    this.initCanvas();
+    this.paint()
     this.resize();
   }
 
-  ngOnInit() {
-    this.paint()
-  }
-
-  private createHover() {
-    this.groups.hover.append('line')
-      .attr('class', 'x')
-      .attr('y1', this._margin.top).attr('y2', 0);
-    this.groups.hover.append('line')
-      .attr('class', 'y')
-      .attr('x1', this._margin.left).attr('x2', 0);
-
-    this.svg
-      .on('mouseover', () => { this.groups.hover.style('display', 'inline'); })
-      .on('mouseout', () => { this.groups.hover.style('display', 'none'); })
-      .on('mousemove', () => {
-        const mouse = d3.mouse(this.svg.node());
-        if (mouse) {
-          const index = this.getClosestIndex(mouse[0]);
-          this.hover(index);
-        }
-      });
-  }
-
-  private getClosestIndex(t: number) {
-    const mouseTime = this._scale.x.invert(t - this._margin.left);
-    const iX = this.bisect(this._data, mouseTime);
-    const item0 = this._data[iX];
-    const item1 = this._data[iX - 1];
-    const t0 = item0 ? item0.Time : Number.NEGATIVE_INFINITY;
-    const t1 = item1 ? item1.Time : Number.NEGATIVE_INFINITY;
-    // work out which date value is closest to the mouse
-    const index = mouseTime - t0 > t1 - mouseTime ? iX : iX - 1;
-    return index;
-  }
-
-  private hover(index: number) {
-    const d = this._data[index];
-    if (d === undefined) {
-      return;
-    }
-    this.onhover.emit(d);
-
-    const focusCrosshair = {
-      x: this.groups.hover.select('line.x'),
-      y: this.groups.hover.select('line.y'),
-    }
-    const pos = {
-      x: this._scale.x(d.Time) + this._margin.left,
-      y: this._scale.y(d.Depth) + this._margin.top,
-    }
-    focusCrosshair.x.attr(`x1`, pos.x).attr(`x2`, pos.x);
-    focusCrosshair.y.attr(`y1`, pos.y).attr(`y2`, pos.y);
-  }
-
-  private createSelection() {
-    this.groups.select.append('circle').attr('r', 5);
-    this.svg.on('click', () => {
-      const mouse = d3.mouse(this.svg.node());
-      if (mouse) {
-        const index = this.getClosestIndex(mouse[0]);
-        this.select(index);
-      }
-    });
-  }
+  ngOnInit() {}
 
   public select(index: number|undefined) {
     if (this.selectedIndex === index) {
@@ -173,12 +93,12 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       this.selectedIndex === undefined ? 'none' : 'inline'
     );
 
-    this.onselect.emit(this._data[index]);
+    this.onselect.emit({ item: this._data[index], index });
     if (this.selectedIndex !== undefined && this._data[index] !== undefined) {
       const d = this._data[index];
       const pos = {
-        x: this._scale.x(d.Time) + this._margin.left,
-        y: this._scale.y(d.Depth) + this._margin.top,
+        x: this._scale.x(d.Time),
+        y: this._scale.y(d.Depth),
       };
       this.groups.select.select('circle')
         .attr('cx', pos.x)
@@ -186,23 +106,10 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     }
   }
 
-  private async getSamples() {
-    return await this.service.getSamples(this._dive.id);
-  }
-
   public async update() {
     const dat = await this.getSamples();
     this.setData(dat);
     this.paint();
-  }
-
-  private getEvents() {
-    this._eventLocations.length = 0;
-    for (let iX = 0; iX < this._data.length; iX++) {
-      if (this._data[iX].Events.length) {
-        this._eventLocations.push(iX);
-      }
-    }
   }
 
   public setData(data: TSample[]) {
@@ -217,6 +124,9 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   }
 
   public paint() {
+    if (!this.isReady) {
+      return;
+    }
     this.repaintAxes();
     this.repaintLine();
     this.repaintEvents();
@@ -224,7 +134,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
   @HostListener('window:resize', ['$event'])
   public resize() {
-    const el = (this.elRef.nativeElement as Element).parentElement;
+    const el = (this.parentEl.nativeElement as Element).parentElement;
     const width = el.clientWidth;
     const height = width / 2;
     this.svg.attr('width', width);
@@ -238,6 +148,47 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     this._scale.x.range([0, this._boundingbox.width]);
     this._scale.y.range([0, this._boundingbox.height]);
     this.paint();
+  }
+
+  protected initCanvas() {
+    this.svg = d3.select(this.container.nativeElement)
+      .append('svg');
+
+    const graph = this.svg.append('g')
+      .attr('class', 'graph')
+      .attr('transform', `translate(${this._margin.left},${this._margin.top})`);
+    this.groups = {
+      graph,
+      hover: graph.append('g').attr('class', 'hover'),
+      select: graph.append('g').attr('class', 'select'),
+      line: graph.append('g').attr('class', 'line'),
+      events: graph.append('g').attr('class', 'events'),
+      leftAxis: this.svg.append('g').attr('class', 'left-axis').attr('transform', 'translate(50, 20)'),
+      topAxis: this.svg.append('g').attr('class', 'top-axis'),
+    };
+    this._axes = {
+      left: d3.axisLeft(this._scale.y),
+      top: d3.axisTop(this._scale.x),
+    };
+
+    this.groups.line.append('path').attr('class', 'line');
+
+    this.createHover();
+    this.createSelection();
+    this.isReady = true;
+  }
+
+  protected async getSamples() {
+    return await this.service.getSamples(this._dive.id);
+  }
+
+  protected getEvents() {
+    this._eventLocations.length = 0;
+    for (let iX = 0; iX < this._data.length; iX++) {
+      if (this._data[iX].Events.length) {
+        this._eventLocations.push(iX);
+      }
+    }
   }
 
   protected repaintAxes() {
@@ -279,6 +230,68 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       .attr('cy', (iX: number) => this._scale.y(this._data[iX].Depth));
 
     events.exit().remove();
+  }
+
+  protected createHover() {
+    this.groups.hover.append('line')
+      .attr('class', 'x')
+      .attr('y1', 0).attr('y2', 0);
+    this.groups.hover.append('line')
+      .attr('class', 'y')
+      .attr('x1', 0).attr('x2', 0);
+
+    this.svg
+      .on('mouseover', () => { this.groups.hover.style('display', 'inline'); })
+      .on('mouseout', () => { this.groups.hover.style('display', 'none'); })
+      .on('mousemove', () => {
+        const mouse = d3.mouse(this.svg.node());
+        if (mouse) {
+          const index = this.getClosestIndex(mouse[0]);
+          this.hover(index);
+        }
+      });
+  }
+
+  protected getClosestIndex(t: number) {
+    const mouseTime = this._scale.x.invert(t);
+    const iX = this.bisect(this._data, mouseTime);
+    const item0 = this._data[iX];
+    const item1 = this._data[iX - 1];
+    const t0 = item0 ? item0.Time : Number.NEGATIVE_INFINITY;
+    const t1 = item1 ? item1.Time : Number.NEGATIVE_INFINITY;
+    // work out which date value is closest to the mouse
+    const index = mouseTime - t0 > t1 - mouseTime ? iX : iX - 1;
+    return index;
+  }
+
+  protected hover(index: number) {
+    const d = this._data[index];
+    if (d === undefined) {
+      return;
+    }
+    this.onhover.emit({ item: d, index });
+
+    const focusCrosshair = {
+      x: this.groups.hover.select('line.x'),
+      y: this.groups.hover.select('line.y'),
+    }
+    const pos = {
+      x: this._scale.x(d.Time),
+      y: this._scale.y(d.Depth),
+    }
+    focusCrosshair.x.attr(`x1`, pos.x).attr(`x2`, pos.x);
+    focusCrosshair.y.attr(`y1`, pos.y).attr(`y2`, pos.y);
+  }
+
+  protected createSelection() {
+    this.groups.select.append('circle').attr('r', 5);
+    this.svg.on('click', () => {
+      const mouse = d3.mouse(this.svg.node());
+      if (mouse) {
+        const index = this.getClosestIndex(mouse[0]);
+        this.select(index);
+      }
+    });
   }
 
 }

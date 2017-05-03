@@ -95,11 +95,13 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   @ViewChild('input') private inputElement: ElementRef;
 
   private getItem: (isNew: boolean, v: any) => IItem;
-  private onChange: (v: string) => void = () => { };
-  private onTouched: () => void = () => { };
+  private onChange: (v: string) => void;
+  private onTouched: () => void;
 
   constructor() {
     this.updateGetItem();
+    this.onChange = () => {};
+    this.onTouched = () => {};
   }
 
   ngOnInit() {}
@@ -165,14 +167,6 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
   }
 
-  private updateGetItem() {
-    this.getItem = new Function('isNew', 'v', `return {
-      isNew: isNew,
-      value: v${this._displayItem ? '.' + this._displayItem : ''},
-      key: v${this._keyItem ? '.' + this._keyItem : ''}
-    }`) as (v: any, isNew: boolean) => { key: any, value: any, isNew: boolean };
-  }
-
   public writeValue(obj: any): void {
     this._value = obj;
   }
@@ -185,4 +179,13 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   public setDisabledState(isDisabled: boolean): void {
     this.disabled = isDisabled;
   }
+
+  private updateGetItem() {
+    this.getItem = new Function('isNew', 'v', `return {
+      isNew: isNew,
+      value: v${this._displayItem ? '.' + this._displayItem : ''},
+      key: v${this._keyItem ? '.' + this._keyItem : ''}
+    }`) as (v: any, isNew: boolean) => { key: any, value: any, isNew: boolean };
+  }
+
 }

@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { leftpad } from "app/shared/formatters";
+import { leftpad } from 'app/shared/formatters';
 
 @Pipe({
   name: 'divetime'

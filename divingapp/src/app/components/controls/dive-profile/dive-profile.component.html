@@ -1,2 +1,35 @@
-<div class="sample-item"></div>
+<div class="sample-item">
+    <div class="row">
+        <div class="col-md-4">
+            
+             <div class="form-group">
+                <label for="inputPassword3" class="col-sm-6 control-label">Time</label>
+                <div class="col-sm-6">
+                    <p class="form-control-static">{{ this.selectedItem.Time | divetime }}</p>
+                </div>
+             </div>
+             
+        </div>
+        <div class="col-md-4">
+
+             <div class="form-group">
+                <label for="inputPassword3" class="col-sm-6 control-label">Depth</label>
+                <div class="col-sm-6">
+                    <p class="form-control-static">{{ this.selectedItem.Depth | number : '1.2-2' }} m</p>
+                </div>
+             </div>
+             
+        </div>
+        <div class="col-md-4">
+
+            <div class="form-group">
+                <label for="inputPassword3" class="col-sm-6 control-label">Temperature</label>
+                <div class="col-sm-6">
+                    <p class="form-control-static">{{ this.selectedItem.Temperature |  number : '1.2-2' }} C</p>
+                </div>
+             </div>
+
+        </div>
+    </div>
+</div>
 <div #container class="graph"></div>

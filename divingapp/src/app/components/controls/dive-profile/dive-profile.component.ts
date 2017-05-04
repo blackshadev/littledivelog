@@ -12,6 +12,17 @@ import * as d3 from 'd3';
 })
 export class DiveProfileComponent implements OnInit, AfterViewInit {
   get dive() { return this._dive; }
+  get selectedItem(): TSample {
+    if (!this._data || this.selectedIndex === undefined) {
+      return {
+        Depth: undefined,
+        Temperature: undefined,
+        Time: undefined,
+        Events: []
+      };
+    }
+    return this._data[this.selectedIndex];
+  }
 
   @Output() onselect = new EventEmitter<{ item: TSample|undefined, index: number }>();
   @Output() onhover = new EventEmitter<{ item: TSample, index: number }>();
@@ -258,9 +269,12 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     const item0 = this._data[iX];
     const item1 = this._data[iX - 1];
     const t0 = item0 ? item0.Time : Number.NEGATIVE_INFINITY;
-    const t1 = item1 ? item1.Time : Number.NEGATIVE_INFINITY;
+    const t1 = item1 ? item1.Time : Number.POSITIVE_INFINITY;
     // work out which date value is closest to the mouse
-    const index = mouseTime - t0 > t1 - mouseTime ? iX : iX - 1;
+    const index = mouseTime - t0 > t1 - mouseTime ? iX - 1 : iX;
+    if(!this._data[index]) {
+      console.error("No index", index, t0, t1);
+    }
     return index;
   }
 

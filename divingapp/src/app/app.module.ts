@@ -18,6 +18,7 @@ import { TagsComponent } from './components/controls/tags/tags.component';
 import { TagsControlComponent } from './components/controls/tags-control/tags-control.component';
 import { DiveProfileComponent } from './components/controls/dive-profile/dive-profile.component';
 import * as $ from 'jquery';
+import { DivetimePipe } from './pipes/divetime.pipe';
 
 @NgModule({
   declarations: [
@@ -34,6 +35,7 @@ import * as $ from 'jquery';
     TagsComponent,
     TagsControlComponent,
     DiveProfileComponent,
+    DivetimePipe,
   ],
   imports: [
     BrowserModule,

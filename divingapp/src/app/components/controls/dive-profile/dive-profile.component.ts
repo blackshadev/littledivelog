@@ -1,3 +1,4 @@
+import { divetime } from '../../../shared/formatters';
 import { debounce } from '../../../shared/common';
 import { Dive, TSample } from '../../../shared/dive';
 import { DiveStore } from '../../../services/dive.service';
@@ -175,11 +176,11 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       line: graph.append('g').attr('class', 'line'),
       events: graph.append('g').attr('class', 'events'),
       leftAxis: this.svg.append('g').attr('class', 'left-axis').attr('transform', 'translate(50, 20)'),
-      topAxis: this.svg.append('g').attr('class', 'top-axis'),
+      topAxis: this.svg.append('g').attr('class', 'top-axis').attr('transform', `translate(${this._margin.left}, 20)`),
     };
     this._axes = {
       left: d3.axisLeft(this._scale.y),
-      top: d3.axisTop(this._scale.x),
+      top: d3.axisTop(this._scale.x).tickFormat(divetime),
     };
 
     this.groups.line.append('path').attr('class', 'line');
@@ -203,9 +204,11 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   }
 
   protected repaintAxes() {
-    const all = this.groups.leftAxis.selectAll();
     this.groups.leftAxis.call(
       this._axes.left
+    );
+    this.groups.topAxis.call(
+      this._axes.top,
     );
   }
 
@@ -272,8 +275,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     const t1 = item1 ? item1.Time : Number.POSITIVE_INFINITY;
     // work out which date value is closest to the mouse
     const index = mouseTime - t0 > t1 - mouseTime ? iX - 1 : iX;
-    if(!this._data[index]) {
-      console.error("No index", index, t0, t1);
+    if (!this._data[index]) {
+      console.error('No index', index, t0, t1);
     }
     return index;
   }

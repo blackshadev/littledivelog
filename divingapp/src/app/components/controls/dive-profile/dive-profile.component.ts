@@ -267,7 +267,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   }
 
   protected getClosestIndex(t: number) {
-    const mouseTime = this._scale.x.invert(t);
+    const mouseTime = this._scale.x.invert(t - this._margin.left);
     const iX = this.bisect(this._data, mouseTime);
     const item0 = this._data[iX];
     const item1 = this._data[iX - 1];

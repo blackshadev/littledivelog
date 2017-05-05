@@ -29,8 +29,9 @@ export class DiveStore  {
     constructor(
         private http: Http
     ) {
-        this.getCountries();
+        this.headers = new Headers();
         this.headers.append('Authorization', 'Bearer ' + this.jwt);
+        this.getCountries();
     }
 
     get countries() {
@@ -55,8 +56,10 @@ export class DiveStore  {
         }
 
         const res = await this.http.get(
-            `${this.serverURL}/country/`
+            `${this.serverURL}/country/`,
+            this.httpOptions,
         ).toPromise();
+
         const all: { iso2: string, name: string }[] = res.json() || [];
         this.__countries = all.map(
             (c) => { return { code: c.iso2, description: c.name }; }

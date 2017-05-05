@@ -9,10 +9,9 @@ router.get("/", async (req, res) => {
     const buds: QueryResult = await database.call(
         `select tag.*
            from tags tag
-           join sessions ses on ses.user_id = tag.user_id
-          where ses.session_id = $1
+          where tag.user_id = $1
         `,
-        [res.locals.session],
+        [req.user.user_id],
     );
 
     res.json(

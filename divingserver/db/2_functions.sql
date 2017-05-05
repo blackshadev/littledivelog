@@ -10,7 +10,7 @@ create type dive_record as(
 );
 
 create or replace function get_dives(
-    p_session_id uuid
+    p_user_id int
 )
 returns setof dive_record
 as $$
@@ -46,8 +46,7 @@ select dive_id
        ) as buddies
      , to_json(d.tanks) 
   from dives d
-  join sessions s on d.user_id = s.user_id
- where s.session_id = p_session_id
+ where d.user_id = p_user_id
  order by d.date desc
  $$
  language sql

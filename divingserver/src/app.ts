@@ -1,20 +1,39 @@
 import { QueryResult } from "@types/pg";
 import * as bodyParser from "body-parser";
 import * as express from "express";
+import * as jwt from "express-jwt";
+import * as unless from "express-unless";
+import * as auth from "./auth";
 import * as buddies from "./buddies";
 import * as dives from "./dives";
 import * as imp from "./import";
+import { options, secret } from "./jwt.config";
 import { database } from "./pg";
 import * as places from "./places";
 import * as tags from "./tags";
 
 const app = express();
 app.use(bodyParser.json({ limit: "500mb" }));
-app.use("/:session/dive/", dives.router);
-app.use("/:session/tag/", tags.router);
-app.use("/:session/buddy/", buddies.router);
-app.use("/:session/place/", places.router);
-app.use("/:session/import/", imp.router);
+app.use(
+    jwt({
+        secret,
+        issuer: options.issuer,
+    }).unless({
+        path: ["/auth/"],
+    }),
+);
+app.use((err, req, res, next) => {
+  if (err.name === "UnauthorizedError") {
+    res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
+  }
+});
+
+app.use("/auth/", auth.router);
+app.use("/dive/", dives.router);
+app.use("/tag/", tags.router);
+app.use("/buddy/", buddies.router);
+app.use("/place/", places.router);
+app.use("/import/", imp.router);
 
 app.get("/country", async (req, res) => {
     const ctry: QueryResult = await database.call(

@@ -33,8 +33,7 @@ interface IComputerImport {
 }
 
 router.post("/", async (req, res) => {
-    const useridDs = await database.call(`select user_id from sessions where session_id=$1`, [res.locals.session]);
-    const userid = useridDs.rows[0].user_id;
+    const userid = req.user.user_id;
 
     const d = req.body as IComputerImport;
     const qs = await database.bulkInsert({

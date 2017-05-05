@@ -9,7 +9,7 @@ export const router  = express.Router();
 router.get("/", async (req, res) => {
     const dives: QueryResult = await database.call(
         "select dive_id, divetime, date, tags, place from get_dives($1)",
-        [res.locals.session],
+        [req.user.user_id],
     );
 
     res.json(
@@ -21,7 +21,7 @@ router.get("/:id", async (req, res) => {
 
     const dives: QueryResult = await database.call(
         "select * from get_dives($1) where dive_id=$2",
-        [res.locals.session, req.params.id],
+        [req.user.user_id, req.params.id],
     );
 
     res.json(
@@ -31,8 +31,7 @@ router.get("/:id", async (req, res) => {
 
 router.put("/:id", async (req, res) => {
 
-    const useridDs = await database.call(`select user_id from sessions where session_id=$1`, [res.locals.session]);
-    const userid = useridDs.rows[0].user_id;
+    const userid = req.user.user_id;
 
     const body = req.body;
     body.tanks = `{"${body.tanks.map((tank) => {
@@ -116,8 +115,8 @@ router.put("/:id", async (req, res) => {
 router.get("/:id/samples", async (req, res) => {
 
     const samples: QueryResult = await database.call(
-        "select samples from dives d join sessions s on s.user_id = d.user_id where s.session_id = $1 and dive_id=$2",
-        [res.locals.session, req.params.id],
+        "select samples from dives d where d.user_id = $1 and dive_id=$2",
+        [req.user.user_id, req.params.id],
     );
 
     res.json(

@@ -1,7 +1,8 @@
+import { AuthService } from './auth.service';
 import {Headers, Http,  Response} from '@angular/http';
 import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, TSample } from '../shared/dive';
+import { serviceUrl } from '../shared/config';
 import { Injectable } from '@angular/core';
-
 import 'rxjs/add/operator/toPromise';
 import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
@@ -16,9 +17,6 @@ interface ICountry {
 @Injectable()
 export class DiveStore  {
     private __countries: ICountry[];
-    // tslint:disable-next-line:max-line-length
-    private jwt = 'eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoxLCJpYXQiOjE0OTM5Nzg1NzEsImlzcyI6Imh0dHBzOi8vZGl2ZS5saXR0bGVkZXYubmwifQ.3oG5svxWnvOI-rLckmWIBfKVkCQx6Yx55dQ-AbFJUSfl78trFZliD0sWpxldck0lPl39G_CA4YJD7Fj7MWQwKg';
-    private serverURL = 'https://dive.littledev.nl/api'
     private headers: Headers;
     private get httpOptions() {
         return {
@@ -27,10 +25,11 @@ export class DiveStore  {
     }
 
     constructor(
-        private http: Http
+        private http: Http,
+        private auth: AuthService,
     ) {
         this.headers = new Headers();
-        this.headers.append('Authorization', 'Bearer ' + this.jwt);
+        this.headers.append('Authorization', 'Bearer ' + this.auth.token);
         this.getCountries();
     }
 
@@ -40,7 +39,7 @@ export class DiveStore  {
 
     getDives(): Observable<Dive[]> {
         return this.http.get(
-                `${this.serverURL}/dive/`,
+                `${serviceUrl}/dive/`,
                 this.httpOptions,
             ).map(
                 (res: Response): Dive[] => {
@@ -56,7 +55,7 @@ export class DiveStore  {
         }
 
         const res = await this.http.get(
-            `${this.serverURL}/country/`,
+            `${serviceUrl}/country/`,
             this.httpOptions,
         ).toPromise();
 
@@ -70,7 +69,7 @@ export class DiveStore  {
 
     async getDiveSpots(c: string): Promise<IPlace[]> {
         const res = await this.http.get(
-            `${this.serverURL}/place/${c}`,
+            `${serviceUrl}/place/${c}`,
             this.httpOptions,
         ).toPromise();
         const all: IPlace[] = res.json() || [];
@@ -80,7 +79,7 @@ export class DiveStore  {
     async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {
 
         return this.http.put(
-            `${this.serverURL}/dive/${dive_id}/`,
+            `${serviceUrl}/dive/${dive_id}/`,
             this.httpOptions,
             dive
         ).toPromise();
@@ -88,7 +87,7 @@ export class DiveStore  {
 
     async getBuddies(): Promise<IBuddy[]> {
         const req = await this.http.get(
-            `${this.serverURL}/buddy/`,
+            `${serviceUrl}/buddy/`,
             this.httpOptions,
         ).toPromise();
         return req.json() as IBuddy[];
@@ -96,7 +95,7 @@ export class DiveStore  {
 
     async getTags(): Promise<IDiveTag[]> {
         const req = await this.http.get(
-            `${this.serverURL}/tag/`,
+            `${serviceUrl}/tag/`,
             this.httpOptions,
         ).toPromise();
         return req.json();
@@ -104,7 +103,7 @@ export class DiveStore  {
 
     async getDive(dive_id: number): Promise<Dive> {
         const res = await this.http.get(
-            `${this.serverURL}/dive/${dive_id}/`,
+            `${serviceUrl}/dive/${dive_id}/`,
             this.httpOptions,
         ).toPromise();
         const r = res.json();
@@ -113,7 +112,7 @@ export class DiveStore  {
 
     async getSamples(dive_id: number): Promise<TSample[]> {
         return this.http.get(
-                `${this.serverURL}/dive/${dive_id}/samples/`,
+                `${serviceUrl}/dive/${dive_id}/samples/`,
                 this.httpOptions,
             ).toPromise(
             ).then(

@@ -1,3 +1,5 @@
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './guards/auth.guard';
 import { AppRoutingModule } from './app.routing';
 import { AppComponent } from './app.component';
 import { DashboardComponent } from './components/dashboard/dashboard.component';
@@ -19,6 +21,7 @@ import { TagsControlComponent } from './components/controls/tags-control/tags-co
 import { DiveProfileComponent } from './components/controls/dive-profile/dive-profile.component';
 import * as $ from 'jquery';
 import { DivetimePipe } from './pipes/divetime.pipe';
+import { LoginComponent } from './components/login/login.component';
 
 @NgModule({
   declarations: [
@@ -36,6 +39,7 @@ import { DivetimePipe } from './pipes/divetime.pipe';
     TagsControlComponent,
     DiveProfileComponent,
     DivetimePipe,
+    LoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -46,7 +50,9 @@ import { DivetimePipe } from './pipes/divetime.pipe';
     Ng2AutoCompleteModule
   ],
   providers: [
-    DiveStore
+    DiveStore,
+    AuthGuard,
+    AuthService,
   ],
   bootstrap: [
     AppComponent

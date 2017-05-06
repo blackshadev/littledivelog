@@ -18,19 +18,18 @@
         }
     }
 
-    .toggle-container {
+    .bottom-menu {
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 22px;
+        height: 78px;
+    }
+
+    .toggle-container {
 
         a {
-            display: block;
             width: 100%;
-            height: 100%;
             text-align: center;
-            color: $color-primary;
-
             i {
                 transition: transform 1s;
             }
@@ -39,25 +38,33 @@
 
     li {
         margin-top: 0;
+       
+    }
+
+    a {
+        padding: 10px 15px;
+        width: 155px;
+        color: $color-primary;
+        border-radius: 0;
+        display: block;
+        color: $color-primary;
+
+        &:hover { 
+            text-decoration: none;
+        }
+
+        i.fa {}
         
-        a {
-            width: 155px;
-            color: $color-primary;
-            border-radius: 0;
+        span {
+            padding-left: 12px;
+        }
 
-            i.fa {}
-            
-            span {
-                padding-left: 12px;
-            }
+        &.is-active {
+            background: lighten($color-accent, 10%);
+        }
 
-            &.is-active {
-                background: lighten($color-accent, 10%);
-            }
-
-            &:hover {
-                background: lighten($color-accent, 10%); 
-            }
+        &:hover {
+            background: lighten($color-accent, 10%); 
         }
     }
 }

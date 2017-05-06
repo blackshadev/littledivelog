@@ -1,11 +1,30 @@
 <div class="menu-container" #menuContainer>
   <nav>
     <ul class="nav nav-pills nav-stacked">
-      <li><a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-dashboard"></i><span>Dashboard</span></a></li>
-      <li><a [routerLink]="['dive']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-tint"></i><span>Dives</span></a></li>
+      <ng-container *ngIf="auth.isLoggedIn">
+        <li><a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-dashboard"></i><span>Dashboard</span></a></li>
+        <li><a [routerLink]="['dive']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-tint"></i><span>Dives</span></a></li>
+      </ng-container>
     </ul>
+    <div class="bottom-menu">
+      <ul class="nav nav-pills nav-stacked">
+      
+        <li>
+          <a (click)="auth.logout()" *ngIf="auth.isLoggedIn">
+            <i class="fa fa-sign-out"></i>
+            <span>Sign out</span>
+          </a>
+          <a [routerLink]="['login']" *ngIf="!auth.isLoggedIn">
+            <i class="fa fa-sign-in"></i>
+            <span>Sign in</span>
+          </a>
+        </li>
+      </ul>
+      <div class="toggle-container">
+        <a (click)="toggle()">
+          <i class="fa fa-fw fa-chevron-left"></i>
+        </a>
+      </div>
+    </div>
   </nav>
-  <div class="toggle-container">
-    <a (click)="toggle()"><i class="fa fa-fw fa-chevron-left"></i></a>
-  </div>
 </div>

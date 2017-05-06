@@ -41,11 +41,16 @@ export class AuthService {
     } catch (e) {
 
       if (e instanceof Response) {
-        // parse and display error
-      } else {
-        throw new Error('Unable to parse server response');
+        let o: any;
+        try {
+          o = e.json();
+        } catch (_e) { /* NOOP, will be thrown by next statement */ }
+        if (o && o.error) {
+          throw new Error(o.error);
+        }
       }
-      
+      throw new Error('Unable to parse server response');
+
     }
 
   }

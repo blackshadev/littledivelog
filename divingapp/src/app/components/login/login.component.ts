@@ -27,7 +27,6 @@ export class LoginComponent implements OnInit {
       }
     ).catch(
       (e) => {
-        console.error(e);
         this.error = e.message;
       }
     )
@@ -35,6 +34,7 @@ export class LoginComponent implements OnInit {
 
   redirect() {
     /** */
+    console.log("Redirect");
   }
 
 }

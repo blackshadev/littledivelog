@@ -23,11 +23,7 @@ export class AuthService {
   logout() {
     localStorage.removeItem('jwt');
     this.jwt = null;
-    this.gotoLogin();
-  }
-
-  gotoLogin() {
-      this.router.navigate(['/login'], { queryParams: { returnUrl: this.route.snapshot.url }});
+    window.location.reload();
   }
 
   async login(

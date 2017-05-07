@@ -18,6 +18,16 @@ export class AuthService {
   ) {
     // tslint:disable-next-line:max-line-length
     this.jwt = localStorage.getItem('jwt');
+
+    window.addEventListener(
+      'unhandledRejection',
+      (e) => {
+        console.log('unhandledRejection', e);
+        if (e instanceof Response && e.status === 401) {
+          this.logout();
+        }
+      }
+    )
   }
 
   logout() {

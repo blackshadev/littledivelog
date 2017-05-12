@@ -180,7 +180,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     };
     this._axes = {
       left: d3.axisLeft(this._scale.y),
-      top: d3.axisTop(this._scale.x).tickFormat(divetime),
+      top: d3.axisTop(this._scale.x).tickFormat(divetime).ticks(5),
     };
 
     this.groups.line.append('path').attr('class', 'line');

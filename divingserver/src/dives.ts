@@ -140,7 +140,7 @@ router.put("/:id", async (req, res) => {
         await batch.execute();
 
         res.json({
-            updated: true,
+            dive_id: req.params.id,
         });
     } catch (err) {
         res.statusCode = 500;
@@ -199,6 +199,10 @@ router.post("/", async (req, res) => {
     });
 
     await batch.execute();
+
+    res.json({
+        dive_id: diveId,
+    });
 
 });
 

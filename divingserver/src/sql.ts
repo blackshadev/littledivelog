@@ -8,15 +8,18 @@ export class SQLStatement {
 
     public async executeClient(cl: pg.Client): Promise<pg.QueryResult> {
         let res: pg.QueryResult;
+        let params: any[];
         try {
+            params = this.parameters.map(
+                (v) => typeof(v) === "function" ? v() : v,
+            );
             res = await cl.query(
                 this.sql,
-                this.parameters.map(
-                    (v) => typeof(v) === "function" ? v() : v),
-                );
+                params,
+            );
             this.ondone(res);
         } catch (err) {
-            console.log("Error", err, this.sql, this.parameters);
+            console.log("Error", err, this.sql, params);
             throw err;
         }
         return res;

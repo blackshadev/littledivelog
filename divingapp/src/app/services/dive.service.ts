@@ -16,6 +16,7 @@ interface ICountry {
 
 @Injectable()
 export class DiveStore  {
+
     private __countries: ICountry[];
     private headers: Headers;
     private get httpOptions() {
@@ -54,10 +55,16 @@ export class DiveStore  {
             return this.__countries;
         }
 
-        const res = await this.http.get(
-            `${serviceUrl}/country/`,
-            this.httpOptions,
-        ).toPromise();
+        let res: Response;
+        try {
+            res = await this.http.get(
+                `${serviceUrl}/country/`,
+                this.httpOptions,
+            ).toPromise();
+        } catch (e) {
+            this.handleError(e);
+            return;
+        }
 
         const all: { iso2: string, name: string }[] = res.json() || [];
         this.__countries = all.map(
@@ -83,6 +90,7 @@ export class DiveStore  {
             this.httpOptions,
             dive
         ).toPromise();
+
     }
 
     async getBuddies(): Promise<IBuddy[]> {
@@ -101,32 +109,35 @@ export class DiveStore  {
         return req.json();
     }
 
-    async getDive(dive_id: number): Promise<Dive> {
+    async getDive(dive_id: number): Promise<Dive|undefined> {
+
         const res = await this.http.get(
             `${serviceUrl}/dive/${dive_id}/`,
             this.httpOptions,
         ).toPromise();
+
         const r = res.json();
         return Dive.Parse(r);
+
     }
 
-    async getSamples(dive_id: number): Promise<TSample[]> {
-        return this.http.get(
+    async getSamples(dive_id: number): Promise<TSample[]|undefined> {
+
+        const resp = await this.http.get(
                 `${serviceUrl}/dive/${dive_id}/samples/`,
                 this.httpOptions,
-            ).toPromise(
-            ).then(
-                (res: Response) => {
-                    const b = res.json();
-                    return b as TSample[];
-                }
-            );
+            ).toPromise();
+        return resp.json() as TSample[];
+
     }
 
     private handleError(error: Response|any) {
-        // In a real world app, you might use a remote logging infrastructure
         let errMsg: string;
         if (error instanceof Response) {
+            if (error.status === 401) {
+                this.auth.logout();
+                return;
+            }
             const body = error.json() || '';
             const err = body.error || JSON.stringify(body);
             errMsg = `${error.status} - ${error.statusText || ''} ${err}`;

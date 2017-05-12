@@ -87,14 +87,14 @@ export class DiveStore  {
         if (dive_id !== undefined) {
             return this.http.put(
                 `${serviceUrl}/dive/${dive_id}/`,
+                dive,
                 this.httpOptions,
-                dive
             ).toPromise();
         } else {
             return this.http.post(
                 `${serviceUrl}/dive/`,
+                dive,
                 this.httpOptions,
-                dive
             ).toPromise();
         }
 

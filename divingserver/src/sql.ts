@@ -7,12 +7,18 @@ export class SQLStatement {
     public ondone: (ds: pg.QueryResult) => void = () => { /* done */ };
 
     public async executeClient(cl: pg.Client): Promise<pg.QueryResult> {
-        const res = await cl.query(
-            this.sql,
-            this.parameters.map(
-                (v) => typeof(v) === "function" ? v() : v),
-            );
-        this.ondone(res);
+        let res: pg.QueryResult;
+        try {
+            res = await cl.query(
+                this.sql,
+                this.parameters.map(
+                    (v) => typeof(v) === "function" ? v() : v),
+                );
+            this.ondone(res);
+        } catch (err) {
+            console.log("Error", err, this.sql, this.parameters);
+            throw err;
+        }
         return res;
     }
 }
@@ -38,7 +44,6 @@ export class SqlBatch {
         let error: Error;
         await client.query("begin");
         try {
-            console.log(this.statements);
             for (const stmt of this.statements) {
                 await stmt.executeClient(client);
             }

@@ -15,6 +15,10 @@ export class MenuComponent implements OnInit {
     this.toggle(v);
   }
 
+  get isLoggedIn() {
+    return this.auth.isLoggedIn;
+  }
+
   constructor(
     private auth: AuthService
   ) {}
@@ -31,6 +35,10 @@ export class MenuComponent implements OnInit {
       hElm.classList.remove('collapsed');
     }
     this.ontoggle.emit(state);
+  }
+
+  logout() {
+    this.auth.logout();
   }
 
 }

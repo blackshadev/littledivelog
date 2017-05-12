@@ -1,7 +1,7 @@
 <div class="menu-container" #menuContainer>
   <nav>
     <ul class="nav nav-pills nav-stacked">
-      <ng-container *ngIf="auth.isLoggedIn">
+      <ng-container *ngIf="isLoggedIn">
         <li><a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-dashboard"></i><span>Dashboard</span></a></li>
         <li><a [routerLink]="['dive']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-tint"></i><span>Dives</span></a></li>
       </ng-container>
@@ -10,11 +10,11 @@
       <ul class="nav nav-pills nav-stacked">
       
         <li>
-          <a (click)="auth.logout()" *ngIf="auth.isLoggedIn">
+          <a (click)="logout()" *ngIf="isLoggedIn">
             <i class="fa fa-sign-out"></i>
             <span>Sign out</span>
           </a>
-          <a [routerLink]="['login']" *ngIf="!auth.isLoggedIn">
+          <a [routerLink]="['login']" *ngIf="!isLoggedIn">
             <i class="fa fa-sign-in"></i>
             <span>Sign in</span>
           </a>

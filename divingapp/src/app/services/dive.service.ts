@@ -84,12 +84,19 @@ export class DiveStore  {
     }
 
     async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {
-
-        return this.http.put(
-            `${serviceUrl}/dive/${dive_id}/`,
-            this.httpOptions,
-            dive
-        ).toPromise();
+        if (dive_id !== undefined) {
+            return this.http.put(
+                `${serviceUrl}/dive/${dive_id}/`,
+                this.httpOptions,
+                dive
+            ).toPromise();
+        } else {
+            return this.http.post(
+                `${serviceUrl}/dive/`,
+                this.httpOptions,
+                dive
+            ).toPromise();
+        }
 
     }
 

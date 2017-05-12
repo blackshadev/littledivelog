@@ -21,7 +21,7 @@ export class SqlBatch {
     protected statements: SQLStatement[] = [];
 
     public add(stmt: SQLStatement);
-    public add(sql: string, params?: string[], ondone?: (r: pg.QueryResult) => void);
+    public add(sql: string, params?: any[], ondone?: (r: pg.QueryResult) => void);
     public add(stmt: SQLStatement|string, params?: string[], ondone?: (r: pg.QueryResult) => void) {
         if (typeof(stmt) === "string") {
             const sql = stmt;

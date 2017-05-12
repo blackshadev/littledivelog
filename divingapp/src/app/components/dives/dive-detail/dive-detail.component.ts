@@ -269,6 +269,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       d.id
     ).then(
       (v) => {
+        d.id = v.dive_id;
         this.onDiveSaved.emit(d);
       }
     ).catch(

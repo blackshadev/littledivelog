@@ -46,6 +46,7 @@ export class DivesComponent implements OnInit, OnDestroy {
 
   diveSaved(d: Dive) {
     this.diveList.updateDive(d);
+    this.service.getDive(d.id).then((_d) => this.dive = _d);
   }
 
 }

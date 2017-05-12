@@ -60,7 +60,7 @@ function injectTagSql(oPar: {
         oPar.batch.add(
             "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
             [tag.text, tag.color, oPar.userId],
-            (ds) => { tag.tag_id = ds.rows[0].tag_id; },
+            (ds) => { console.log(ds); tag.tag_id = ds.rows[0].tag_id; },
         );
     });
 

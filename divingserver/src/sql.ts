@@ -19,7 +19,7 @@ export class SQLStatement {
             );
             this.ondone(res);
         } catch (err) {
-            console.log("Error", err, this.sql, params);
+            console.log("Error", err.message, this.sql, params);
             throw err;
         }
         return res;

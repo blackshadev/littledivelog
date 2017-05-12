@@ -58,7 +58,7 @@ function injectTagSql(oPar: {
         }
 
         oPar.batch.add(
-            "insert into buddies (text, color, user_id) values ($1, $2, $3) returning *",
+            "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
             [tag.text, tag.color, oPar.userId],
             (ds) => { tag.tag_id = ds.rows[0].buddy_id; },
         );
@@ -66,7 +66,7 @@ function injectTagSql(oPar: {
 
     oPar.tags.forEach((buddy) => {
         oPar.batch.add(
-            "insert into dive_buddies (dive_id, buddy_id) values ($1, $2)",
+            "insert into dive_tags (dive_id, tag_id) values ($1, $2)",
             [oPar.diveId, () => buddy.tag_id],
         );
     });

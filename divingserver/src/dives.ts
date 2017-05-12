@@ -60,14 +60,14 @@ function injectTagSql(oPar: {
         oPar.batch.add(
             "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
             [tag.text, tag.color, oPar.userId],
-            (ds) => { tag.tag_id = ds.rows[0].buddy_id; },
+            (ds) => { tag.tag_id = ds.rows[0].tag_id; },
         );
     });
 
-    oPar.tags.forEach((buddy) => {
+    oPar.tags.forEach((tag) => {
         oPar.batch.add(
             "insert into dive_tags (dive_id, tag_id) values ($1, $2)",
-            [oPar.diveId, () => buddy.tag_id],
+            [oPar.diveId, () => tag.tag_id],
         );
     });
 }

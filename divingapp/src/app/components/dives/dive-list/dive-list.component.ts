@@ -20,20 +20,15 @@ export class DiveListComponent  {
   constructor(
     public diveStore: DiveStore
   ) {
-    diveStore.getDives().subscribe(
-      (d) => {
-        this.dives = d;
-      },
-      (e) => {}
-    );
+    this.refreshDives();
   }
 
-  updateDive(d: Dive) {
-    for (let iX = 0; iX < this.dives.length; iX++) {
-      if (this.dives[iX].id === d.id) {
-        this.dives[iX] = d;
+  refreshDives() {
+    this.diveStore.getDives().then(
+      (d) => {
+        this.dives = d;
       }
-    }
+    );
   }
 
 }

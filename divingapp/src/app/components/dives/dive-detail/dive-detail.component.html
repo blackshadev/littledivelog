@@ -1,4 +1,10 @@
-<form  [formGroup]="form" class="form-horizontal dive-details" *ngIf="dive !== undefined" (ngSubmit)="onSubmit(form)">
+<form  
+    (keydown.enter)="onEnter($event)"
+    [formGroup]="form"
+    class="form-horizontal dive-details"
+    *ngIf="dive !== undefined"
+    (ngSubmit)="onSubmit(form)"
+>
     <div class="detail-menu">
         <button class="btn btn-primary" [routerLink]="['/dive']"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i> Back</button>
         <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i> Reset</button>

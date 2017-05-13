@@ -38,16 +38,19 @@ export class DiveStore  {
         return Observable.fromPromise(this.getCountries());
     }
 
-    getDives(): Observable<Dive[]> {
-        return this.http.get(
+    async getDives(): Promise<Dive[]> {
+        let res: Response;
+        try {
+            res = await this.http.get(
                 `${serviceUrl}/dive/`,
                 this.httpOptions,
-            ).map(
-                (res: Response): Dive[] => {
-                    const dives: IDbDive[] = res.json() || [];
-                    return Dive.ParseAll(dives);
-                }
-            ).catch(this.handleError);
+            ).toPromise();
+        } catch (e) {
+            this.handleError(e);
+            return;
+        }
+        const dives: IDbDive[] = res.json() || [];
+        return Dive.ParseAll(dives);
     }
 
     async getCountries(): Promise<ICountry[]> {

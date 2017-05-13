@@ -75,6 +75,28 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     this.reset();
   }
 
+  onEnter(e: Event) {
+    // prevent submit
+    e.preventDefault();
+
+    // tab on enter
+    const hostEl = this.hostElement.nativeElement as HTMLElement;
+    if (e.target instanceof HTMLInputElement) {
+      e.target.blur();
+      const all = hostEl.querySelectorAll('input');
+      let iX: number;
+      for (iX = 0; iX < all.length; iX++) {
+        if (all.item(iX) === e.target) {
+          break;
+        }
+      }
+      if (iX + 1 < all.length) {
+        all.item(iX + 1).select();
+      }
+    }
+
+  }
+
   protected reset() {
     this.form.reset();
     if (this.dive) {

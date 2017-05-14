@@ -1,3 +1,4 @@
+import * as moment from 'moment';
 
 function formatNumber(n: number) {
     return ('0' + n).slice(-2);
@@ -141,10 +142,11 @@ export class Dive {
     }
 
     toJSON(): IDbDive {
+        const date = moment(this.date).format('YYYY-MM-DD HH:mm:ss');
 
         return {
             dive_id: this.id,
-            date: this.date.toISOString(),
+            date,
             divetime: this.divetime.valueOf(),
             max_depth: this.maxDepth,
             samples: this.samples,

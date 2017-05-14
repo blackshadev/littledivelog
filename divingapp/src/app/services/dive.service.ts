@@ -87,20 +87,22 @@ export class DiveStore  {
     }
 
     async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {
+        let req: Response;
         if (dive_id !== undefined) {
-            return this.http.put(
+            req = await this.http.put(
                 `${serviceUrl}/dive/${dive_id}/`,
                 dive,
                 this.httpOptions,
             ).toPromise();
         } else {
-            return this.http.post(
+            req = await this.http.post(
                 `${serviceUrl}/dive/`,
                 dive,
                 this.httpOptions,
             ).toPromise();
         }
 
+        return req.json();
     }
 
     async getBuddies(): Promise<IBuddy[]> {

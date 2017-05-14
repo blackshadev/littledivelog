@@ -1,5 +1,12 @@
 import * as pg from "pg";
 
+const T_DATE = 1082;
+const T_TIMESTAMP = 1114;
+const T_TIMESTAMPTZ = 1184;
+pg.types.setTypeParser(T_DATE       , (str) => str);
+pg.types.setTypeParser(T_TIMESTAMP  , (str) => str);
+pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => str);
+
 const cnf = {
   database: "divelog",
   host: "192.168.2.42",

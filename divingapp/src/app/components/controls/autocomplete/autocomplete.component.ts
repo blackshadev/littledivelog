@@ -95,6 +95,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   private _items: IItem[] = [];
   @ViewChild('input') private inputElement: ElementRef;
 
+  private ignoreAfterTab = false;
   private getItem: (isNew: boolean, v: any) => IItem;
   private onChange: (v: string) => void;
   private onTouched: () => void;
@@ -107,14 +108,20 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
   ngOnInit() {}
 
-  public valueSelected(v: IItem) {
-    this._items = [v];
-    this._selectedValue = v;
-    this.value = v.key;
+  public valueSelected(v: IItem, e) {
+    if (!this.ignoreAfterTab) {
+      this._items = [v];
+      this._selectedValue = v;
+      this.value = v.key;
+    } else {
+      this._selectedValue = undefined;
+    }
+    this.ignoreAfterTab = false;
   }
 
   public inputblur(e: Event) {
-
+    const inp = this.inputElement.nativeElement as HTMLInputElement;
+    inp.value = this.viewValue;
   }
 
   public onKeyEnter(evt: Event) {
@@ -124,7 +131,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   }
 
   public onKeyTab(evt: Event) {
-
+    this.ignoreAfterTab = true;
   }
 
   public clear(): void {

@@ -141,6 +141,7 @@ export class Dive {
     }
 
     toJSON(): IDbDive {
+
         return {
             dive_id: this.id,
             date: this.date.toISOString(),

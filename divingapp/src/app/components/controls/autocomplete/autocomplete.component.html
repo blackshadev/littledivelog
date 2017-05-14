@@ -8,5 +8,8 @@
   tab-to-select="false"
   (blur)="inputblur($event)"
   (valueChanged)="valueSelected($event)"
+  (keydown)="keydown.emit($event)"
+  (keydown.tab)="onKeyTab($event)"
+  (keydown.enter)="onKeyEnter($event)"
   [disabled]="disabled"
 />

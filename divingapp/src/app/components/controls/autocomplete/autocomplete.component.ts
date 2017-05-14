@@ -35,6 +35,7 @@ type SourceFunction = (keyword: string) => Promise<any[]>;
 })
 export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   @Output() changed = new EventEmitter<any>();
+  @Output() keydown = new EventEmitter<Event>();
 
   @Input() inputClass: string;
   @Input() set source(v: SourceFunction) {
@@ -113,11 +114,17 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   }
 
   public inputblur(e: Event) {
-    const eInp = this.inputElement.nativeElement as HTMLInputElement;
 
+  }
+
+  public onKeyEnter(evt: Event) {
     if (this.forceSelection) {
-      this.value = this._items.length ? this._items[0].key : '';
+      this.value = this._items[0].key;
     }
+  }
+
+  public onKeyTab(evt: Event) {
+
   }
 
   public clear(): void {

@@ -11,6 +11,7 @@
   [source]="getData.bind(this)"
   display-item="text"
   [newItem]="newTag.bind(this)"
+  (keydown.tab)="clearInput()"
   (changed)="addTag($event)"
   [placeholder]="placeholder"
   forceSelection="false"

@@ -29,11 +29,13 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   private tagInput: ElementRef;
   @ViewChild('tagAutocomplete')
   private tagAutocomplete: AutocompleteComponent;
-  private onChange: (v: ITag[]) => void = () => { };
-  private onTouched: () => void = () => { };
+  private onChange: (v: ITag[]) => void;
+  private onTouched: () => void;
 
   constructor() {
     this.tags = [];
+    this.onChange = () => {};
+    this.onTouched = () => {};
   }
 
   ngOnInit() {
@@ -53,12 +55,53 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
       return !v.id || !map[v.id]
     });
     return res;
+
+  }
+
+  public addTag(v: ITag) {
+    this.tags.push(v);
+
+    this.clearInput();
+    this.doChange();
+    this.doTouched();
+  }
+
+  public removeTag(iX: number) {
+    this.tags.splice(iX, 1);
+    this.doChange();
+    this.doTouched();
+  }
+
+  public writeValue(obj: any): void {
+    this.tags = obj;
+  }
+
+  public registerOnChange(fn: any): void {
+    this.onChange = fn;
+  }
+
+  public registerOnTouched(fn: any): void {
+    this.onTouched = fn;
+  }
+
+  public setDisabledState(isDisabled: boolean): void {
+    throw new Error('Method not implemented.');
+  }
+
+  public clearInput() {
+    if (this.tagInput) {
+      const el = this.tagInput.nativeElement as HTMLInputElement;
+      el.value = '';
+    } else if (this.tagAutocomplete) {
+      this.tagAutocomplete.clear();
+    }
   }
 
   private fontColor(color: string) {
     if (color[0] === '#') {
       color = color.substr(1);
     }
+
     const r = parseInt(color.substr(0, 2), 16);
     const g = parseInt(color.substr(2, 2), 16);
     const b = parseInt(color.substr(4, 2), 16);
@@ -73,25 +116,6 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     return `#${r}${g}${b}`;
   }
 
-  public addTag(v: ITag) {
-    this.tags.push(v);
-
-    if (this.tagInput) {
-      const el = this.tagInput.nativeElement as HTMLInputElement;
-      el.value = '';
-    } else if (this.tagAutocomplete) {
-      this.tagAutocomplete.clear();
-    }
-    this.doChange();
-    this.doTouched();
-  }
-
-  public removeTag(iX: number) {
-    this.tags.splice(iX, 1);
-    this.doChange();
-    this.doTouched();
-  }
-
   private doChange() {
     this.onChange(this.tags);
     this.change.emit(this.tags);
@@ -100,19 +124,6 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   private doTouched() {
     this.onTouched();
     this.touched.emit();
-  }
-
-  writeValue(obj: any): void {
-    this.tags = obj;
-  }
-  registerOnChange(fn: any): void {
-    this.onChange = fn;
-  }
-  registerOnTouched(fn: any): void {
-    this.onTouched = fn;
-  }
-  setDisabledState(isDisabled: boolean): void {
-    throw new Error('Method not implemented.');
   }
 
 }

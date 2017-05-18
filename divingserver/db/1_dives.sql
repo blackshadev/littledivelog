@@ -63,6 +63,9 @@ create table if not exists dives (
   , primary key(dive_id)  
   , check(array_length(tanks, 1) > 0)
 );
+create index dive_country on dives(country_code);
+create index dive_place on dives(place_id);
+
 
 create table if not exists buddies (
     buddy_id        serial

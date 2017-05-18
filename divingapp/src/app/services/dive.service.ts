@@ -78,6 +78,7 @@ export class DiveStore  {
     }
 
     async getDiveSpots(c: string): Promise<IPlace[]> {
+        console.log(c);
         const res = await this.http.get(
             `${serviceUrl}/place/${c}`,
             this.httpOptions,

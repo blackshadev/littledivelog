@@ -166,6 +166,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getDivespots(keyword: string) {
+    console.log(keyword);
     const c = (<FormGroup> this.form.controls.place).controls.country.value;
     const spots = await this.service.getDiveSpots(c);
 

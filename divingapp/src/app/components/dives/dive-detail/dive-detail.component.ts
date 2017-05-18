@@ -160,6 +160,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     if (place.country_code && !formGroup.controls.country.value) {
       formGroup.controls.country.setValue(place.country_code);
     }
+    formGroup.markAsDirty();
   }
 
   async getCountries(keyword: string) {

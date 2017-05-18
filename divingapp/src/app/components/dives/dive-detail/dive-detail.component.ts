@@ -36,6 +36,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         divetime: ['', [Validators.required, CustomValidators.duration]],
         maxDepth: ['', [Validators.required, CustomValidators.decimal]],
         place: this._fb.group({
+            id: [''],
             name: [''],
             country: ['']
         }, {
@@ -105,6 +106,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
         maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
         place: {
+          id: null,
           name: this.dive.place.name || '',
           country: this.dive.place.country_code || ''
         },
@@ -147,6 +149,19 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     };
   }
 
+  diveSpotChanged(place: IPlace) {
+    if (typeof(place) === 'string') {
+      return;
+    }
+    const formGroup = (this.form.controls.place as FormGroup);
+
+    formGroup.controls.name.setValue(place.name);
+    formGroup.controls.id.setValue(place.place_id);
+    if (place.country_code && !formGroup.controls.country.value) {
+      formGroup.controls.country.setValue(place.country_code);
+    }
+  }
+
   async getCountries(keyword: string) {
     const cntries = await this.service.getCountries();
     const fuse = new Fuse(
@@ -166,10 +181,12 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getDivespots(keyword: string) {
-    console.log(keyword);
-    const c = (<FormGroup> this.form.controls.place).controls.country.value;
+    const c = (this.form.controls.place as FormGroup).controls.country.value;
     const spots = await this.service.getDiveSpots(c);
 
+    if (!keyword) {
+      return spots;
+    }
     const fuse = new Fuse(
         spots, {
             threshold: 0.6,
@@ -253,6 +270,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.divetime = Duration.Parse(dat.divetime);
     d.maxDepth = Number(dat.maxDepth);
     d.place = {
+      place_id: dat.place_id || undefined,
       name: dat.place.name || undefined,
       country_code: dat.place.country || undefined
     };

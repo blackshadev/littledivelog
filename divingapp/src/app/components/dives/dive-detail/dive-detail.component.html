@@ -143,11 +143,11 @@
                             <app-autocomplete 
                                 placeholder="Name"
                                 inputClass="form-control left-control"
-                                formControlName="name"
+                                [value]="form.controls.place.controls.name.value"
                                 [source]="getDivespots.bind(this)"
                                 [newItem]="newDiveSpot.bind(this)"
+                                (changed)="diveSpotChanged($event)"
                                 display-item="name"
-                                key-item="name"
                             ></app-autocomplete>
                             <span class="input-group-btn" style="width:0px;"></span>
                             <app-autocomplete 

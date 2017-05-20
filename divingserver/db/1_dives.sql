@@ -5,7 +5,7 @@ create table if not exists users (
   , password        text                                                        not null
   , salt            text                                                        not null
   , name            text                                                        not null
-  
+
   , inserted        timestamp   default (current_timestamp at time zone 'UTC')  not null
   , primary key(user_id)
 );
@@ -20,13 +20,13 @@ create table if not exists sessions (
 create table if not exists countries (
     iso2          char(2)                                                       not null
   , name    	    text                                                          not null
-  , primary key(iso2) 
+  , primary key(iso2)
 );
 
 create table if not exists places (
     place_id        serial                                                      not null
   , country_code    char(2)     references countries(iso2)                      not null
-  , name            text                                                        not null 
+  , name            text                                                        not null
   , primary key(place_id)
 );
 
@@ -56,16 +56,18 @@ create table if not exists dives (
   , samples         json        default '[]'                                    not null
   , country_code    char(2)     references countries(iso2)                          null
   , place_id        int         references places(place_id)                         null
-  , tanks           tank[]                                                      not null 
+  , tanks           tank[]                                                      not null
 
   , updated         timestamp   default (current_timestamp at time zone 'UTC')  not null
   , inserted        timestamp   default (current_timestamp at time zone 'UTC')  not null
-  , primary key(dive_id)  
+  , fingerprint     text                                                            null
+  , computer_id     int         references computers(computer_id)                   null
+  , primary key(dive_id)
   , check(array_length(tanks, 1) > 0)
 );
 create index dive_country on dives(country_code);
 create index dive_place on dives(place_id);
-
+create index dive_computer_id on dives(computer_id);
 
 create table if not exists buddies (
     buddy_id        serial
@@ -80,7 +82,7 @@ create table if not exists buddies (
 create table if not exists dive_buddies (
     dive_id         int         references dives(dive_id)                       not null
   , buddy_id        int         references buddies(buddy_id)                    not null
-  , primary key(dive_id, buddy_id) 
+  , primary key(dive_id, buddy_id)
 );
 
 create table if not exists tags (
@@ -94,5 +96,19 @@ create table if not exists tags (
 create table if not exists dive_tags (
     dive_id         int         references dives(dive_id)                       not null
   , tag_id          int         references tags(tag_id)                         not null
-  , primary key(dive_id, tag_id) 
+  , primary key(dive_id, tag_id)
 );
+
+create table if not exists computers (
+    computer_id       serial                                                    not null
+  , user_id           int     references users(user_id)                         not null
+  , serial            bigint                                                    not null
+  , vendor            text                                                      not null
+  , model             bigint                                                    not null
+  , type              bigint                                                    not null
+  , name              text                                                      not null
+  , last_read         timestamp                                                 not null
+  , last_fingerprint  text                                                      not null
+  , primary key(computer_id)
+);
+

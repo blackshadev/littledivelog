@@ -18,6 +18,27 @@ interface ITag {
     color: string;
 }
 
+interface IPlace {
+    place_id?: number;
+    name: string;
+    country_country: string;
+}
+
+function injectPlaceSql(oPar: {
+    batch: SqlBatch,
+    place: IPlace,
+}): void {
+    if (!oPar.place.place_id) {
+        oPar.batch.add(
+            "insert into places (name, country_code) values ($1, $2) returning *",
+            [oPar.place.name, oPar.place.country_country],
+            (res) => {
+                oPar.place.place_id = res.rows[0].place_id;
+            },
+        );
+    }
+}
+
 function injectBuddySql(oPar: {
     userId: number,
     diveId: number|(() => number),
@@ -100,18 +121,25 @@ router.put("/:id", async (req, res) => {
     const userid = req.user.user_id;
 
     const body = req.body;
+
+    const batch = new SqlBatch();
+
+    injectPlaceSql({
+        batch,
+        place: body.place,
+    });
+
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
         return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
     }).join('","')}"}`;
-
-    const batch = new SqlBatch();
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
     const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;
     }
+    sql += `, place_id = $${params.push(() => body.place.place_id)}`;
     sql += ` where dive_id = $${params.push(req.params.id)} and user_id = $${params.push(userid)}`;
 
     batch.add(sql, params, (ds) => {
@@ -158,6 +186,13 @@ router.post("/", async (req, res) => {
     const userid = req.user.user_id;
 
     const body = req.body;
+    const batch = new SqlBatch();
+
+    injectPlaceSql({
+        batch,
+        place: body.place,
+    });
+
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
         return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
@@ -165,10 +200,13 @@ router.post("/", async (req, res) => {
 
     body.user_id = userid;
 
-    const batch = new SqlBatch();
 
     const flds = ["date", "divetime", "max_depth", "tanks", "user_id"];
     const params = flds.map((fld) => body[fld]);
+
+    flds.push("place_id");
+    params.push(() => body.place.place_id);
+
     const sql = `insert into dives
                 ( ${flds.join(",")} )
         values  (

@@ -14,8 +14,6 @@ namespace DiveLogUploader {
         public uint Type { get; protected set; }
         public uint? Serial { get; protected set; }
         
-        
-
         public Computer(Descriptor descr) {
             Name = descr.product;
             Vendor = descr.vendor;

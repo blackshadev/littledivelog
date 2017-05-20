@@ -21,7 +21,7 @@ interface ITag {
 interface IPlace {
     place_id?: number;
     name: string;
-    country_country: string;
+    country_code: string;
 }
 
 function injectPlaceSql(oPar: {
@@ -31,7 +31,7 @@ function injectPlaceSql(oPar: {
     if (!oPar.place.place_id) {
         oPar.batch.add(
             "insert into places (name, country_code) values ($1, $2) returning *",
-            [oPar.place.name, oPar.place.country_country],
+            [oPar.place.name, oPar.place.country_code],
             (res) => {
                 oPar.place.place_id = res.rows[0].place_id;
             },
@@ -199,7 +199,6 @@ router.post("/", async (req, res) => {
     }).join('","')}"}`;
 
     body.user_id = userid;
-
 
     const flds = ["date", "divetime", "max_depth", "tanks", "user_id"];
     const params = flds.map((fld) => body[fld]);

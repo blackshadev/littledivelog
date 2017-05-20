@@ -95,7 +95,9 @@ function injectTagSql(oPar: {
 
 router.get("/", async (req, res) => {
     const dives: QueryResult = await database.call(
-        "select dive_id, divetime, date, tags, place from get_dives($1)",
+        `select dive_id, divetime, date, tags, place
+           from get_dives($1) d
+        `,
         [req.user.user_id],
     );
 
@@ -107,7 +109,10 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
 
     const dives: QueryResult = await database.call(
-        "select * from get_dives($1) where dive_id=$2",
+        `select *
+           from get_dives($1) d
+          where dive_id=$2
+        `,
         [req.user.user_id, req.params.id],
     );
 

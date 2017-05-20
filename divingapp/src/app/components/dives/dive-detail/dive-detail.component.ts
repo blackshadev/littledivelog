@@ -271,7 +271,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     d.divetime = Duration.Parse(dat.divetime);
     d.maxDepth = Number(dat.maxDepth);
     d.place = {
-      place_id: dat.place_id || undefined,
+      place_id: dat.place.id || undefined,
       name: dat.place.name || undefined,
       country_code: dat.place.country || undefined
     };

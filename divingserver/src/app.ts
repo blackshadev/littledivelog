@@ -5,6 +5,7 @@ import * as jwt from "express-jwt";
 import * as unless from "express-unless";
 import * as auth from "./auth";
 import * as buddies from "./buddies";
+import * as computers from "./computers";
 import * as dives from "./dives";
 import * as imp from "./import";
 import { options, secret } from "./jwt.config";
@@ -34,6 +35,7 @@ app.use("/tag/", tags.router);
 app.use("/buddy/", buddies.router);
 app.use("/place/", places.router);
 app.use("/import/", imp.router);
+app.use("/computer/", computers.router);
 
 app.get("/country", async (req, res) => {
     const ctry: QueryResult = await database.call(

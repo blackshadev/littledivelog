@@ -68,6 +68,7 @@ create table if not exists dives (
 create index dive_country on dives(country_code);
 create index dive_place on dives(place_id);
 create index dive_computer_id on dives(computer_id);
+create unique index dive_fingerprint on dives(fingerprint);
 
 create table if not exists buddies (
     buddy_id        serial

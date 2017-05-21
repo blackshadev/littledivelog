@@ -91,9 +91,14 @@ router.get("/", async (req, res) => {
 
 router.post("/", async (req, res) => {
 
-    await database.call(
-
+    const computer = await database.call(
+        `insert into computers (user_id) values ($1) returning *`,
+        [
+            req.user.user_id,
+        ],
     );
+
+    res.json(computer.rows[0]);
 
 });
 

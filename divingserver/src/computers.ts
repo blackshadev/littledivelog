@@ -89,7 +89,15 @@ router.get("/", async (req, res) => {
     );
 });
 
-router.get("/last", async (req, res) => {
+router.post("/", async (req, res) => {
+
+    await database.call(
+
+    );
+
+});
+
+router.get("/import", async (req, res) => {
 
     const computerId = req.user.computer_id;
     if (computerId === undefined) {

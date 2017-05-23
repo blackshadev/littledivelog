@@ -9,10 +9,17 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
 
-interface ICountry {
+export interface ICountry {
     code: string;
     description: string;
-};
+}
+export interface IComputer {
+  computer_id: number;
+  name: string;
+  vendor: string;
+  last_read: Date;
+  dive_count: number;
+}
 
 @Injectable()
 export class DiveStore  {
@@ -141,6 +148,15 @@ export class DiveStore  {
                 this.httpOptions,
             ).toPromise();
         return resp.json() as TSample[];
+
+    }
+
+    async getComputers(): Promise<IComputer[]> {
+        const resp = await this.http.get(
+                `${serviceUrl}/computer/`,
+                this.httpOptions,
+            ).toPromise();
+        return resp.json() as IComputer[];
 
     }
 

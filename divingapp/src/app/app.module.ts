@@ -22,6 +22,7 @@ import { DiveProfileComponent } from './components/controls/dive-profile/dive-pr
 import * as $ from 'jquery';
 import { DivetimePipe } from './pipes/divetime.pipe';
 import { LoginComponent } from './components/login/login.component';
+import { ComputersComponent } from './components/computers/computers.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { LoginComponent } from './components/login/login.component';
     DiveProfileComponent,
     DivetimePipe,
     LoginComponent,
+    ComputersComponent,
   ],
   imports: [
     BrowserModule,

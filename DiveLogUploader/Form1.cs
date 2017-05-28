@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using static LibDiveComputer.Context;
+using System.Security.Authentication;
 
 namespace divecomputer_test {
 
@@ -21,10 +22,12 @@ namespace divecomputer_test {
             public string serialPort;
             public string computer;
             public string destination;
+            public WebApplicationSession WebAppSession { get; private set; }
             protected Configuration config;
 
             public Session() {
                 config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
+                WebAppSession = new WebApplicationSession();
             }
 
             public void Save() {
@@ -39,7 +42,8 @@ namespace divecomputer_test {
                 try {
                     sData = config.AppSettings.Settings["last_session"].Value;
                 } catch (Exception) { }
-
+                WebAppSession.SetToken(config.AppSettings.Settings["webapp_token"].Value);
+                
                 if (sData == null) return;
                 var sess = JsonConvert.DeserializeObject<Session>(sData);
                 serialPort = sess.serialPort;
@@ -48,7 +52,7 @@ namespace divecomputer_test {
             }
         }
 
-        private class TargetObject  {
+        private class TargetObject {
             public dc_loglevel_t logLevel;
             public Context ctx;
             public Device device;
@@ -63,7 +67,7 @@ namespace divecomputer_test {
         }
 
         private Session session = new Session();
-        
+
 
         private Context CreateContext(dc_loglevel_t logLevel) {
             var ctx = new Context();
@@ -78,7 +82,7 @@ namespace divecomputer_test {
             VersionLabel.Text = "libdivelog v" + LibDiveComputer.Version.AsString;
 
             session.Load();
-            
+
             LoadSerialPorts();
             LoadComputerSelector();
             LoadLogLevelList();
@@ -89,12 +93,12 @@ namespace divecomputer_test {
             PortSelector.Items.Clear();
             PortSelector.DisplayMember = "Value";
             PortSelector.ValueMember = "Key";
-            
+
             var ports = SerialPort.GetPortNames();
             // Use KeyValuePairs just in case the portName is not the same as the address to use it
             var kvps = ports.Select((s) => new KeyValuePair<string, string>(s, s));
 
-            
+
             foreach (var kvp in kvps) {
                 PortSelector.Items.Add(kvp);
                 if (session.serialPort == kvp.Value) PortSelector.SelectedItem = kvp;
@@ -171,7 +175,7 @@ namespace divecomputer_test {
             StartButton.Enabled = false;
             DivecomputerWorker.RunWorkerAsync();
         }
-        
+
 
         private TargetObject currentTask;
 
@@ -192,7 +196,7 @@ namespace divecomputer_test {
                 if (val != null) {
                     currentTask.fingerprint = val;
                 }
-            } catch(Exception) { }
+            } catch (Exception) { }
 
         }
 
@@ -205,10 +209,10 @@ namespace divecomputer_test {
         private void DivecomputerWorker_DoWork(object sender, DoWorkEventArgs e) {
             var args = currentTask;
             args.ctx = CreateContext(args.logLevel);
-            
+
             try {
                 args.device = new Device(args.ctx, args.descriptor, args.serialPort);
-                
+
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
@@ -217,9 +221,9 @@ namespace divecomputer_test {
                     var old = args.fingerprint;
                     GetFingerprint();
                     //if (args.fingerprint != old) {
-                        
-                        //args.device.Cancel();
-                        //args.device.Start();
+
+                    //args.device.Cancel();
+                    //args.device.Start();
                     //}
                 };
                 args.device.OnClock += (clock) => {
@@ -236,7 +240,7 @@ namespace divecomputer_test {
 
 
                 var txt = JsonConvert.SerializeObject(
-                    args.bundle, 
+                    args.bundle,
                     Formatting.Indented,
                     new JsonSerializerSettings {
                         NullValueHandling = NullValueHandling.Ignore
@@ -249,7 +253,7 @@ namespace divecomputer_test {
                 SetState("Error while opening device: " + err.Message, Color.Red);
             }
 
-            if(args.fingerprint != null)
+            if (args.fingerprint != null)
                 SetFignerprint(Convert.FromBase64String(args.fingerprint));
             SetProgress(0, false);
         }
@@ -319,6 +323,20 @@ namespace divecomputer_test {
         private void SaveFileText_Changed(object sender, EventArgs e) {
             session.destination = SaveFileText.Text;
             session.Save();
+        }
+
+        private void loginButton_Click(object sender, EventArgs e) {
+            AuthErrLabel.Text = "";
+            loginButton.Enabled = false;
+
+            var t = session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
+            try {
+                t.Wait();
+            } catch(AuthenticationException err) {
+                AuthErrLabel.Text = err.Message;
+            }
+            loginButton.Enabled = true;
+
         }
     }
 }

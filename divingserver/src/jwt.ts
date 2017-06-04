@@ -22,3 +22,4 @@ export async function createToken(dat: any): Promise<string> {
             );
         },
     );
+}

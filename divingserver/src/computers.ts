@@ -188,7 +188,7 @@ router.post("/import", async (req, res) => {
         const tankType = tank.type === 0 ? "bar" : tank.type === 1 ? "bar" : "psi";
 
         // tslint:disable-next-line:max-line-length
-        const tanks = `{${dive.Tank.volume},${dive.Gasmix.oxygen},\\"(${dive.Tank.beginpressure},${tank.Tank.endpressure},${tank.type})\\")`;
+        const tanks = `{${dive.Tank.volume},${dive.Gasmix.oxygen},\\"(${dive.Tank.beginpressure},${dive.Tank.endpressure},${tank.type})\\")`;
         sql.add(
             diveSql,
             [

@@ -19,7 +19,7 @@ create type tank as (
 create table if not exists dives (
     dive_id         serial                                                      not null
   , user_id         int         references users(user_id)                       not null
-  , date            timestamp with timezone                                     not null
+  , date            timestamp with time zone                                     not null
   , divetime        int                                                         not null
   , max_depth       numeric(6, 3)                                               not null
   , samples         json        default '[]'                                    not null

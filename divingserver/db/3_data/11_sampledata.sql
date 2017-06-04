@@ -25,6 +25,7 @@ insert into dives (
   , date
   , divetime
   , max_depth
+  , tanks
   , samples
   , country_code
   , place_id
@@ -33,6 +34,7 @@ insert into dives (
   , '2017-04-11 21:05:10'
   , '1500'
   , '5.65'
+  , '{"(10,21,\"(200,50,bar)\")"}'
   , '[]'
   , 'NL'
   , 1
@@ -41,6 +43,7 @@ insert into dives (
   , '2017-04-03 07:12:04'
   , '3780'
   , '12.45'
+  , '{"(10,21,\"(200,50,bar)\")"}'
   , '[]'
   , 'NL'
   , 1

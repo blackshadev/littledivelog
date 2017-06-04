@@ -63,6 +63,7 @@ async function executeAll(filenames: string[]): Promise<void> {
         database: cnf.database,
         host: cnf.host,
         password: cnf.passwd,
+        user: cnf.user,
     });
     console.log("connecting...");
     await client.connect();
@@ -79,7 +80,7 @@ async function executeAll(filenames: string[]): Promise<void> {
 }
 
 async function all() {
-    console.log("fetching  queries")
+    console.log("fetching  queries");
     const queries = await listQueries();
 
     await recreateDb();

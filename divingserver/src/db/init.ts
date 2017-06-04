@@ -31,7 +31,7 @@ async function recreateDb() {
     try {
         console.log("Recreating db");
         await conn.query(`drop database if exists ${cnf.database}`);
-        await conn.query(`create database ${cnf.database} with owner= '${cnf.user}'`);
+        await conn.query(`create database ${cnf.database} with owner ${cnf.user}`);
     } finally {
         await conn.end();
     }

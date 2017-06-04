@@ -2,18 +2,12 @@ insert into users (
     email
   , password
   , salt
-  , name 
+  , name
 ) values (
     'vinnie@script4web.nl'
   , ''
   , ''
-  , 'Vincent' 
-);
-
-insert into sessions (
-    user_id, ip
-) values (
-    1, '127.0.0.1'
+  , 'Vincent'
 );
 
 insert into places (
@@ -33,7 +27,7 @@ insert into dives (
   , max_depth
   , samples
   , country_code
-  , place_id 
+  , place_id
 ) values (
     1
   , '2017-04-11 21:05:10'
@@ -55,14 +49,14 @@ insert into dives (
 insert into buddies (
     user_id
   , text
-  , color 
+  , color
 ) values (
     1
   , 'Gonard'
   , '#ff00ff'
 ), (
     1
-  , 'Iris' 
+  , 'Iris'
   , '#0110ff'
 );
 
@@ -77,15 +71,15 @@ insert into dive_buddies (
 insert into tags (
     user_id
   , text
-  , color 
+  , color
 ) values (
     1
   , 'Night'
-  , '#09021f' 
+  , '#09021f'
 ), (
     1
   , 'Deco'
-  , '#87f210' 
+  , '#87f210'
 );
 
 insert into dive_tags (

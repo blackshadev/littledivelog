@@ -81,7 +81,6 @@ INSERT INTO countries (iso2, name) VALUES ('GE', 'Georgia');
 INSERT INTO countries (iso2, name) VALUES ('DE', 'Germany (Deutschland)');
 INSERT INTO countries (iso2, name) VALUES ('GH', 'Ghana');
 INSERT INTO countries (iso2, name) VALUES ('GI', 'Gibraltar');
-INSERT INTO countries (iso2, name) VALUES ('GB', 'Great Britain');
 INSERT INTO countries (iso2, name) VALUES ('GR', 'Greece');
 INSERT INTO countries (iso2, name) VALUES ('GL', 'Greenland');
 INSERT INTO countries (iso2, name) VALUES ('GD', 'Grenada');

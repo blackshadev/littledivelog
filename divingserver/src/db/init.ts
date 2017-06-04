@@ -6,7 +6,7 @@ import * as pg from "pg";
 const cnf = {
     database: "divelog",
     host: "littledev.nl",
-    passwd: "divelog",
+    passwd: "tester",
     user: "divelog",
 };
 

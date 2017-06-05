@@ -29,7 +29,8 @@ export async function login(email: string, password: string) {
     const user = await database.call(`
             select
                   user_id
-                , username
+                , email
+                , name
                 , password
               from users
              where email = $1
@@ -46,8 +47,9 @@ export async function login(email: string, password: string) {
     }
 
     return {
+        email: user.rows[0].email,
+        name: user.rows[0].name,
         user_id: user.rows[0].user_id,
-        username: user.rows[0].username,
     };
 }
 

@@ -40,16 +40,12 @@ export async function login(email: string, password: string): Promise<IUserRow> 
     ]);
 
     if (!user.rows.length) {
-        console.error("Invalid username");
         throw new Error("Invalid credentials");
     }
-    console.log("valid username");
 
     if (!await argon2.verify(user.rows[0].password, password) ) {
-        console.error("Invalid passwd");
         throw new Error("Invalid credentials");
     }
-    console.log("valid passwd");
 
     return {
         email: user.rows[0].email,
@@ -64,23 +60,18 @@ router.post(
         const b = req.body;
 
         try {
-            console.log("login");
             const user = await login(b.email, b.password);
 
-            console.log("create token", user);
             const tok = await createToken(
                 {
                     user_id: user.user_id,
                 },
             );
 
-            console.log("send", tok);
             res.json({
                 data: tok,
             });
-            console.log("end");
         } catch (err) {
-            console.error(err);
             res.status(err.message === "Invalid credentials" ? 401 : 500);
             res.json({
                 error: err.message,

@@ -13,11 +13,9 @@ export async function createToken(dat: any): Promise<string> {
                     issuer: options.issuer,
                 },
                 (err, result) => {
-                    if (!err) {
-                        console.log("ERRR", err);
+                    if (err) {
                         reject(err);
                     } else {
-                        console.log("tok", result);
                         resolve(result);
                     }
                 },

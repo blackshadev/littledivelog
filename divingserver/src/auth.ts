@@ -64,17 +64,21 @@ router.post(
         const b = req.body;
 
         try {
+            console.log("login");
             const user = await login(b.email, b.password);
 
+            console.log("create token", user);
             const tok = await createToken(
                 {
                     user_id: user.user_id,
                 },
             );
+
+            console.log("send", tok);
             res.json({
                 data: tok,
             });
-            console.log("here");
+            console.log("end");
         } catch (err) {
             console.error(err);
             res.status(err.message === "Invalid credentials" ? 401 : 500);

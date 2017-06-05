@@ -74,6 +74,7 @@ router.post(
             res.json({
                 data: tok,
             });
+            console.log("here");
         } catch (err) {
             console.error(err);
             res.status(err.message === "Invalid credentials" ? 401 : 500);

@@ -8,7 +8,8 @@ export const router  = express.Router();
 
 export interface IUserRow {
     user_id: number;
-    username: string;
+    name: string;
+    email: string;
 }
 
 function invalidCredentials(res: express.Response): void {
@@ -25,7 +26,7 @@ function sendError(err: Error, res: express.Response): void {
     });
 }
 
-export async function login(email: string, password: string) {
+export async function login(email: string, password: string): Promise<IUserRow> {
     const user = await database.call(`
             select
                   user_id

@@ -69,7 +69,7 @@ router.post(
             );
 
             res.json({
-                data: tok,
+                jwt: tok,
             });
         } catch (err) {
             res.status(err.message === "Invalid credentials" ? 401 : 500);

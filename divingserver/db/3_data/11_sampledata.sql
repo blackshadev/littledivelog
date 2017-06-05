@@ -1,7 +1,6 @@
 insert into users (
     email
   , password
-  , salt
   , name
 ) values (
     'vinnie@script4web.nl'

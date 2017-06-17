@@ -38,20 +38,20 @@ router.get("/", async (req, res) => {
 
     const session: QueryResult = await database.call(
         `select
-              sess.session_id
-            , sess.last_used
-            , user.user_id
-            , user.email
-            , user.name
+              ses.session_id
+            , ses.last_used
+            , usr.user_id
+            , usr.email
+            , usr.name
             , (
                 select count(*)
                   from dives d
-                 where d.user_id = sess.user_id
+                 where d.user_id = ses.user_id
             ) as total_dive_count
             , 0::int as session_dive_count
-           from remote_sessions sess
-           join users user on sess.user_id = user.user_id
-           where sess.session_id = $1
+           from remote_sessions ses
+           join users usr on ses.user_id = usr.user_id
+           where ses.session_id = $1
         `,
         [req.user.session_id],
     );

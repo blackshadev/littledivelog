@@ -13,6 +13,7 @@ using System.Linq;
 using System.Windows.Forms;
 using static LibDiveComputer.Context;
 using System.Security.Authentication;
+using Newtonsoft.Json.Linq;
 
 namespace divecomputer_test {
 
@@ -22,19 +23,27 @@ namespace divecomputer_test {
             public string serialPort;
             public string computer;
             public string destination;
+
+            [JsonIgnore]
             public WebApplicationSession WebAppSession { get; private set; }
+
+            public string appToken { get { return WebAppSession.Token; } }
             protected Configuration config;
 
             public Session() {
                 config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
                 WebAppSession = new WebApplicationSession();
+                WebAppSession.OnTokenChanged += (sender, args) => {
+                    Save();
+                };
             }
 
             public void Save() {
+                
                 if (config.AppSettings.Settings["last_session"] == null)
                     config.AppSettings.Settings.Add("last_session", "{}");
                 config.AppSettings.Settings["last_session"].Value = JsonConvert.SerializeObject(this);
-                config.Save(ConfigurationSaveMode.Modified);
+                config.Save();
             }
 
             public void Load() {
@@ -42,13 +51,13 @@ namespace divecomputer_test {
                 try {
                     sData = config.AppSettings.Settings["last_session"].Value;
                 } catch (Exception) { }
-                WebAppSession.SetToken(config.AppSettings.Settings["webapp_token"].Value);
                 
-                if (sData == null) return;
-                var sess = JsonConvert.DeserializeObject<Session>(sData);
-                serialPort = sess.serialPort;
-                computer = sess.computer;
-                destination = sess.destination;
+                if (sData == null || sData == "") return;
+                var sess = JObject.Parse(sData);
+                WebAppSession.SetToken(sess["appToken"].ToString());
+                serialPort = sess["serialPort"].ToString();
+                computer = sess["computer"].ToString();
+                destination = sess["destination"].ToString();
             }
         }
 
@@ -62,11 +71,15 @@ namespace divecomputer_test {
             public string fingerprint;
         }
 
+        private Session session = new Session();
+
         public Form1() {
             InitializeComponent();
-        }
+            session.WebAppSession.OnData += (sender, args) => {
+                SetAccountDetails(args.Data);
+            };
+        } 
 
-        private Session session = new Session();
 
 
         private Context CreateContext(dc_loglevel_t logLevel) {
@@ -134,6 +147,15 @@ namespace divecomputer_test {
             LogLevelSelector.Items.Add(new KeyValuePair<dc_loglevel_t, string>(dc_loglevel_t.DC_LOGLEVEL_ALL, "All"));
 
             LogLevelSelector.SelectedIndex = 0;
+        }
+        
+        public void SetAccountDetails(WebApplicationData data) {
+            AccountPanel.Visible = true;
+            LoginPanel.Visible = false;
+            LabelAccountEmail.Text = data.email;
+            LabelAccountName.Text = data.name;
+            LabelAccountDiveCount.Text = data.TotalDiveCount.ToString();
+            LabelAccountLastUpload.Text = data.LastUsed.ToShortDateString();
         }
 
         private void LogLevelSelector_SelectedValueChanged(object sender, EventArgs e) {
@@ -325,15 +347,14 @@ namespace divecomputer_test {
             session.Save();
         }
 
-        private void loginButton_Click(object sender, EventArgs e) {
+        private async void loginButton_Click(object sender, EventArgs e) {
             AuthErrLabel.Text = "";
             loginButton.Enabled = false;
-
-            var t = session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
+            
             try {
-                t.Wait();
-            } catch(AuthenticationException err) {
-                AuthErrLabel.Text = err.Message;
+                await session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
+            } catch(AggregateException err) {
+                AuthErrLabel.Text = err.InnerException.Message;
             }
             loginButton.Enabled = true;
 

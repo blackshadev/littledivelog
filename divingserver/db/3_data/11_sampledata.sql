@@ -4,7 +4,7 @@ insert into users (
   , name
 ) values (
     'vinnie@script4web.nl'
-  , '$argon2d$v=19$m=1024,t=1,p=1$c0p3clB5cDl2NU85bUdLVnlBNHI$rg/TT/1pbBytGPJrWAMd1A5nzouvNUQ/YkhqHsyY9l4'
+  , '$argon2d$v=19$m=1024,t=1,p=1$c0p3clB5cDl2NU85bUdLVnlBNHI$rg/TT/1pbBytGPJrWAMd1A5nzouvNUQ/YkhqHsyY9l4' -- tester
   , 'Vincent'
 );
 

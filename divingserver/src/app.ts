@@ -23,7 +23,7 @@ const jwtHandler = jwt({
 jwtHandler.unless({ path: ["/auth/"] });
 jwtHandler.unless({ method: "POST", path: ["/import/"] });
 
-app.use(jwt_handler);
+app.use(jwtHandler);
 app.use((err, req, res, next) => {
     if (err.name === "UnauthorizedError") {
         console.log(err);

@@ -113,9 +113,7 @@ router.post("/import", async (req, res) => {
 
     const sess = ds.rows[0] as IRemoteSession;
     try {
-        console.log(ds.rows);
-        const tok = createToken({ session_id: sess.session_id });
-        console.log(tok);
+        const tok = await createToken({ session_id: sess.session_id });
         res.json({ jwt: tok });
     } catch (err) {
         res.status(500);

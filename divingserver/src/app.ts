@@ -16,14 +16,12 @@ import * as tags from "./tags";
 const app = express();
 app.use(bodyParser.json({ limit: "500mb" }));
 
-const jwtHandler = jwt({
-    issuer: options.issuer,
-    secret,
-});
-jwtHandler.unless({ path: ["/auth/"] });
-jwtHandler.unless({ method: "POST", path: ["/import/"] });
-
-app.use(jwtHandler);
+app.use(
+    jwt({
+        issuer: options.issuer,
+        secret,
+    }).unless({ path: ["/auth/", "/auth/import/"] }),
+);
 app.use((err, req, res, next) => {
     if (err.name === "UnauthorizedError") {
         console.log(err);

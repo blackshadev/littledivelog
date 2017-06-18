@@ -41,11 +41,11 @@ router.get("/", async (req, res) => {
               usr.user_id
             , usr.email
             , usr.name
-            , total_dive_count = (
+            , (
                 select count(*)
                   from dives d
                  where d.user_id = ses.user_id
-            )
+            ) as total_dive_count
            from users usr
            where usr.user_id = $1
         `,

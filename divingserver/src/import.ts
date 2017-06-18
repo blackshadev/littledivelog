@@ -46,7 +46,7 @@ router.get("/", async (req, res) => {
                 select count(*)
                   from dives d
                  where d.user_id = usr.user_id
-            ) as total_dive_count
+            ) as dive_count
            from users usr
            where usr.user_id = $1
         `,

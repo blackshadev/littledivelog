@@ -44,12 +44,12 @@ router.get("/", async (req, res) => {
             , (
                 select count(*)
                   from dives d
-                 where d.user_id = ses.user_id
+                 where d.user_id = usr.user_id
             ) as total_dive_count
            from users usr
            where usr.user_id = $1
         `,
-        [req.user.session_id],
+        [req.user.user_id],
     );
 
     if (session.rows.length === 0) {
@@ -79,7 +79,7 @@ router.get("/", async (req, res) => {
 
 router.post("/computer", async (req, res) => {
 
-    const session: QueryResult = await database.call(
+    const data: QueryResult = await database.call(
         `
         insert into computers (user_id, serial, vendor, model, type, name)
                         values($1     , $2    , $3    , $4   , $5  , $6  )
@@ -87,6 +87,10 @@ router.post("/computer", async (req, res) => {
         `,
         [req.user.user_id],
     );
+
+    res.json({
+        computer_id: data.rows[0].computer_id,
+    });
 
 });
 

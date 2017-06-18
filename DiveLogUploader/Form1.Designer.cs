@@ -50,6 +50,12 @@
             this.UsernameIput = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.AccountPanel = new System.Windows.Forms.GroupBox();
+            this.LabelAccountDiveCount = new System.Windows.Forms.Label();
+            this.LabelAccountName = new System.Windows.Forms.Label();
+            this.LabelAccountEmail = new System.Windows.Forms.Label();
+            this.label6 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
             this.LogTab = new System.Windows.Forms.TabPage();
             this.LogTextBox = new System.Windows.Forms.RichTextBox();
             this.LogLevelSelector = new System.Windows.Forms.ComboBox();
@@ -57,14 +63,8 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.DivecomputerWorker = new System.ComponentModel.BackgroundWorker();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.label6 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
-            this.LabelAccountEmail = new System.Windows.Forms.Label();
-            this.LabelAccountName = new System.Windows.Forms.Label();
-            this.LabelAccountDiveCount = new System.Windows.Forms.Label();
-            this.LabelAccountLastUpload = new System.Windows.Forms.Label();
+            this.LabelAccountComputerCount = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.ComputerTab.SuspendLayout();
             this.DiversLogTab.SuspendLayout();
@@ -355,11 +355,11 @@
             // 
             // AccountPanel
             // 
-            this.AccountPanel.Controls.Add(this.LabelAccountLastUpload);
+            this.AccountPanel.Controls.Add(this.LabelAccountComputerCount);
+            this.AccountPanel.Controls.Add(this.label7);
             this.AccountPanel.Controls.Add(this.LabelAccountDiveCount);
             this.AccountPanel.Controls.Add(this.LabelAccountName);
             this.AccountPanel.Controls.Add(this.LabelAccountEmail);
-            this.AccountPanel.Controls.Add(this.label7);
             this.AccountPanel.Controls.Add(this.label6);
             this.AccountPanel.Controls.Add(this.label5);
             this.AccountPanel.Controls.Add(this.label4);
@@ -370,6 +370,60 @@
             this.AccountPanel.TabStop = false;
             this.AccountPanel.Text = "Account";
             this.AccountPanel.Visible = false;
+            // 
+            // LabelAccountDiveCount
+            // 
+            this.LabelAccountDiveCount.AutoSize = true;
+            this.LabelAccountDiveCount.Location = new System.Drawing.Point(102, 72);
+            this.LabelAccountDiveCount.Name = "LabelAccountDiveCount";
+            this.LabelAccountDiveCount.Size = new System.Drawing.Size(35, 13);
+            this.LabelAccountDiveCount.TabIndex = 6;
+            this.LabelAccountDiveCount.Text = "Count";
+            // 
+            // LabelAccountName
+            // 
+            this.LabelAccountName.AutoSize = true;
+            this.LabelAccountName.Location = new System.Drawing.Point(102, 46);
+            this.LabelAccountName.Name = "LabelAccountName";
+            this.LabelAccountName.Size = new System.Drawing.Size(35, 13);
+            this.LabelAccountName.TabIndex = 5;
+            this.LabelAccountName.Text = "Name";
+            // 
+            // LabelAccountEmail
+            // 
+            this.LabelAccountEmail.AutoSize = true;
+            this.LabelAccountEmail.Location = new System.Drawing.Point(102, 23);
+            this.LabelAccountEmail.Name = "LabelAccountEmail";
+            this.LabelAccountEmail.Size = new System.Drawing.Size(32, 13);
+            this.LabelAccountEmail.TabIndex = 4;
+            this.LabelAccountEmail.Text = "Email";
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(7, 72);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(59, 13);
+            this.label6.TabIndex = 2;
+            this.label6.Text = "Dive count";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(7, 46);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(35, 13);
+            this.label5.TabIndex = 1;
+            this.label5.Text = "Name";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(7, 22);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(32, 13);
+            this.label4.TabIndex = 0;
+            this.label4.Text = "Email";
             // 
             // LogTab
             // 
@@ -430,77 +484,23 @@
             // 
             this.SaveFileDialog.Filter = "JSON Files (*.json)|*.json";
             // 
-            // label4
-            // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(7, 22);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(32, 13);
-            this.label4.TabIndex = 0;
-            this.label4.Text = "Email";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(7, 46);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(35, 13);
-            this.label5.TabIndex = 1;
-            this.label5.Text = "Name";
-            // 
-            // label6
-            // 
-            this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(7, 72);
-            this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(59, 13);
-            this.label6.TabIndex = 2;
-            this.label6.Text = "Dive count";
-            // 
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 98);
+            this.label7.Location = new System.Drawing.Point(7, 99);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(62, 13);
-            this.label7.TabIndex = 3;
-            this.label7.Text = "Last upload";
+            this.label7.Size = new System.Drawing.Size(82, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Computer count";
             // 
-            // LabelAccountEmail
+            // LabelAccountComputerCount
             // 
-            this.LabelAccountEmail.AutoSize = true;
-            this.LabelAccountEmail.Location = new System.Drawing.Point(102, 23);
-            this.LabelAccountEmail.Name = "LabelAccountEmail";
-            this.LabelAccountEmail.Size = new System.Drawing.Size(32, 13);
-            this.LabelAccountEmail.TabIndex = 4;
-            this.LabelAccountEmail.Text = "Email";
-            // 
-            // LabelAccountName
-            // 
-            this.LabelAccountName.AutoSize = true;
-            this.LabelAccountName.Location = new System.Drawing.Point(102, 46);
-            this.LabelAccountName.Name = "LabelAccountName";
-            this.LabelAccountName.Size = new System.Drawing.Size(35, 13);
-            this.LabelAccountName.TabIndex = 5;
-            this.LabelAccountName.Text = "Name";
-            // 
-            // LabelAccountDiveCount
-            // 
-            this.LabelAccountDiveCount.AutoSize = true;
-            this.LabelAccountDiveCount.Location = new System.Drawing.Point(102, 72);
-            this.LabelAccountDiveCount.Name = "LabelAccountDiveCount";
-            this.LabelAccountDiveCount.Size = new System.Drawing.Size(35, 13);
-            this.LabelAccountDiveCount.TabIndex = 6;
-            this.LabelAccountDiveCount.Text = "Count";
-            // 
-            // LabelAccountLastUpload
-            // 
-            this.LabelAccountLastUpload.AutoSize = true;
-            this.LabelAccountLastUpload.Location = new System.Drawing.Point(102, 98);
-            this.LabelAccountLastUpload.Name = "LabelAccountLastUpload";
-            this.LabelAccountLastUpload.Size = new System.Drawing.Size(64, 13);
-            this.LabelAccountLastUpload.TabIndex = 7;
-            this.LabelAccountLastUpload.Text = "Last Upload";
+            this.LabelAccountComputerCount.AutoSize = true;
+            this.LabelAccountComputerCount.Location = new System.Drawing.Point(102, 99);
+            this.LabelAccountComputerCount.Name = "LabelAccountComputerCount";
+            this.LabelAccountComputerCount.Size = new System.Drawing.Size(35, 13);
+            this.LabelAccountComputerCount.TabIndex = 8;
+            this.LabelAccountComputerCount.Text = "Count";
             // 
             // Form1
             // 
@@ -566,14 +566,14 @@
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Button loginButton;
         private System.Windows.Forms.Label AuthErrLabel;
-        private System.Windows.Forms.Label LabelAccountLastUpload;
         private System.Windows.Forms.Label LabelAccountDiveCount;
         private System.Windows.Forms.Label LabelAccountName;
         private System.Windows.Forms.Label LabelAccountEmail;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label LabelAccountComputerCount;
+        private System.Windows.Forms.Label label7;
     }
 }
 

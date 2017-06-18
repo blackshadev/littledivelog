@@ -12,28 +12,26 @@ using System.Threading.Tasks;
 
 namespace DiveLogUploader
 {
-    public class WebApplicationData {
-        [JsonProperty("session_id")]
-        public string SessionId;
 
-        [JsonProperty("last_used")]
-        public DateTime LastUsed;
-        
+    public class UserData {
         [JsonProperty("user_id")]
         public int UserId;
-
         [JsonProperty("email")]
-        public string email;
-
+        public string Email;
         [JsonProperty("name")]
-        public string name;
+        public string Name;
+        [JsonProperty("dive_count")]
+        public int DiveCount;
 
-        [JsonProperty("session_dive_count")]
-        public int SessionDiveCount;
+    }
 
-        [JsonProperty("total_dive_count")]
-        public int TotalDiveCount;
+    public class WebApplicationData {
 
+        [JsonProperty]
+        public UserData user;
+
+        [JsonProperty]
+        public Computer[] computers;
     }
 
     public class DataEventArgs : EventArgs {
@@ -121,7 +119,7 @@ namespace DiveLogUploader
                 email = email,
                 password = password,
             });
-            var dat = await RequestWebApp("POST", "auth/import/", d, null);
+            var dat = await RequestWebApp("POST", "auth/", d, null);
             if(dat == null) {
                 Token = null;
                 return;
@@ -138,14 +136,19 @@ namespace DiveLogUploader
         }
 
         private async Task GetData() {
-            var dat = await RequestWebApp("GET", "import", null, Token);
+            var dat = await RequestWebApp("GET", "import/", null, Token);
             if(dat["error"] != null) {
                 Token = null;
                 HandleError(
                     new AuthenticationException(dat["error"].ToString())
                 );
             }
-            OnData?.Invoke(this, new DataEventArgs { Data = dat.ToObject<WebApplicationData>() });
+            var result = dat.ToObject<WebApplicationData>();
+            if(result == null || result.user == null || result.computers == null) {
+                throw new Exception("Invalid response from server");
+            } 
+
+            OnData?.Invoke(this, new DataEventArgs { Data = result });
         }
 
         private void HandleError(Exception e) {

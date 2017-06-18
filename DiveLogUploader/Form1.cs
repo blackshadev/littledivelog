@@ -12,7 +12,6 @@ using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using static LibDiveComputer.Context;
-using System.Security.Authentication;
 using Newtonsoft.Json.Linq;
 
 namespace divecomputer_test {
@@ -152,10 +151,11 @@ namespace divecomputer_test {
         public void SetAccountDetails(WebApplicationData data) {
             AccountPanel.Visible = true;
             LoginPanel.Visible = false;
-            LabelAccountEmail.Text = data.email;
-            LabelAccountName.Text = data.name;
-            LabelAccountDiveCount.Text = data.TotalDiveCount.ToString();
-            LabelAccountLastUpload.Text = data.LastUsed.ToShortDateString();
+            LabelAccountEmail.Text = data.user.Email;
+            LabelAccountName.Text = data.user.Name;
+            LabelAccountDiveCount.Text = data.user.DiveCount.ToString();
+            LabelAccountComputerCount.Text = data.computers.Length.ToString();
+
         }
 
         private void LogLevelSelector_SelectedValueChanged(object sender, EventArgs e) {

@@ -20,7 +20,7 @@ app.use(
     jwt({
         issuer: options.issuer,
         secret,
-    }).unless({ path: ["/auth/", "/auth/import/"] }),
+    }).unless({ path: ["/auth/"] }),
 );
 app.use((err, req, res, next) => {
     if (err.name === "UnauthorizedError") {

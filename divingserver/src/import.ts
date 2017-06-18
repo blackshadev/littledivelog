@@ -38,20 +38,16 @@ router.get("/", async (req, res) => {
 
     const session: QueryResult = await database.call(
         `select
-              ses.session_id
-            , ses.last_used
-            , usr.user_id
+              usr.user_id
             , usr.email
             , usr.name
-            , (
+            , total_dive_count = (
                 select count(*)
                   from dives d
                  where d.user_id = ses.user_id
-            ) as total_dive_count
-            , 0::int as session_dive_count
-           from remote_sessions ses
-           join users usr on ses.user_id = usr.user_id
-           where ses.session_id = $1
+            )
+           from users usr
+           where user.user_id = $1
         `,
         [req.user.session_id],
     );
@@ -61,9 +57,37 @@ router.get("/", async (req, res) => {
         res.json({ error: "Invalid authentication token" });
     }
 
-    res.json(
-        session.rows[0],
+    const computers: QueryResult = await database.call(
+        `select
+               comp.*
+             , dive_count = (
+                select count(*)
+                  from dives d
+                 where d.computer_id = comp.computer_id
+             )
+           from computers comp
+           where comp.user_id = $1
+        `,
+        [session.rows[0].user_id],
     );
+
+    res.json({
+        computers: computers.rows,
+        session: session.rows[0],
+    });
+});
+
+router.post("/computer", async (req, res) => {
+
+    const session: QueryResult = await database.call(
+        `
+        insert into computers (user_id, serial, vendor, model, type, name)
+                        values($1     , $2    , $3    , $4   , $5  , $6  )
+        returning *
+        `,
+        [req.user.user_id],
+    );
+
 });
 
 // router.post("/", async (req, res) => {

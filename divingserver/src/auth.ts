@@ -80,50 +80,6 @@ router.post(
     },
 );
 
-interface IRemoteSession {
-    session_id: string;
-}
-
-router.post("/import", async (req, res) => {
-    let user: IUserRow;
-    const b = req.body;
-
-    try {
-        user = await login(b.email, b.password);
-    } catch (err) {
-        res.status(err.message === "Invalid credentials" ? 401 : 500);
-        res.json({ error: err.message });
-        return;
-    }
-
-    const ds = await database.call(
-        `insert into remote_sessions (
-              user_id
-            , ip
-        ) values (
-              $1
-            , $2
-        )
-        returning *`,
-        [
-            user.user_id,
-            req.connection.remoteAddress,
-        ],
-    );
-
-    const sess = ds.rows[0] as IRemoteSession;
-    try {
-        const tok = await createToken({ session_id: sess.session_id });
-        res.json({ jwt: tok });
-    } catch (err) {
-        res.status(500);
-        res.json({
-            error: err.message,
-        });
-    }
-
-});
-
 // router.post(
 //     "/register",
 //     async (req, res) => {

@@ -60,11 +60,11 @@ router.get("/", async (req, res) => {
     const computers: QueryResult = await database.call(
         `select
                comp.*
-             , dive_count = (
+             , (
                 select count(*)
                   from dives d
                  where d.computer_id = comp.computer_id
-             )
+             ) as dive_count
            from computers comp
            where comp.user_id = $1
         `,

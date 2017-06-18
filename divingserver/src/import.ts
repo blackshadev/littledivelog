@@ -47,7 +47,7 @@ router.get("/", async (req, res) => {
                  where d.user_id = ses.user_id
             )
            from users usr
-           where user.user_id = $1
+           where usr.user_id = $1
         `,
         [req.user.session_id],
     );

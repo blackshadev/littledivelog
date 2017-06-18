@@ -36,7 +36,7 @@ interface IComputerImport {
 
 router.get("/", async (req, res) => {
 
-    const session: QueryResult = await database.call(
+    const user: QueryResult = await database.call(
         `select
               usr.user_id
             , usr.email
@@ -52,7 +52,7 @@ router.get("/", async (req, res) => {
         [req.user.user_id],
     );
 
-    if (session.rows.length === 0) {
+    if (user.rows.length === 0) {
         res.status(401);
         res.json({ error: "Invalid authentication token" });
     }
@@ -68,12 +68,12 @@ router.get("/", async (req, res) => {
            from computers comp
            where comp.user_id = $1
         `,
-        [session.rows[0].user_id],
+        [req.user.user_id],
     );
 
     res.json({
         computers: computers.rows,
-        session: session.rows[0],
+        user: user.rows[0],
     });
 });
 

@@ -58,9 +58,7 @@ interface IImportData {
     Computer: IImportComputer;
 }
 
-interface IImportOptions {
-
-}
+interface IImportOptions {}
 
 interface IImportRequestBody {
     data: IImportData;
@@ -129,29 +127,26 @@ router.get("/import", async (req, res) => {
     );
 });
 
-router.post("/import", async (req, res) => {
+router.put("/:id", async (req, res) => {
 
-    const computerId = req.user.computer_id;
-    if (computerId === undefined) {
-        res.status(401).json({ error: "Invalid token for import. Please generate a valid token in the dive app" });
-        return;
-    }
+    const computerId = req.params.id;
 
     let userId: number;
     const body = req.body as IImportRequestBody;
     const sql = new SqlBatch();
     sql.add(
         `update computers set
-              serial = $2
-            , vendor = $3
-            , model = $4
-            , type = $5
-            , name = $6
-          where computer_id = $1
+              serial = $3
+            , vendor = $4
+            , model = $5
+            , type = $6
+            , name = $7
+          where computer_id = $1 and user_id = $2
           returning *
         `,
         [
             computerId,
+            req.user.user_id,
             body.data.Computer.Serial,
             body.data.Computer.Vendor,
             body.data.Computer.Model,

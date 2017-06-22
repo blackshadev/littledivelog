@@ -259,3 +259,13 @@ router.get("/:id/samples", async (req, res) => {
         samples.rows.length ? (samples.rows[0].samples || []) : [],
     );
 });
+
+interface IComputerBatch {
+    computer_id: number;
+    dives: any[];
+
+}
+
+router.post("/batch", async (req, res) => {
+    const dat = req.body as IComputerBatch;
+});

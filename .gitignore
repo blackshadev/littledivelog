@@ -1,3 +1,5 @@
+!simulator/*
+!simulator/
 
 # Created by https://www.gitignore.io/api/csharp,visualstudio
 
@@ -28,7 +30,8 @@ bld/
 [Oo]bj/
 [Ll]og/
 !LibDiveComputer/lib/bin
-!simulator/*
+
+
 
 # Visual Studio 2015 cache/options directory
 .vs/

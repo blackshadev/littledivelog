@@ -15,18 +15,18 @@ import * as tags from "./tags";
 
 const app = express();
 app.use(bodyParser.json({ limit: "500mb" }));
+
 app.use(
     jwt({
-        secret,
         issuer: options.issuer,
-    }).unless({
-        path: ["/auth/"],
-    }),
+        secret,
+    }).unless({ path: ["/auth/"] }),
 );
 app.use((err, req, res, next) => {
-  if (err.name === "UnauthorizedError") {
-    res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
-  }
+    if (err.name === "UnauthorizedError") {
+        console.log(err);
+        res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
+    }
 });
 
 app.use("/auth/", auth.router);

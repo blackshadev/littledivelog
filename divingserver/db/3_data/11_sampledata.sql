@@ -1,19 +1,11 @@
 insert into users (
     email
   , password
-  , salt
-  , name 
+  , name
 ) values (
     'vinnie@script4web.nl'
-  , ''
-  , ''
-  , 'Vincent' 
-);
-
-insert into sessions (
-    user_id, ip
-) values (
-    1, '127.0.0.1'
+  , '$argon2d$v=19$m=1024,t=1,p=1$c0p3clB5cDl2NU85bUdLVnlBNHI$rg/TT/1pbBytGPJrWAMd1A5nzouvNUQ/YkhqHsyY9l4' -- tester
+  , 'Vincent'
 );
 
 insert into places (
@@ -31,22 +23,25 @@ insert into dives (
   , date
   , divetime
   , max_depth
+  , tanks
   , samples
   , country_code
-  , place_id 
+  , place_id
 ) values (
     1
   , '2017-04-11 21:05:10'
-  , '00:25:00'
+  , '1500'
   , '5.65'
+  , '{"(10,21,\"(200,50,bar)\")"}'
   , '[]'
   , 'NL'
   , 1
 ), (
     1
   , '2017-04-03 07:12:04'
-  , '01:03:00'
+  , '3780'
   , '12.45'
+  , '{"(10,21,\"(200,50,bar)\")"}'
   , '[]'
   , 'NL'
   , 1
@@ -55,14 +50,14 @@ insert into dives (
 insert into buddies (
     user_id
   , text
-  , color 
+  , color
 ) values (
     1
   , 'Gonard'
   , '#ff00ff'
 ), (
     1
-  , 'Iris' 
+  , 'Iris'
   , '#0110ff'
 );
 
@@ -77,15 +72,15 @@ insert into dive_buddies (
 insert into tags (
     user_id
   , text
-  , color 
+  , color
 ) values (
     1
   , 'Night'
-  , '#09021f' 
+  , '#09021f'
 ), (
     1
   , 'Deco'
-  , '#87f210' 
+  , '#87f210'
 );
 
 insert into dive_tags (

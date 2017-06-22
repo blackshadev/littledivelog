@@ -1,4 +1,5 @@
 ﻿using LibDiveComputer;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
@@ -8,10 +9,15 @@ namespace DiveLogUploader {
     /// Holds dive computer information
     /// </summary>
     public class Computer {
+        [JsonProperty("name")]
         public string Name { get; protected set; }
+        [JsonProperty("vendor")]
         public string Vendor { get; protected set; }
+        [JsonProperty("model")]
         public uint Model { get; protected set; }
+        [JsonProperty("type")]
         public uint Type { get; protected set; }
+        [JsonProperty("serial")]
         public uint? Serial { get; protected set; }
         
         public Computer(Descriptor descr) {

@@ -8,7 +8,7 @@ module.exports = {
     // First application
     {
       name      : 'divingserver',
-      script    : 'divingserver/build/app.js',
+      script    : 'build/app.js',
     }
   ],
 

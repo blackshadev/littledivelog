@@ -1,8 +1,8 @@
-import { QueryResult } from "@types/pg";
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as jwt from "express-jwt";
 import * as unless from "express-unless";
+import { QueryResult } from "pg";
 import * as auth from "./auth";
 import * as buddies from "./buddies";
 import * as computers from "./computers";

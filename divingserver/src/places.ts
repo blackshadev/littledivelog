@@ -1,5 +1,5 @@
-import { QueryResult } from "@types/pg";
 import * as express from "express";
+import { QueryResult } from "pg";
 import { database } from "./pg";
 
 export const router  = express.Router();

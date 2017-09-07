@@ -1,5 +1,5 @@
-import { QueryResult } from "@types/pg";
 import * as express from "express";
+import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "./pg";
 import { SqlBatch } from "./sql";

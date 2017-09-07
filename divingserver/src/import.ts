@@ -1,5 +1,5 @@
-import { QueryResult } from "@types/pg";
 import * as express from "express";
+import { QueryResult } from "pg";
 import { IUserRow, login } from "./auth";
 import { createToken } from "./jwt";
 import { database } from "./pg";

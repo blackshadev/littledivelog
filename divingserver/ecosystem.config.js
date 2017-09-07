@@ -7,9 +7,8 @@ module.exports = {
 
     // First application
     {
-      name      : 'App Server',
-      cwd       : "./divingserver/",
-      script    : 'build/app.js',
+      name      : 'divingserver',
+      script    : 'divingserver/build/app.js',
     }
   ],
 

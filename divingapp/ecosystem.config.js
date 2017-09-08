@@ -10,7 +10,7 @@ module.exports = {
       name      : 'divingapp',
       script    : 'serve',
       env       : {
-        "PM2_SERVE_PATH": 'divingapp/build/',
+        "PM2_SERVE_PATH": 'divingapp/dist/',
         "PM2_SERVE_PORT": 8080
       }
     }

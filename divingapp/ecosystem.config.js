@@ -22,6 +22,7 @@ module.exports = {
    */
   deploy : {
     prod : {
+      key: "~/.ssh/dive_app_key",
       user : 'dive.littledev.nl',
       host : 'mira.littledev.nl',
       ref  : 'origin/master',

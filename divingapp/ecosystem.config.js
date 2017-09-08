@@ -21,7 +21,7 @@ module.exports = {
    * http://pm2.keymetrics.io/docs/usage/deployment/
    */
   deploy : {
-    production : {
+    prod : {
       user : 'dive.littledev.nl',
       host : 'mira.littledev.nl',
       ref  : 'origin/master',

@@ -22,8 +22,8 @@ module.exports = {
    */
   deploy : {
     production : {
-      user : 'node',
-      host : '212.83.163.1',
+      user : 'dive.littledev.nl',
+      host : 'mira.littledev.nl',
       ref  : 'origin/master',
       repo : 'git@git.littledev.nl:blackshade/divecomputer.git',
       path : '/home/dive.littledev.nl/',

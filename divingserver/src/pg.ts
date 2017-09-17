@@ -9,7 +9,7 @@ pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => str);
 
 const cnf = {
   database: "divelog",
-  host: "192.168.2.42",
+  host: "yildun.littldev.nl",
   idleTimeoutMillis: 30000,
   max: 10,
   password: "tester",

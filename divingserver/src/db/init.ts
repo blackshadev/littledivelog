@@ -42,12 +42,12 @@ async function listQueries(baseDir: string = __dirname + "/../../db/"): Promise<
         const entries = await readDir(dirPath);
         entries.sort();
         const all = [];
-        for(const entry of entries) {
+        for (const entry of entries) {
             const fPath = path.join(dirPath, entry);
             const fStat = await stat(fPath);
-            if(fStat.isFile() && /^\d+\_.*\.sql$/i.test(entry)) {
+            if (fStat.isFile() && /^\d+\_.*\.sql$/i.test(entry)) {
                 all.push(fPath);
-            } else if(fStat.isDirectory()) {
+            } else if (fStat.isDirectory()) {
                 all.push(... await recReadDir(fPath));
             }
         }
@@ -68,7 +68,7 @@ async function executeAll(filenames: string[]): Promise<void> {
     console.log("connecting...");
     await client.connect();
 
-    for(let iX = 0; iX < filenames.length; iX++) {
+    for (let iX = 0; iX < filenames.length; iX++) {
         const fpath = filenames[iX];
         const fname = path.basename(fpath);
         console.log(`Execute ${fname} (${iX}/${filenames.length})`);

@@ -77,6 +77,10 @@ namespace divecomputer_test {
             session.WebAppSession.OnData += (sender, args) => {
                 SetAccountDetails(args.Data);
             };
+
+            session.WebAppSession.OnError += (sender, err) => {
+                AuthErrLabel.Text = err.GetException().Message;
+            };
         } 
 
 
@@ -351,11 +355,9 @@ namespace divecomputer_test {
             AuthErrLabel.Text = "";
             loginButton.Enabled = false;
             
-            try {
-                await session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
-            } catch(AggregateException err) {
-                AuthErrLabel.Text = err.InnerException.Message;
-            }
+            await session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
+            
+            
             loginButton.Enabled = true;
 
         }

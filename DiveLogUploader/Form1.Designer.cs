@@ -50,6 +50,8 @@
             this.UsernameIput = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.AccountPanel = new System.Windows.Forms.GroupBox();
+            this.LabelAccountComputerCount = new System.Windows.Forms.Label();
+            this.label7 = new System.Windows.Forms.Label();
             this.LabelAccountDiveCount = new System.Windows.Forms.Label();
             this.LabelAccountName = new System.Windows.Forms.Label();
             this.LabelAccountEmail = new System.Windows.Forms.Label();
@@ -63,8 +65,6 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.DivecomputerWorker = new System.ComponentModel.BackgroundWorker();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.label7 = new System.Windows.Forms.Label();
-            this.LabelAccountComputerCount = new System.Windows.Forms.Label();
             this.tabControl1.SuspendLayout();
             this.ComputerTab.SuspendLayout();
             this.DiversLogTab.SuspendLayout();
@@ -302,10 +302,9 @@
             // 
             // AuthErrLabel
             // 
-            this.AuthErrLabel.AutoSize = true;
             this.AuthErrLabel.Location = new System.Drawing.Point(8, 77);
             this.AuthErrLabel.Name = "AuthErrLabel";
-            this.AuthErrLabel.Size = new System.Drawing.Size(0, 13);
+            this.AuthErrLabel.Size = new System.Drawing.Size(142, 59);
             this.AuthErrLabel.TabIndex = 5;
             // 
             // loginButton
@@ -370,6 +369,24 @@
             this.AccountPanel.TabStop = false;
             this.AccountPanel.Text = "Account";
             this.AccountPanel.Visible = false;
+            // 
+            // LabelAccountComputerCount
+            // 
+            this.LabelAccountComputerCount.AutoSize = true;
+            this.LabelAccountComputerCount.Location = new System.Drawing.Point(102, 99);
+            this.LabelAccountComputerCount.Name = "LabelAccountComputerCount";
+            this.LabelAccountComputerCount.Size = new System.Drawing.Size(35, 13);
+            this.LabelAccountComputerCount.TabIndex = 8;
+            this.LabelAccountComputerCount.Text = "Count";
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Location = new System.Drawing.Point(7, 99);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(82, 13);
+            this.label7.TabIndex = 7;
+            this.label7.Text = "Computer count";
             // 
             // LabelAccountDiveCount
             // 
@@ -483,24 +500,6 @@
             // SaveFileDialog
             // 
             this.SaveFileDialog.Filter = "JSON Files (*.json)|*.json";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 99);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(82, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Computer count";
-            // 
-            // LabelAccountComputerCount
-            // 
-            this.LabelAccountComputerCount.AutoSize = true;
-            this.LabelAccountComputerCount.Location = new System.Drawing.Point(102, 99);
-            this.LabelAccountComputerCount.Name = "LabelAccountComputerCount";
-            this.LabelAccountComputerCount.Size = new System.Drawing.Size(35, 13);
-            this.LabelAccountComputerCount.TabIndex = 8;
-            this.LabelAccountComputerCount.Text = "Count";
             // 
             // Form1
             // 

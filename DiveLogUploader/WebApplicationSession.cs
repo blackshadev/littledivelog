@@ -129,10 +129,10 @@ namespace DiveLogUploader
                 HandleError(
                     new AuthenticationException(dat["error"].ToString())
                 );
+            } else {
+                Token = dat["jwt"].ToString();
+                await GetData();
             }
-
-            Token = dat["jwt"].ToString();
-            await GetData();
         }
 
         private async Task GetData() {
@@ -142,6 +142,7 @@ namespace DiveLogUploader
                 HandleError(
                     new AuthenticationException(dat["error"].ToString())
                 );
+                return;
             }
             var result = dat.ToObject<WebApplicationData>();
             if(result == null || result.user == null || result.computers == null) {
@@ -153,7 +154,6 @@ namespace DiveLogUploader
 
         private void HandleError(Exception e) {
             OnError?.Invoke(this, new ErrorEventArgs(e));
-            throw e;
         }
     }
 }

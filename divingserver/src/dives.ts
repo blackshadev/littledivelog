@@ -268,4 +268,9 @@ interface IComputerBatch {
 
 router.post("/batch", async (req, res) => {
     const dat = req.body as IComputerBatch;
+    console.log(req.body);
+
+    res.json({
+        dive_id: -1,
+    });
 });

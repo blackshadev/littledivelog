@@ -23,7 +23,7 @@ namespace divecomputer_test {
             public Device device;
             public Descriptor descriptor;
             public string serialPort;
-            public Bundle bundle;
+            public DiveBundle bundle;
             public string fingerprint;
         }
 
@@ -204,7 +204,7 @@ namespace divecomputer_test {
                 args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
                     SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
-                    args.bundle = new Bundle(args.device);
+                    args.bundle = new DiveBundle(args.device);
                     var old = args.fingerprint;
                     GetFingerprint();
                     //if (args.fingerprint != old) {

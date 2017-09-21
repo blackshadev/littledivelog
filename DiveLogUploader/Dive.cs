@@ -35,33 +35,6 @@ namespace DiveLogUploader {
     }
 
     /// <summary>
-    /// Holds computer and dives data
-    /// </summary>
-    public class Bundle {
-        public Computer Computer { get; protected set; }
-        public List<Dive> Dives { get; protected set; }
-        public DateTime ReadTime { get; protected set; }
-
-
-        protected Bundle() {
-            ReadTime = DateTime.Now;
-            Dives = new List<Dive>();
-        }
-
-        public Bundle(Device device) : this() {
-            Computer = new Computer(device);
-        }
-
-        public Bundle(Descriptor descr) : this() {
-            Computer = new Computer(descr);
-        }
-
-        public void Add(Dive d) {
-            Dives.Add(d);
-        }
-    }
-
-    /// <summary>
     /// Holds information about a single dive
     /// </summary>
     public class Dive {

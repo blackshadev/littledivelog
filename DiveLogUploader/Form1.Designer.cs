@@ -26,11 +26,11 @@
             this.ComputerSelectLabel = new System.Windows.Forms.Label();
             this.ComputerSelector = new System.Windows.Forms.ComboBox();
             this.VersionLabel = new System.Windows.Forms.Label();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.FormTabs = new System.Windows.Forms.TabControl();
             this.ComputerTab = new System.Windows.Forms.TabPage();
-            this.label1 = new System.Windows.Forms.Label();
-            this.radioButton2 = new System.Windows.Forms.RadioButton();
-            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.TargetLbl = new System.Windows.Forms.Label();
+            this.LogRadio = new System.Windows.Forms.RadioButton();
+            this.FileRadio = new System.Windows.Forms.RadioButton();
             this.BrowseButton = new System.Windows.Forms.Button();
             this.SaveFileText = new System.Windows.Forms.TextBox();
             this.SaveFileLabel = new System.Windows.Forms.Label();
@@ -65,7 +65,7 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.DivecomputerWorker = new System.ComponentModel.BackgroundWorker();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
-            this.tabControl1.SuspendLayout();
+            this.FormTabs.SuspendLayout();
             this.ComputerTab.SuspendLayout();
             this.DiversLogTab.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
@@ -106,23 +106,23 @@
             this.VersionLabel.Text = "_version_";
             this.VersionLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // tabControl1
+            // FormTabs
             // 
-            this.tabControl1.Controls.Add(this.ComputerTab);
-            this.tabControl1.Controls.Add(this.DiversLogTab);
-            this.tabControl1.Controls.Add(this.LogTab);
-            this.tabControl1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tabControl1.Location = new System.Drawing.Point(0, 0);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(508, 171);
-            this.tabControl1.TabIndex = 3;
+            this.FormTabs.Controls.Add(this.ComputerTab);
+            this.FormTabs.Controls.Add(this.DiversLogTab);
+            this.FormTabs.Controls.Add(this.LogTab);
+            this.FormTabs.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.FormTabs.Location = new System.Drawing.Point(0, 0);
+            this.FormTabs.Name = "FormTabs";
+            this.FormTabs.SelectedIndex = 0;
+            this.FormTabs.Size = new System.Drawing.Size(508, 171);
+            this.FormTabs.TabIndex = 3;
             // 
             // ComputerTab
             // 
-            this.ComputerTab.Controls.Add(this.label1);
-            this.ComputerTab.Controls.Add(this.radioButton2);
-            this.ComputerTab.Controls.Add(this.radioButton1);
+            this.ComputerTab.Controls.Add(this.TargetLbl);
+            this.ComputerTab.Controls.Add(this.LogRadio);
+            this.ComputerTab.Controls.Add(this.FileRadio);
             this.ComputerTab.Controls.Add(this.BrowseButton);
             this.ComputerTab.Controls.Add(this.SaveFileText);
             this.ComputerTab.Controls.Add(this.SaveFileLabel);
@@ -142,36 +142,38 @@
             this.ComputerTab.Text = "Computer";
             this.ComputerTab.UseVisualStyleBackColor = true;
             // 
-            // label1
+            // TargetLbl
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 87);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(46, 13);
-            this.label1.TabIndex = 13;
-            this.label1.Text = "Save as";
+            this.TargetLbl.AutoSize = true;
+            this.TargetLbl.Location = new System.Drawing.Point(6, 87);
+            this.TargetLbl.Name = "TargetLbl";
+            this.TargetLbl.Size = new System.Drawing.Size(38, 13);
+            this.TargetLbl.TabIndex = 13;
+            this.TargetLbl.Text = "Target";
             // 
-            // radioButton2
+            // LogRadio
             // 
-            this.radioButton2.AutoSize = true;
-            this.radioButton2.Location = new System.Drawing.Point(157, 85);
-            this.radioButton2.Name = "radioButton2";
-            this.radioButton2.Size = new System.Drawing.Size(84, 17);
-            this.radioButton2.TabIndex = 12;
-            this.radioButton2.TabStop = true;
-            this.radioButton2.Text = "On diverslog";
-            this.radioButton2.UseVisualStyleBackColor = true;
+            this.LogRadio.AutoSize = true;
+            this.LogRadio.Location = new System.Drawing.Point(157, 85);
+            this.LogRadio.Name = "LogRadio";
+            this.LogRadio.Size = new System.Drawing.Size(84, 17);
+            this.LogRadio.TabIndex = 12;
+            this.LogRadio.TabStop = true;
+            this.LogRadio.Text = "On diverslog";
+            this.LogRadio.UseVisualStyleBackColor = true;
+            this.LogRadio.CheckedChanged += new System.EventHandler(this.LogRadio_CheckedChanged);
             // 
-            // radioButton1
+            // FileRadio
             // 
-            this.radioButton1.AutoSize = true;
-            this.radioButton1.Location = new System.Drawing.Point(66, 85);
-            this.radioButton1.Name = "radioButton1";
-            this.radioButton1.Size = new System.Drawing.Size(56, 17);
-            this.radioButton1.TabIndex = 11;
-            this.radioButton1.TabStop = true;
-            this.radioButton1.Text = "As File";
-            this.radioButton1.UseVisualStyleBackColor = true;
+            this.FileRadio.AutoSize = true;
+            this.FileRadio.Location = new System.Drawing.Point(66, 85);
+            this.FileRadio.Name = "FileRadio";
+            this.FileRadio.Size = new System.Drawing.Size(56, 17);
+            this.FileRadio.TabIndex = 11;
+            this.FileRadio.TabStop = true;
+            this.FileRadio.Text = "As File";
+            this.FileRadio.UseVisualStyleBackColor = true;
+            this.FileRadio.CheckedChanged += new System.EventHandler(this.TargetRadio_CheckedChanged);
             // 
             // BrowseButton
             // 
@@ -476,7 +478,7 @@
             // 
             // panel1
             // 
-            this.panel1.Controls.Add(this.tabControl1);
+            this.panel1.Controls.Add(this.FormTabs);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
@@ -513,7 +515,7 @@
             this.Name = "Form1";
             this.Text = "DiveLogUploader";
             this.Load += new System.EventHandler(this.Form1_Load);
-            this.tabControl1.ResumeLayout(false);
+            this.FormTabs.ResumeLayout(false);
             this.ComputerTab.ResumeLayout(false);
             this.ComputerTab.PerformLayout();
             this.DiversLogTab.ResumeLayout(false);
@@ -534,7 +536,7 @@
         private System.Windows.Forms.Label ComputerSelectLabel;
         private System.Windows.Forms.ComboBox ComputerSelector;
         private System.Windows.Forms.Label VersionLabel;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl FormTabs;
         private System.Windows.Forms.TabPage ComputerTab;
         private System.Windows.Forms.TabPage LogTab;
         private System.Windows.Forms.Panel panel1;
@@ -552,9 +554,9 @@
         private System.Windows.Forms.TextBox SaveFileText;
         private System.Windows.Forms.SaveFileDialog SaveFileDialog;
         private System.Windows.Forms.Button BrowseButton;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.RadioButton radioButton2;
-        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.Label TargetLbl;
+        private System.Windows.Forms.RadioButton LogRadio;
+        private System.Windows.Forms.RadioButton FileRadio;
         private System.Windows.Forms.TabPage DiversLogTab;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
         private System.Windows.Forms.GroupBox LoginPanel;

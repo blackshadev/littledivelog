@@ -1,7 +1,7 @@
 namespace LibDiveComputer {
 
     public static class Constants {
-        public const string LibPath = ".\\lib\\bin\\libdivecomputer-0.6.x.dll";
+        public const string LibPath = ".\\lib\\bin\\libdivecomputer-0.dll";
     }
 
     public enum dc_status_t {

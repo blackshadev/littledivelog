@@ -303,7 +303,6 @@ namespace LibDiveComputer {
         public Parser(Device device) : this() {
             dc_status_t rc = dc_parser_new(ref m_parser, device.m_device);
             if (rc != dc_status_t.DC_STATUS_SUCCESS) {
-                // TODO: Throw exception.
                 throw new Exception(rc.ToString());
             }
         }
@@ -311,7 +310,6 @@ namespace LibDiveComputer {
         public Parser(Context ctx, Descriptor descr, uint devtime, long systime) : this() {
             dc_status_t rc = dc_parser_new2(ref m_parser, ctx.m_context, descr.m_descriptor, devtime, systime);
             if (rc != dc_status_t.DC_STATUS_SUCCESS) {
-                // TODO: Throw exception.
                 throw new Exception(rc.ToString());
             }
         }

@@ -12,54 +12,11 @@ using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using static LibDiveComputer.Context;
-using Newtonsoft.Json.Linq;
 
 namespace divecomputer_test {
 
     public partial class Form1 : Form {
-
-        private class Session {
-            public string serialPort;
-            public string computer;
-            public string destination;
-
-            [JsonIgnore]
-            public WebApplicationSession WebAppSession { get; private set; }
-
-            public string appToken { get { return WebAppSession.Token; } }
-            protected Configuration config;
-
-            public Session() {
-                config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
-                WebAppSession = new WebApplicationSession();
-                WebAppSession.OnTokenChanged += (sender, args) => {
-                    Save();
-                };
-            }
-
-            public void Save() {
-                
-                if (config.AppSettings.Settings["last_session"] == null)
-                    config.AppSettings.Settings.Add("last_session", "{}");
-                config.AppSettings.Settings["last_session"].Value = JsonConvert.SerializeObject(this);
-                config.Save();
-            }
-
-            public void Load() {
-                string sData = null;
-                try {
-                    sData = config.AppSettings.Settings["last_session"].Value;
-                } catch (Exception) { }
-                
-                if (sData == null || sData == "") return;
-                var sess = JObject.Parse(sData);
-                WebAppSession.SetToken(sess["appToken"].ToString());
-                serialPort = sess["serialPort"].ToString();
-                computer = sess["computer"].ToString();
-                destination = sess["destination"].ToString();
-            }
-        }
-
+        
         private class TargetObject {
             public dc_loglevel_t logLevel;
             public Context ctx;
@@ -70,21 +27,19 @@ namespace divecomputer_test {
             public string fingerprint;
         }
 
-        private Session session = new Session();
+        private SessionStore Session = new SessionStore();
 
         public Form1() {
             InitializeComponent();
-            session.WebAppSession.OnData += (sender, args) => {
+            Session.WebAppSession.OnData += (sender, args) => {
                 SetAccountDetails(args.Data);
             };
 
-            session.WebAppSession.OnError += (sender, err) => {
+            Session.WebAppSession.OnError += (sender, err) => {
                 AuthErrLabel.Text = err.GetException().Message;
             };
         } 
-
-
-
+        
         private Context CreateContext(dc_loglevel_t logLevel) {
             var ctx = new Context();
             ctx.logfunc = (IntPtr context, dc_loglevel_t loglevel, string file, uint line, string function, string message, IntPtr userdata) => {
@@ -97,12 +52,18 @@ namespace divecomputer_test {
         private void Form1_Load(object sender, EventArgs e) {
             VersionLabel.Text = "libdivelog v" + LibDiveComputer.Version.AsString;
 
-            session.Load();
+            Session.Load();
 
             LoadSerialPorts();
             LoadComputerSelector();
             LoadLogLevelList();
-            SaveFileText.Text = session.destination ?? "";
+            SaveFileText.Text = Session.Destination ?? "";
+
+            if (Session.Target == TargetType.File) {
+                FileRadio.Checked = true;
+            } else if(Session.Target == TargetType.DiveLog) {
+                LogRadio.Checked = true;
+            }
         }
 
         private void LoadSerialPorts() {
@@ -117,7 +78,7 @@ namespace divecomputer_test {
 
             foreach (var kvp in kvps) {
                 PortSelector.Items.Add(kvp);
-                if (session.serialPort == kvp.Value) PortSelector.SelectedItem = kvp;
+                if (Session.SerialPort == kvp.Value) PortSelector.SelectedItem = kvp;
             }
         }
 
@@ -134,7 +95,7 @@ namespace divecomputer_test {
 
             foreach (var kvp in list) {
                 ComputerSelector.Items.Add(kvp);
-                if (session.computer == kvp.Value) ComputerSelector.SelectedItem = kvp;
+                if (Session.Computer == kvp.Value) ComputerSelector.SelectedItem = kvp;
             }
         }
 
@@ -332,34 +293,54 @@ namespace divecomputer_test {
         }
 
         private void PortSelector_Changed(object sender, EventArgs e) {
-            session.serialPort = PortSelector.SelectedItem == null ? null : ((KeyValuePair<string, string>)PortSelector.SelectedItem).Key;
-            session.Save();
+            Session.SerialPort = PortSelector.SelectedItem == null ? null : ((KeyValuePair<string, string>)PortSelector.SelectedItem).Key;
+            Session.Save();
         }
 
         private void ComputerSelector_Changed(object sender, EventArgs e) {
-            if (ComputerSelector.SelectedItem == null) session.computer = null;
+            if (ComputerSelector.SelectedItem == null) Session.Computer = null;
             else {
                 var comp = (KeyValuePair<Descriptor, string>)ComputerSelector.SelectedItem;
-                session.computer = comp.Value;
+                Session.Computer = comp.Value;
             }
 
-            session.Save();
+            Session.Save();
         }
 
         private void SaveFileText_Changed(object sender, EventArgs e) {
-            session.destination = SaveFileText.Text;
-            session.Save();
+            Session.Destination = SaveFileText.Text;
+            Session.Save();
         }
 
         private async void loginButton_Click(object sender, EventArgs e) {
             AuthErrLabel.Text = "";
             loginButton.Enabled = false;
             
-            await session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
-            
+            await Session.WebAppSession.Login(UsernameIput.Text, passwordInput.Text);
             
             loginButton.Enabled = true;
 
+        }
+
+        private void LogRadio_CheckedChanged(object sender, EventArgs e) {
+            if (LogRadio.Checked && !Session.WebAppSession.IsLoggedIn) {
+                LogRadio.Checked = false;
+                FormTabs.SelectedTab = FormTabs.TabPages["DiversLogTab"];
+                AuthErrLabel.Text = "Please login in order to upload dives";
+            } else {
+                TargetRadio_CheckedChanged(sender, e);
+            }
+        }
+
+        private void TargetRadio_CheckedChanged(object sender, EventArgs e) {
+            if (LogRadio.Checked) {
+                Session.Target = TargetType.DiveLog;
+            } else if(FileRadio.Checked) {
+                Session.Target = TargetType.File;
+            } else {
+                Session.Target = TargetType.None;
+            }
+            Session.Save();
         }
     }
 }

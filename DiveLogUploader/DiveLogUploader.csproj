@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="Dive.cs" />
     <Compile Include="DiveBundle.cs" />
+    <Compile Include="Request.cs" />
     <Compile Include="SessionStore.cs" />
     <Compile Include="WebApplicationSession.cs" />
     <Compile Include="Form1.cs">

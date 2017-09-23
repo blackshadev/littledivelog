@@ -1,33 +1,37 @@
 ﻿using LibDiveComputer;
-using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace DiveLogUploader.Writers {
+
     public delegate void OnCompleteHandler(object sender);
+
     public delegate void OnProgresHandler(object sender, int total, int processed);
 
     public interface IDiveWriter {
+
         event OnCompleteHandler OnComplete;
+
         event OnProgresHandler OnProgres;
+
         void SetDevice(Device device);
+
         void AddDive(Dive dive);
+
         void Start();
+
         void End();
     }
 
     public abstract class AsyncDiveWriter : IDiveWriter {
 
         public event OnCompleteHandler OnComplete;
+
         public event OnProgresHandler OnProgres;
 
         public int Total = 0;
-        public int Processed = 0;           
+        public int Processed = 0;
 
         protected Device device;
         protected BackgroundWorker worker;
@@ -50,7 +54,7 @@ namespace DiveLogUploader.Writers {
             OnProgres?.Invoke(this, Total, Processed);
             waitEvent.Set();
         }
-        
+
         public virtual void Start() {
             if (worker.IsBusy) return;
 
@@ -90,7 +94,7 @@ namespace DiveLogUploader.Writers {
                     OnProgres?.Invoke(this, Total, Processed);
                 } else {
                     waitEvent.WaitOne();
-                }   
+                }
             }
             Done();
         }
@@ -101,7 +105,5 @@ namespace DiveLogUploader.Writers {
         }
 
         protected abstract void ProcessDive(Dive dive);
-
-
     }
 }

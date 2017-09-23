@@ -1,8 +1,8 @@
-﻿using System;
+﻿using DiveLogUploader;
 using Newtonsoft.Json;
-using DiveLogUploader;
-using System.Configuration;
 using Newtonsoft.Json.Linq;
+using System;
+using System.Configuration;
 
 namespace LibDiveComputer {
 
@@ -23,6 +23,7 @@ namespace LibDiveComputer {
 
         public string AppToken { get { return WebAppSession.Token; } }
         protected Configuration config;
+        protected bool isAcceptingChanges = false;
 
         public SessionStore() {
             config = ConfigurationManager.OpenExeConfiguration(ConfigurationUserLevel.None);
@@ -32,7 +33,12 @@ namespace LibDiveComputer {
             };
         }
 
+        public void TrackChanges() {
+            isAcceptingChanges = true;
+        }
+
         public void Save() {
+            if (!isAcceptingChanges) return;
 
             if (config.AppSettings.Settings["last_session"] == null)
                 config.AppSettings.Settings.Add("last_session", "{}");
@@ -41,10 +47,9 @@ namespace LibDiveComputer {
         }
 
         public void Load() {
-            
             try {
                 var sData = config.AppSettings.Settings["last_session"].Value;
-            
+
                 if (sData == null || sData == "") return;
 
                 var sess = JObject.Parse(sData);

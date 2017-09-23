@@ -7,6 +7,7 @@ namespace LibDiveComputer {
         internal IntPtr m_parser;
 
         public static readonly int dc_timezone_none = unchecked((int)0x80000000);
+
         public static readonly string[] dc_sample_event_type_names = new string[] {
             "none", "deco", "rbt", "ascent", "ceiling", "workload", "transmitter",
             "violation", "bookmark", "surface", "safety stop", "gaschange",
@@ -15,6 +16,7 @@ namespace LibDiveComputer {
             "OLF", "PO2", "airtime", "rgbm", "heading", "tissue level warning",
             "gaschange2"
         };
+
         public static readonly string[] dc_sample_deco_type = new string[] {
             "ndl", "safety", "deco", "deep"
         };
@@ -214,7 +216,7 @@ namespace LibDiveComputer {
 
             [FieldOffset(0)]
             public uint bearing;
-            
+
             [FieldOffset(0)]
             public uint vendor_type;
 
@@ -241,10 +243,10 @@ namespace LibDiveComputer {
 
             [FieldOffset(8)]
             public double deco_depth;
-            
+
             [FieldOffset(0)]
-            uint gasmix; /* Gas mix index */
-    };
+            private uint gasmix; /* Gas mix index */
+        };
 
         [UnmanagedFunctionPointer(CallingConvention.Cdecl)]
         public delegate void dc_sample_callback_t(dc_sample_type_t type, dc_sample_value_t value, IntPtr userdata);
@@ -337,7 +339,7 @@ namespace LibDiveComputer {
                 DataPtr.Value.Free();
 
             DataPtr = GCHandle.Alloc(data, GCHandleType.Pinned);
-            
+
             var st = dc_parser_set_data(m_parser, DataPtr.Value.AddrOfPinnedObject(), (uint)data.Length);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to set data: " + st);
@@ -452,7 +454,7 @@ namespace LibDiveComputer {
                     dc_parser_destroy(m_parser);
                     m_parser = IntPtr.Zero;
                 }
-                if(DataPtr.HasValue) {
+                if (DataPtr.HasValue) {
                     DataPtr.Value.Free();
                     DataPtr = null;
                 }

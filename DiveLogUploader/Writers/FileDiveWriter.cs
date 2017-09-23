@@ -1,14 +1,11 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace DiveLogUploader.Writers {
-    public class FileDiveWriter : AsyncDiveWriter {
 
+    public class FileDiveWriter : AsyncDiveWriter {
         protected StreamWriter fileWriter;
         protected JsonWriter writer;
         protected JsonSerializer serializer;
@@ -48,6 +45,5 @@ namespace DiveLogUploader.Writers {
         protected override void ProcessDive(Dive dive) {
             serializer.Serialize(writer, dive);
         }
-
     }
 }

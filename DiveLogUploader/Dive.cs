@@ -9,17 +9,22 @@ namespace DiveLogUploader {
     /// Holds dive computer information
     /// </summary>
     public class Computer {
+
         [JsonProperty("name")]
         public string Name { get; protected set; }
+
         [JsonProperty("vendor")]
         public string Vendor { get; protected set; }
+
         [JsonProperty("model")]
         public uint Model { get; protected set; }
+
         [JsonProperty("type")]
         public uint Type { get; protected set; }
+
         [JsonProperty("serial")]
         public uint? Serial { get; protected set; }
-        
+
         public Computer(Descriptor descr) {
             Name = descr.product;
             Vendor = descr.vendor;
@@ -31,7 +36,6 @@ namespace DiveLogUploader {
             Serial = dev.Serial;
             Model = dev.Model ?? Model;
         }
-        
     }
 
     /// <summary>
@@ -73,7 +77,7 @@ namespace DiveLogUploader {
             var parser = new Parser(dev);
 
             var dive = Parse(parser, data);
-            if(dive != null)
+            if (dive != null)
                 dive.Fingerprint = Convert.ToBase64String(fingerprint);
 
             parser.Dispose();
@@ -93,7 +97,7 @@ namespace DiveLogUploader {
 
             dive.Date = parser.GetDatetime();
             var t = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME);
-            if (t.HasValue) dive. DiveTime = new TimeSpan(0, (int)t.Value / 60, (int)t.Value % 60);
+            if (t.HasValue) dive.DiveTime = new TimeSpan(0, (int)t.Value / 60, (int)t.Value % 60);
 
             dive.MaxDepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH);
             dive.Tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK);
@@ -103,7 +107,7 @@ namespace DiveLogUploader {
             dive.MinTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM);
             dive.SurfaceTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_SURFACE);
             dive.AtmosphericPressure = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_ATMOSPHERIC);
-            
+
             Sample current = null;
             parser.OnSampleEvent += delegate (Parser.dc_sample_type_t type, Parser.dc_sample_value_t value, IntPtr userdata) {
                 if (type == Parser.dc_sample_type_t.DC_SAMPLE_TIME) {
@@ -195,9 +199,11 @@ namespace DiveLogUploader {
                         Value = value.event_value
                     });
                     break;
+
                 case Parser.dc_sample_type_t.DC_SAMPLE_PPO2:
                     PPO2 = value.ppo2;
                     break;
+
                 case Parser.dc_sample_type_t.DC_SAMPLE_CNS:
                     CNS = value.cns;
                     break;

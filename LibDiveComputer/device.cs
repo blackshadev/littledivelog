@@ -166,7 +166,7 @@ namespace LibDiveComputer {
         /// <param name="data">Event data</param>
         /// <param name="userdata">User data</param>
         private void HandleEvent(IntPtr device, dc_event_type_t type, IntPtr data, IntPtr userdata) {
-            switch (type) { 
+            switch (type) {
                 case dc_event_type_t.DC_EVENT_WAITING:
                     if (OnWaiting != null) return;
                     OnWaiting();

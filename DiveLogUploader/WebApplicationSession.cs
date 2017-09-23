@@ -1,28 +1,27 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Security.Authentication;
-using System.Text;
 using System.Threading.Tasks;
 
-namespace DiveLogUploader
-{
+namespace DiveLogUploader {
 
     public class UserData {
+
         [JsonProperty("user_id")]
         public int UserId;
+
         [JsonProperty("email")]
         public string Email;
+
         [JsonProperty("name")]
         public string Name;
+
         [JsonProperty("dive_count")]
         public int DiveCount;
-
     }
 
     public class WebApplicationData {
@@ -38,17 +37,22 @@ namespace DiveLogUploader
         public WebApplicationData Data;
     }
 
-    public class WebApplicationSession
-    {
+    public class WebApplicationSession {
+
         public delegate void EventHandler(object sender, EventArgs e);
+
         public delegate void ErrorEventHandler(object sender, ErrorEventArgs e);
+
         public delegate void DataEventHandler(object sender, DataEventArgs e);
 
         public event EventHandler OnTokenChanged;
+
         public event DataEventHandler OnData;
+
         public event ErrorEventHandler OnError;
-        
+
         private static readonly string BASE_URL = "https://dive.littledev.nl/api/";
+
         public async static Task<JObject> RequestWebApp(string method, string path, JToken data = null, string token = null) {
             JObject result = null;
             try {
@@ -85,11 +89,12 @@ namespace DiveLogUploader
             } catch (Exception e) {
                 Console.Write(e);
             }
-            
+
             return result;
         }
 
         private string _token;
+
         public string Token {
             get { return _token; }
             private set {
@@ -97,6 +102,7 @@ namespace DiveLogUploader
                 OnTokenChanged?.Invoke(this, new EventArgs { });
             }
         }
+
         private WebApplicationData Data;
 
         public bool IsLoggedIn {
@@ -113,14 +119,13 @@ namespace DiveLogUploader
             await GetData();
         }
 
-        public async Task Login(string email, string password)
-        {
+        public async Task Login(string email, string password) {
             var d = JToken.FromObject(new {
                 email = email,
                 password = password,
             });
             var dat = await RequestWebApp("POST", "auth/", d, null);
-            if(dat == null) {
+            if (dat == null) {
                 Token = null;
                 return;
             }
@@ -137,7 +142,7 @@ namespace DiveLogUploader
 
         private async Task GetData() {
             var dat = await RequestWebApp("GET", "import/", null, Token);
-            if(dat["error"] != null) {
+            if (dat["error"] != null) {
                 Token = null;
                 HandleError(
                     new AuthenticationException(dat["error"].ToString())
@@ -145,9 +150,9 @@ namespace DiveLogUploader
                 return;
             }
             var result = dat.ToObject<WebApplicationData>();
-            if(result == null || result.user == null || result.computers == null) {
+            if (result == null || result.user == null || result.computers == null) {
                 throw new Exception("Invalid response from server");
-            } 
+            }
 
             OnData?.Invoke(this, new DataEventArgs { Data = result });
         }

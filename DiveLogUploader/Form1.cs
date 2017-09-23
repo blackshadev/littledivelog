@@ -65,6 +65,8 @@ namespace divecomputer_test {
             } else if(Session.Target == TargetType.DiveLog) {
                 LogRadio.Checked = true;
             }
+
+            Session.TrackChanges();
         }
 
         private void LoadSerialPorts() {

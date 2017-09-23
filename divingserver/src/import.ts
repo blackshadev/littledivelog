@@ -36,7 +36,6 @@ interface IComputerImport {
 
 router.get("/", async (req, res) => {
 
-    console.log(req.user.user_id);
     const user: QueryResult = await database.call(
         `select
               usr.user_id

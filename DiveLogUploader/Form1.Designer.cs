@@ -28,6 +28,11 @@
             this.VersionLabel = new System.Windows.Forms.Label();
             this.FormTabs = new System.Windows.Forms.TabControl();
             this.ComputerTab = new System.Windows.Forms.TabPage();
+            this.processGroup = new System.Windows.Forms.GroupBox();
+            this.WriteProgress = new System.Windows.Forms.ProgressBar();
+            this.label8 = new System.Windows.Forms.Label();
+            this.ReadProgress = new System.Windows.Forms.ProgressBar();
+            this.label1 = new System.Windows.Forms.Label();
             this.TargetLbl = new System.Windows.Forms.Label();
             this.LogRadio = new System.Windows.Forms.RadioButton();
             this.FileRadio = new System.Windows.Forms.RadioButton();
@@ -39,7 +44,6 @@
             this.PortSelector = new System.Windows.Forms.ComboBox();
             this.StateLabel = new System.Windows.Forms.Label();
             this.StartButton = new System.Windows.Forms.Button();
-            this.Progress = new System.Windows.Forms.ProgressBar();
             this.DiversLogTab = new System.Windows.Forms.TabPage();
             this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
             this.LoginPanel = new System.Windows.Forms.GroupBox();
@@ -65,8 +69,10 @@
             this.panel2 = new System.Windows.Forms.Panel();
             this.DivecomputerWorker = new System.ComponentModel.BackgroundWorker();
             this.SaveFileDialog = new System.Windows.Forms.SaveFileDialog();
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.FormTabs.SuspendLayout();
             this.ComputerTab.SuspendLayout();
+            this.processGroup.SuspendLayout();
             this.DiversLogTab.SuspendLayout();
             this.flowLayoutPanel1.SuspendLayout();
             this.LoginPanel.SuspendLayout();
@@ -115,11 +121,12 @@
             this.FormTabs.Location = new System.Drawing.Point(0, 0);
             this.FormTabs.Name = "FormTabs";
             this.FormTabs.SelectedIndex = 0;
-            this.FormTabs.Size = new System.Drawing.Size(508, 171);
+            this.FormTabs.Size = new System.Drawing.Size(508, 239);
             this.FormTabs.TabIndex = 3;
             // 
             // ComputerTab
             // 
+            this.ComputerTab.Controls.Add(this.processGroup);
             this.ComputerTab.Controls.Add(this.TargetLbl);
             this.ComputerTab.Controls.Add(this.LogRadio);
             this.ComputerTab.Controls.Add(this.FileRadio);
@@ -131,16 +138,65 @@
             this.ComputerTab.Controls.Add(this.PortSelector);
             this.ComputerTab.Controls.Add(this.StateLabel);
             this.ComputerTab.Controls.Add(this.StartButton);
-            this.ComputerTab.Controls.Add(this.Progress);
             this.ComputerTab.Controls.Add(this.ComputerSelectLabel);
             this.ComputerTab.Controls.Add(this.ComputerSelector);
             this.ComputerTab.Location = new System.Drawing.Point(4, 22);
             this.ComputerTab.Name = "ComputerTab";
             this.ComputerTab.Padding = new System.Windows.Forms.Padding(3);
-            this.ComputerTab.Size = new System.Drawing.Size(500, 145);
+            this.ComputerTab.Size = new System.Drawing.Size(500, 213);
             this.ComputerTab.TabIndex = 0;
             this.ComputerTab.Text = "Computer";
             this.ComputerTab.UseVisualStyleBackColor = true;
+            // 
+            // processGroup
+            // 
+            this.processGroup.Controls.Add(this.WriteProgress);
+            this.processGroup.Controls.Add(this.label8);
+            this.processGroup.Controls.Add(this.ReadProgress);
+            this.processGroup.Controls.Add(this.label1);
+            this.processGroup.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.processGroup.Location = new System.Drawing.Point(3, 128);
+            this.processGroup.Name = "processGroup";
+            this.processGroup.Size = new System.Drawing.Size(494, 82);
+            this.processGroup.TabIndex = 17;
+            this.processGroup.TabStop = false;
+            this.processGroup.Text = "Progress";
+            // 
+            // WriteProgress
+            // 
+            this.WriteProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.WriteProgress.Location = new System.Drawing.Point(41, 48);
+            this.WriteProgress.Name = "WriteProgress";
+            this.WriteProgress.Size = new System.Drawing.Size(447, 23);
+            this.WriteProgress.TabIndex = 14;
+            // 
+            // label8
+            // 
+            this.label8.AutoSize = true;
+            this.label8.Location = new System.Drawing.Point(3, 53);
+            this.label8.Name = "label8";
+            this.label8.Size = new System.Drawing.Size(32, 13);
+            this.label8.TabIndex = 16;
+            this.label8.Text = "Write";
+            // 
+            // ReadProgress
+            // 
+            this.ReadProgress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ReadProgress.Location = new System.Drawing.Point(42, 19);
+            this.ReadProgress.Name = "ReadProgress";
+            this.ReadProgress.Size = new System.Drawing.Size(446, 23);
+            this.ReadProgress.TabIndex = 3;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(3, 24);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(33, 13);
+            this.label1.TabIndex = 15;
+            this.label1.Text = "Read";
             // 
             // TargetLbl
             // 
@@ -240,16 +296,15 @@
             // 
             // StateLabel
             // 
-            this.StateLabel.AutoSize = true;
-            this.StateLabel.Location = new System.Drawing.Point(6, 112);
+            this.StateLabel.Location = new System.Drawing.Point(9, 105);
             this.StateLabel.Name = "StateLabel";
-            this.StateLabel.Size = new System.Drawing.Size(0, 13);
+            this.StateLabel.Size = new System.Drawing.Size(401, 20);
             this.StateLabel.TabIndex = 4;
             // 
             // StartButton
             // 
             this.StartButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.StartButton.Location = new System.Drawing.Point(416, 112);
+            this.StartButton.Location = new System.Drawing.Point(416, 88);
             this.StartButton.Name = "StartButton";
             this.StartButton.Size = new System.Drawing.Size(78, 23);
             this.StartButton.TabIndex = 2;
@@ -257,22 +312,12 @@
             this.StartButton.UseVisualStyleBackColor = true;
             this.StartButton.Click += new System.EventHandler(this.StartButton_Click);
             // 
-            // Progress
-            // 
-            this.Progress.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.Progress.Location = new System.Drawing.Point(9, 112);
-            this.Progress.Name = "Progress";
-            this.Progress.Size = new System.Drawing.Size(401, 23);
-            this.Progress.TabIndex = 3;
-            this.Progress.Visible = false;
-            // 
             // DiversLogTab
             // 
             this.DiversLogTab.Controls.Add(this.flowLayoutPanel1);
             this.DiversLogTab.Location = new System.Drawing.Point(4, 22);
             this.DiversLogTab.Name = "DiversLogTab";
-            this.DiversLogTab.Size = new System.Drawing.Size(500, 145);
+            this.DiversLogTab.Size = new System.Drawing.Size(500, 213);
             this.DiversLogTab.TabIndex = 2;
             this.DiversLogTab.Text = "Divers Log";
             this.DiversLogTab.UseVisualStyleBackColor = true;
@@ -284,7 +329,7 @@
             this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.flowLayoutPanel1.Name = "flowLayoutPanel1";
-            this.flowLayoutPanel1.Size = new System.Drawing.Size(500, 145);
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(500, 213);
             this.flowLayoutPanel1.TabIndex = 0;
             // 
             // LoginPanel
@@ -451,7 +496,7 @@
             this.LogTab.Location = new System.Drawing.Point(4, 22);
             this.LogTab.Name = "LogTab";
             this.LogTab.Padding = new System.Windows.Forms.Padding(3);
-            this.LogTab.Size = new System.Drawing.Size(500, 145);
+            this.LogTab.Size = new System.Drawing.Size(500, 213);
             this.LogTab.TabIndex = 1;
             this.LogTab.Text = "Log";
             this.LogTab.UseVisualStyleBackColor = true;
@@ -462,7 +507,7 @@
             this.LogTextBox.Location = new System.Drawing.Point(3, 24);
             this.LogTextBox.Name = "LogTextBox";
             this.LogTextBox.ReadOnly = true;
-            this.LogTextBox.Size = new System.Drawing.Size(494, 118);
+            this.LogTextBox.Size = new System.Drawing.Size(494, 186);
             this.LogTextBox.TabIndex = 0;
             this.LogTextBox.Text = "";
             // 
@@ -482,14 +527,14 @@
             this.panel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(508, 171);
+            this.panel1.Size = new System.Drawing.Size(508, 239);
             this.panel1.TabIndex = 2;
             // 
             // panel2
             // 
             this.panel2.Controls.Add(this.VersionLabel);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel2.Location = new System.Drawing.Point(0, 171);
+            this.panel2.Location = new System.Drawing.Point(0, 239);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(508, 24);
             this.panel2.TabIndex = 0;
@@ -508,7 +553,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(508, 195);
+            this.ClientSize = new System.Drawing.Size(508, 263);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.panel2);
             this.MaximizeBox = false;
@@ -518,6 +563,8 @@
             this.FormTabs.ResumeLayout(false);
             this.ComputerTab.ResumeLayout(false);
             this.ComputerTab.PerformLayout();
+            this.processGroup.ResumeLayout(false);
+            this.processGroup.PerformLayout();
             this.DiversLogTab.ResumeLayout(false);
             this.flowLayoutPanel1.ResumeLayout(false);
             this.LoginPanel.ResumeLayout(false);
@@ -542,7 +589,7 @@
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Button StartButton;
-        private System.Windows.Forms.ProgressBar Progress;
+        private System.Windows.Forms.ProgressBar ReadProgress;
         private System.Windows.Forms.Label StateLabel;
         private System.Windows.Forms.RichTextBox LogTextBox;
         private System.Windows.Forms.ComboBox LogLevelSelector;
@@ -575,6 +622,11 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Label LabelAccountComputerCount;
         private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.GroupBox processGroup;
+        private System.Windows.Forms.ProgressBar WriteProgress;
+        private System.Windows.Forms.Label label8;
+        private System.Windows.Forms.Label label1;
+        private System.ComponentModel.BackgroundWorker backgroundWorker1;
     }
 }
 

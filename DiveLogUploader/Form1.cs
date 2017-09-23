@@ -12,6 +12,7 @@ using System.Configuration;
 using System.Linq;
 using System.Windows.Forms;
 using static LibDiveComputer.Context;
+using DiveLogUploader.Writers;
 
 namespace divecomputer_test {
 
@@ -187,62 +188,64 @@ namespace divecomputer_test {
 
         }
 
-        private void SetFignerprint(byte[] fingerprint) {
-            var comp = currentTask.bundle.Computer.Serial;
-
+        private void SetFignerprint(uint comp, byte[] fingerprint) {
             ConfigurationManager.AppSettings.Set(comp.ToString(), currentTask.fingerprint);
         }
 
         private void DivecomputerWorker_DoWork(object sender, DoWorkEventArgs e) {
+            SetReadProgress(0, true);
+            SetWriteProgress(0, true);
+
             var args = currentTask;
             args.ctx = CreateContext(args.logLevel);
+            var writer = new FileDiveWriter(SaveFileText.Text);
+            writer.OnProgres += (_, total, processed) => {
+                SetWriteProgress((int)((float)processed / total * 100), true);
+            };
+            writer.OnComplete += (_) => {
+                SetWriteProgress(100, true);
+            };
 
             try {
                 args.device = new Device(args.ctx, args.descriptor, args.serialPort);
+                writer.SetDevice(args.device);
 
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
-                args.device.OnProgess += (prog) => { SetProgress((int)((float)prog.current / prog.maximum * 100)); };
+                args.device.OnProgess += (prog) => { SetReadProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
                     SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
-                    args.bundle = new DiveBundle(args.device);
                     var old = args.fingerprint;
                     GetFingerprint();
-                    //if (args.fingerprint != old) {
-
-                    //args.device.Cancel();
-                    //args.device.Start();
-                    //}
+                    writer.Start();
                 };
                 args.device.OnClock += (clock) => {
                     Console.WriteLine(String.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));
                 };
+
+                Dive lastDive = null;
                 args.device.OnDive += (data, size, fingerprint, fsize, udata) => {
-                    args.bundle.Add(
-                        Dive.Parse(args.device, data, fingerprint)
-                    );
+                    lastDive = Dive.Parse(args.device, data, fingerprint);
+                    writer.AddDive(lastDive);
                 };
 
                 args.device.Start();
-                args.fingerprint = args.bundle.Dives[args.bundle.Dives.Count - 1].Fingerprint;
+                SetReadProgress(100, true);
 
+                writer.End();
+                if (lastDive != null) {
+                    args.fingerprint = lastDive.Fingerprint;
+                }
 
-                var txt = JsonConvert.SerializeObject(
-                    args.bundle,
-                    Formatting.Indented,
-                    new JsonSerializerSettings {
-                        NullValueHandling = NullValueHandling.Ignore
-                    }
-                );
-
-                File.WriteAllText(SaveFileText.Text, txt);
                 SetState("Saved to file");
             } catch (Exception err) {
                 SetState("Error while opening device: " + err.Message, Color.Red);
             }
 
             if (args.fingerprint != null)
-                SetFignerprint(Convert.FromBase64String(args.fingerprint));
-            SetProgress(0, false);
+                SetFignerprint(args.device.Serial.Value, Convert.FromBase64String(args.fingerprint));
+
+            SetReadProgress(100, false);
+            SetWriteProgress(100, false);
         }
 
         private void DivecomputerWorker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e) {
@@ -252,7 +255,6 @@ namespace divecomputer_test {
                 currentTask.bundle = null;
                 currentTask = null;
                 StartButton.Enabled = true;
-                Progress.Visible = false;
             }));
         }
 
@@ -266,12 +268,21 @@ namespace divecomputer_test {
             }
         }
 
-        private void SetProgress(int progress, bool visible = true) {
+        private void SetReadProgress(int readProgress, bool enabled = true) {
             if (InvokeRequired) {
-                Invoke(new Action(() => { SetProgress(progress); }));
+                Invoke(new Action(() => { SetReadProgress(readProgress, enabled); }));
             } else {
-                Progress.Visible = visible;
-                Progress.Value = progress;
+                ReadProgress.Enabled = enabled;
+                ReadProgress.Value = readProgress;
+            }
+        }
+
+        private void SetWriteProgress(int writeProgress, bool enabled = true) {
+            if (InvokeRequired) {
+                Invoke(new Action(() => { SetWriteProgress(writeProgress, enabled); }));
+            } else {
+                WriteProgress.Enabled = enabled;
+                WriteProgress.Value = writeProgress;
             }
         }
 

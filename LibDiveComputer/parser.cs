@@ -357,7 +357,10 @@ namespace LibDiveComputer {
         public DateTime GetDatetime() {
             if (disposedValue) throw new ObjectDisposedException("Parser");
 
-            var dt = new dc_datetime_t();
+            var dt = new dc_datetime_t() {
+                timezone = dc_timezone_none // set to none to be able to support v0.5.0
+            };
+
             var st = dc_parser_get_datetime(m_parser, ref dt);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to get datetime: " + st);

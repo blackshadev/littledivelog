@@ -13,6 +13,7 @@
     "@types/node": "^8.0.27"
   },
   "dependencies": {
+    "@types/ajv": "^1.0.0",
     "@types/argon2": "^0.15.0",
     "@types/bluebird": "^3.5.8",
     "@types/body-parser": "^1.16.5",
@@ -21,6 +22,7 @@
     "@types/jsonwebtoken": "^7.2.3",
     "@types/pg": "^7.1.0",
     "@types/request": "^2.0.3",
+    "ajv": "^5.2.2",
     "argon2": "^0.16.1",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",

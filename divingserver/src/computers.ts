@@ -87,17 +87,36 @@ router.get("/", async (req, res) => {
     );
 });
 
+const computerPostSchema = {
+    type: "object",
+    properties: {
+        serial: { type: "string" },
+        vendor: { type: "string" },
+        model: { type: "string" },
+        type: { type: "string" },
+        name: { type: "string" },
+    },
+    required: ["serial"],
+};
+
 router.post("/", async (req, res) => {
 
     const computer = await database.call(
-        `insert into computers (user_id) values ($1) returning *`,
+        `insert into computers (user_id, serial, vendor, model, type, name)
+                        values ($1     , $2    , $3    , $4   , $5  , $6, )
+                     returning *
+        `,
         [
             req.user.user_id,
+            req.body.serial,
+            req.body.vendor,
+            req.body.model,
+            req.body.type,
+            req.body.name,
         ],
     );
 
     res.json(computer.rows[0]);
-
 });
 
 router.get("/import", async (req, res) => {

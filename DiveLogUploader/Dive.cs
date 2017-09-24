@@ -34,7 +34,7 @@ namespace DiveLogUploader {
 
         public Computer(Device dev) : this(dev.Descriptor) {
             Serial = dev.Serial;
-            Model = dev.Model ?? Model;
+            Model = dev.Model;
         }
     }
 
@@ -46,20 +46,40 @@ namespace DiveLogUploader {
         /// <summary>
         /// Base64 encoded fingerprint
         /// </summary>
+        [JsonProperty("fingerprint")]
         public string Fingerprint { get; protected set; }
 
+        [JsonProperty("date")]
         public DateTime Date { get; protected set; }
+
+        [JsonProperty("divetime")]
         public TimeSpan? DiveTime { get; protected set; }
+
+        [JsonProperty("max_depth")]
         public double? MaxDepth { get; protected set; }
+
+        [JsonProperty("max_temperature")]
         public double? MaxTemperature { get; protected set; }
+
+        [JsonProperty("min_temperature")]
         public double? MinTemperature { get; protected set; }
+
+        [JsonProperty("surface_temperature")]
         public double? SurfaceTemperature { get; protected set; }
+
+        [JsonProperty("atmospheric_pressure")]
         public double? AtmosphericPressure { get; protected set; }
 
+        [JsonProperty("tank")]
         public Parser.dc_tank_t? Tank { get; protected set; }
+
+        [JsonProperty("gasmix")]
         public Parser.dc_gasmix_t? Gasmix { get; protected set; }
+
+        [JsonProperty("salinity")]
         public Parser.dc_salinity_t? Salinity { get; protected set; }
 
+        [JsonProperty("samples")]
         public List<Sample> Samples { get; protected set; }
 
         protected Dive() {

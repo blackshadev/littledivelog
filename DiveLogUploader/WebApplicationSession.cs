@@ -24,14 +24,12 @@ namespace DiveLogUploader {
         [JsonProperty("dive_count")]
         public int DiveCount;
     }
-
+    
     public class GetImportResponseData {
 
         [JsonProperty("user")]
         public UserData user;
-
-        [JsonProperty("computers")]
-        public Computer[] computers;
+        
     }
 
     public class DataEventArgs : EventArgs {
@@ -158,7 +156,7 @@ namespace DiveLogUploader {
                     TokenHeader(Token)
                 );
 
-                if (result == null || result.user == null || result.computers == null) {
+                if (result == null || result.user == null) {
                     throw new Exception("Invalid response from server");
                 }
 

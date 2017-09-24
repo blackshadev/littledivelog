@@ -122,7 +122,6 @@ namespace divecomputer_test {
             LabelAccountEmail.Text = data.user.Email;
             LabelAccountName.Text = data.user.Name;
             LabelAccountDiveCount.Text = data.user.DiveCount.ToString();
-            LabelAccountComputerCount.Text = data.computers.Length.ToString();
 
         }
 
@@ -200,24 +199,24 @@ namespace divecomputer_test {
 
             var args = currentTask;
             args.ctx = CreateContext(args.logLevel);
-            var writer = CreateWriter();
-            writer.OnProgres += (_, total, processed) => {
-                SetWriteProgress((int)((float)processed / total * 100), true);
-            };
-            writer.OnComplete += (_) => {
-                SetWriteProgress(100, true);
-            };
-
+            
             try {
-                args.device = new Device(args.ctx, args.descriptor, args.serialPort);
-                writer.SetDevice(args.device);
+                var writer = CreateWriter();
+                writer.OnProgres += (_, total, processed) => {
+                    SetWriteProgress((int)((float)processed / total * 100), true);
+                };
+                writer.OnComplete += (_) => {
+                    SetWriteProgress(100, true);
+                };
 
+                args.device = new Device(args.ctx, args.descriptor, args.serialPort);
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetReadProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
                     SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
                     var old = args.fingerprint;
                     GetFingerprint();
+                    writer.SetDevice(args.device);
                     writer.Start();
                 };
                 args.device.OnClock += (clock) => {

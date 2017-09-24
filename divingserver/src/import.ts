@@ -57,29 +57,7 @@ router.get("/", async (req, res) => {
         res.json({ error: "Invalid authentication token" });
     }
 
-    const computers: QueryResult = await database.call(
-        `select
-               comp.computer_id
-             , comp.serial
-             , comp.vendor
-             , comp.model
-             , comp.type
-             , comp.name
-             , comp.last_read
-             , comp.last_fingerprint
-             , (
-                select count(*)
-                  from dives d
-                 where d.computer_id = comp.computer_id
-             ) as dive_count
-           from computers comp
-           where comp.user_id = $1
-        `,
-        [req.user.user_id],
-    );
-
     res.json({
-        computers: computers.rows,
         user: user.rows[0],
     });
 });

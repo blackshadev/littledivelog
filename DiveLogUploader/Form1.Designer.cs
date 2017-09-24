@@ -54,8 +54,6 @@
             this.UsernameIput = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.AccountPanel = new System.Windows.Forms.GroupBox();
-            this.LabelAccountComputerCount = new System.Windows.Forms.Label();
-            this.label7 = new System.Windows.Forms.Label();
             this.LabelAccountDiveCount = new System.Windows.Forms.Label();
             this.LabelAccountName = new System.Windows.Forms.Label();
             this.LabelAccountEmail = new System.Windows.Forms.Label();
@@ -401,8 +399,6 @@
             // 
             // AccountPanel
             // 
-            this.AccountPanel.Controls.Add(this.LabelAccountComputerCount);
-            this.AccountPanel.Controls.Add(this.label7);
             this.AccountPanel.Controls.Add(this.LabelAccountDiveCount);
             this.AccountPanel.Controls.Add(this.LabelAccountName);
             this.AccountPanel.Controls.Add(this.LabelAccountEmail);
@@ -416,24 +412,6 @@
             this.AccountPanel.TabStop = false;
             this.AccountPanel.Text = "Account";
             this.AccountPanel.Visible = false;
-            // 
-            // LabelAccountComputerCount
-            // 
-            this.LabelAccountComputerCount.AutoSize = true;
-            this.LabelAccountComputerCount.Location = new System.Drawing.Point(102, 99);
-            this.LabelAccountComputerCount.Name = "LabelAccountComputerCount";
-            this.LabelAccountComputerCount.Size = new System.Drawing.Size(35, 13);
-            this.LabelAccountComputerCount.TabIndex = 8;
-            this.LabelAccountComputerCount.Text = "Count";
-            // 
-            // label7
-            // 
-            this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(7, 99);
-            this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(82, 13);
-            this.label7.TabIndex = 7;
-            this.label7.Text = "Computer count";
             // 
             // LabelAccountDiveCount
             // 
@@ -620,8 +598,6 @@
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;
-        private System.Windows.Forms.Label LabelAccountComputerCount;
-        private System.Windows.Forms.Label label7;
         private System.Windows.Forms.GroupBox processGroup;
         private System.Windows.Forms.ProgressBar WriteProgress;
         private System.Windows.Forms.Label label8;

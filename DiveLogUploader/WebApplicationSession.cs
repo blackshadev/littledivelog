@@ -73,6 +73,12 @@ namespace DiveLogUploader {
     */
 
     public class WebApplicationSession {
+        public static readonly string BASE_URL = "https://dive.littledev.nl/api/";
+        public static Dictionary<string, string> TokenHeader(string token) {
+            return new Dictionary<string, string>() {
+                { "Authorization", "Bearer " + token }
+            };
+        }
 
         public delegate void EventHandler(object sender, EventArgs e);
 
@@ -86,7 +92,6 @@ namespace DiveLogUploader {
 
         public event ErrorEventHandler OnError;
 
-        private static readonly string BASE_URL = "https://dive.littledev.nl/api/";
 
         private string _token;
 
@@ -129,9 +134,7 @@ namespace DiveLogUploader {
                         email = email,
                         password = password
                     },
-                    new Dictionary<string, string>() {
-                        { "Authorization", "Bearer " + Token }
-                    }
+                    TokenHeader(Token)
                 );
                 if (dat == null) {
                     Token = null;
@@ -152,9 +155,7 @@ namespace DiveLogUploader {
                 var result = await Request.JsonAsync<GetImportResponseData>(
                     BASE_URL + "import",
                     HttpVerb.GET,
-                    new Dictionary<string, string>() {
-                        { "Authorization", "Bearer " + Token }
-                    }
+                    TokenHeader(Token)
                 );
 
                 if (result == null || result.user == null || result.computers == null) {

@@ -3,6 +3,7 @@ import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "./pg";
 import { SqlBatch } from "./sql";
+import { bodyValidator } from "./validator";
 
 export const router  = express.Router();
 
@@ -99,12 +100,18 @@ const computerPostSchema = {
     required: ["serial"],
 };
 
-router.post("/", async (req, res) => {
+router.post("/", bodyValidator(computerPostSchema), async (req, res) => {
 
     const computer = await database.call(
         `insert into computers (user_id, serial, vendor, model, type, name)
-                        values ($1     , $2    , $3    , $4   , $5  , $6, )
-                     returning *
+                        values ($1     , $2    , $3    , $4   , $5  , $6  )
+                   on conflict (user_id, serial)
+                     do update set
+                              vendor = isnull($3, EXCLUDED.vendor)
+                            , model  = isnull($4, EXCLUDED.model)
+                            , type   = isnull($5, EXCLUDED.type)
+                            , name   = isnull($6, EXCLUDED.name)
+            returning *
         `,
         [
             req.user.user_id,

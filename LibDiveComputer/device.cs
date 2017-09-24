@@ -127,9 +127,9 @@ namespace LibDiveComputer {
         public Descriptor Descriptor { get; protected set; }
         public Context Context { get; protected set; }
         public string PortName { get; protected set; }
-        public uint? Serial { get; protected set; }
-        public uint? Model { get; protected set; }
-        public uint? Firmware { get; protected set; }
+        public uint Serial { get; protected set; }
+        public uint Model { get; protected set; }
+        public uint Firmware { get; protected set; }
 
         public Device(Context context, Descriptor descriptor, string name) {
             Context = context;

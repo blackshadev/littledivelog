@@ -10,7 +10,7 @@ namespace DiveLogUploader.Writers {
         protected JsonWriter writer;
         protected JsonSerializer serializer;
 
-        public FileDiveWriter(string path) {
+        public FileDiveWriter(string path) : base() {
             fileWriter = new StreamWriter(path, false, Encoding.UTF8);
             writer = new JsonTextWriter(fileWriter);
             serializer = new JsonSerializer();

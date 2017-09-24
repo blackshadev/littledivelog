@@ -59,7 +59,14 @@ router.get("/", async (req, res) => {
 
     const computers: QueryResult = await database.call(
         `select
-               comp.*
+               comp.computer_id
+             , comp.serial
+             , comp.vendor
+             , comp.model
+             , comp.type
+             , comp.name
+             , comp.last_read
+             , comp.last_fingerprint
              , (
                 select count(*)
                   from dives d
@@ -75,23 +82,6 @@ router.get("/", async (req, res) => {
         computers: computers.rows,
         user: user.rows[0],
     });
-});
-
-router.post("/computer", async (req, res) => {
-
-    const data: QueryResult = await database.call(
-        `
-        insert into computers (user_id, serial, vendor, model, type, name)
-                        values($1     , $2    , $3    , $4   , $5  , $6  )
-        returning *
-        `,
-        [req.user.user_id],
-    );
-
-    res.json({
-        computer_id: data.rows[0].computer_id,
-    });
-
 });
 
 // router.post("/", async (req, res) => {

@@ -12,3 +12,4 @@ create table if not exists computers (
   , primary key(computer_id)
 );
 create index ix_computers_user on computers(user_id);
+create unique index ux_computers_user_serial on computers(user_id, serial);

@@ -91,10 +91,10 @@ router.get("/", async (req, res) => {
 const computerPostSchema = {
     type: "object",
     properties: {
-        serial: { type: "string" },
+        serial: { type: "number" },
         vendor: { type: "string" },
-        model: { type: "string" },
-        type: { type: "string" },
+        model: { type: "number" },
+        type: { type: "number" },
         name: { type: "string" },
     },
     required: ["serial"],

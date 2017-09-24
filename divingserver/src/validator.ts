@@ -2,6 +2,7 @@ import * as Ajv from "ajv";
 import { RequestHandler } from "express";
 
 export class ValidateError extends Error {
+    public name = "BodyValidationError";
     constructor(
         public errors: Ajv.ErrorObject[],
     ) {

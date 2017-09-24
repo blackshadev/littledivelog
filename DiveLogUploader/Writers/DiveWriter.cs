@@ -1,4 +1,5 @@
 ﻿using LibDiveComputer;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading;
@@ -9,7 +10,7 @@ namespace DiveLogUploader.Writers {
 
     public delegate void OnProgresHandler(object sender, int total, int processed);
 
-    public interface IDiveWriter {
+    public interface IDiveWriter: IDisposable {
 
         event OnCompleteHandler OnComplete;
 

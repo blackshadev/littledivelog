@@ -162,6 +162,7 @@ namespace DiveLogUploader {
                     throw new Exception("Invalid response from server");
                 }
 
+                Data = result;
                 OnData?.Invoke(this, new DataEventArgs { Data = result });
             } catch(WebserviceError err) {
                 HandleError(err);

@@ -24,8 +24,9 @@ app.use(
 );
 app.use((err, req, res, next) => {
     if (err.name === "UnauthorizedError") {
-        console.log(err);
         res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
+    } else if (err.name === "BodyValidationError") {
+        res.status(400).json({ error: err.toString() });
     }
 });
 

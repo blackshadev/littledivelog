@@ -200,7 +200,7 @@ namespace divecomputer_test {
 
             var args = currentTask;
             args.ctx = CreateContext(args.logLevel);
-            var writer = new FileDiveWriter(SaveFileText.Text);
+            var writer = CreateWriter();
             writer.OnProgres += (_, total, processed) => {
                 SetWriteProgress((int)((float)processed / total * 100), true);
             };
@@ -238,6 +238,7 @@ namespace divecomputer_test {
                     args.fingerprint = lastDive.Fingerprint;
                 }
 
+                writer.Dispose();
                 SetState("Saved to file");
             } catch (Exception err) {
                 SetState("Error while reading device: " + err.Message, Color.Red);
@@ -246,7 +247,6 @@ namespace divecomputer_test {
             if (args.fingerprint != null)
                 SetFignerprint(args.device.Serial, Convert.FromBase64String(args.fingerprint));
 
-            writer.Dispose();
             SetReadProgress(100, false);
             SetWriteProgress(100, false);
         }
@@ -259,6 +259,17 @@ namespace divecomputer_test {
                 currentTask = null;
                 StartButton.Enabled = true;
             }));
+        }
+
+        private IDiveWriter CreateWriter() {
+
+            if (FileRadio.Checked) {
+                return new FileDiveWriter(SaveFileText.Text);
+            } else if(LogRadio.Checked) {
+                return new LittleLogDiveWriter(Session.WebAppSession.Token);
+            } else {
+                throw new Exception("No target type selected");
+            }
         }
 
         private void SetState(string text, Color? color = null) {

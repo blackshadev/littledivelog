@@ -5,7 +5,7 @@ using System.Text;
 
 namespace DiveLogUploader.Writers {
 
-    public class FileDiveWriter : AsyncDiveWriter {
+    public class FileDiveWriter : AsyncDiveWriter, IDisposable {
         protected StreamWriter fileWriter;
         protected JsonWriter writer;
         protected JsonSerializer serializer;
@@ -33,17 +33,24 @@ namespace DiveLogUploader.Writers {
         }
 
         public override void End() {
-            base.End();
+            if (isDone) return;
 
+            base.End();
+            
             writer.WriteEndArray();
             writer.WriteEndObject();
-
-            writer.Close();
-            fileWriter.Close();
         }
 
         protected override void ProcessDive(Dive dive) {
             serializer.Serialize(writer, dive);
         }
+
+        public override void Dispose() {
+            base.Dispose();
+
+            writer.Close();
+            fileWriter.Close();
+        }
+
     }
 }

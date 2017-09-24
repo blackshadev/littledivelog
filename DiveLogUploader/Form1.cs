@@ -240,12 +240,13 @@ namespace divecomputer_test {
 
                 SetState("Saved to file");
             } catch (Exception err) {
-                SetState("Error while opening device: " + err.Message, Color.Red);
+                SetState("Error while reading device: " + err.Message, Color.Red);
             }
 
             if (args.fingerprint != null)
-                SetFignerprint(args.device.Serial.Value, Convert.FromBase64String(args.fingerprint));
+                SetFignerprint(args.device.Serial, Convert.FromBase64String(args.fingerprint));
 
+            writer.Dispose();
             SetReadProgress(100, false);
             SetWriteProgress(100, false);
         }

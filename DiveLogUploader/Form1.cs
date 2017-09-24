@@ -116,7 +116,7 @@ namespace divecomputer_test {
             LogLevelSelector.SelectedIndex = 0;
         }
         
-        public void SetAccountDetails(WebApplicationData data) {
+        public void SetAccountDetails(GetImportResponseData data) {
             AccountPanel.Visible = true;
             LoginPanel.Visible = false;
             LabelAccountEmail.Text = data.user.Email;

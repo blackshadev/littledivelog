@@ -129,10 +129,12 @@ router.put("/:id", async (req, res) => {
 
     const batch = new SqlBatch();
 
-    injectPlaceSql({
-        batch,
-        place: body.place,
-    });
+    if (body.place) {
+        injectPlaceSql({
+            batch,
+            place: body.place,
+        });
+    }
 
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
@@ -144,7 +146,10 @@ router.put("/:id", async (req, res) => {
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;
     }
-    sql += `, place_id = $${params.push(() => body.place.place_id)}`;
+    if (body.place) {
+        sql += `, place_id = $${params.push(() => body.place.place_id)}`;
+    }
+
     sql += ` where dive_id = $${params.push(req.params.id)} and user_id = $${params.push(userid)}`;
 
     batch.add(sql, params, (ds) => {
@@ -153,21 +158,24 @@ router.put("/:id", async (req, res) => {
         }
     });
 
-    batch.add("delete from dive_tags where dive_id=$1", [req.params.id]);
-    batch.add("delete from dive_buddies where dive_id=$1", [req.params.id]);
-
-    injectBuddySql({
-        buddies: body.buddies,
-        diveId: req.params.id,
-        userId: userid,
-        batch,
-    });
-    injectTagSql({
-        diveId: req.params.id,
-        tags: body.tags,
-        userId: userid,
-        batch,
-    });
+    if (body.buddies) {
+        batch.add("delete from dive_buddies where dive_id=$1", [req.params.id]);
+        injectBuddySql({
+            buddies: body.buddies,
+            diveId: req.params.id,
+            userId: userid,
+            batch,
+        });
+    }
+    if (body.tags) {
+        batch.add("delete from dive_tags where dive_id=$1", [req.params.id]);
+        injectTagSql({
+            diveId: req.params.id,
+            tags: body.tags,
+            userId: userid,
+            batch,
+        });
+    }
 
     try {
         await batch.execute();
@@ -193,11 +201,6 @@ router.post("/", async (req, res) => {
     const body = req.body;
     const batch = new SqlBatch();
 
-    injectPlaceSql({
-        batch,
-        place: body.place,
-    });
-
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
         return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
@@ -208,8 +211,14 @@ router.post("/", async (req, res) => {
     const flds = ["date", "divetime", "max_depth", "tanks", "user_id"];
     const params = flds.map((fld) => body[fld]);
 
-    flds.push("place_id");
-    params.push(() => body.place.place_id);
+    if (body.place) {
+        injectPlaceSql({
+            batch,
+            place: body.place,
+        });
+        flds.push("place_id");
+        params.push(() => body.place.place_id);
+    }
 
     const sql = `insert into dives
                 ( ${flds.join(",")} )
@@ -227,18 +236,22 @@ router.post("/", async (req, res) => {
         diveId = ds.rows[0].id;
     });
 
-    injectBuddySql({
-        buddies: body.buddies,
-        diveId: () => diveId,
-        userId: userid,
-        batch,
-    });
-    injectTagSql({
-        diveId: () => diveId,
-        tags: body.tags,
-        userId: userid,
-        batch,
-    });
+    if (body.buddies) {
+        injectBuddySql({
+            buddies: body.buddies,
+            diveId: () => diveId,
+            userId: userid,
+            batch,
+        });
+    }
+    if (body.tags) {
+        injectTagSql({
+            diveId: () => diveId,
+            tags: body.tags,
+            userId: userid,
+            batch,
+        });
+    }
 
     await batch.execute();
 

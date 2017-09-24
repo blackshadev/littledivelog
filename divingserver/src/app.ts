@@ -50,7 +50,6 @@ app.param("session", (req, res, next, id) => {
 });
 
 app.use((err, req, res, next) => {
-    console.log(err.name);
     if (err.name === "UnauthorizedError") {
         res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
     } else if (err.name === "BodyValidationError") {
@@ -58,6 +57,7 @@ app.use((err, req, res, next) => {
     } else {
         res.status(500).json({ error: err.toString() });
     }
+    next();
 });
 
 async function start() {

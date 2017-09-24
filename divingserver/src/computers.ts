@@ -107,10 +107,10 @@ router.post("/", bodyValidator(computerPostSchema), async (req, res) => {
                         values ($1     , $2    , $3    , $4   , $5  , $6  )
                    on conflict (user_id, serial)
                      do update set
-                              vendor = isnull($3, EXCLUDED.vendor)
-                            , model  = isnull($4, EXCLUDED.model)
-                            , type   = isnull($5, EXCLUDED.type)
-                            , name   = isnull($6, EXCLUDED.name)
+                              vendor = coalesce($3, EXCLUDED.vendor)
+                            , model  = coalesce($4, EXCLUDED.model)
+                            , type   = coalesce($5, EXCLUDED.type)
+                            , name   = coalesce($6, EXCLUDED.name)
             returning *
         `,
         [

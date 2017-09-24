@@ -22,13 +22,6 @@ app.use(
         secret,
     }).unless({ path: ["/auth/"] }),
 );
-app.use((err, req, res, next) => {
-    if (err.name === "UnauthorizedError") {
-        res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
-    } else if (err.name === "BodyValidationError") {
-        res.status(400).json({ error: err.toString() });
-    }
-});
 
 app.use("/auth/", auth.router);
 app.use("/dive/", dives.router);
@@ -54,6 +47,15 @@ app.get("/country", async (req, res) => {
 app.param("session", (req, res, next, id) => {
     res.locals.session = id;
     next();
+});
+
+app.use((err, req, res, next) => {
+    console.log(err.name);
+    if (err.name === "UnauthorizedError") {
+        res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
+    } else if (err.name === "BodyValidationError") {
+        res.status(400).json({ error: err.toString() });
+    }
 });
 
 async function start() {

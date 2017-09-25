@@ -208,7 +208,7 @@ router.post("/", async (req, res) => {
 
     body.user_id = userid;
 
-    const flds = ["date", "divetime", "max_depth", "tanks", "user_id"];
+    const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id"];
     const params = flds.map((fld) => body[fld]);
 
     if (body.place) {

@@ -104,7 +104,7 @@ namespace DiveLogUploader {
         private GetImportResponseData Data;
 
         public bool IsLoggedIn {
-            get { return Token != null && Data != null; }
+            get { return Token != null; }
         }
 
         public WebApplicationSession() {

@@ -59,15 +59,20 @@ namespace divecomputer_test {
             LoadComputerSelector();
             LoadLogLevelList();
             SaveFileText.Text = Session.Destination ?? "";
-
-            if (Session.Target == TargetType.File) {
-                FileRadio.Checked = true;
-            } else if(Session.Target == TargetType.DiveLog) {
-                LogRadio.Checked = true;
-            }
+            LoadTarget();
 
             Session.TrackChanges();
         }
+
+        private void LoadTarget() {
+
+            if (Session.Target == TargetType.File) {
+                FileRadio.Checked = true;
+            } else if (Session.Target == TargetType.DiveLog) {
+                LogRadio.Checked = true;
+            }
+        }
+
 
         private void LoadSerialPorts() {
             PortSelector.Items.Clear();

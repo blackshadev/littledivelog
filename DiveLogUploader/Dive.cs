@@ -37,6 +37,54 @@ namespace DiveLogUploader {
             Model = dev.Model;
         }
     }
+    
+    public class DiveTankPressure {
+        [JsonProperty("begin")]
+        public double Begin { get; protected set; }
+
+        [JsonProperty("end")]
+        public double End { get; protected set; }
+
+        [JsonProperty("type")]
+        public string Type { get; protected set; }
+
+        public DiveTankPressure(double begin, double end, Parser.dc_tankvolume_t type) {
+            Begin = begin;
+            End = end;
+
+            switch(type) {
+                case Parser.dc_tankvolume_t.DC_TANKVOLUME_IMPERIAL: Type = "psi"; break;
+                case Parser.dc_tankvolume_t.DC_TANKVOLUME_METRIC:
+                default:
+                    Type = "bar";
+                    break;
+
+            }
+        }
+    }
+
+    public class DiveTank {
+
+        [JsonProperty("volume")]
+        public double Volume { get; protected set; }
+
+        [JsonProperty("oxygen")]
+        public int Ogygen { get; protected set; }
+
+        [JsonProperty("pressure")]
+        public DiveTankPressure Pressure { get; protected set; }
+
+        public static DiveTank Parse(Parser.dc_tank_t tank, Parser.dc_gasmix_t gas) {
+            var dt = new DiveTank();
+
+            dt.Volume = tank.volume;
+            dt.Pressure = new DiveTankPressure(tank.beginpressure, tank.endpressure, tank.type);
+            dt.Ogygen = (int)(gas.oxygen * 100);
+            
+            return dt;
+
+        }
+    }
 
     /// <summary>
     /// Holds information about a single dive
@@ -53,7 +101,7 @@ namespace DiveLogUploader {
         public DateTime Date { get; protected set; }
 
         [JsonProperty("divetime")]
-        public TimeSpan? DiveTime { get; protected set; }
+        public uint DiveTime { get; protected set; }
 
         [JsonProperty("max_depth")]
         public double? MaxDepth { get; protected set; }
@@ -70,20 +118,29 @@ namespace DiveLogUploader {
         [JsonProperty("atmospheric_pressure")]
         public double? AtmosphericPressure { get; protected set; }
 
-        [JsonProperty("tank")]
-        public Parser.dc_tank_t? Tank { get; protected set; }
+        [JsonProperty("tanks")]
+        public List<DiveTank> Tanks { get; protected set; }
 
-        [JsonProperty("gasmix")]
-        public Parser.dc_gasmix_t? Gasmix { get; protected set; }
-
-        [JsonProperty("salinity")]
         public Parser.dc_salinity_t? Salinity { get; protected set; }
 
         [JsonProperty("samples")]
         public List<Sample> Samples { get; protected set; }
-
+        
         protected Dive() {
             Samples = new List<Sample>();
+        }
+        
+        public Dive(Dive d) {
+            Fingerprint = d.Fingerprint;
+            Date = d.Date;
+            DiveTime = d.DiveTime;
+            MaxDepth = d.MaxDepth;
+            MaxTemperature = d.MaxTemperature;
+            MinTemperature = d.MinTemperature;
+            SurfaceTemperature = d.SurfaceTemperature;
+            AtmosphericPressure = d.AtmosphericPressure;
+            Tanks = d.Tanks;
+            Samples = d.Samples;
         }
 
         /// <summary>
@@ -97,8 +154,9 @@ namespace DiveLogUploader {
             var parser = new Parser(dev);
 
             var dive = Parse(parser, data);
-            if (dive != null)
+            if (dive != null) {
                 dive.Fingerprint = Convert.ToBase64String(fingerprint);
+            }
 
             parser.Dispose();
 
@@ -117,11 +175,21 @@ namespace DiveLogUploader {
 
             dive.Date = parser.GetDatetime();
             var t = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME);
-            if (t.HasValue) dive.DiveTime = new TimeSpan(0, (int)t.Value / 60, (int)t.Value % 60);
+            if (t.HasValue) {
+                dive.DiveTime = (t.Value / 60) + (t.Value % 60);
+            }
 
             dive.MaxDepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH);
-            dive.Tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK);
-            dive.Gasmix = parser.GetField<Parser.dc_gasmix_t?>(Parser.dc_field_type_t.DC_FIELD_GASMIX);
+
+            var tank = parser.GetField<Parser.dc_tank_t?>(Parser.dc_field_type_t.DC_FIELD_TANK);
+            var gasmix = parser.GetField<Parser.dc_gasmix_t?>(Parser.dc_field_type_t.DC_FIELD_GASMIX);
+
+            dive.Tanks = new List<DiveTank>();
+            if (tank.HasValue && gasmix.HasValue) {
+                dive.Tanks.Add(
+                    DiveTank.Parse(tank.Value, gasmix.Value)
+                );
+            }
             dive.Salinity = parser.GetField<Parser.dc_salinity_t?>(Parser.dc_field_type_t.DC_FIELD_SALINITY);
             dive.MaxTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MAXIMUM);
             dive.MinTemperature = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_TEMPERATURE_MINIMUM);

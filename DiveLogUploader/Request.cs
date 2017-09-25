@@ -3,14 +3,29 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
 namespace DiveLogUploader {
-    public class WebserviceError: Exception {
+    
+    public class WebserviceError: Exception, ISerializable {
+        
         public string error;
+
+        public override string Message {
+            get { return error; }
+        }
 
         public string GetMessage() {
             return error;
+        }
+
+        public WebserviceError(SerializationInfo info, StreamingContext context) : base() {
+            error = info.GetString("error");
+        }
+
+        public override string ToString() {
+            return "WebserviceError: " + error;
         }
     }
 
@@ -33,20 +48,14 @@ namespace DiveLogUploader {
                 }
             }
             
-            return ParseResponse<TOUT>(
-                (HttpWebResponse)request.GetResponse(),
-                serializer
-            );
+            return ParseRequestResponse<TOUT>(request, serializer);
         }
 
         public static TOUT Json<TOUT>(string url, HttpVerb verb, Dictionary<string, string> headers = null) {
             var serializer = new JsonSerializer();
             var request = CreateRequest(url, verb, "application/json", headers);
-                        
-            return ParseResponse<TOUT>(
-                (HttpWebResponse)request.GetResponse(),
-                serializer
-            );
+            
+            return ParseRequestResponse<TOUT>(request, serializer);
         }
 
         public static async Task<TOUT> JsonAsync<TIN, TOUT>(string url, HttpVerb verb, TIN data = default(TIN), Dictionary<string, string> headers = null) {
@@ -61,20 +70,14 @@ namespace DiveLogUploader {
                 }
             }
             
-            return ParseResponse<TOUT>(
-                (HttpWebResponse)await request.GetResponseAsync(),
-                serializer
-            );
+            return await ParseRequestResponseAsync<TOUT>(request, serializer);
         }
 
         public static async Task<TOUT> JsonAsync<TOUT>(string url, HttpVerb verb, Dictionary<string, string> headers = null) {
             var serializer = new JsonSerializer();
             var request = CreateRequest(url, verb, "application/json", headers);
             
-            return ParseResponse<TOUT>(
-                (HttpWebResponse)await request.GetResponseAsync(),
-                serializer
-            );
+            return await ParseRequestResponseAsync<TOUT>(request, serializer);
         }
 
 
@@ -96,12 +99,31 @@ namespace DiveLogUploader {
             return request;
         }
 
+        private static TOUT ParseRequestResponse<TOUT>(HttpWebRequest req, JsonSerializer serializer) {
+            try {
+                var resp = (HttpWebResponse)req.GetResponse();
+                return ParseResponse<TOUT>(resp, serializer);
+            } catch(WebException ex) {
+                var data = ParseResponse<WebserviceError>((HttpWebResponse)ex.Response, serializer);
+                throw data;
+            }
+        }
+        private static async Task<TOUT> ParseRequestResponseAsync<TOUT>(HttpWebRequest req, JsonSerializer serializer) {
+            try {
+                var resp = (HttpWebResponse)await req.GetResponseAsync();
+                return ParseResponse<TOUT>(resp, serializer);
+            } catch (WebException ex) {
+                var data = ParseResponse<WebserviceError>((HttpWebResponse)ex.Response, serializer);
+                throw data;
+            }
+        }
+
         private static TOUT ParseResponse<TOUT>(HttpWebResponse response, JsonSerializer serializer) {
             TOUT obj;
             using (var streamReader = new StreamReader(response.GetResponseStream())) {
                 using (var jsonReader = new JsonTextReader(streamReader)) {
                     if (response.StatusCode != HttpStatusCode.OK) {
-                        throw serializer.Deserialize<WebserviceError>(jsonReader);
+                         throw serializer.Deserialize<WebserviceError>(jsonReader);
                     }
                     obj = serializer.Deserialize<TOUT>(jsonReader);
                 }

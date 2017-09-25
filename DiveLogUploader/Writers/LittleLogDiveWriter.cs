@@ -1,7 +1,17 @@
 ﻿using LibDiveComputer;
-
+using Newtonsoft.Json;
 
 namespace DiveLogUploader.Writers {
+
+    public class ComputerBoundDive: Dive {
+        [JsonProperty("computer_id")]
+        public int ComputerId;
+
+        public ComputerBoundDive(Dive d, int comp) : base(d) {
+            ComputerId = comp;
+        }
+
+    }
     
     public class PostComputerResponse {
         public int computer_id;
@@ -36,10 +46,12 @@ namespace DiveLogUploader.Writers {
         }
 
         protected override void ProcessDive(Dive d) {
+            var boundDive = new ComputerBoundDive(d, computerId);
+
             var resp = Request.Json<Dive, PostDiveResponse>(
-                WebApplicationSession.BASE_URL + "computer",
+                WebApplicationSession.BASE_URL + "dive",
                 HttpVerb.POST,
-                d,
+                boundDive,
                 WebApplicationSession.TokenHeader(token)
             );
         }

@@ -366,9 +366,7 @@ namespace LibDiveComputer {
             var st = dc_parser_get_datetime(m_parser, ref dt);
             if (st != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Failed to get datetime: " + st);
-            if (dt.timezone != dc_timezone_none)
-                throw new Exception("Got timezone from computer, not yet implemented.");
-
+            
             return new DateTime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second);
         }
 

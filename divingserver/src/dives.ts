@@ -208,7 +208,7 @@ router.post("/", async (req, res) => {
 
     body.user_id = userid;
 
-    const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id"];
+    const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id", "fingerprint"];
     const params = flds.map((fld) => body[fld]);
 
     if (body.place) {
@@ -251,6 +251,21 @@ router.post("/", async (req, res) => {
             userId: userid,
             batch,
         });
+    }
+
+    if (body.computer_id && body.fingerprint) {
+
+        batch.add(`
+           update computer
+              set last_fingerprint = $3
+                , last_read = $2
+            where coalesce('1970-01-01 00:00:00', last_read) < $2
+            and compter_id = $1
+        `, [
+            body.computer_id,
+            body.date,
+            body.fingerprint,
+        ]);
     }
 
     await batch.execute();

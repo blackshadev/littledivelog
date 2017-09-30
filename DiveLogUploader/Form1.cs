@@ -204,9 +204,10 @@ namespace divecomputer_test {
 
             var args = currentTask;
             args.ctx = CreateContext(args.logLevel);
-            
+
+            IDiveWriter writer = null;
             try {
-                var writer = CreateWriter();
+                writer = CreateWriter();
                 writer.OnProgres += (_, total, processed) => {
                     SetWriteProgress((int)((float)processed / total * 100), true);
                 };
@@ -246,6 +247,9 @@ namespace divecomputer_test {
                 SetState("Saved to file");
             } catch (Exception err) {
                 SetState("Error while reading device: " + err.Message, Color.Red);
+                if (writer != null) {
+                    writer.Dispose();
+                }
             }
 
             if (args.fingerprint != null)

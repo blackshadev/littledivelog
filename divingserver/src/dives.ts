@@ -260,7 +260,7 @@ router.post("/", async (req, res) => {
               set last_fingerprint = $3
                 , last_read = $2
             where coalesce('1970-01-01 00:00:00', last_read) < $2
-            and compter_id = $1
+            and computer_id = $1
         `, [
             body.computer_id,
             body.date,

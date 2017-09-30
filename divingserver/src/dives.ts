@@ -203,7 +203,7 @@ router.post("/", async (req, res) => {
 
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
-        return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${Math.round(tank.pressure.end)},${Math.round(tank.pressure.type)})\\")`;
+        return `(${tank.volume},${tank.oxygen},\\"(${Math.round(tank.pressure.begin)},${Math.round(tank.pressure.end)},${tank.pressure.type})\\")`;
     }).join('","')}"}`;
 
     body.user_id = userid;

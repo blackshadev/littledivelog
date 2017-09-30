@@ -224,15 +224,20 @@ router.post("/", async (req, res) => {
                 ( ${flds.join(",")} )
         values  (
             ${flds.map((fld, iX) => "$" + (iX + 1)).join(",")}
-        ) returning dive_id as id;
+        )
+        on conflict (computer_id, fingerprint)
+          do update
+                set updated = now()
+        returning dive_id as id;
     `;
     let diveId: number;
+    let skipped: boolean = false;
 
     batch.add(sql, params, (ds) => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
-
+        skipped = ds.command === "UPDATE";
         diveId = ds.rows[0].id;
     });
 
@@ -272,6 +277,7 @@ router.post("/", async (req, res) => {
 
     res.json({
         dive_id: diveId,
+        skipped,
     });
 
 });

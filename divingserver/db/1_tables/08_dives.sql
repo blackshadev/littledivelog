@@ -37,7 +37,7 @@ create table if not exists dives (
 create index dive_country on dives(country_code);
 create index dive_place on dives(place_id);
 create index dive_computer_id on dives(computer_id);
-create unique index dive_fingerprint on dives(fingerprint);
+create unique index dive_fingerprint on dives(computer_id, fingerprint);
 
 create table if not exists dive_buddies (
     dive_id         int         references dives(dive_id)                       not null

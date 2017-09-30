@@ -256,7 +256,7 @@ router.post("/", async (req, res) => {
     if (body.computer_id && body.fingerprint) {
 
         batch.add(`
-           update computer
+           update computers
               set last_fingerprint = $3
                 , last_read = $2
             where coalesce('1970-01-01 00:00:00', last_read) < $2

@@ -147,12 +147,6 @@ namespace divecomputer_test {
                 StateLabel.ForeColor = Color.Red;
                 return;
             }
-            if (SaveFileText.Text == null || SaveFileText.Text == "") {
-                StateLabel.Text = "No save path selected";
-                StateLabel.ForeColor = Color.Red;
-                return;
-            }
-
 
             StateLabel.ForeColor = Color.Black;
 

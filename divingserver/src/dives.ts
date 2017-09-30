@@ -228,7 +228,7 @@ router.post("/", async (req, res) => {
         on conflict (computer_id, fingerprint)
           do update
                 set updated = now()
-        returning dive_id as id;
+        returning dive_id as id, updated, inserted;
     `;
     let diveId: number;
     let skipped: boolean = false;
@@ -237,8 +237,9 @@ router.post("/", async (req, res) => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
-        console.log(ds.command);
-        skipped = ds.command === "UPDATE";
+
+        skipped =  ds.rows[0].updated !==  ds.rows[0].inserted;
+        console.log("SKIPPED", skipped, ds.rows[0].updated , ds.rows[0].inserted)
         diveId = ds.rows[0].id;
     });
 

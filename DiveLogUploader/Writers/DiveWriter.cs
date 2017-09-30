@@ -81,7 +81,7 @@ namespace DiveLogUploader.Writers {
         }
 
         protected virtual void DoWork(object sender, DoWorkEventArgs e) {
-            while (!isDone) {
+            while (!isDone || queue.Count > 0) {
                 Dive item = null;
 
                 lock (queue) {

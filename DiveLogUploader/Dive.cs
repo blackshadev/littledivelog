@@ -95,6 +95,7 @@ namespace DiveLogUploader {
         /// Base64 encoded fingerprint
         /// </summary>
         [JsonProperty("fingerprint")]
+        [JsonIgnore]
         public string Fingerprint { get; protected set; }
 
         [JsonProperty("date")]

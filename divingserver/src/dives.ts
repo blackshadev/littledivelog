@@ -237,6 +237,7 @@ router.post("/", async (req, res) => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
+        console.log(ds.command);
         skipped = ds.command === "UPDATE";
         diveId = ds.rows[0].id;
     });

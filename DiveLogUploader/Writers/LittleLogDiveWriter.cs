@@ -1,5 +1,6 @@
 ﻿using LibDiveComputer;
 using Newtonsoft.Json;
+using System;
 
 namespace DiveLogUploader.Writers {
 
@@ -54,6 +55,7 @@ namespace DiveLogUploader.Writers {
                 boundDive,
                 WebApplicationSession.TokenHeader(token)
             );
+            Console.WriteLine(resp);
         }
     }
 }

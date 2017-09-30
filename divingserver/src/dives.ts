@@ -239,7 +239,6 @@ router.post("/", async (req, res) => {
         }
 
         skipped =  ds.rows[0].updated !==  ds.rows[0].inserted;
-        console.log("SKIPPED", skipped, ds.rows[0].updated , ds.rows[0].inserted)
         diveId = ds.rows[0].id;
     });
 

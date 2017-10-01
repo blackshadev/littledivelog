@@ -25,7 +25,6 @@ namespace divecomputer_test {
             public Descriptor descriptor;
             public string serialPort;
             public DiveBundle bundle;
-            public string fingerprint;
         }
 
         private SessionStore Session = new SessionStore();
@@ -174,24 +173,7 @@ namespace divecomputer_test {
         private void StartReading(Descriptor descriptor, string port) {
             DivecomputerWorker.RunWorkerAsync();
         }
-
-        /// <summary>
-        /// Retrieves then fingerprint of the computer from the app.config
-        /// </summary>
-        private void GetFingerprint() {
-            try {
-                var val = ConfigurationManager.AppSettings[$"{currentTask.bundle.Computer.Serial}"];
-                if (val != null) {
-                    currentTask.fingerprint = val;
-                }
-            } catch (Exception) { }
-
-        }
-
-        private void SetFignerprint(uint comp, byte[] fingerprint) {
-            ConfigurationManager.AppSettings.Set(comp.ToString(), currentTask.fingerprint);
-        }
-
+        
         private void DivecomputerWorker_DoWork(object sender, DoWorkEventArgs e) {
             SetReadProgress(0, true);
             SetWriteProgress(0, true);
@@ -213,14 +195,12 @@ namespace divecomputer_test {
                 args.device.OnWaiting += () => { SetState("Waiting..."); };
                 args.device.OnProgess += (prog) => { SetReadProgress((int)((float)prog.current / prog.maximum * 100)); };
                 args.device.OnDeviceInfo += (devInfo) => {
-                    SetState(String.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
-                    var old = args.fingerprint;
-                    GetFingerprint();
+                    SetState(string.Format("Device: {0}, firmware {1}", devInfo.serial, devInfo.firmware));
                     writer.SetDevice(args.device);
                     writer.Start();
                 };
                 args.device.OnClock += (clock) => {
-                    Console.WriteLine(String.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));
+                    Console.WriteLine(string.Format("systime: {0}, devtime: {1}", clock.systime, clock.devtime));
                 };
 
                 Dive lastDive = null;
@@ -233,10 +213,7 @@ namespace divecomputer_test {
                 SetReadProgress(100, true);
 
                 writer.End();
-                if (lastDive != null) {
-                    args.fingerprint = lastDive.Fingerprint;
-                }
-
+               
                 writer.Dispose();
                 SetState("Saved to file");
             } catch (Exception err) {
@@ -245,10 +222,7 @@ namespace divecomputer_test {
                     writer.Dispose();
                 }
             }
-
-            if (args.fingerprint != null)
-                SetFignerprint(args.device.Serial, Convert.FromBase64String(args.fingerprint));
-
+            
             SetReadProgress(100, false);
             SetWriteProgress(100, false);
         }

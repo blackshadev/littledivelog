@@ -17,6 +17,7 @@ namespace DiveLogUploader.Writers {
     public class PostComputerResponse {
         public int computer_id;
         public string name;
+        public string last_fingerprint;
     }
 
     public class PostDiveRequest {
@@ -24,6 +25,7 @@ namespace DiveLogUploader.Writers {
     }
     public class PostDiveResponse {
         public int dive_id;
+        public bool skipped;
     }
 
 
@@ -44,6 +46,11 @@ namespace DiveLogUploader.Writers {
                 WebApplicationSession.TokenHeader(token)
             );
             computerId = resp.computer_id;
+
+            if (resp.last_fingerprint != null) {
+                var fingerprint = Convert.FromBase64String(resp.last_fingerprint);
+                d.SetFingerprint(fingerprint);
+            }
         }
 
         protected override void ProcessDive(Dive d) {
@@ -55,7 +62,6 @@ namespace DiveLogUploader.Writers {
                 boundDive,
                 WebApplicationSession.TokenHeader(token)
             );
-            Console.WriteLine(resp);
         }
     }
 }

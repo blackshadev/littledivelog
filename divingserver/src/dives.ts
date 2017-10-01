@@ -265,8 +265,8 @@ router.post("/", async (req, res) => {
            update computers
               set last_fingerprint = $3
                 , last_read = $2
-            where coalesce('1970-01-01 00:00:00', last_read) < $2
-            and computer_id = $1
+            where computer_id = $1
+            and coalesce(last_read, '1970-01-01 00:00:00') < $2
         `, [
             body.computer_id,
             body.date,

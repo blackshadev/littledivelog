@@ -64,7 +64,7 @@ namespace LibDiveComputer {
         private static extern dc_status_t dc_device_set_events(IntPtr device, dc_event_type_t events, dc_event_callback_t callback, IntPtr userdata);
 
         [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
-        private static extern dc_status_t dc_device_set_fingerprint(IntPtr device, byte[] data, uint size);
+        private static extern dc_status_t dc_device_set_fingerprint(IntPtr device, IntPtr data, uint size);
 
         [DllImport(Constants.LibPath, CallingConvention = CallingConvention.Cdecl)]
         private static extern dc_status_t dc_device_read(IntPtr device, uint address, [In, Out] byte[] data, uint size);
@@ -131,6 +131,8 @@ namespace LibDiveComputer {
         public uint Model { get; protected set; }
         public uint Firmware { get; protected set; }
 
+        private GCHandle fingerprintPtr;
+
         public Device(Context context, Descriptor descriptor, string name) {
             Context = context;
             Descriptor = descriptor;
@@ -145,7 +147,9 @@ namespace LibDiveComputer {
         }
 
         public void SetFingerprint(byte[] fingerprint) {
-            var rc = dc_device_set_fingerprint(m_device, fingerprint, (uint)fingerprint.Length);
+
+            fingerprintPtr = GCHandle.Alloc(fingerprint, GCHandleType.Pinned);
+            var rc = dc_device_set_fingerprint(m_device, fingerprintPtr.AddrOfPinnedObject(), (uint)fingerprint.Length);
             if (rc != dc_status_t.DC_STATUS_SUCCESS)
                 throw new Exception("Unable to set fingerprint: " + rc);
         }
@@ -277,6 +281,10 @@ namespace LibDiveComputer {
                 PortName = null;
                 EventCallback = null;
                 DiveCallback = null;
+                if (fingerprintPtr.IsAllocated) {
+                    fingerprintPtr.Free();
+                    fingerprintPtr = default(GCHandle);
+                }
 
                 if (disposing) {
                     // Dispose managed objects

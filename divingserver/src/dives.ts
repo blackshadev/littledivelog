@@ -136,16 +136,12 @@ router.put("/:id", async (req, res) => {
         });
     }
 
-    if (!body.samples) {
-        body.samples = [];
-    }
-
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
         return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
     }).join('","')}"}`;
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
-    const flds = ["date", "divetime", "max_depth", "tanks", "samples"];
+    const flds = ["date", "divetime", "max_depth", "tanks"]
     const params = [];
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;
@@ -205,6 +201,10 @@ router.post("/", async (req, res) => {
     const body = req.body;
     const batch = new SqlBatch();
 
+    if (!body.samples) {
+        body.samples = [];
+    }
+
     body.tanks = `{"${body.tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
         return `(${tank.volume},${tank.oxygen},\\"(${Math.round(tank.pressure.begin)},${Math.round(tank.pressure.end)},${tank.pressure.type})\\")`;
@@ -212,7 +212,7 @@ router.post("/", async (req, res) => {
 
     body.user_id = userid;
 
-    const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id", "fingerprint"];
+    const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id", "fingerprint", "samples"];
     const params = flds.map((fld) => body[fld]);
 
     if (body.place) {

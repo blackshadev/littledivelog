@@ -125,7 +125,7 @@ namespace DiveLogUploader {
             dive.Date = parser.GetDatetime();
             var t = parser.GetField<uint?>(Parser.dc_field_type_t.DC_FIELD_DIVETIME);
             if (t.HasValue) {
-                dive.DiveTime = (t.Value / 60) + (t.Value % 60);
+                dive.DiveTime = t.Value;
             }
 
             dive.MaxDepth = parser.GetField<double?>(Parser.dc_field_type_t.DC_FIELD_MAXDEPTH);

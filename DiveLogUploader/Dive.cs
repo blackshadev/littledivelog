@@ -40,10 +40,10 @@ namespace DiveLogUploader {
     
     public class DiveTankPressure {
         [JsonProperty("begin")]
-        public double Begin { get; protected set; }
+        public double Begin { get; set; }
 
         [JsonProperty("end")]
-        public double End { get; protected set; }
+        public double End { get; set; }
 
         [JsonProperty("type")]
         public string Type { get; protected set; }
@@ -91,57 +91,6 @@ namespace DiveLogUploader {
     /// </summary>
     public class Dive {
 
-        /// <summary>
-        /// Base64 encoded fingerprint
-        /// </summary>
-        [JsonProperty("fingerprint")]
-        public string Fingerprint { get; protected set; }
-
-        [JsonProperty("date")]
-        public DateTime Date { get; protected set; }
-
-        [JsonProperty("divetime")]
-        public uint DiveTime { get; protected set; }
-
-        [JsonProperty("max_depth")]
-        public double? MaxDepth { get; protected set; }
-
-        [JsonProperty("max_temperature")]
-        public double? MaxTemperature { get; protected set; }
-
-        [JsonProperty("min_temperature")]
-        public double? MinTemperature { get; protected set; }
-
-        [JsonProperty("surface_temperature")]
-        public double? SurfaceTemperature { get; protected set; }
-
-        [JsonProperty("atmospheric_pressure")]
-        public double? AtmosphericPressure { get; protected set; }
-
-        [JsonProperty("tanks")]
-        public List<DiveTank> Tanks { get; protected set; }
-
-        public Parser.dc_salinity_t? Salinity { get; protected set; }
-
-        [JsonProperty("samples")]
-        public List<Sample> Samples { get; protected set; }
-        
-        protected Dive() {
-            Samples = new List<Sample>();
-        }
-        
-        public Dive(Dive d) {
-            Fingerprint = d.Fingerprint;
-            Date = d.Date;
-            DiveTime = d.DiveTime;
-            MaxDepth = d.MaxDepth;
-            MaxTemperature = d.MaxTemperature;
-            MinTemperature = d.MinTemperature;
-            SurfaceTemperature = d.SurfaceTemperature;
-            AtmosphericPressure = d.AtmosphericPressure;
-            Tanks = d.Tanks;
-            Samples = d.Samples;
-        }
 
         /// <summary>
         /// Parses all dives from a device
@@ -206,9 +155,92 @@ namespace DiveLogUploader {
             };
 
             parser.Start();
-            if (current != null) dive.Samples.Add(current);
+            if (current != null) {
+                dive.Samples.Add(current);
+            }
+
+            // Fix-ups
+            dive.FixMissingPressures();
 
             return dive;
+        }
+
+        /// <summary>
+        /// Base64 encoded fingerprint
+        /// </summary>
+        [JsonProperty("fingerprint")]
+        public string Fingerprint { get; protected set; }
+
+        [JsonProperty("date")]
+        public DateTime Date { get; protected set; }
+
+        [JsonProperty("divetime")]
+        public uint DiveTime { get; protected set; }
+
+        [JsonProperty("max_depth")]
+        public double? MaxDepth { get; protected set; }
+
+        [JsonProperty("max_temperature")]
+        public double? MaxTemperature { get; protected set; }
+
+        [JsonProperty("min_temperature")]
+        public double? MinTemperature { get; protected set; }
+
+        [JsonProperty("surface_temperature")]
+        public double? SurfaceTemperature { get; protected set; }
+
+        [JsonProperty("atmospheric_pressure")]
+        public double? AtmosphericPressure { get; protected set; }
+
+        [JsonProperty("tanks")]
+        public List<DiveTank> Tanks { get; protected set; }
+
+        public Parser.dc_salinity_t? Salinity { get; protected set; }
+
+        [JsonProperty("samples")]
+        public List<Sample> Samples { get; protected set; }
+        
+        protected Dive() {
+            Samples = new List<Sample>();
+        }
+        
+        public Dive(Dive d) {
+            Fingerprint = d.Fingerprint;
+            Date = d.Date;
+            DiveTime = d.DiveTime;
+            MaxDepth = d.MaxDepth;
+            MaxTemperature = d.MaxTemperature;
+            MinTemperature = d.MinTemperature;
+            SurfaceTemperature = d.SurfaceTemperature;
+            AtmosphericPressure = d.AtmosphericPressure;
+            Tanks = d.Tanks;
+            Samples = d.Samples;
+        }
+
+        protected void FixMissingPressures() {
+            // Iterate all tanks
+            for(var iTank = 0; iTank < Tanks.Count; iTank++) {
+                
+                // No correct begin pressure, fix it by finding the first sample value of that tank
+                if (Tanks[iTank].Pressure.Begin == 0) {
+                    for(var iX = 0; iX < Samples.Count; iX++) {
+                        if(Samples[iX].Pressure.HasValue && Samples[iX].Pressure.Value.Tank == iTank) {
+                            Tanks[iTank].Pressure.Begin = Samples[iX].Pressure.Value.Value;
+                            break;
+                        }
+                    }
+                }
+
+                // No correct end pressure, fix it by finding the last sample value of that tank
+                if (Tanks[iTank].Pressure.End == 0) {
+                    for (var iX = Samples.Count - 1; iX > -1; iX--) {
+                        if (Samples[iX].Pressure.HasValue && Samples[iX].Pressure.Value.Tank == iTank) {
+                            Tanks[iTank].Pressure.End = Samples[iX].Pressure.Value.Value;
+                            break;
+                        }
+                    }
+                }
+            }
         }
     }
 

@@ -397,7 +397,7 @@ namespace LibDiveComputer {
                     break;
                 // Tank field
                 case dc_field_type_t.DC_FIELD_TANK:
-                    var _tank_value = new dc_tank_t { };
+                    var _tank_value = new dc_tank_t {};
                     rc = dc_parser_get_field_tank(m_parser, type, flags, ref _tank_value);
                     value = _tank_value;
                     break;

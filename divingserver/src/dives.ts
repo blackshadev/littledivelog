@@ -201,8 +201,8 @@ router.post("/", async (req, res) => {
     const body = req.body;
     const batch = new SqlBatch();
 
-    if (!body.samples) {
-        body.samples = [];
+    if (body.samples && typeof(body.samples) === "object")  {
+        body.samples = JSON.stringify(body.samples);
     }
 
     body.tanks = `{"${body.tanks.map((tank) => {

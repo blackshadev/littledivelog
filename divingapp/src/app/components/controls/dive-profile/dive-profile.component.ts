@@ -61,7 +61,10 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   };
   protected _line: d3.Line<TSample>;
   protected _data: TSample[] = [];
-  protected _eventLocations: number[] = [];
+  protected _lineData: TSample[] = [];
+  protected _eventData: TSample[] = [];
+
+
   protected _axes: {
     left: d3.Axis<number|{valueOf(): number}>,
     top: d3.Axis<number|{valueOf(): number}>,
@@ -127,7 +130,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   public setData(data: TSample[]) {
     this.select(undefined);
     this._data = data;
-    this.getEvents();
+
     this._scale.x.domain([0, d3.max(data, (d) => d.Time)]);
     this._scale.y.domain([
       d3.min(data, (d) => d.Depth),
@@ -194,15 +197,6 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     return await this.service.getSamples(this._dive.id);
   }
 
-  protected getEvents() {
-    this._eventLocations.length = 0;
-    for (let iX = 0; iX < this._data.length; iX++) {
-      if (this._data[iX].Events.length) {
-        this._eventLocations.push(iX);
-      }
-    }
-  }
-
   protected repaintAxes() {
     this.groups.leftAxis.call(
       this._axes.left
@@ -214,6 +208,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
   protected repaintLine() {
     const line = this.groups.line.selectAll('path');
+
     line.data([this._data]);
 
     line.enter().append('path');
@@ -228,20 +223,21 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
   protected repaintEvents() {
     const events = this.groups.events.selectAll('circle');
-    events.data([this._eventLocations]);
+    const eventData = this._data.filter((d, iX) => d.Events.length > 0);
+    console.log(eventData.length);
+
+    events.data([eventData]);
 
     events.enter()
       .append('circle')
-      .attr('cx', (iX: number) => this._scale.x(this._data[iX].Time))
-      .attr('cy', (iX: number) => this._scale.y(this._data[iX].Depth))
       .attr('r', '2')
       ;
 
     events.transition()
       .ease(d3.easeLinear)
       .duration(1000)
-      .attr('cx', (iX: number) => this._scale.x(this._data[iX].Time))
-      .attr('cy', (iX: number) => this._scale.y(this._data[iX].Depth));
+      .attr('cx', (s: TSample) => { console.log(s); return this._scale.x(s.Time); })
+      .attr('cy', (s: TSample) => this._scale.y(1));
 
     events.exit().remove();
   }

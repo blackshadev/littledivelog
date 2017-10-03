@@ -49,7 +49,7 @@ import { ComputersComponent } from './components/computers/computers.component';
     ReactiveFormsModule,
     HttpModule,
     AppRoutingModule,
-    Ng2AutoCompleteModule
+    Ng2AutoCompleteModule,
   ],
   providers: [
     DiveStore,

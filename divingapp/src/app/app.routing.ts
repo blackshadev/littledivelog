@@ -5,7 +5,7 @@ import { DiveListComponent } from './components/dives/dive-list/dive-list.compon
 import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { LoginComponent } from './components/login/login.component';
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { ComputersComponent } from 'app/components/computers/computers.component';
 
 const routes: Routes = [
@@ -18,7 +18,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
 ];
 @NgModule({
-  imports: [ RouterModule.forRoot(routes) ],
+  imports: [ RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules  }) ],
   exports: [ RouterModule ],
 })
 export class AppRoutingModule {}

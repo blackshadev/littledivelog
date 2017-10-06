@@ -130,6 +130,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   public setData(data: TSample[]) {
     this.select(undefined);
     this._data = data;
+    this.fixData();
 
     this._scale.x.domain([0, d3.max(data, (d) => d.Time)]);
     this._scale.y.domain([
@@ -193,6 +194,59 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     this.isReady = true;
   }
 
+  protected fixData() {
+    if (!this._data.length) {
+      return;
+    }
+
+    const timeSteps = Array(this._data.length - 1);
+    for (let iX = 0; iX < this._data.length - 1; iX++) {
+      timeSteps[iX] = this._data[iX + 1].Time - this._data[iX].Time;
+    }
+    const avgTimeStep = timeSteps.reduce((a, b) => { return a + b}, 0) / timeSteps.length;
+
+
+    let iNextSample = 0;
+    let iPrevSample = 0;
+
+    // Ensure start sample
+    if (this._data[0].Depth !== 0) {
+      // this._data[0].Depth = 0;
+      this._data.unshift({ Time: this._data[0].Time - avgTimeStep, Depth: 0, Events: [], Temperature: 0 });
+    }
+
+    // Ensure end sample
+    if (this._data[this._data.length - 1].Depth !== 0) {
+      this._data.push({ Depth: 0, Time: this._data[this._data.length - 1].Time + avgTimeStep, Temperature: 0, Events: [] });
+    }
+
+    const size = this._data.length;
+
+    while (iPrevSample + 1 < size) {
+      // find gap start
+      if (this._data[iPrevSample + 1].Depth !== null) {
+        iPrevSample++;
+        continue;
+      }
+
+      // find gap end
+      iNextSample = iPrevSample + 1;
+      while (this._data[iNextSample].Depth === null) {
+        iNextSample++;
+      }
+
+      // interpolate
+      const start = this._data[iPrevSample];
+      const end  = this._data[iNextSample];
+      const slope = (end.Depth - start.Depth) / (end.Time - start.Time);
+
+      for (let iX = iPrevSample + 1; iX < iNextSample; iX++) {
+        this._data[iX].Depth = start.Depth + slope * (this._data[iX].Time - start.Time);
+      }
+    }
+
+  }
+
   protected async getSamples() {
     return await this.service.getSamples(this._dive.id);
   }
@@ -213,33 +267,29 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
     line.enter().append('path');
 
-    line.transition()
-      .ease(d3.easeLinear)
-      .duration(1000)
+    line.merge(line)
       .attr('d', this._line(this._data));
 
     line.exit().remove();
   }
 
   protected repaintEvents() {
-    const events = this.groups.events.selectAll('circle');
     const eventData = this._data.filter((d, iX) => d.Events.length > 0);
     console.log(eventData.length);
 
-    events.data([eventData]);
-
-    events.enter()
-      .append('circle')
-      .attr('r', '2')
-      ;
-
-    events.transition()
-      .ease(d3.easeLinear)
-      .duration(1000)
-      .attr('cx', (s: TSample) => { console.log(s); return this._scale.x(s.Time); })
-      .attr('cy', (s: TSample) => this._scale.y(1));
+    const events = this.groups.events.selectAll('circle').data(eventData);
 
     events.exit().remove();
+    events.enter()
+      .append('circle')
+      .attr('r', '5')
+      .attr('stroke', '#000')
+      .merge(events)
+        .attr('cx', (s: TSample) => this._scale.x(s.Time))
+        .attr('cy', (s: TSample) => this._scale.y(s.Depth))
+    ;
+
+
   }
 
   protected createHover() {

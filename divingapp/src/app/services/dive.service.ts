@@ -1,6 +1,6 @@
 import { AuthService } from './auth.service';
 import {Headers, Http,  Response} from '@angular/http';
-import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, TSample } from '../shared/dive';
+import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, ISample } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
@@ -141,13 +141,13 @@ export class DiveStore  {
 
     }
 
-    async getSamples(dive_id: number): Promise<TSample[]|undefined> {
+    async getSamples(dive_id: number): Promise<ISample[]|undefined> {
 
         const resp = await this.http.get(
                 `${serviceUrl}/dive/${dive_id}/samples/`,
                 this.httpOptions,
             ).toPromise();
-        return resp.json() as TSample[];
+        return resp.json() as ISample[];
 
     }
 

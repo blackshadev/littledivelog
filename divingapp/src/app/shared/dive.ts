@@ -22,11 +22,53 @@ export interface IBuddy {
     buddy_id?: number;
 }
 
-export interface TSample {
+export enum SampleEventType {
+    None = 0,
+    Deco = 1,
+    RBT,
+    Ascent,
+    Ceiling,
+    Workload,
+    Transmitter,
+    Violation,
+    Bookmark,
+    Surface,
+    'Safety Stop',
+    'Gas Change',
+    'Voluntary Safety Stop',
+    'Mandatory Safety Stop',
+    'Deep Stop',
+    'Ceiling (safety stop)',
+    'Floor',
+    Divetime,
+    'Max Depth',
+    OLF,
+    PO2,
+    'Air Time',
+    RGBM,
+    Heading,
+    'Tissue level warning',
+    'gaschange2'
+}
+
+export enum SampleEventFlag {
+    None = 0,
+    Begin = 1,
+    End = 2,
+}
+
+export interface ISampleEvent {
+    Name: string;
+    Type: SampleEventType;
+    Value: number;
+    Flags: SampleEventFlag;
+}
+
+export interface ISample {
     Time: number;
     Depth: number;
     Temperature: number;
-    Events: any[];
+    Events: ISampleEvent[];
 }
 
 export class Duration {
@@ -76,7 +118,7 @@ export class Dive {
     date: Date;
     divetime: Duration;
     maxDepth: number;
-    samples: TSample[];
+    samples: ISample[];
     place: IPlace;
     tanks: ITank[];
     tags: IDiveTag[];
@@ -192,4 +234,3 @@ export interface IDiveRecordDC {
     Samples?: ISample[];
 }
 
-type ISample = any;

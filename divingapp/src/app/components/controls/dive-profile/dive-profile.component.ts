@@ -1,6 +1,6 @@
 import { divetime } from '../../../shared/formatters';
 import { debounce } from '../../../shared/common';
-import { Dive, TSample } from '../../../shared/dive';
+import { Dive, ISample, ISampleEvent, SampleEventType, SampleEventFlag } from '../../../shared/dive';
 import { DiveStore } from '../../../services/dive.service';
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, HostListener, EventEmitter, Output } from '@angular/core';
 import * as d3 from 'd3';
@@ -13,8 +13,8 @@ import * as d3 from 'd3';
 })
 export class DiveProfileComponent implements OnInit, AfterViewInit {
   get dive() { return this._dive; }
-  get selectedItem(): TSample {
-    if (!this._data || this.selectedIndex === undefined) {
+  get selectedItem(): ISample {
+    if (!this.data || this.selectedIndex === undefined) {
       return {
         Depth: undefined,
         Temperature: undefined,
@@ -22,18 +22,21 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         Events: []
       };
     }
-    return this._data[this.selectedIndex];
+    return this.data[this.selectedIndex];
   }
 
-  @Output() onselect = new EventEmitter<{ item: TSample|undefined, index: number }>();
-  @Output() onhover = new EventEmitter<{ item: TSample, index: number }>();
+  public data: ISample[] = [];
+  public allEvents: { dataIndex: number, eventIndex: number }[]  = [];
+
+  @Output() onselect = new EventEmitter<{ item: ISample|undefined, index: number }>();
+  @Output() onhover = new EventEmitter<{ item: ISample, index: number }>();
 
   @Input() set dive(v: Dive) {
     this._dive = v;
     this.update();
   }
 
-  protected samples: TSample[];
+  protected samples: ISample[];
   protected _dive: Dive;
   protected svg: d3.Selection<any, any, null, undefined>;
   protected groups: {
@@ -59,17 +62,13 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     x: d3.ScaleLinear<number, number>,
     y: d3.ScaleLinear<number, number>,
   };
-  protected _line: d3.Line<TSample>;
-  protected _data: TSample[] = [];
-  protected _lineData: TSample[] = [];
-  protected _eventData: TSample[] = [];
-
+  protected _line: d3.Line<ISample>;
 
   protected _axes: {
     left: d3.Axis<number|{valueOf(): number}>,
     top: d3.Axis<number|{valueOf(): number}>,
   };
-  protected bisect = d3.bisector<TSample, number>((d: TSample) => d.Time).left;
+  protected bisect = d3.bisector<ISample, number>((d: ISample) => d.Time).left;
   protected selectedIndex: number;
   @ViewChild('container') protected container: ElementRef;
   protected isReady = false;
@@ -82,7 +81,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       x: d3.scaleLinear(),
       y: d3.scaleLinear(),
     };
-    this._line = d3.line<TSample>()
+    this._line = d3.line<ISample>()
       .curve(d3.curveCardinal)
       .x((d) => this._scale.x(d.Time))
       .y((d) => this._scale.y(d.Depth));
@@ -97,6 +96,17 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {}
 
+  public formatEvent(e: ISampleEvent) {
+
+    if (e.Type === SampleEventType.Heading) {
+      return 'Heading set to ' + e.Value;
+    }
+    if (e.Flags !== SampleEventFlag.None) {
+      return SampleEventFlag[e.Flags] + ' of ' + e.Name;
+    }
+    return e.Name;
+  }
+
   public select(index: number|undefined) {
     if (this.selectedIndex === index) {
       return;
@@ -108,9 +118,10 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       this.selectedIndex === undefined ? 'none' : 'inline'
     );
 
-    this.onselect.emit({ item: this._data[index], index });
-    if (this.selectedIndex !== undefined && this._data[index] !== undefined) {
-      const d = this._data[index];
+    this.onselect.emit({ item: this.data[index], index });
+
+    if (this.selectedIndex !== undefined && this.data[index] !== undefined) {
+      const d = this.data[index];
       const pos = {
         x: this._scale.x(d.Time),
         y: this._scale.y(d.Depth),
@@ -127,16 +138,28 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     this.paint();
   }
 
-  public setData(data: TSample[]) {
+  public setData(data: ISample[]) {
     this.select(undefined);
-    this._data = data;
+    this.data = data;
     this.fixData();
 
-    this._scale.x.domain([0, d3.max(data, (d) => d.Time)]);
+    const [minTime, maxTime] = [d3.min(this.data, (d) => d.Time), d3.max(this.data, (d) => d.Time)];
+
+    this._scale.x.domain([minTime, maxTime]);
     this._scale.y.domain([
       d3.min(data, (d) => d.Depth),
       d3.max(data, (d) => d.Depth)
     ]);
+
+    this.allEvents = [];
+    for (let iX = 0; iX < this.data.length; iX++) {
+      if (this.data[iX].Events.length) {
+        for (let iY = 0; iY < this.data[iX].Events.length; iY++) {
+          this.allEvents.push({ dataIndex: iX, eventIndex: iY });
+        }
+      }
+    }
+
   }
 
   public paint() {
@@ -166,6 +189,15 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     this.paint();
   }
 
+  public selectEvent(idx: number) {
+    const evtIdx = this.allEvents[idx];
+    console.log('selected', evtIdx);
+    const evt = this.data[evtIdx.dataIndex].Events[evtIdx.eventIndex];
+    console.log(evt);
+
+    this.select(evtIdx.dataIndex);
+  }
+
   protected initCanvas() {
     this.svg = d3.select(this.container.nativeElement)
       .append('svg');
@@ -175,10 +207,10 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
       .attr('transform', `translate(${this._margin.left},${this._margin.top})`);
     this.groups = {
       graph,
-      hover: graph.append('g').attr('class', 'hover'),
-      select: graph.append('g').attr('class', 'select'),
       line: graph.append('g').attr('class', 'line'),
       events: graph.append('g').attr('class', 'events'),
+      hover: graph.append('g').attr('class', 'hover'),
+      select: graph.append('g').attr('class', 'select'),
       leftAxis: this.svg.append('g').attr('class', 'left-axis').attr('transform', 'translate(50, 20)'),
       topAxis: this.svg.append('g').attr('class', 'top-axis').attr('transform', `translate(${this._margin.left}, 20)`),
     };
@@ -195,55 +227,74 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   }
 
   protected fixData() {
-    if (!this._data.length) {
+    if (!this.data.length) {
       return;
     }
 
-    const timeSteps = Array(this._data.length - 1);
-    for (let iX = 0; iX < this._data.length - 1; iX++) {
-      timeSteps[iX] = this._data[iX + 1].Time - this._data[iX].Time;
+    const timeSteps = Array(this.data.length - 1);
+    for (let iX = 0; iX < this.data.length - 1; iX++) {
+      timeSteps[iX] = this.data[iX + 1].Time - this.data[iX].Time;
     }
     const avgTimeStep = timeSteps.reduce((a, b) => { return a + b}, 0) / timeSteps.length;
 
+    let firstTemp: number|null = null;
+    for (let iX = 0; iX < this.data.length; iX++) {
+      if (this.data[iX].Temperature !== null) {
+        firstTemp = this.data[iX].Temperature;
+        break;
+      }
+    }
 
-    let iNextSample = 0;
-    let iPrevSample = 0;
+    let lastTemp: number|null = null;
+    if (firstTemp != null) {
+      for (let iX = this.data.length - 1; iX > -1; iX--) {
+        if (this.data[iX].Temperature !== null) {
+          lastTemp = this.data[iX].Temperature;
+          break;
+        }
+      }
+    }
 
     // Ensure start sample
-    if (this._data[0].Depth !== 0) {
-      // this._data[0].Depth = 0;
-      this._data.unshift({ Time: this._data[0].Time - avgTimeStep, Depth: 0, Events: [], Temperature: 0 });
+    if (this.data[0].Depth !== 0) {
+      this.data.unshift({ Time: this.data[0].Time - avgTimeStep, Depth: 0, Events: [], Temperature: firstTemp });
     }
 
     // Ensure end sample
-    if (this._data[this._data.length - 1].Depth !== 0) {
-      this._data.push({ Depth: 0, Time: this._data[this._data.length - 1].Time + avgTimeStep, Temperature: 0, Events: [] });
+    if (this.data[this.data.length - 1].Depth !== 0) {
+      this.data.push({ Depth: 0, Time: this.data[this.data.length - 1].Time + avgTimeStep, Events: [], Temperature: lastTemp });
     }
 
-    const size = this._data.length;
+    const fixData = (prop: 'Temperature'|'Depth') => {
+      let iNextSample = 0;
+      let iPrevSample = 0;
 
-    while (iPrevSample + 1 < size) {
-      // find gap start
-      if (this._data[iPrevSample + 1].Depth !== null) {
-        iPrevSample++;
-        continue;
-      }
+      while (iPrevSample + 1 < this.data.length) {
+        // find gap start
+        if (this.data[iPrevSample + 1][prop] !== null) {
+          iPrevSample++;
+          continue;
+        }
 
-      // find gap end
-      iNextSample = iPrevSample + 1;
-      while (this._data[iNextSample].Depth === null) {
-        iNextSample++;
-      }
+        // find gap end
+        iNextSample = iPrevSample + 1;
+        while (this.data[iNextSample][prop] === null) {
+          iNextSample++;
+        }
 
-      // interpolate
-      const start = this._data[iPrevSample];
-      const end  = this._data[iNextSample];
-      const slope = (end.Depth - start.Depth) / (end.Time - start.Time);
+        // interpolate
+        const start = this.data[iPrevSample];
+        const end  = this.data[iNextSample];
+        const slope = (end[prop] - start[prop]) / (end.Time - start.Time);
 
-      for (let iX = iPrevSample + 1; iX < iNextSample; iX++) {
-        this._data[iX].Depth = start.Depth + slope * (this._data[iX].Time - start.Time);
+        for (let iX = iPrevSample + 1; iX < iNextSample; iX++) {
+          this.data[iX][prop] = start[prop] + slope * (this.data[iX].Time - start.Time);
+        }
       }
     }
+
+    fixData('Depth');
+    fixData('Temperature');
 
   }
 
@@ -263,19 +314,18 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   protected repaintLine() {
     const line = this.groups.line.selectAll('path');
 
-    line.data([this._data]);
+    line.data([this.data]);
 
     line.enter().append('path');
 
     line.merge(line)
-      .attr('d', this._line(this._data));
+      .attr('d', this._line(this.data))
 
     line.exit().remove();
   }
 
   protected repaintEvents() {
-    const eventData = this._data.filter((d, iX) => d.Events.length > 0);
-    console.log(eventData.length);
+    const eventData = this.data.filter((d, iX) => d.Events.length > 0);
 
     const events = this.groups.events.selectAll('circle').data(eventData);
 
@@ -283,10 +333,9 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     events.enter()
       .append('circle')
       .attr('r', '5')
-      .attr('stroke', '#000')
       .merge(events)
-        .attr('cx', (s: TSample) => this._scale.x(s.Time))
-        .attr('cy', (s: TSample) => this._scale.y(s.Depth))
+        .attr('cx', (s: ISample) => this._scale.x(s.Time))
+        .attr('cy', (s: ISample) => this._scale.y(s.Depth))
     ;
 
 
@@ -314,21 +363,21 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
   protected getClosestIndex(t: number) {
     const mouseTime = this._scale.x.invert(t - this._margin.left);
-    const iX = this.bisect(this._data, mouseTime);
-    const item0 = this._data[iX];
-    const item1 = this._data[iX - 1];
+    const iX = this.bisect(this.data, mouseTime);
+    const item0 = this.data[iX];
+    const item1 = this.data[iX - 1];
     const t0 = item0 ? item0.Time : Number.NEGATIVE_INFINITY;
     const t1 = item1 ? item1.Time : Number.POSITIVE_INFINITY;
     // work out which date value is closest to the mouse
     const index = mouseTime - t0 > t1 - mouseTime ? iX - 1 : iX;
-    if (!this._data[index]) {
+    if (!this.data[index]) {
       console.error('No index', index, t0, t1);
     }
     return index;
   }
 
   protected hover(index: number) {
-    const d = this._data[index];
+    const d = this.data[index];
     if (d === undefined) {
       return;
     }

@@ -5,7 +5,7 @@
     /deep/ g.graph {
         /deep/ .line path {
             fill: none;
-            stroke: black;
+            stroke: $color-accent;
         }
 
         /deep/ .hover {
@@ -25,8 +25,8 @@
             }
         }
 
-        /deep/ .events cicle {
-            fill: yellow;
+        /deep/ .events circle {
+            fill: darken($color-accent, 25%);
         }
 
     }

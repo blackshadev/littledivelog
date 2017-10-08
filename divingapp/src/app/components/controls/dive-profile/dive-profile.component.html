@@ -1,14 +1,14 @@
 <div class="sample-item">
     <div class="row">
         <div class="col-xs-4">
-            
+
              <div class="form-group">
                 <label for="inputPassword3" class="col-sm-6 control-label">Time</label>
                 <div class="col-sm-6">
                     <p class="form-control-static">{{ this.selectedItem.Time | divetime }}</p>
                 </div>
              </div>
-             
+
         </div>
         <div class="col-xs-4">
 
@@ -18,7 +18,7 @@
                     <p class="form-control-static">{{ this.selectedItem.Depth | number : '1.2-2' }} m</p>
                 </div>
              </div>
-             
+
         </div>
         <div class="col-xs-4">
 
@@ -31,5 +31,23 @@
 
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <div class="form-group">
+                <label class="col-sm-6 control-label">Events</label>
+                <div class="col-sm-6">
+                    <select class="form-control" (change)="selectEvent($event.target.value)">
+                        <option *ngIf="allEvents.length === 0" disabled selected>No events</option>
+                        <option *ngIf="allEvents.length > 0" selected></option>
+                        <option *ngFor="let ev of allEvents; let idx = index" value="{{idx}}">{{formatEvent(this.data[ev.dataIndex].Events[ev.eventIndex])}}</option>
+                    </select>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
 </div>
 <div #container class="graph"></div>

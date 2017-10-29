@@ -141,7 +141,7 @@ router.put("/:id", async (req, res) => {
         return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
     }).join('","')}"}`;
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
-    const flds = ["date", "divetime", "max_depth", "tanks"]
+    const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
     for (const fld of flds) {
         sql += `, ${fld} = $${params.push(body[fld])}`;
@@ -270,7 +270,7 @@ router.post("/", async (req, res) => {
               set last_fingerprint = $3
                 , last_read = $2
             where computer_id = $1
-            and coalesce(last_read, '1970-01-01 00:00:00') < $2
+              and coalesce(last_read, '1970-01-01 00:00:00') < $2
         `, [
             body.computer_id,
             body.date,

@@ -141,7 +141,10 @@ export class DiveStore  {
 
     }
 
-    async getSamples(dive_id: number): Promise<ISample[]|undefined> {
+    async getSamples(dive_id?: number): Promise<ISample[]> {
+        if (dive_id === undefined) {
+            return [];
+        }
 
         const resp = await this.http.get(
                 `${serviceUrl}/dive/${dive_id}/samples/`,

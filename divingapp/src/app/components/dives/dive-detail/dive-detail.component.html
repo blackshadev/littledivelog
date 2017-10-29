@@ -1,4 +1,4 @@
-<form  
+<form
     (keydown.enter)="onEnter($event)"
     [formGroup]="form"
     class="form-horizontal dive-details"
@@ -15,14 +15,14 @@
         <!-- Nav tabs -->
         <ul class="nav nav-tabs" role="tablist">
             <li role="presentation" class="active"><a href="#dive" aria-controls="dive" role="tab" data-toggle="tab">Dive</a></li>
-            <li role="presentation"><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
+            <li role="presentation" [class.hidden]="dive.id === undefined || diveProfile.data.length === 0" ><a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a></li>
             <li role="presentation"><a href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a></li>
         </ul>
 
         <!-- Tab panes -->
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="dive">
-                
+
                 <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.date.valid }">
                     <label class="col-sm-2 control-label">Date</label>
                     <div class="col-sm-10">
@@ -62,7 +62,7 @@
                 <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.tank.valid }">
                     <label class="hidden-xs col-sm-2 control-label">Tank</label>
                     <div class="col-sm-10">
-                        
+
                         <div class="col-xs-6">
                             <span>
                                 Tank Volume
@@ -93,7 +93,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-xs-6">
                             <span>
                                 Start Pressure
@@ -111,7 +111,7 @@
                         <small class="help-text on-error" *ngIf="form.controls.tank.controls.volume.errors?.invalid">
                             Tank volume must be a valid integer; eg 10
                         </small>
-                        
+
                         <small class="help-text on-error" *ngIf="form.controls.tank.controls.airPercentage.errors?.required">
                             Oxygen percentage is required
                         </small>
@@ -132,15 +132,15 @@
                         <small class="help-text on-error" *ngIf="form.controls.tank.controls.pressureEnd.errors?.invalid">
                             End pressure must be a valid number; eg 10.05
                         </small>
-                        
+
                     </div>
                 </div>
                 <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.place.valid  }">
                     <label class="col-sm-2 control-label">Divespot</label>
                     <div class="col-sm-10">
-                        
+
                         <div class="input-group manual-radius" style="width: 100%" formGroupName="place">
-                            <app-autocomplete 
+                            <app-autocomplete
                                 placeholder="Name"
                                 inputClass="form-control left-control"
                                 [value]="form.controls.place.controls.name.value"
@@ -150,7 +150,7 @@
                                 display-item="name"
                             ></app-autocomplete>
                             <span class="input-group-btn" style="width:0px;"></span>
-                            <app-autocomplete 
+                            <app-autocomplete
                                 placeholder="Country"
                                 inputClass="form-control right-control"
                                 formControlName="country"
@@ -163,13 +163,13 @@
                         <small class="help-text on-error">
                             Both or none need to be filled
                         </small>
-                        
+
                     </div>
                 </div>
                 <div class="form-group">
                     <label class="col-sm-2 control-label">Buddies</label>
                     <div class="col-sm-10">
-                        <app-tags-control 
+                        <app-tags-control
                             formControlName="buddies"
                             placeholder="Myke"
                             [source]="getBuddies.bind(this)"
@@ -189,7 +189,7 @@
                 </div>
 
             </div>
-            
+
             <div role="tabpanel" class="tab-pane" id="profile">
                 <app-dive-profile #diveProfile [dive]="dive"></app-dive-profile>
             </div>
@@ -201,4 +201,4 @@
             </div>
         </div>
     </div>
-</form> 
+</form>

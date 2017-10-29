@@ -22,9 +22,9 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   @Output() onDiveSaved = new EventEmitter<Dive>();
 
   public form: FormGroup;
-  CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
+  public CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
 
-  @ViewChild('diveProfile') private diveProfile: DiveProfileComponent;
+  @ViewChild('diveProfile') public diveProfile: DiveProfileComponent;
 
   constructor(
     private service: DiveStore,

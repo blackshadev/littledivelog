@@ -1,6 +1,7 @@
 import * as bodyParser from "body-parser";
 import * as express from "express";
 import * as jwt from "express-jwt";
+import * as expressLogging from "express-logging";
 import * as unless from "express-unless";
 import { QueryResult } from "pg";
 import * as pmx from "pmx";
@@ -17,6 +18,7 @@ import * as tags from "./tags";
 export async function start(pmx?: any) {
 
     const app = express();
+    app.use(expressLogging(console));
     app.use(bodyParser.json({ limit: "500mb" }));
 
     app.use(
@@ -75,4 +77,3 @@ export async function start(pmx?: any) {
     });
     console.log("DiveServer listening on 3000");
 }
-

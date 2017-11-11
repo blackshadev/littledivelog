@@ -9,7 +9,7 @@
   #tagAutocomplete
   inputClass="form-control"
   [source]="getData.bind(this)"
-  display-item="text"
+  displayItem="text"
   [newItem]="newTag.bind(this)"
   (keydown.tab)="clearInput()"
   (changed)="addTag($event)"

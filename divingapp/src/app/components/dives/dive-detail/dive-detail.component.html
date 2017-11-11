@@ -147,16 +147,16 @@
                                 [source]="getDivespots.bind(this)"
                                 [newItem]="newDiveSpot.bind(this)"
                                 (changed)="diveSpotChanged($event)"
-                                display-item="name"
+                                displayItem="name"
                             ></app-autocomplete>
                             <span class="input-group-btn" style="width:0px;"></span>
                             <app-autocomplete
                                 placeholder="Country"
                                 inputClass="form-control right-control"
-                                formControlName="country"
+                                [value]="form.controls.place.controls.country.value"
                                 [source]="getCountries.bind(this)"
-                                display-item="description"
-                                key-item="code"
+                                displayItem="description"
+                                keyItem="code"
                                 forceSelection="true"
                             ></app-autocomplete>
                         </div>

@@ -45,13 +45,12 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     this._source = v;
   }
 
-  // tslint:disable-next-line:no-input-rename
-  @Input('display-item') set displayItem(v: string) {
+  @Input() set displayItem(v: string) {
     this._displayItem = v;
     this.updateGetItem();
   }
-  // tslint:disable-next-line:no-input-rename
-  @Input('key-item') set keyItem(v: any) {
+
+  @Input() set keyItem(v: any) {
     this._keyItem = v;
     this.updateGetItem();
   }
@@ -66,11 +65,18 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     this.onChange(v);
     this.onTouched();
   }
+
   get value(): any {
     return this._selectedValue ? this._selectedValue.key : this._value;
   }
+
   get viewValue(): any {
-    return this._selectedValue ? this._selectedValue.value : this._value;
+    const val = this._selectedValue ? this._selectedValue.value : this._value;
+    if (typeof val === 'object' && this._displayItem) {
+      return val[this._displayItem];
+    } else {
+      return val;
+    }
   }
 
   @Input() newItem: (keyword: string) => any;
@@ -164,7 +170,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
           return this.getItem(false, v);
         });
 
-        if (newItem !== undefined && (!items.length || newItem.value !== items[0].value)) {
+        if (newItem !== undefined && (!items.length || newItem.value.toLowerCase() !== items[0].value.toLowerCase())) {
           items.unshift(newItem);
         }
 

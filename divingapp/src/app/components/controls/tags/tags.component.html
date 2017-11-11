@@ -1,11 +1,11 @@
 <div class="tags">
-  <span class="label" 
-      *ngFor="let tag of tags; let iX = index;" 
+  <span class="badge"
+      *ngFor="let tag of tags; let iX = index;"
       [style.background-color]="tag.color"
       [style.color]="fontColor(tag.color)"
     >
     {{tag.text}}
-    <a 
+    <a
       *ngIf="canremove"
       (click)="onremove.emit({ tag: tag, index: iX })"
     ><i class="fa fa-remove"></i></a>

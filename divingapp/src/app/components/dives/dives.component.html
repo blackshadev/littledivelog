@@ -1,8 +1,10 @@
 <div class="container-fluid">
-  <div class="dive-list col-md-6 col-sm-12" [appHideWhenMobile]="dive !== undefined">
-    <app-dive-list #diveList (onDiveSelected)="dive=$event" [selectedDive]="dive"></app-dive-list>
-  </div>
-  <div class="dive-detail col-md-6 col-sm-12" [appHideWhenMobile]="dive === undefined">
-    <app-dive-detail [dive]="dive" (onDiveSaved)="diveSaved($event)"></app-dive-detail>
+  <div class="row">
+    <div class="dive-list col-md-6 col-sm-12" [appHideWhenMobile]="dive !== undefined">
+      <app-dive-list #diveList (onDiveSelected)="dive=$event" [selectedDive]="dive"></app-dive-list>
+    </div>
+    <div class="dive-detail col-md-6 col-sm-12" [appHideWhenMobile]="dive === undefined">
+      <app-dive-detail [dive]="dive" (onDiveSaved)="diveSaved($event)"></app-dive-detail>
+    </div>
   </div>
 </div>

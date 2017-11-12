@@ -21,6 +21,31 @@ export interface IComputer {
   dive_count: number;
 }
 
+export interface IBuddyStat {
+    buddy_id: number;
+    name: string;
+    color: string;
+    dive_count: Date;
+    last_dive: Date;
+
+}
+
+export interface ITagStat {
+    tag_id: number;
+    name: string;
+    color: string;
+    dive_count: Date;
+    last_dive: Date;
+}
+
+export interface IPlaceStat {
+    place_id: number;
+    name: string;
+    color: string;
+    dive_count: Date;
+    last_dive: Date;
+}
+
 @Injectable()
 export class DiveStore  {
 

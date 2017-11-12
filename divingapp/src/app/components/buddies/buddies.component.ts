@@ -3,10 +3,10 @@ import { DiveStore, IComputer } from 'app/services/dive.service';
 
 @Component({
   selector: 'app-computers',
-  templateUrl: './computers.component.html',
-  styleUrls: ['./computers.component.scss']
+  templateUrl: './buddies.component.html',
+  styleUrls: ['./buddies.component.scss']
 })
-export class ComputersComponent implements OnInit {
+export class BuddiesComponent implements OnInit {
 
   computers: IComputer[] = [];
 

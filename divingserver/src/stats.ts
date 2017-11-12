@@ -67,18 +67,18 @@ router.get("/tags", async (req, res) => {
     const stats = await database.call(
         `
         select
-                t.tag_id
+              t.tag_id
             , t.text
             , t.color
-            , (select count(*) from dive_tags d_t where tag.tag_id = d_t.tag_id) as dive_count
+            , (select count(*) from dive_tags d_t where t.tag_id = d_t.tag_id) as dive_count
             , (
                 select max(d.date)
                     from dive_tags d_t
                     join dives d on d.dive_id = d_t.dive_id
-                where tag.tag_id = d_t.tag_id
+                where t.tag_id = d_t.tag_id
             ) as last_dive
-            from tags tag
-            where tag.user_id = $1
+            from tags t
+            where t.user_id = $1
         `,
         [
             req.user.user_id,

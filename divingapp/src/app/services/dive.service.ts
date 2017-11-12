@@ -23,16 +23,17 @@ export interface IComputer {
 
 export interface IBuddyStat {
     buddy_id: number;
-    name: string;
+    text: string;
     color: string;
     dive_count: Date;
     last_dive: Date;
-
+    email: string;
+    buddy_user_id: number;
 }
 
 export interface ITagStat {
     tag_id: number;
-    name: string;
+    text: string;
     color: string;
     dive_count: Date;
     last_dive: Date;
@@ -41,6 +42,7 @@ export interface ITagStat {
 export interface IPlaceStat {
     place_id: number;
     name: string;
+    country_code: string;
     color: string;
     dive_count: Date;
     last_dive: Date;
@@ -185,7 +187,22 @@ export class DiveStore  {
                 this.httpOptions,
             ).toPromise();
         return resp.json() as IComputer[];
+    }
 
+    async getBuddyStats(): Promise<IBuddyStat[]> {
+        const resp = await this.http.get(
+            `${serviceUrl}/stats/buddies/`,
+            this.httpOptions,
+        ).toPromise();
+        return resp.json() as IBuddyStat[];
+    }
+
+    async getTagStats(): Promise<ITagStat[]> {
+        const resp = await this.http.get(
+            `${serviceUrl}/stats/tags/`,
+            this.httpOptions,
+        ).toPromise();
+        return resp.json() as ITagStat[];
     }
 
     private handleError(error: Response|any) {

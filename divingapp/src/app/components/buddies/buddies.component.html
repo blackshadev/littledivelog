@@ -4,29 +4,26 @@
       <thead>
         <tr>
           <td>
-            #
-          </td>
-          <td>
-            Last dive
-          </td>
-          <td>
-            Vendor
-          </td>
-          <td>
             Name
           </td>
           <td>
             Number of dives
           </td>
+          <td>
+            Last dive
+          </td>
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let comp of computers">
-          <td>{{comp.computer_id}}</td>
-          <td>{{comp.last_read}}</td>
-          <td>{{comp.vendor}}</td>
-          <td>{{comp.name}}</td>
-          <td>{{comp.dive_count}}</td>
+        <tr *ngFor="let bud of buddies">
+          <td>
+            <app-tag class="badge"
+              [color]="bud.color">
+              {{bud.text}}
+            </app-tag>
+          </td>
+          <td>{{bud.dive_count}}</td>
+          <td>{{bud.last_dive}}</td>
           <td></td>
         </tr>
       </tbody>

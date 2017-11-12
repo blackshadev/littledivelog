@@ -23,6 +23,8 @@ import * as $ from 'jquery';
 import { DivetimePipe } from './pipes/divetime.pipe';
 import { LoginComponent } from './components/login/login.component';
 import { ComputersComponent } from './components/computers/computers.component';
+import { BuddiesComponent } from 'app/components/buddies/buddies.component';
+import { TagComponent } from './components/controls/tags/tag/tag.component';
 
 @NgModule({
   declarations: [
@@ -42,6 +44,8 @@ import { ComputersComponent } from './components/computers/computers.component';
     DivetimePipe,
     LoginComponent,
     ComputersComponent,
+    BuddiesComponent,
+    TagComponent
   ],
   imports: [
     BrowserModule,

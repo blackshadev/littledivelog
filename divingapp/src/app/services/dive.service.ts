@@ -13,6 +13,7 @@ export interface ICountry {
     code: string;
     description: string;
 }
+
 export interface IComputer {
   computer_id: number;
   name: string;
@@ -203,6 +204,14 @@ export class DiveStore  {
             this.httpOptions,
         ).toPromise();
         return resp.json() as ITagStat[];
+    }
+
+    async getPlaceStats(): Promise<IPlaceStat[]> {
+        const resp = await this.http.get(
+            `${serviceUrl}/stats/places/`,
+            this.httpOptions,
+        ).toPromise();
+        return resp.json() as IPlaceStat[];
     }
 
     private handleError(error: Response|any) {

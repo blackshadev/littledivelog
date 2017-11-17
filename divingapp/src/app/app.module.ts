@@ -19,12 +19,12 @@ import { AutocompleteComponent } from './components/controls/autocomplete/autoco
 import { TagsComponent } from './components/controls/tags/tags.component';
 import { TagsControlComponent } from './components/controls/tags-control/tags-control.component';
 import { DiveProfileComponent } from './components/controls/dive-profile/dive-profile.component';
-import * as $ from 'jquery';
 import { DivetimePipe } from './pipes/divetime.pipe';
 import { LoginComponent } from './components/login/login.component';
 import { ComputersComponent } from './components/computers/computers.component';
 import { BuddiesComponent } from 'app/components/buddies/buddies.component';
 import { TagComponent } from './components/controls/tags/tag/tag.component';
+import { BuddyDetailComponent } from './components/buddies/buddy-detail/buddy-detail.component';
 
 @NgModule({
   declarations: [
@@ -45,7 +45,8 @@ import { TagComponent } from './components/controls/tags/tag/tag.component';
     LoginComponent,
     ComputersComponent,
     BuddiesComponent,
-    TagComponent
+    TagComponent,
+    BuddyDetailComponent
   ],
   imports: [
     BrowserModule,

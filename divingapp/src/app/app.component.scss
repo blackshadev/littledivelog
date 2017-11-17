@@ -1,4 +1,4 @@
-@import "./shared/global.scss"; 
+@import "./shared/global.scss";
 
 body {
     background: $color-primary;
@@ -15,4 +15,10 @@ body {
 
 /deep/ ng2-auto-complete, /deep/ .ng2-auto-complete {
     z-index: 5 !important;
+}
+
+/deep/ .input-group-addon.input-group-addon-color i {
+    width: 16px;
+    height: 16px;
+
 }

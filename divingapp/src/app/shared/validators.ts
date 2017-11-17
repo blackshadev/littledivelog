@@ -18,4 +18,8 @@ export module CustomValidators {
     export function integer(v: FormControl) {
         return /\d+/ ? null : { invalid: true };
     }
+
+    export function color(v: FormControl) {
+        return /#([a-f0-9]{3}|[a-f0-9]{6})/i
+    }
 }

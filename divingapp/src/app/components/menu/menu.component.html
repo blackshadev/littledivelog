@@ -5,11 +5,12 @@
         <li><a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-dashboard"></i><span>Dashboard</span></a></li>
         <li><a [routerLink]="['dive']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-tint"></i><span>Dives</span></a></li>
         <li><a [routerLink]="['computer']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-desktop"></i><span>Computers</span></a></li>
+        <li><a [routerLink]="['buddy']" [routerLinkActive]="['is-active']"><i class="fa fa-fw fa-user"></i><span>Buddies</span></a></li>
       </ng-container>
     </ul>
     <div class="bottom-menu">
       <ul class="nav nav-pills nav-stacked">
-      
+
         <li>
           <a (click)="logout()" *ngIf="isLoggedIn">
             <i class="fa fa-sign-out"></i>

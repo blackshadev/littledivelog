@@ -1,0 +1,30 @@
+<form
+  [formGroup]="form"
+  *ngIf="buddy !== undefined"
+>
+  <div class="form-group">
+    <label>Name</label>
+    <input class="form-control" formControlName="text" placeholder="Myke" aria-describedby="name" required />
+  </div>
+  <div class="form-group">
+    <label>Color</label>
+    <div class="input-group">
+      <span class="input-group-addon input-group-addon-color">
+          <i [style.background-color]="form.controls.color.value"></i>
+      </span>
+      <input class="form-control" formControlName="color" placeholder="#cccccc" aria-describedby="color" required />
+    </div>
+  </div>
+  <div class="form-group">
+      <label>Email</label>
+      <input class="form-control" formControlName="email" placeholder="myke@doamin.tld" aria-describedby="email" />
+    </div>
+  <div class="form-group">
+    <label>Dive count</label>
+    <input class="form-control-plaintext" [value]="buddy.dive_count" aria-describedby="DiveCount" readonly />
+  </div>
+  <div class="form-group">
+    <label>Last dive</label>
+    <input class="form-control-plaintext" [value]="buddy.last_dive | date:'y-MM-dd HH:mm:ss'"  aria-describedby="LastDive" readonly />
+  </div>
+</form>

@@ -8,6 +8,8 @@ import { Component, OnInit, ViewEncapsulation, Input } from '@angular/core';
 })
 export class TagComponent implements OnInit {
 
+  @Input() public fontSize: string;
+
   @Input() set color(v: string) {
     const isValid = /^\#?([0-9A-Fa-f]{6}|[0-9A-Fa-f]{3})$/.test(v);
     this._color = isValid ? v : '#fff';

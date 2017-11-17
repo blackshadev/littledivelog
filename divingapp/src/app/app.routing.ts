@@ -15,6 +15,7 @@ const routes: Routes = [
   { path: 'dive', component: DivesComponent, canActivate: [AuthGuard] },
   { path: 'computer', component: ComputersComponent, canActivate: [AuthGuard] },
   { path: 'buddy', component: BuddiesComponent, canActivate: [AuthGuard] },
+  { path: 'buddy/:id', component: BuddiesComponent, canActivate: [AuthGuard] },
   { path: 'dive/new', component: DivesComponent, data: { isNew: true }, canActivate: [AuthGuard] },
   { path: 'dive/:id', component: DivesComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },

@@ -1,32 +1,39 @@
-<div class="container">
-  <div class="card">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <td>
-            Name
-          </td>
-          <td>
-            Number of dives
-          </td>
-          <td>
-            Last dive
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let bud of buddies">
-          <td>
-            <app-tag class="badge"
-              [color]="bud.color">
-              {{bud.text}}
-            </app-tag>
-          </td>
-          <td>{{bud.dive_count}}</td>
-          <td>{{bud.last_dive}}</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
+<div class="container-fluid">
+  <div class="row">
+    <div class="dive-list col-md-6 col-sm-12" [appHideWhenMobile]="selected !== undefined">
+      <table class="table table-hover">
+        <thead>
+          <tr>
+            <td>
+              Name
+            </td>
+            <td>
+              Number of dives
+            </td>
+            <td>
+              Last dive
+            </td>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let bud of buddies" [ngClass]="{ 'table-active': selected !== undefined && bud.buddy_id === selected.buddy_id  }" (click)="rowClick(bud)">
+            <td>
+              <app-tag class="badge"
+                [color]="bud.color"
+                fontSize="100%"
+                >
+                {{bud.text}}
+              </app-tag>
+            </td>
+            <td>{{bud.dive_count}}</td>
+            <td>{{bud.last_dive | date:'y-MM-dd HH:mm:ss'}}</td>
+            <td></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="dive-detail col-md-6 col-sm-12" [appHideWhenMobile]="selected === undefined">
+      <app-buddy-detail [buddy]="selected" ></app-buddy-detail>
+    </div>
   </div>
 </div>

@@ -25,6 +25,7 @@ import { ComputersComponent } from './components/computers/computers.component';
 import { BuddiesComponent } from 'app/components/buddies/buddies.component';
 import { TagComponent } from './components/controls/tags/tag/tag.component';
 import { BuddyDetailComponent } from './components/buddies/buddy-detail/buddy-detail.component';
+import { BuddyService } from 'app/services/buddy.service';
 
 @NgModule({
   declarations: [
@@ -58,6 +59,7 @@ import { BuddyDetailComponent } from './components/buddies/buddy-detail/buddy-de
   ],
   providers: [
     DiveStore,
+    BuddyService,
     AuthGuard,
     AuthService,
   ],

@@ -9,6 +9,7 @@ import { SimpleChanges, OnInit, Component, Input, OnChanges, ViewChild, ElementR
 import * as moment from 'moment';
 import 'rxjs/add/operator/switchMap';
 import { CustomValidators } from 'app/shared/validators';
+import { BuddyService } from 'app/services/buddy.service';
 
 declare function $(...args: any[]): any;
 
@@ -27,7 +28,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   @ViewChild('diveProfile') public diveProfile: DiveProfileComponent;
 
   constructor(
-    private service: DiveStore,
+    private diveService: DiveStore,
+    private buddyService: BuddyService,
     private _fb: FormBuilder,
     private hostElement: ElementRef,
   ) {
@@ -164,7 +166,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getCountries(keyword: string) {
-    const cntries = await this.service.getCountries();
+    const cntries = await this.diveService.getCountries();
     const fuse = new Fuse(
         cntries, {
             threshold: 0.6,
@@ -183,7 +185,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   async getDivespots(keyword: string) {
     const c = (this.form.controls.place as FormGroup).controls.country.value;
-    const spots = await this.service.getDiveSpots(c);
+    const spots = await this.diveService.getDiveSpots(c);
 
     if (!keyword) {
       return spots;
@@ -212,7 +214,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getBuddies(keyword: string) {
-    const buds = await this.service.getBuddies();
+    const buds = await this.buddyService.getBuddies();
 
     const fuse = new Fuse(
         buds, {
@@ -237,7 +239,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getTags(keyword: string) {
-    const tags = await this.service.getTags();
+    const tags = await this.diveService.getTags();
 
     const fuse = new Fuse(
         tags, {
@@ -261,7 +263,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     });
   }
 
-  onSubmit() {
+  onSubmit(e: Event) {
+    e.preventDefault();
     const dat = this.form.value;
     const d = new Dive;
     d.id = this.dive.id;
@@ -306,7 +309,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       }
     );
 
-    this.service.saveDive(
+    this.diveService.saveDive(
       d.toJSON(),
       d.id
     ).then(

@@ -76,3 +76,19 @@ export class AuthService {
   }
 
 }
+
+export class AuthenticatedService {
+  protected headers: Headers;
+  protected get httpOptions() {
+      return {
+          headers: this.headers,
+      };
+  }
+
+  constructor(
+    protected auth: AuthService,
+  ) {
+    this.headers = new Headers();
+    this.headers.append('Authorization', 'Bearer ' + this.auth.token);
+  }
+}

@@ -1,4 +1,4 @@
-import { AuthService } from './auth.service';
+import { AuthService, AuthenticatedService } from './auth.service';
 import {Headers, Http,  Response} from '@angular/http';
 import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, ISample } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
@@ -22,16 +22,6 @@ export interface IComputer {
   dive_count: number;
 }
 
-export interface IBuddyStat {
-    buddy_id: number;
-    text: string;
-    color: string;
-    dive_count: Date;
-    last_dive: Date;
-    email: string;
-    buddy_user_id: number;
-}
-
 export interface ITagStat {
     tag_id: number;
     text: string;
@@ -50,22 +40,15 @@ export interface IPlaceStat {
 }
 
 @Injectable()
-export class DiveStore  {
+export class DiveStore extends AuthenticatedService {
 
     private __countries: ICountry[];
-    private headers: Headers;
-    private get httpOptions() {
-        return {
-            headers: this.headers,
-        };
-    }
 
     constructor(
-        private http: Http,
-        private auth: AuthService,
+        protected http: Http,
+        protected auth: AuthService,
     ) {
-        this.headers = new Headers();
-        this.headers.append('Authorization', 'Bearer ' + this.auth.token);
+        super(auth);
         this.getCountries();
     }
 
@@ -141,14 +124,6 @@ export class DiveStore  {
         return req.json();
     }
 
-    async getBuddies(): Promise<IBuddy[]> {
-        const req = await this.http.get(
-            `${serviceUrl}/buddy/`,
-            this.httpOptions,
-        ).toPromise();
-        return req.json() as IBuddy[];
-    }
-
     async getTags(): Promise<IDiveTag[]> {
         const req = await this.http.get(
             `${serviceUrl}/tag/`,
@@ -190,13 +165,6 @@ export class DiveStore  {
         return resp.json() as IComputer[];
     }
 
-    async getBuddyStats(): Promise<IBuddyStat[]> {
-        const resp = await this.http.get(
-            `${serviceUrl}/stats/buddies/`,
-            this.httpOptions,
-        ).toPromise();
-        return resp.json() as IBuddyStat[];
-    }
 
     async getTagStats(): Promise<ITagStat[]> {
         const resp = await this.http.get(

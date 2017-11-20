@@ -1,12 +1,21 @@
+
 <form
   [formGroup]="form"
   *ngIf="buddy !== undefined"
+  (ngSubmit)="onSubmit($event)"
+  (keydown.enter)="onEnter($event)"
 >
-  <div class="form-group">
+  <div class="detail-menu">
+    <button class="btn btn-primary" [routerLink]="['/buddy']"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i> Back</button>
+    <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i> Reset</button>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save buddy"><i class="fa fa-floppy-o"></i> Save</button>
+  </div>
+
+  <div [ngClass]="{ 'form-group row':true, 'has-error': !form.controls.text.valid }">
     <label>Name</label>
     <input class="form-control" formControlName="text" placeholder="Myke" aria-describedby="name" required />
   </div>
-  <div class="form-group">
+  <div [ngClass]="{ 'form-group row':true, 'has-error': !form.controls.color.valid }">
     <label>Color</label>
     <div class="input-group">
       <span class="input-group-addon input-group-addon-color">
@@ -15,7 +24,7 @@
       <input class="form-control" formControlName="color" placeholder="#cccccc" aria-describedby="color" required />
     </div>
   </div>
-  <div class="form-group">
+  <div [ngClass]="{ 'form-group row':true, 'has-error': !form.controls.email.valid }">
       <label>Email</label>
       <input class="form-control" formControlName="email" placeholder="myke@doamin.tld" aria-describedby="email" />
     </div>
@@ -27,4 +36,5 @@
     <label>Last dive</label>
     <input class="form-control-plaintext" [value]="buddy.last_dive | date:'y-MM-dd HH:mm:ss'"  aria-describedby="LastDive" readonly />
   </div>
+  <pre><code>{{diagnostic | json}}</code></pre>
 </form>

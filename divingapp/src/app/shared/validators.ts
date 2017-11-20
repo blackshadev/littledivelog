@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { FormControl } from '@angular/forms';
+import { FormControl, Validators } from '@angular/forms';
 
 export module CustomValidators {
     export const DateTimeFormats = <string[]>Object.freeze(['DD-MM-YYYY HH:mm:ss', 'DD-MM-YYYY', 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD']);
@@ -21,5 +21,14 @@ export module CustomValidators {
 
     export function color(v: FormControl) {
         return /#([a-f0-9]{3}|[a-f0-9]{6})/i
+    }
+
+    export function optionalEmail(v: FormControl) {
+        if (!v.value) {
+            return null;
+        }
+
+        return Validators.email(v);
+
     }
 }

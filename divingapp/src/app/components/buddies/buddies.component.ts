@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
-import { DiveStore, IBuddyStat } from 'app/services/dive.service';
 import {Location} from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
+import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -19,11 +19,11 @@ export class BuddiesComponent implements OnInit, OnDestroy {
   private sub: Subscription
 
   constructor(
-    private diveService: DiveStore,
+    private buddyService: BuddyService,
     private location: Location,
     private route: ActivatedRoute,
   ) {
-    diveService.getBuddyStats().then((c) => {
+    buddyService.getBuddyStats().then((c) => {
       this.buddies = c;
       if (this._id !== undefined) {
         this.selectById(this._id);

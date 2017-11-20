@@ -19,6 +19,7 @@ export interface IDiveTag {
 export interface IBuddy {
     color: string;
     text: string;
+    email?: string;
     buddy_id?: number;
 }
 

@@ -27,25 +27,6 @@
 }
 
 .dive-details {
-    .detail-menu {
-        float: right;
-        height: 36px;
-        margin-bottom: 0.4em;
-        border-bottom: 1px solid $color-accent;
-        background: $color-accent;
-
-        .btn {
-            height: 100%;
-            background-color: $color-accent;
-            border-radius: 0;
-            border-right: 1px solid lighten($color-accent, 5%);
-            border-color: transparent;
-
-            &:hover {
-                background: lighten($color-accent, 10%);
-            }
-        }
-    }
 
     .form-content {
         padding: 7px;

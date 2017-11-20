@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges } from '@angular/core';
-import { IBuddyStat, DiveStore } from 'app/services/dive.service';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
+import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 
 @Component({
   selector: 'app-buddy-detail',
@@ -16,14 +16,15 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
   public form: FormGroup
 
   constructor(
-    private service: DiveStore,
-    private _fb: FormBuilder
+    private service: BuddyService,
+    private _fb: FormBuilder,
+    private hostElement: ElementRef,
   ) {
 
     this.form = this._fb.group({
       text: ['', [Validators.required]],
       color: ['', [Validators.required, CustomValidators.color]],
-      email: ['', [Validators.email]]
+      email: ['', [CustomValidators.optionalEmail]]
     });
 
   }
@@ -46,5 +47,76 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
     }
   }
 
+  public onSubmit(e: Event) {
+    e.preventDefault();
+    const dat = this.form.value;
+    console.log(dat);
+  }
+
+  public onEnter(e: Event) {
+    // prevent submit
+    e.preventDefault();
+
+    // tab on enter
+    const hostEl = this.hostElement.nativeElement as HTMLElement;
+    if (e.target instanceof HTMLInputElement) {
+      e.target.blur();
+      const all = hostEl.querySelectorAll('input');
+      let iX: number;
+      for (iX = 0; iX < all.length; iX++) {
+        if (all.item(iX) === e.target) {
+          break;
+        }
+      }
+      if (iX + 1 < all.length) {
+        all.item(iX + 1).select();
+      }
+    }
+
+  }
+
+  get diagnostic() {
+    function getDirtyValues(cg: FormGroup) {
+      const dirtyValues = {};  // initialize empty object
+      Object.keys(cg.controls).forEach((c) => {
+
+        const currentControl = cg.controls[c];
+
+        if (currentControl.dirty) {
+          if ((<FormGroup> currentControl).controls) { // check for nested controlGroups
+            dirtyValues[c] = getDirtyValues(<FormGroup> currentControl);  // recursion for nested controlGroups
+          } else {
+            dirtyValues[c] = true;  // simple control
+          }
+        }
+
+      });
+      return dirtyValues;
+    }
+    function getInvalidValues(cg: FormGroup) {
+      const invalidValues = {};  // initialize empty object
+      Object.keys(cg.controls).forEach((c) => {
+
+        const currentControl = cg.controls[c];
+
+        if (!currentControl.valid) {
+          if ((<FormGroup> currentControl).controls) { // check for nested controlGroups
+            invalidValues[c] = getInvalidValues(<FormGroup> currentControl);  // recursion for nested controlGroups
+          } else {
+            invalidValues[c] = true;  // simple control
+          }
+        }
+
+      });
+      return invalidValues;
+    }
+
+    return {
+      value: this.form.value,
+      formDirty: this.form.dirty,
+      dirty: getDirtyValues(this.form),
+      invalid: getInvalidValues(this.form),
+    };
+  }
 
 }

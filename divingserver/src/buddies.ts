@@ -55,7 +55,6 @@ router.put("/:id", async (req, res) => {
                returning *
         `,
         [
-            req.user.user_id,
             body.text,
             body.color,
             body.email,

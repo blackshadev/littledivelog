@@ -45,14 +45,13 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
 
     const body = req.body;
-    console.log(body, req.params);
     const buds: QueryResult = await database.call(
         `
             update buddies
                set text  = coalesce($1, text)
                  , color = coalesce($2, color)
                  , email = coalesce($3, email)
-             where user_id = $4
+             where buddy_id = $4
                returning *
         `,
         [
@@ -62,8 +61,6 @@ router.put("/:id", async (req, res) => {
             req.params.id,
         ],
     );
-
-    console.log(buds);
 
     res.json(
         buds.rows,

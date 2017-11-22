@@ -47,10 +47,16 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
     }
   }
 
-  public onSubmit(e: Event) {
+  public async onSubmit(e: Event) {
     e.preventDefault();
     const dat = this.form.value;
-    console.log(dat);
+    await this.service.updateBuddy({
+      buddy_id: this.buddy ? this.buddy.buddy_id : undefined,
+      color: dat.color,
+      email: dat.email,
+      text: dat.text,
+    });
+    this.applyData();
   }
 
   public onEnter(e: Event) {
@@ -73,6 +79,13 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
       }
     }
 
+  }
+
+  protected applyData() {
+    const d = this.form.value;
+    this.buddy.email = d.email;
+    this.buddy.text = d.text;
+    this.buddy.color = d.color;
   }
 
   get diagnostic() {

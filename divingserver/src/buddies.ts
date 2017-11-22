@@ -45,7 +45,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
 
     const body = req.body;
-    console.log(body);
+    console.log(body, req.params);
     const buds: QueryResult = await database.call(
         `
             update buddies

@@ -50,13 +50,16 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
   public async onSubmit(e: Event) {
     e.preventDefault();
     const dat = this.form.value;
+
     await this.service.updateBuddy({
       buddy_id: this.buddy ? this.buddy.buddy_id : undefined,
       color: dat.color,
       email: dat.email,
       text: dat.text,
     });
+
     this.applyData();
+    this.reset();
   }
 
   public onEnter(e: Event) {

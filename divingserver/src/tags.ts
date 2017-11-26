@@ -49,7 +49,7 @@ router.put("/:id", async (req, res) => {
             update tags
                 set text  = coalesce($1, text)
                     , color = coalesce($2, color)
-                where tag_id = $4
+                where tag_id = $3
                 returning *
         `,
         [

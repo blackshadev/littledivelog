@@ -1,30 +1,28 @@
 import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
-import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
+import { TagService, ITagStat } from 'app/services/tag.service';
 
 @Component({
-  selector: 'app-buddy-detail',
-  templateUrl: './buddy-detail.component.html',
-  styleUrls: ['./buddy-detail.component.css']
+  selector: 'app-tag-detail',
+  templateUrl: './tag-detail.component.html',
+  styleUrls: ['./tag-detail.component.css']
 })
-export class BuddyDetailComponent implements OnInit, OnChanges {
+export class TagDetailComponent implements OnInit, OnChanges {
 
   @Input()
-  public buddy: IBuddyStat;
+  public tag: ITagStat;
 
   public form: FormGroup
 
   constructor(
-    private service: BuddyService,
+    private service: TagService,
     private _fb: FormBuilder,
     private hostElement: ElementRef,
   ) {
-
     this.form = this._fb.group({
       text: ['', [Validators.required]],
       color: ['', [Validators.required, CustomValidators.color]],
-      email: ['', [CustomValidators.optionalEmail]]
     });
 
   }
@@ -38,11 +36,10 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
 
   public reset() {
     this.form.reset();
-    if (this.buddy) {
+    if (this.tag) {
       this.form.setValue({
-        text: this.buddy.text,
-        color: this.buddy.color,
-        email: this.buddy.email,
+        text: this.tag.text,
+        color: this.tag.color,
       });
     }
   }
@@ -52,9 +49,8 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
     const dat = this.form.value;
 
     await this.service.update({
-      buddy_id: this.buddy ? this.buddy.buddy_id : undefined,
+      tag_id: this.tag ? this.tag.tag_id : undefined,
       color: dat.color,
-      email: dat.email,
       text: dat.text,
     });
 
@@ -91,9 +87,8 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
 
   protected applyData() {
     const d = this.form.value;
-    this.buddy.email = d.email;
-    this.buddy.text = d.text;
-    this.buddy.color = d.color;
+    this.tag.text = d.text;
+    this.tag.color = d.color;
   }
 
   get diagnostic() {

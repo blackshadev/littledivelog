@@ -26,6 +26,11 @@ import { BuddiesComponent } from 'app/components/buddies/buddies.component';
 import { TagComponent } from './components/controls/tags/tag/tag.component';
 import { BuddyDetailComponent } from './components/buddies/buddy-detail/buddy-detail.component';
 import { BuddyService } from 'app/services/buddy.service';
+import { TagService } from 'app/services/tag.service';
+import { ColorPickerModule } from 'ngx-color-picker';
+import { TagListComponent } from './components/tag-list/tag-list.component';
+import { TagDetailComponent } from './components/tag-list/tag-detail/tag-detail.component';
+
 
 @NgModule({
   declarations: [
@@ -47,7 +52,9 @@ import { BuddyService } from 'app/services/buddy.service';
     ComputersComponent,
     BuddiesComponent,
     TagComponent,
-    BuddyDetailComponent
+    BuddyDetailComponent,
+    TagListComponent,
+    TagDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -56,10 +63,12 @@ import { BuddyService } from 'app/services/buddy.service';
     HttpModule,
     AppRoutingModule,
     Ng2AutoCompleteModule,
+    ColorPickerModule,
   ],
   providers: [
     DiveStore,
     BuddyService,
+    TagService,
     AuthGuard,
     AuthService,
   ],

@@ -24,7 +24,7 @@ export class BuddyService extends AuthenticatedService {
     super(auth);
   }
 
-  public async getBuddies(): Promise<IBuddy[]> {
+  public async list(): Promise<IBuddy[]> {
       const req = await this.http.get(
           `${serviceUrl}/buddy/`,
           this.httpOptions,
@@ -32,7 +32,7 @@ export class BuddyService extends AuthenticatedService {
       return req.json() as IBuddy[];
   }
 
-  public async getBuddyStats(): Promise<IBuddyStat[]> {
+  public async summarize(): Promise<IBuddyStat[]> {
     const resp = await this.http.get(
         `${serviceUrl}/stats/buddies/`,
         this.httpOptions,
@@ -40,7 +40,7 @@ export class BuddyService extends AuthenticatedService {
     return resp.json() as IBuddyStat[];
   }
 
-  public async updateBuddy(data: IBuddy): Promise<IBuddy> {
+  public async update(data: IBuddy): Promise<IBuddy> {
     let req: Response;
     if (data.buddy_id === undefined) {
       req = await this.http.post(

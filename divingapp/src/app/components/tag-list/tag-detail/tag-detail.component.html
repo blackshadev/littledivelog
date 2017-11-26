@@ -1,14 +1,14 @@
 
 <form
   [formGroup]="form"
-  *ngIf="buddy !== undefined"
+  *ngIf="tag !== undefined"
   (ngSubmit)="onSubmit($event)"
   (keydown.enter)="onEnter($event)"
 >
   <div class="detail-menu">
-    <button class="btn btn-primary" [routerLink]="['/buddy']"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i> Back</button>
+    <button class="btn btn-primary" [routerLink]="['/tag']"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i> Back</button>
     <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i> Reset</button>
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save buddy"><i class="fa fa-floppy-o"></i> Save</button>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save tag"><i class="fa fa-floppy-o"></i> Save</button>
   </div>
 
   <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.text.valid }">
@@ -33,17 +33,13 @@
       />
     </div>
   </div>
-  <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.email.valid }">
-      <label>Email</label>
-      <input class="form-control" formControlName="email" placeholder="myke@doamin.tld" aria-describedby="email" />
-    </div>
   <div class="form-group">
     <label>Dive count</label>
-    <input class="form-control-plaintext" [value]="buddy.dive_count" aria-describedby="DiveCount" readonly />
+    <input class="form-control-plaintext" [value]="tag.dive_count" aria-describedby="DiveCount" readonly />
   </div>
   <div class="form-group">
     <label>Last dive</label>
-    <input class="form-control-plaintext" [value]="buddy.last_dive | date:'y-MM-dd HH:mm:ss'"  aria-describedby="LastDive" readonly />
+    <input class="form-control-plaintext" [value]="tag.last_dive | date:'y-MM-dd HH:mm:ss'"  aria-describedby="LastDive" readonly />
   </div>
   <pre><code>{{diagnostic | json}}</code></pre>
 </form>

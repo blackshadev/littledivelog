@@ -8,6 +8,7 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
+import { ITagStat } from 'app/services/tag.service';
 
 export interface ICountry {
     code: string;
@@ -22,13 +23,6 @@ export interface IComputer {
   dive_count: number;
 }
 
-export interface ITagStat {
-    tag_id: number;
-    text: string;
-    color: string;
-    dive_count: Date;
-    last_dive: Date;
-}
 
 export interface IPlaceStat {
     place_id: number;

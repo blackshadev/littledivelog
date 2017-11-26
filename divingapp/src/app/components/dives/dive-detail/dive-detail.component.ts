@@ -214,7 +214,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getBuddies(keyword: string) {
-    const buds = await this.buddyService.getBuddies();
+    const buds = await this.buddyService.list();
 
     const fuse = new Fuse(
         buds, {

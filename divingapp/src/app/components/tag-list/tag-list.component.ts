@@ -1,39 +1,39 @@
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import {Location} from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
-import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Subscription } from 'rxjs';
+import { TagService, ITagStat } from 'app/services/tag.service';
 
 @Component({
-  selector: 'app-buddies',
-  templateUrl: './buddies.component.html',
-  styleUrls: ['./buddies.component.scss']
+  selector: 'app-tag-list',
+  templateUrl: './tag-list.component.html',
+  styleUrls: ['./tag-list.component.scss']
 })
-export class BuddiesComponent implements OnInit, OnDestroy {
+export class TagListComponent implements OnInit, OnDestroy {
 
   @Input()
-  public selected?: IBuddyStat;
-  public buddies: IBuddyStat[] = [];
+  public selected?: ITagStat;
+  public tags: ITagStat[] = [];
 
   private _id?: number;
   private sub: Subscription
 
   constructor(
-    private buddyService: BuddyService,
+    private tagService: TagService,
     private location: Location,
     private route: ActivatedRoute,
   ) {
-    buddyService.summarize().then((c) => {
-      this.buddies = c;
+    tagService.summarize().then((c) => {
+      this.tags = c;
       if (this._id !== undefined) {
         this.selectById(this._id);
       }
     });
   }
 
-  public rowClick(bud: IBuddyStat) {
+  public rowClick(bud: ITagStat) {
     this.selected = bud;
-    this.location.go(`/buddy/${bud.buddy_id}`)
+    this.location.go(`/tag/${bud.tag_id}`)
   }
 
   ngOnInit() {
@@ -48,8 +48,8 @@ export class BuddiesComponent implements OnInit, OnDestroy {
 
   protected selectById(id: number) {
     this._id = id;
-    if (this.buddies) {
-      this.selected = this.buddies.find((b) => this._id === b.buddy_id);
+    if (this.tags) {
+      this.selected = this.tags.find((b) => this._id === b.tag_id);
     }
   }
 

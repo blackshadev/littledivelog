@@ -8,6 +8,8 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { ComputersComponent } from 'app/components/computers/computers.component';
 import { BuddiesComponent } from 'app/components/buddies/buddies.component';
+import { TagListComponent } from 'app/components/tag-list/tag-list.component';
+
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
@@ -16,6 +18,8 @@ const routes: Routes = [
   { path: 'computer', component: ComputersComponent, canActivate: [AuthGuard] },
   { path: 'buddy', component: BuddiesComponent, canActivate: [AuthGuard] },
   { path: 'buddy/:id', component: BuddiesComponent, canActivate: [AuthGuard] },
+  { path: 'tag', component: TagListComponent, canActivate: [AuthGuard] },
+  { path: 'tag/:id', component: TagListComponent, canActivate: [AuthGuard] },
   { path: 'dive/new', component: DivesComponent, data: { isNew: true }, canActivate: [AuthGuard] },
   { path: 'dive/:id', component: DivesComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },

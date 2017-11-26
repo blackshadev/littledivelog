@@ -18,3 +18,48 @@ router.get("/", async (req, res) => {
         buds.rows,
     );
 });
+
+router.post("/", async (req, res) => {
+
+    const body = req.body;
+    const tags: QueryResult = await database.call(
+        `
+            insert
+                into tags (user_id, text, color)
+                        values ($1, $2, $3)
+                    returning *
+        `,
+        [
+            req.user.user_id,
+            body.text,
+            body.color,
+        ],
+    );
+
+    res.json(
+        tags.rows,
+    );
+});
+
+router.put("/:id", async (req, res) => {
+
+    const body = req.body;
+    const tags: QueryResult = await database.call(
+        `
+            update tags
+                set text  = coalesce($1, text)
+                    , color = coalesce($2, color)
+                where tag_id = $4
+                returning *
+        `,
+        [
+            body.text,
+            body.color,
+            req.params.id,
+        ],
+    );
+
+    res.json(
+        tags.rows,
+    );
+});

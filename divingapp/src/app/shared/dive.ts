@@ -120,7 +120,7 @@ export class Dive {
     divetime: Duration;
     maxDepth: number;
     samples: ISample[];
-    place: IPlace;
+    place?: IPlace;
     tanks: ITank[];
     tags: IDiveTag[];
     buddies: IBuddy[];
@@ -193,11 +193,11 @@ export class Dive {
             divetime: this.divetime.valueOf(),
             max_depth: this.maxDepth,
             samples: this.samples,
-            place: {
+            place: this.place ? {
                 place_id: this.place.place_id,
                 name: this.place.name,
                 country_code: this.place.country_code,
-            },
+            } : undefined,
             tanks: this.tanks,
             tags: this.tags,
             buddies: this.buddies

@@ -73,7 +73,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   get viewValue(): any {
     const val = this._selectedValue ? this._selectedValue.value : this._value;
     if (typeof val === 'object' && this._displayItem) {
-      return val[this._displayItem];
+      return val && val[this._displayItem];
     } else {
       return val;
     }

@@ -107,10 +107,14 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         date: this.dive.date ? moment(this.dive.date).format('DD-MM-YYYY HH:mm:ss') : '',
         divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
         maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
-        place: {
+        place: this.dive.place ? {
           id: null,
           name: this.dive.place.name || '',
           country: this.dive.place.country_code || ''
+        } : {
+          id: null,
+          name: null,
+          country: null,
         },
         tank: {
           volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
@@ -152,9 +156,10 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   diveSpotChanged(place: IPlace) {
-    if (typeof(place) === 'string') {
+    if (place === null || typeof(place) === 'string') {
       return;
     }
+
     const formGroup = (this.form.controls.place as FormGroup);
 
     formGroup.controls.name.setValue(place.name);
@@ -273,11 +278,15 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
     d.divetime = Duration.Parse(dat.divetime);
     d.maxDepth = Number(dat.maxDepth);
-    d.place = {
-      place_id: dat.place.id || undefined,
-      name: dat.place.name || undefined,
-      country_code: dat.place.country || undefined
-    };
+
+    if (dat.place.id || (dat.place.name && dat.place.country)) {
+      d.place = {
+        place_id: dat.place.id || undefined,
+        name: dat.place.name || undefined,
+        country_code: dat.place.country || undefined
+      };
+    }
+
 
     d.tanks = [{
       oxygen: dat.tank.airPercentage,

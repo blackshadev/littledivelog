@@ -93,12 +93,95 @@ function injectTagSql(oPar: {
     });
 }
 
+const fld_map = {
+    dive_id: "dive_id",
+    date: "date::text",
+    divetime: "divetime",
+    place: `(
+        '{ "country_code": "' || p.country_code || '",' ||
+        '  "place_id": ' || p.place_id || ', ' ||
+        '  "name": "' || p.name || '"' ||
+        '}'
+      )::json as place`,
+    buddies: `(
+        select COALESCE(array_to_json(array_agg(row_to_json(b))), '[]')
+            from (
+            select bud.buddy_id, bud.color, bud.text
+                from dive_buddies d_b
+                join buddies bud on d_b.buddy_id = bud.buddy_id
+            where d_b.dive_id = d.dive_id
+            ) b
+        ) as buddies`,
+    tags: `(
+        select COALESCE(array_to_json(array_agg(row_to_json(b))), '[]')
+            from (
+            select tag.tag_id, tag.color, tag.text
+                from dive_tags d_t
+                join tags tag on d_t.tag_id = tag.tag_id
+            where d_t.dive_id = d.dive_id
+            ) b
+        ) as tags`,
+    tanks: `to_json(d.tanks) as tanks`,
+};
+
+function diveQuery(flds: string[]|"*", where: string = "") {
+    if (flds === "*") {
+        flds = Object.keys(fld_map);
+    }
+
+    return `
+        select ${flds.map((f) => fld_map[f]).join(",")}
+          from dives d
+          left join places p on p.place_id = d.place_id
+         where d.user_id = $1
+           and ${where}
+      order by d.date desc
+    `;
+}
+
 router.get("/", async (req, res) => {
+    let filterSql = "1=1";
+
+    const pars = [req.user.user_id];
+
+    if (req.query.buddies) {
+        pars.push(`{${req.query.buddies}}`);
+        filterSql += ` and exists (
+            select
+              from dive_buddies d_b
+             where d_b.dive_id = d.dive_id
+               and d_b.buddy_id = any($${pars.length}::integer[])
+        )`;
+    }
+    if (req.query.tags) {
+        pars.push(`{${req.query.tags}}`);
+        filterSql += ` and exists (
+            select 1
+              from dive_tags d_t
+             where d_t.dive_id = d.dive_id
+               and d_t.tag_id = any($${pars.length}::integer[])
+        )`;
+    }
+    if (req.query.till) {
+        pars.push(req.query.till);
+        filterSql += ` and d.date < $${pars.length}::date`;
+    }
+    if (req.query.from) {
+        pars.push(req.query.from);
+        filterSql += ` and d.date > $${pars.length}::date`;
+    }
+    if (req.query.places) {
+        pars.push(`{${req.query.places}}`);
+        filterSql += ` and d.place_id = any($${pars.length}::integer[])`;
+    }
+    if (req.query.country) {
+        pars.push(req.query.country);
+        filterSql += ` and p.country_code = $${pars.length}`;
+    }
+
     const dives: QueryResult = await database.call(
-        `select dive_id, divetime, date, tags, place
-           from get_dives($1) d
-        `,
-        [req.user.user_id],
+        diveQuery(["dive_id", "divetime", "date", "tags", "place"], filterSql),
+        pars,
     );
 
     res.json(
@@ -109,10 +192,7 @@ router.get("/", async (req, res) => {
 router.get("/:id", async (req, res) => {
 
     const dives: QueryResult = await database.call(
-        `select *
-           from get_dives($1) d
-          where dive_id=$2
-        `,
+        diveQuery("*", "d.dive_id = $2"),
         [req.user.user_id, req.params.id],
     );
 

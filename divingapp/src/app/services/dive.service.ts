@@ -55,6 +55,7 @@ export class DiveStore extends AuthenticatedService {
     async getDives(filter?: { [k in TFilterKeys]?: string }): Promise<Dive[]> {
         let res: Response;
         try {
+            // TODO: Fill in filter in url
             res = await this.http.get(
                 `${serviceUrl}/dive/`,
                 this.httpOptions,

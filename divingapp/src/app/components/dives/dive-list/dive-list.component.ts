@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
-import { DiveStore } from '../../../services/dive.service';
+import { DiveStore, TFilterKeys } from '../../../services/dive.service';
 import { Dive, IDbDive } from '../../../shared/dive';
-import { Component, Input, OnInit, Output, EventEmitter } from '@angular/core';
+import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
 
 
@@ -14,6 +14,7 @@ import { Location } from '@angular/common';
 export class DiveListComponent  {
   title = 'Dive list';
 
+  @ViewChild('search') input: ElementRef;
   @Input() selectedDive: Dive;
   dives: Dive[];
 
@@ -29,6 +30,31 @@ export class DiveListComponent  {
         this.dives = d;
       }
     );
+  }
+
+  search() {
+    const searchValue = this.input.nativeElement.value;
+    const o = this.extractSearches(searchValue);
+
+    this.diveStore.getDives(o).then(
+      (d) => {
+        this.dives = d;
+      }
+    );
+  }
+
+  protected extractSearches(s: string): { [k in TFilterKeys]?: string } {
+    const re = /([^:]+):([^,$]+)/g;
+    let m: RegExpExecArray;
+
+    const o: { [k in TFilterKeys]?: string } = {};
+    while ( (m = re.exec(s)) !== null ) {
+      const tag = m[1];
+      const value = m[2];
+      o[tag] = value;
+    }
+
+    return o;
   }
 
 }

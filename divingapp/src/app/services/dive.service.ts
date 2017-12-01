@@ -10,6 +10,8 @@ import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ITagStat } from 'app/services/tag.service';
 
+export type TFilterKeys = 'buddies'|'tags'|'from'|'till'|'places'|'country';
+
 export interface ICountry {
     code: string;
     description: string;
@@ -50,7 +52,7 @@ export class DiveStore extends AuthenticatedService {
         return Observable.fromPromise(this.getCountries());
     }
 
-    async getDives(): Promise<Dive[]> {
+    async getDives(filter?: { [k in TFilterKeys]?: string }): Promise<Dive[]> {
         let res: Response;
         try {
             res = await this.http.get(

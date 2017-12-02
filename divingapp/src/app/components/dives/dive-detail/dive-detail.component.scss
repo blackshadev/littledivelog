@@ -14,6 +14,16 @@
     }
 }
 
+.tab-pane {
+    position: absolute;
+    top: 80px;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    overflow: auto;
+    padding: 32px 32px 0 32px;
+}
+
 .input-group app-autocomplete {
     flex: auto;
 

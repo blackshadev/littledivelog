@@ -176,7 +176,7 @@ router.get("/", async (req, res) => {
     }
     if (req.query.country) {
         pars.push(req.query.country);
-        filterSql += ` and p.country_code = $${pars.length}`;
+        filterSql += ` and p.country_code = upper($${pars.length})`;
     }
 
     const dives: QueryResult = await database.call(

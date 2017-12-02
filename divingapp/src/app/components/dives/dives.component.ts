@@ -45,7 +45,7 @@ export class DivesComponent implements OnInit, OnDestroy {
   }
 
   diveSaved(d: Dive) {
-    this.diveList.refreshDives();
+    this.diveList.refresh();
     this.router.navigate(['/dive', d.id]);
   }
 

@@ -21,19 +21,11 @@ export class DiveListComponent  {
   constructor(
     public diveStore: DiveStore
   ) {
-    this.refreshDives();
+    this.refresh();
   }
 
-  refreshDives() {
-    this.diveStore.getDives().then(
-      (d) => {
-        this.dives = d;
-      }
-    );
-  }
-
-  search() {
-    const searchValue = this.input.nativeElement.value;
+  refresh() {
+    const searchValue = this.input ? this.input.nativeElement.value : '';
     const o = this.extractSearches(searchValue);
 
     this.diveStore.getDives(o).then(
@@ -44,7 +36,7 @@ export class DiveListComponent  {
   }
 
   protected extractSearches(s: string): { [k in TFilterKeys]?: string } {
-    const re = /([^:]+):([^,$]+)/g;
+    const re = /([^:;]+):([^;$]+)/g;
     let m: RegExpExecArray;
 
     const o: { [k in TFilterKeys]?: string } = {};

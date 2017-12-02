@@ -52,12 +52,15 @@ export class DiveStore extends AuthenticatedService {
         return Observable.fromPromise(this.getCountries());
     }
 
-    async getDives(filter?: { [k in TFilterKeys]?: string }): Promise<Dive[]> {
+    async getDives(filter: { [k in TFilterKeys]?: string } = {}): Promise<Dive[]> {
         let res: Response;
+        const qs = Object.keys(filter).map(
+            (k) => `${encodeURIComponent(k)}=${encodeURIComponent(filter[k])}`,
+        ).join('&');
+
         try {
-            // TODO: Fill in filter in url
             res = await this.http.get(
-                `${serviceUrl}/dive/`,
+                `${serviceUrl}/dive/?${qs}`,
                 this.httpOptions,
             ).toPromise();
         } catch (e) {

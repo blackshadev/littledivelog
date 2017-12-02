@@ -3,9 +3,9 @@
         <span class="input-group-btn">
             <button class="btn btn-primary" [routerLink]="['/dive/new/']"><i class="fa fa-plus"></i></button>
         </span>
-        <input class="form-control" #search type="text" placeholder="Search..."  (keyup.enter)="search()" />
+        <input class="form-control" #search type="text" placeholder="Search..."  (keyup.enter)="refresh()" />
         <span class="input-group-btn">
-            <button class="btn btn-primary" [click]="search()"><i class="fa fa-search"></i></button>
+            <button class="btn btn-primary" (click)="refresh()"><i class="fa fa-search"></i></button>
         </span>
     </div>
 </div>

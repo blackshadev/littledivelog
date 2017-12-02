@@ -100,7 +100,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   }
 
-  protected reset() {
+  public reset() {
     this.form.reset();
     if (this.dive) {
       this.form.setValue({

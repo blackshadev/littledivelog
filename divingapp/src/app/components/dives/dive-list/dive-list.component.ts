@@ -16,10 +16,12 @@ export class DiveListComponent  {
 
   @ViewChild('search') input: ElementRef;
   @Input() selectedDive: Dive;
+  @Output() onDiveSelected: EventEmitter<Dive> = new EventEmitter<Dive>();
   dives: Dive[];
 
   constructor(
-    public diveStore: DiveStore
+    public diveStore: DiveStore,
+    protected location: Location,
   ) {
     this.refresh();
   }
@@ -33,6 +35,12 @@ export class DiveListComponent  {
         this.dives = d;
       }
     );
+  }
+
+  selectDive(d: Dive) {
+    this.selectedDive = d;
+    this.location.go(`/dive/${d.id}/`);
+    this.onDiveSelected.emit(d);
   }
 
   protected extractSearches(s: string): { [k in TFilterKeys]?: string } {

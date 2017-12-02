@@ -4,6 +4,7 @@ import { Dive } from '../../shared/dive';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveStore } from '../../services/dive.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
 
 @Component({
   selector: 'app-dives',
@@ -15,6 +16,8 @@ export class DivesComponent implements OnInit, OnDestroy {
   public dive: Dive;
   private subs: Subscription[] = [];
   @ViewChild('diveList') private diveList: DiveListComponent;
+  @ViewChild('diveDetail') private diveDetail: DiveDetailComponent;
+
 
 
   constructor(
@@ -47,6 +50,16 @@ export class DivesComponent implements OnInit, OnDestroy {
   diveSaved(d: Dive) {
     this.diveList.refresh();
     this.router.navigate(['/dive', d.id]);
+  }
+
+  async selectDive(id?: number) {
+    if (id === undefined) {
+      this.dive = undefined;
+    } else {
+      const dive = await this.service.getDive(id);
+      this.dive = dive;
+    }
+    this.diveDetail.reset();
   }
 
 }

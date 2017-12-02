@@ -20,7 +20,7 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let dive of dives" [routerLink]="['/dive', dive.id]" [ngClass]="{ 'table-active': selectedDive !== undefined && dive.id === selectedDive.id }">
+            <tr *ngFor="let dive of dives" (click)="selectDive(dive)" [ngClass]="{ 'table-active': selectedDive !== undefined && dive.id === selectedDive.id }">
                 <td>{{ dive.date | date: "y-MM-dd HH:mm:ss"}}</td>
                 <td>{{ dive.divetime }}</td>
                 <td><app-tags [tags]="dive.tags"></app-tags></td>

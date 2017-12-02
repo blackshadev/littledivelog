@@ -97,6 +97,7 @@ const fld_map = {
     dive_id: "dive_id",
     date: "date::text",
     divetime: "divetime",
+    max_depth: "max_depth",
     place: `(
         '{ "country_code": "' || p.country_code || '",' ||
         '  "place_id": ' || p.place_id || ', ' ||

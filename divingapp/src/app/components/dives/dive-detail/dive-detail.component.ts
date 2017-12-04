@@ -108,7 +108,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
         maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
         place: this.dive.place ? {
-          id: null,
+          id: this.dive.place.place_id || null,
           name: this.dive.place.name || '',
           country: this.dive.place.country_code || ''
         } : {
@@ -168,6 +168,13 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       formGroup.controls.country.setValue(place.country_code);
     }
     formGroup.markAsDirty();
+  }
+
+  diveCountryChanged(country: string) {
+    const formGroup = (this.form.controls.place as FormGroup);
+
+    formGroup.controls.country.setValue(country);
+    formGroup.controls.country.markAsDirty();
   }
 
   async getCountries(keyword: string) {

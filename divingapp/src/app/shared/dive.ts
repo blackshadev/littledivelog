@@ -166,6 +166,7 @@ export class Dive {
         dive.samples = d.samples;
         d.place = d.place || { name: '', country_code: '' };
         dive.place = {
+            place_id: d.place.place_id,
             name: d.place.name || '',
             country_code: d.place.country_code || ''
         };

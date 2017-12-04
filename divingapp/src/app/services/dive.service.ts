@@ -96,7 +96,6 @@ export class DiveStore extends AuthenticatedService {
     }
 
     async getDiveSpots(c: string): Promise<IPlace[]> {
-        console.log(c);
         const res = await this.http.get(
             `${serviceUrl}/place/${c}`,
             this.httpOptions,

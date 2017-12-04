@@ -167,6 +167,7 @@
                                 inputClass="form-control right-control"
                                 [value]="form.controls.place.controls.country.value"
                                 [source]="getCountries.bind(this)"
+                                (changed)="diveCountryChanged($event)"
                                 displayItem="description"
                                 keyItem="code"
                                 forceSelection="true"

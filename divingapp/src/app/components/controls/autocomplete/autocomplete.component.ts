@@ -117,8 +117,8 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
   public valueSelected(v: IItem, e?) {
     if (!this.ignoreAfterTab) {
       this._items = [v];
-      this._selectedValue = v;
       this.value = v.key;
+      this._selectedValue = v;
     } else {
       this._selectedValue = undefined;
     }

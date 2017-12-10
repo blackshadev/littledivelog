@@ -80,16 +80,47 @@ router.post(
     },
 );
 
-// router.post(
-//     "/register",
-//     async (req, res) => {
-//         const salt = await argon2.generateSalt();
+router.post(
+    "/register",
+    async (req, res) => {
 
-//         const hash = await argon2.hash(
-//             req.body.password,
-//             salt,
-//         );
+        try {
+            if (!(
+                req.body.password &&
+                req.body.name &&
+                req.body.email
+            )) {
+                throw new Error("Password, email and name required");
+            }
 
-//         res.json(hash);
-//     },
-// );
+            const hash = await argon2.hash(
+                req.body.password,
+            );
+
+            const db = await database.call(
+                `
+                    insert into users
+                                (email, password, name)
+                        values  ($1, $2, $3)
+                        returning user_id
+                `,
+                [
+                    req.body.email,
+                    hash,
+                    req.body.name,
+                ],
+            );
+
+            res.json({
+                user_id: db.rows[0].user_id,
+            });
+
+        } catch (err) {
+            res.status(err.message === "Invalid credentials" ? 401 : 500);
+            res.json({
+                error: err.message,
+            });
+        }
+
+    },
+);

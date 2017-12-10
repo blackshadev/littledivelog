@@ -8,3 +8,4 @@ create table if not exists users (
   , inserted        timestamp   default (current_timestamp at time zone 'UTC')  not null
   , primary key(user_id)
 );
+create unique index ux_user_email on users(email)

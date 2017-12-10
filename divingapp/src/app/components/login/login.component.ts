@@ -11,6 +11,7 @@ export class LoginComponent implements OnInit {
   public email: string;
   public password: string;
   public error: string;
+  public message: string;
   private returnUrl: string;
 
   constructor(
@@ -22,6 +23,11 @@ export class LoginComponent implements OnInit {
   ngOnInit() {
     this.route.queryParams.subscribe((v) => {
       this.returnUrl = v['returnUrl'];
+      switch (v['msg']) {
+        case 'registered': this.message = 'Registration complete, please login to continue.';
+        break;
+
+      }
     });
   }
 

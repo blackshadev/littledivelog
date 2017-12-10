@@ -75,6 +75,39 @@ export class AuthService {
 
   }
 
+  async register(oPar: {
+    email: string,
+    password: string,
+    name?: string
+  }) {
+
+    try {
+      const a = await this.http.post(
+        `${serviceUrl}/auth/register/`,
+        oPar,
+      ).toPromise();
+
+      const o = a.json();
+      if (o.error) {
+        throw new Error(o.error);
+      }
+
+    } catch (e) {
+
+      if (e instanceof Response) {
+        let o: any;
+        try {
+          o = e.json();
+        } catch (_e) { /* NOOP, will be thrown by next statement */ }
+        if (o && o.error) {
+          throw new Error(o.error);
+        }
+      }
+      throw new Error('Unable to parse server response');
+
+    }
+  }
+
 }
 
 export class AuthenticatedService {

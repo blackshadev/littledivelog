@@ -30,6 +30,8 @@ import { TagService } from 'app/services/tag.service';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { TagListComponent } from './components/tag-list/tag-list.component';
 import { TagDetailComponent } from './components/tag-list/tag-detail/tag-detail.component';
+import { RegisterComponent } from './components/register/register.component';
+import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.directive';
 
 
 @NgModule({
@@ -55,6 +57,8 @@ import { TagDetailComponent } from './components/tag-list/tag-detail/tag-detail.
     BuddyDetailComponent,
     TagListComponent,
     TagDetailComponent,
+    RegisterComponent,
+    HelpOnFocusDirective,
   ],
   imports: [
     BrowserModule,

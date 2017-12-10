@@ -9,6 +9,7 @@ import { RouterModule, Routes, PreloadAllModules } from '@angular/router';
 import { ComputersComponent } from 'app/components/computers/computers.component';
 import { BuddiesComponent } from 'app/components/buddies/buddies.component';
 import { TagListComponent } from 'app/components/tag-list/tag-list.component';
+import { RegisterComponent } from 'app/components/register/register.component';
 
 
 const routes: Routes = [
@@ -23,6 +24,7 @@ const routes: Routes = [
   { path: 'dive/new', component: DivesComponent, data: { isNew: true }, canActivate: [AuthGuard] },
   { path: 'dive/:id', component: DivesComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
+  { path: 'register', component: RegisterComponent },
 ];
 @NgModule({
   imports: [ RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules  }) ],

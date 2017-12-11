@@ -5,11 +5,15 @@ import * as path from 'path';
 import * as http from 'http';
 
 const app = express();
-const ngPath = process.env['NG_PATH'] || path.join(__dirname, '../../', 'dist');
+const ngPath = path.join(__dirname, '../../', 'dist');
+
+console.log('Using ng-path', ngPath);
 
 app.use(express.static(ngPath));
 app.get('*', (req, res) => {
     res.sendFile(path.join(ngPath, '/index.html'));
 });
 
-app.listen(process.env['PORT'] || 8080);
+const port = process.env['PORT'] || 8080;
+app.listen(port);
+console.log('Listening to ' + port);

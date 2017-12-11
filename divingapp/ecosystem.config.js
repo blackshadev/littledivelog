@@ -8,7 +8,11 @@ module.exports = {
     // First application
     {
       name      : 'divingapp',
-      script    : 'build/app.js'
+      script    : 'app-server/build/app.js',
+      env: {
+        "PORT": 8080,
+        "NG_PATH": "/home/dive.littledev.nl/divingapp/dist/"
+    }
     }
   ],
 

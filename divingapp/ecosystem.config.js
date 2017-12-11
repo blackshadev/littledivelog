@@ -8,7 +8,7 @@ module.exports = {
     // First application
     {
       name      : 'divingapp',
-      script    : './node_modules/.bin/ng serve -prod --port 8080 --host 0.0.0.0'
+      script    : 'build/app.js'
     }
   ],
 
@@ -24,7 +24,7 @@ module.exports = {
       ref  : 'origin/master',
       repo : 'git@git.littledev.nl:blackshade/divecomputer.git',
       path : '/home/dive.littledev.nl/',
-      'post-deploy' : 'cd divingapp && npm install && pm2 reload ecosystem.config.js --env production'
+      'post-deploy' : 'cd divingapp && npm install && ./node_modules/.bin/ng build --aot --prod && cd app-server && npm install && ./node_modules/.bin/tsc && cd .. && pm2 reload ecosystem.config.js'
     }
   }
 };

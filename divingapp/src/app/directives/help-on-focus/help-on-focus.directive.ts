@@ -14,9 +14,7 @@ export class HelpOnFocusDirective {
 
   constructor(
     private element: ElementRef,
-  ) {
-    console.log('HERE!');
-  }
+  ) {  }
 
   @HostListener('focus', ['$event'])
   private onFocus(e) {

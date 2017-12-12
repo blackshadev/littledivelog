@@ -3,37 +3,31 @@
     <h1>Login</h1>
     <hr />
     <form (ngSubmit)="onSubmit()">
-      <div class="form-group">
-        <label for="email">Email address</label>
-        <input
-          [(ngModel)]="email"
-          name="email"
-          type="email"
-          class="form-control"
-          id="email"
-          placeholder="info@email.com"
-        >
-      </div>
+      <div class="alert alert-success" role="info" *ngIf="message">{{message}}</div>
 
-      <div class="form-group">
-        <label for="password">Password</label>
+      <div class="form-group collapsed-input-group">
+        <input
+        [(ngModel)]="email"
+        name="email"
+        type="email"
+        class="form-control"
+        placeholder="tom@domain.tld"
+        >
+
         <input
           [(ngModel)]="password"
           name="password"
           type="password"
           class="form-control"
-          id="password"
-          placeholder="password"
+          placeholder="Password"
         >
       </div>
       <div class="alert alert-danger" role="alert" *ngIf="error">{{error}}</div>
-      <div class="alert alert-success" role="info" *ngIf="message">{{message}}</div>
-      <div class="btn-group">
-        <button type="submit" class="btn btn-primary">Login</button>
-        <button class="btn btn-primary" routerLink="/register">Register</button>
-      </div>
+      <button type="submit" class="btn  btn-block btn-primary">Login</button>
+      <p class="p-2">
+        <a routerLink="/register" class="text-secondary">Register</a>
+      </p>
 
     </form>
-
   </div>
 </div>

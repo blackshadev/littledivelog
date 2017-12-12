@@ -81,7 +81,7 @@ router.post(
 );
 
 router.post(
-    "/register",
+    "/register/",
     async (req, res) => {
 
         try {

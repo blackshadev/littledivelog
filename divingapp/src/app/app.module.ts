@@ -32,6 +32,7 @@ import { TagListComponent } from './components/tag-list/tag-list.component';
 import { TagDetailComponent } from './components/tag-list/tag-detail/tag-detail.component';
 import { RegisterComponent } from './components/register/register.component';
 import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.directive';
+import { GuestGuard } from 'app/guards/guest.guard';
 
 
 @NgModule({
@@ -74,6 +75,7 @@ import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.d
     BuddyService,
     TagService,
     AuthGuard,
+    GuestGuard,
     AuthService,
   ],
   bootstrap: [

@@ -1,6 +1,7 @@
 <div class="container" style="margin-top: 23px;">
   <div class="jumbotron">
-
+    <h1>Login</h1>
+    <hr />
     <form (ngSubmit)="onSubmit()">
       <div class="form-group">
         <label for="email">Email address</label>
@@ -27,7 +28,10 @@
       </div>
       <div class="alert alert-danger" role="alert" *ngIf="error">{{error}}</div>
       <div class="alert alert-success" role="info" *ngIf="message">{{message}}</div>
-      <button type="submit" class="btn btn-primary">Login</button>
+      <div class="btn-group">
+        <button type="submit" class="btn btn-primary">Login</button>
+        <button class="btn btn-primary" routerLink="/register">Register</button>
+      </div>
 
     </form>
 

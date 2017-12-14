@@ -32,6 +32,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     private buddyService: BuddyService,
     private _fb: FormBuilder,
     private hostElement: ElementRef,
+    private route: Router,
   ) {
      this.form = this._fb.group({
         date: ['', [Validators.required, CustomValidators.datetime]],
@@ -339,6 +340,10 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
     this.dive = d;
     this.reset();
+  }
+
+  public back() {
+    this.route.navigate(['dive']);
   }
 
 }

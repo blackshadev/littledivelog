@@ -1,3 +1,4 @@
+
 <form
     (keydown.enter)="onEnter($event)"
     [formGroup]="form"
@@ -6,9 +7,9 @@
     (ngSubmit)="onSubmit($event)"
 >
     <div class="detail-menu">
-        <button class="btn btn-primary" [routerLink]="['/dive']"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i> Back</button>
-        <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i> Reset</button>
-        <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i> Save</button>
+        <button class="btn btn-lg btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i></button>
+        <button class="btn btn-lg btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i></button>
+        <button class="btn btn-lg btn-primary" (click)="back()"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i></button>
     </div>
 
     <div class="clear-fix visible-xs-block"></div>

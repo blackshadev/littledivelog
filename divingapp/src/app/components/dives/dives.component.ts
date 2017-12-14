@@ -5,26 +5,35 @@ import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveStore } from '../../services/dive.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
+import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
+import { Location } from '@angular/common';
 
 @Component({
   selector: 'app-dives',
   templateUrl: './dives.component.html',
   styleUrls: ['./dives.component.scss']
 })
-export class DivesComponent implements OnInit, OnDestroy {
+export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public dive: Dive;
   private subs: Subscription[] = [];
   @ViewChild('diveList') private diveList: DiveListComponent;
   @ViewChild('diveDetail') private diveDetail: DiveDetailComponent;
 
-
-
   constructor(
     private service: DiveStore,
     private route: ActivatedRoute,
-    private router: Router
+    private router: Router,
+    private location: Location,
   ) {}
+
+  ngAfterViewInit() {
+    // replace default back behaviour to prevent a reload
+    this.diveDetail.back = () => {
+      this.dive = undefined;
+      this.location.go('/');
+    };
+  }
 
   ngOnInit(): void {
     if (this.route.snapshot.data && this.route.snapshot.data.isNew) {
@@ -49,7 +58,8 @@ export class DivesComponent implements OnInit, OnDestroy {
 
   diveSaved(d: Dive) {
     this.diveList.refresh();
-    this.router.navigate(['/dive', d.id]);
+    this.dive = d;
+    this.diveDetail.reset();
   }
 
   async selectDive(id?: number) {

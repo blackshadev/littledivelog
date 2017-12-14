@@ -39,7 +39,7 @@ export class DiveListComponent  {
 
   selectDive(d: Dive) {
     this.selectedDive = d;
-    this.location.go(`/dive/${d.id}/`);
+    this.location.go(`/dive/${d.id}`);
     this.onDiveSelected.emit(d);
   }
 

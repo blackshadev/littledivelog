@@ -28,7 +28,9 @@ const routes: Routes = [
   { path: 'register', component: RegisterComponent, canActivate: [GuestGuard] },
 ];
 @NgModule({
-  imports: [ RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules  }) ],
+  imports: [
+    RouterModule.forRoot(routes, {  })
+  ],
   exports: [ RouterModule ],
 })
 export class AppRoutingModule {}

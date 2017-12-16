@@ -213,7 +213,10 @@ router.delete("/:id", async (req, res) => {
            and dive_id in (
                 select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
            )
-    `);
+    `, [
+        req.user.user_id,
+        req.params.id,
+    ]);
     batch.add(`
         delete
           from dive_buddies
@@ -221,10 +224,16 @@ router.delete("/:id", async (req, res) => {
            and dive_id in (
                 select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
            )
-    `);
+    `, [
+        req.user.user_id,
+        req.params.id,
+    ]);
     batch.add(`
         delete from dives where user_id = $1 and dive_id = $2
-    `);
+    `, [
+        req.user.user_id,
+        req.params.id,
+    ]);
     const c = await batch.execute();
 
     res.json(c > 0);

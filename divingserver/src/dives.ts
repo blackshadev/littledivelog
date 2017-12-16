@@ -204,7 +204,11 @@ router.get("/:id", async (req, res) => {
 
 router.delete("/:id", async (req, res) => {
     const dt: QueryResult = await database.call(
-        `delete from dives where user_id = $1 and dive_id = $2`,
+        `
+        delete from dive_tags t join dives d on t.dive_id = d.dive_id where d.user_id = $1 and t.dive_id = $2;
+        delete from dive_buddies b join dives d on b.dive_id = d.dive_id where d.user_id = $1 and b.dive_id = $2;
+        delete from dives where user_id = $1 and dive_id = $2;
+        `,
         [
             req.user.user_id, req.params.id,
         ],

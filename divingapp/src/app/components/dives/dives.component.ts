@@ -56,7 +56,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     this.subs.forEach((s) => s.unsubscribe());
   }
 
-  diveSaved(d: Dive) {
+  diveChanged(d: Dive) {
     this.diveList.refresh();
     this.dive = d;
     this.diveDetail.reset();

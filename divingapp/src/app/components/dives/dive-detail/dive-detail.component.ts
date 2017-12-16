@@ -20,7 +20,7 @@ declare function $(...args: any[]): any;
 })
 export class DiveDetailComponent implements OnInit, OnChanges {
   @Input() dive: Dive;
-  @Output() onDiveSaved = new EventEmitter<Dive>();
+  @Output() onDiveChanged = new EventEmitter<Dive>();
 
   public form: FormGroup;
   public CurrentDate: string = moment().format('DD-MM-YYYY HH:mm:ss');
@@ -331,7 +331,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     ).then(
       (v) => {
         d.id = v.dive_id;
-        this.onDiveSaved.emit(d);
+        this.onDiveChanged.emit(d);
       }
     ).catch(
       (e) => console.log('error', e)
@@ -345,11 +345,13 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     this.route.navigate(['dive']);
   }
 
-  public delete() {
+  public async delete() {
     if (this.dive.isNew) {
       this.back();
     } else {
-      this.diveService.deleteDive(this.dive.id);
+      await this.diveService.deleteDive(this.dive.id);
+      this.onDiveChanged.emit(undefined);
+      this.back();
     }
   }
 

@@ -4,7 +4,7 @@
       <app-dive-list #diveList (onDiveSelected)="selectDive($event.id)" [selectedDive]="dive"></app-dive-list>
     </div>
     <div class="dive-detail col-lg-6 col-md-12" [appHideWhenMobile]="dive === undefined">
-      <app-dive-detail #diveDetail [dive]="dive" (onDiveSaved)="diveSaved($event)"></app-dive-detail>
+      <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)"></app-dive-detail>
     </div>
   </div>
 </div>

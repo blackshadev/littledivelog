@@ -23,7 +23,6 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
   constructor(
     private service: DiveService,
     private route: ActivatedRoute,
-    private router: Router,
     private location: Location,
   ) {}
 

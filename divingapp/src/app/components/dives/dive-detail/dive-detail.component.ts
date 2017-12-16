@@ -295,7 +295,6 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       };
     }
 
-
     d.tanks = [{
       oxygen: dat.tank.airPercentage,
       volume: dat.tank.volume,

@@ -1,15 +1,18 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
 import {Location} from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { TagService, ITagStat } from 'app/services/tag.service';
+import { TagDetailComponent } from 'app/components/tag-list/tag-detail/tag-detail.component';
 
 @Component({
   selector: 'app-tag-list',
   templateUrl: './tag-list.component.html',
   styleUrls: ['./tag-list.component.scss']
 })
-export class TagListComponent implements OnInit, OnDestroy {
+export class TagListComponent implements OnInit, OnDestroy, AfterViewInit {
+
+  @ViewChild('detail') public detail: TagDetailComponent;
 
   @Input()
   public selected?: ITagStat;
@@ -40,6 +43,13 @@ export class TagListComponent implements OnInit, OnDestroy {
     this.sub = this.route.params.subscribe(params => {
       this.selectById(+params['id']);
     });
+  }
+
+  ngAfterViewInit() {
+    this.detail.back = () => {
+      this.selected = undefined;
+      this.location.go('/tag');
+    }
   }
 
   ngOnDestroy() {

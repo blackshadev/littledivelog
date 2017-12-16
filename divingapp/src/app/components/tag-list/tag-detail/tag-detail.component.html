@@ -6,9 +6,9 @@
   (keydown.enter)="onEnter($event)"
 >
   <div class="detail-menu">
-    <button class="btn btn-primary" [routerLink]="['/tag']"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i> Back</button>
-    <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i> Reset</button>
-    <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save tag"><i class="fa fa-floppy-o"></i> Save</button>
+    <button class="btn btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save tag"><i class="fa fa-floppy-o"></i></button>
+    <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i></button>
+    <button class="btn btn-primary" (click)="back()" [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i></button>
   </div>
 
   <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.text.valid }">

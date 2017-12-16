@@ -18,7 +18,7 @@ export class HideWhenMobileDirective {
     this._size = s;
     this.apply();
   }
-  private _size: TSize = 'lg';
+  private _size: TSize = 'md';
 
   get isActive(): boolean {
     return this._condition && this.checkSize();
@@ -36,7 +36,7 @@ export class HideWhenMobileDirective {
     switch (this._size) {
       case 'xs': return w < 576;
       case 'sm': return w < 768;
-      case 'md': return w < 922;
+      case 'md': return w < 992;
       case 'lg': return w < 1200;
       case 'xl': return true;
     }

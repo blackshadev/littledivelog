@@ -189,6 +189,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
   public writeValue(obj: any): void {
     this._value = obj;
+    this._selectedValue = undefined;
   }
   public registerOnChange(fn: any): void {
     this.onChange = fn;

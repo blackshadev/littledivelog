@@ -2,6 +2,7 @@ import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef } from '
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { TagService, ITagStat } from 'app/services/tag.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-tag-detail',
@@ -19,6 +20,7 @@ export class TagDetailComponent implements OnInit, OnChanges {
     private service: TagService,
     private _fb: FormBuilder,
     private hostElement: ElementRef,
+    private router: Router,
   ) {
     this.form = this._fb.group({
       text: ['', [Validators.required]],
@@ -133,6 +135,10 @@ export class TagDetailComponent implements OnInit, OnChanges {
       dirty: getDirtyValues(this.form),
       invalid: getInvalidValues(this.form),
     };
+  }
+
+  back() {
+    this.router.navigate(['/tag']);
   }
 
 }

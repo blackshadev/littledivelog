@@ -166,7 +166,7 @@
                             <app-autocomplete
                                 placeholder="Country"
                                 inputClass="form-control right-control"
-                                [value]="form.controls.place.controls.country.value"
+                                formControlName="country"
                                 [source]="getCountries.bind(this)"
                                 (changed)="diveCountryChanged($event)"
                                 displayItem="description"

@@ -1,6 +1,7 @@
 import * as express from "express";
 import { QueryResult } from "pg";
 import { database } from "./pg";
+import { SqlBatch } from "./sql";
 
 export const router  = express.Router();
 
@@ -17,6 +18,35 @@ router.get("/", async (req, res) => {
     res.json(
         buds.rows,
     );
+});
+
+router.delete("/:id", async (req, res) => {
+    const batch = new SqlBatch();
+    batch.add(`
+        delete
+          from dive_tags
+         where tag_id = $2
+           and dive_id in (
+               select dive_id
+                 from dives d
+                where user_id = $1
+           )
+    `, [
+        req.user.user_id,
+        req.params.id,
+    ]);
+
+    batch.add(`
+        delete tags
+         where tag_id = $2
+           and user_id = $1
+    `, [
+        req.user.user_id,
+        req.params.id,
+    ]);
+
+    const c = await batch.execute();
+    res.json(c > 0);
 });
 
 router.post("/", async (req, res) => {

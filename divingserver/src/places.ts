@@ -1,6 +1,7 @@
 import * as express from "express";
 import { QueryResult } from "pg";
 import { database } from "./pg";
+import { SqlBatch } from "./sql";
 
 export const router  = express.Router();
 
@@ -45,4 +46,36 @@ router.get("/", async (req, res) => {
     res.json(
         places.rows,
     );
+});
+
+router.delete("/:id", async (req, res) => {
+    const batch = new SqlBatch();
+    batch.add(
+        `update dives
+            set place_id = null
+            where place_id = $2
+              and user_id = $1
+        `, [
+            req.user.user_id,
+            req.params.id,
+        ],
+    );
+
+    batch.add(
+        `
+        delete
+          from places
+         where place_id = $1
+           and (
+                select count(*)
+                  from dive_places dp
+                 where dp.place_id = $1
+            ) = 0
+        `, [
+            req.params.id,
+        ],
+    );
+
+    const c = await batch.execute();
+    res.json(c > 0);
 });

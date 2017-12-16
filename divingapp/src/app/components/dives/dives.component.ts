@@ -31,7 +31,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     // replace default back behaviour to prevent a reload
     this.diveDetail.back = () => {
       this.dive = undefined;
-      this.location.go('/');
+      this.location.go('/dive');
     };
   }
 
@@ -59,7 +59,6 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
   diveChanged(d: Dive) {
     this.diveList.refresh();
     this.dive = d;
-    this.diveDetail.reset();
   }
 
   async selectDive(id?: number) {

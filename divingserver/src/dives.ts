@@ -203,32 +203,31 @@ router.get("/:id", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-    const dt: QueryResult = await database.call(
-        `
-        begin;
-            delete
-              from dive_tags
-             where dive_id = $2
-               and dive_id in (
-                    select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
-               )
-            ;
-            delete
-              from dive_buddies
-             where dive_id = $2
-               and dive_id in (
-                    select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
-               )
-            ;
-            delete from dives where user_id = $1 and dive_id = $2;
-        commit;
-        `,
-        [
-            req.user.user_id, req.params.id,
-        ],
-    );
 
-    res.json(dt.rowCount > 0);
+    const batch = new SqlBatch();
+
+    batch.add(`
+        delete
+          from dive_tags
+         where dive_id = $2
+           and dive_id in (
+                select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
+           )
+    `);
+    batch.add(`
+        delete
+          from dive_buddies
+         where dive_id = $2
+           and dive_id in (
+                select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
+           )
+    `);
+    batch.add(`
+        delete from dives where user_id = $1 and dive_id = $2
+    `);
+    const c = await batch.execute();
+
+    res.json(c > 0);
 });
 
 router.put("/:id", async (req, res) => {

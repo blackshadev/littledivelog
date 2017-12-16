@@ -45,10 +45,12 @@ export class SqlBatch {
     public async execute() {
         const client = await database.getConnection();
         let error: Error;
+        let totalRecordsAffected: number = 0;
         await client.query("begin");
         try {
             for (const stmt of this.statements) {
-                await stmt.executeClient(client);
+                const res = await stmt.executeClient(client);
+                totalRecordsAffected += res.rowCount;
             }
             await client.query("commit");
         } catch (err) {
@@ -60,5 +62,7 @@ export class SqlBatch {
         if (error !== undefined) {
             throw error;
         }
+
+        return totalRecordsAffected;
     }
 }

@@ -3,7 +3,7 @@ import { DiveProfileComponent } from '../../controls/dive-profile/dive-profile.c
 import { Validators, FormBuilder, FormGroup, NgForm, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DiveStore } from '../../../services/dive.service';
+import { DiveService } from '../../../services/dive.service';
 import { Dive, Duration, IPlace } from '../../../shared/dive';
 import { SimpleChanges, OnInit, Component, Input, OnChanges, ViewChild, ElementRef, Output, EventEmitter } from '@angular/core';
 import * as moment from 'moment';
@@ -28,7 +28,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   @ViewChild('diveProfile') public diveProfile: DiveProfileComponent;
 
   constructor(
-    private diveService: DiveStore,
+    private diveService: DiveService,
     private buddyService: BuddyService,
     private _fb: FormBuilder,
     private hostElement: ElementRef,
@@ -343,6 +343,14 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   public back() {
     this.route.navigate(['dive']);
+  }
+
+  public delete() {
+    if (this.dive.isNew) {
+      this.back();
+    } else {
+      this.diveService.deleteDive(this.dive.id);
+    }
   }
 
 }

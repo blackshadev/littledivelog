@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { DiveStore, IComputer } from 'app/services/dive.service';
+import { DiveService, IComputer } from 'app/services/dive.service';
 
 @Component({
   selector: 'app-computers',
@@ -10,7 +10,7 @@ export class ComputersComponent implements OnInit {
 
   computers: IComputer[] = [];
 
-  constructor(private diveService: DiveStore) {
+  constructor(private diveService: DiveService) {
     diveService.getComputers().then((c) => {
       this.computers = c;
     });

@@ -36,7 +36,7 @@ export interface IPlaceStat {
 }
 
 @Injectable()
-export class DiveStore extends AuthenticatedService {
+export class DiveService extends AuthenticatedService {
 
     private __countries: ICountry[];
 
@@ -140,8 +140,16 @@ export class DiveStore extends AuthenticatedService {
 
         const r = res.json();
         return Dive.Parse(r);
-
     }
+
+    async deleteDive(id: number): Promise<boolean> {
+        const resp = await this.http.delete(
+            `${serviceUrl}/dive/${id}`,
+            this.httpOptions,
+        ).toPromise();
+        return resp.json()
+    }
+
 
     async getSamples(dive_id?: number): Promise<ISample[]> {
         if (dive_id === undefined) {

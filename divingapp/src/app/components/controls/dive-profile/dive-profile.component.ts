@@ -1,7 +1,7 @@
 import { divetime } from '../../../shared/formatters';
 import { debounce } from '../../../shared/common';
 import { Dive, ISample, ISampleEvent, SampleEventType, SampleEventFlag } from '../../../shared/dive';
-import { DiveStore } from '../../../services/dive.service';
+import { DiveService } from '../../../services/dive.service';
 import { Component, OnInit, Input, ElementRef, ViewChild, AfterViewInit, HostListener, EventEmitter, Output } from '@angular/core';
 import * as d3 from 'd3';
 
@@ -74,7 +74,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
   protected isReady = false;
 
   constructor(
-    protected service: DiveStore,
+    protected service: DiveService,
     protected parentEl: ElementRef,
   ) {
     this._scale = {

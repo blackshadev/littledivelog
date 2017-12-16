@@ -115,7 +115,7 @@ export class Duration {
 }
 
 export class Dive {
-    id: number;
+    id?: number;
     date: Date;
     divetime: Duration;
     maxDepth: number;
@@ -124,7 +124,7 @@ export class Dive {
     tanks: ITank[];
     tags: IDiveTag[];
     buddies: IBuddy[];
-
+    get isNew(): boolean { return this.id === undefined; }
 
     get placeStr() { return (this.place.name || '') + (this.place.country_code ? (', ' + this.place.country_code) : ''); }
 

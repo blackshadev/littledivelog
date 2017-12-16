@@ -202,6 +202,17 @@ router.get("/:id", async (req, res) => {
     );
 });
 
+router.delete("/:id", async (req, res) => {
+    const dt: QueryResult = await database.call(
+        `delete from dives where user_id = $1 and dive_id = $2`,
+        [
+            req.user.user_id, req.params.id,
+        ],
+    );
+
+    res.json(dt.rowCount > 0);
+});
+
 router.put("/:id", async (req, res) => {
 
     const userid = req.user.user_id;

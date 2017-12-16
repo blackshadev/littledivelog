@@ -6,7 +6,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DiveDetailComponent } from './components/dives/dive-detail/dive-detail.component';
 import { DiveListComponent } from './components/dives/dive-list/dive-list.component';
 import { DivesComponent } from './components/dives/dives.component';
-import { DiveStore } from './services/dive.service';
+import { DiveService } from './services/dive.service';
 import { NgModule } from '@angular/core';
 import {ReactiveFormsModule, FormsModule} from '@angular/forms';
 import { HttpModule } from '@angular/http';
@@ -71,7 +71,7 @@ import { GuestGuard } from 'app/guards/guest.guard';
     ColorPickerModule,
   ],
   providers: [
-    DiveStore,
+    DiveService,
     BuddyService,
     TagService,
     AuthGuard,

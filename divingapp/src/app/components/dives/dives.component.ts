@@ -2,7 +2,7 @@ import { DiveListComponent } from './dive-list/dive-list.component';
 import { Subscription } from 'rxjs/Rx';
 import { Dive } from '../../shared/dive';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DiveStore } from '../../services/dive.service';
+import { DiveService } from '../../services/dive.service';
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
@@ -21,7 +21,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('diveDetail') private diveDetail: DiveDetailComponent;
 
   constructor(
-    private service: DiveStore,
+    private service: DiveService,
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,

@@ -1,6 +1,6 @@
 import { Observable } from 'rxjs/Rx';
 import { Router } from '@angular/router';
-import { DiveStore, TFilterKeys } from '../../../services/dive.service';
+import { DiveService, TFilterKeys } from '../../../services/dive.service';
 import { Dive, IDbDive } from '../../../shared/dive';
 import { Component, Input, OnInit, Output, EventEmitter, ElementRef, ViewChild } from '@angular/core';
 import { Location } from '@angular/common';
@@ -20,7 +20,7 @@ export class DiveListComponent  {
   dives: Dive[];
 
   constructor(
-    public diveStore: DiveStore,
+    public diveStore: DiveService,
     protected location: Location,
   ) {
     this.refresh();

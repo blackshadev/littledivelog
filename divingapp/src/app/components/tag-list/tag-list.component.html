@@ -1,6 +1,6 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="dive-list col-lg-6 col-md-12" [appHideWhenMobile]="selected !== undefined">
+    <div class="list-component col-lg-6 col-md-12" [appHideWhenMobile]="selected !== undefined">
       <table class="table table-hover">
         <thead>
           <tr>
@@ -32,7 +32,7 @@
         </tbody>
       </table>
     </div>
-    <div class="dive-detail col-lg-6 col-md-12" [appHideWhenMobile]="selected === undefined">
+    <div class="detail-component col-lg-6 col-md-12" [appHideWhenMobile]="selected === undefined">
       <app-tag-detail #detail [tag]="selected" ></app-tag-detail>
     </div>
   </div>

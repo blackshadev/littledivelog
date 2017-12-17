@@ -34,32 +34,40 @@ export class TagService extends AuthenticatedService {
         this.httpOptions,
     ).toPromise();
     return req.json() as ITag[];
-}
-
-public async summarize(): Promise<ITagStat[]> {
-  const resp = await this.http.get(
-      `${serviceUrl}/stats/tags/`,
-      this.httpOptions,
-  ).toPromise();
-  return resp.json() as ITagStat[];
-}
-
-public async update(data: ITag): Promise<ITag> {
-  let req: Response;
-  if (data.tag_id === undefined) {
-    req = await this.http.post(
-      `${serviceUrl}/tag/`,
-      data,
-      this.httpOptions,
-    ).toPromise();
-  } else {
-    req = await this.http.put(
-      `${serviceUrl}/tag/${data.tag_id}`,
-      data,
-      this.httpOptions,
-    ).toPromise();
   }
-  return req.json() as ITag;
-}
+
+  public async summarize(): Promise<ITagStat[]> {
+    const resp = await this.http.get(
+        `${serviceUrl}/stats/tags/`,
+        this.httpOptions,
+    ).toPromise();
+    return resp.json() as ITagStat[];
+  }
+
+  public async update(data: ITag): Promise<ITag> {
+    let req: Response;
+    if (data.tag_id === undefined) {
+      req = await this.http.post(
+        `${serviceUrl}/tag/`,
+        data,
+        this.httpOptions,
+      ).toPromise();
+    } else {
+      req = await this.http.put(
+        `${serviceUrl}/tag/${data.tag_id}`,
+        data,
+        this.httpOptions,
+      ).toPromise();
+    }
+    return req.json() as ITag;
+  }
+
+  public async delete(id: number): Promise<boolean> {
+    const req = await this.http.delete(
+      `${serviceUrl}/tag/${id}`,
+      this.httpOptions,
+    ).toPromise();
+    return req.json();
+  }
 
 }

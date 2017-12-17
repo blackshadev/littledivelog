@@ -28,7 +28,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   @ViewChild('diveProfile') public diveProfile: DiveProfileComponent;
 
   constructor(
-    private diveService: DiveService,
+    private service: DiveService,
     private buddyService: BuddyService,
     private _fb: FormBuilder,
     private hostElement: ElementRef,
@@ -179,7 +179,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getCountries(keyword: string) {
-    const cntries = await this.diveService.getCountries();
+    const cntries = await this.service.getCountries();
     const fuse = new Fuse(
         cntries, {
             threshold: 0.6,
@@ -198,7 +198,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   async getDivespots(keyword: string) {
     const c = (this.form.controls.place as FormGroup).controls.country.value;
-    const spots = await this.diveService.getDiveSpots(c);
+    const spots = await this.service.getDiveSpots(c);
 
     if (!keyword) {
       return spots;
@@ -252,7 +252,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
   }
 
   async getTags(keyword: string) {
-    const tags = await this.diveService.getTags();
+    const tags = await this.service.getTags();
 
     const fuse = new Fuse(
         tags, {
@@ -325,7 +325,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
       }
     );
 
-    this.diveService.saveDive(
+    this.service.saveDive(
       d.toJSON(),
       d.id
     ).then(
@@ -349,7 +349,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     if (this.dive.isNew) {
       this.back();
     } else {
-      await this.diveService.deleteDive(this.dive.id);
+      await this.service.deleteDive(this.dive.id);
       this.onDiveChanged.emit(undefined);
       this.back();
     }

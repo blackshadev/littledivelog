@@ -141,4 +141,16 @@ export class TagDetailComponent implements OnInit, OnChanges {
     this.router.navigate(['/tag']);
   }
 
+  async delete() {
+
+    if (!this.tag.tag_id) {
+      this.tag = undefined;
+      this.back();
+    } else {
+      await this.service.delete(this.tag.tag_id);
+      this.tag = undefined;
+      this.back();
+    }
+  }
+
 }

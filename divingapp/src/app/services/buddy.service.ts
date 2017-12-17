@@ -58,4 +58,12 @@ export class BuddyService extends AuthenticatedService {
     return req.json() as IBuddy;
   }
 
+  public async delete(id: number): Promise<boolean> {
+    const req = await this.http.delete(
+      `${serviceUrl}/buddy/${id}`,
+      this.httpOptions,
+    ).toPromise();
+    return req.json();
+  }
+
 }

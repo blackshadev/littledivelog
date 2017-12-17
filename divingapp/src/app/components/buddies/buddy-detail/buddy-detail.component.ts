@@ -144,8 +144,18 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
   }
 
   public back() {
-    console.log('HERE');
     this.router.navigateByUrl('/buddy');
+  }
+
+  async delete() {
+    if (!this.buddy.buddy_id) {
+      this.buddy = undefined;
+      this.back();
+    } else {
+      await this.service.delete(this.buddy.buddy_id);
+      this.buddy = undefined;
+      this.back();
+    }
   }
 
 }

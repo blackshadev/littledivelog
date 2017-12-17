@@ -1,9 +1,9 @@
 <div class="container-fluid">
   <div class="row">
-    <div class="dive-list col-lg-6 col-md-12" [appHideWhenMobile]="dive !== undefined">
+    <div class="dive-list list-component col-lg-6 col-md-12" [appHideWhenMobile]="dive !== undefined">
       <app-dive-list #diveList (onDiveSelected)="selectDive($event.id)" [selectedDive]="dive"></app-dive-list>
     </div>
-    <div class="dive-detail col-lg-6 col-md-12" [appHideWhenMobile]="dive === undefined">
+    <div class="dive-detail detail-component col-lg-6 col-md-12" [appHideWhenMobile]="dive === undefined">
       <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)"></app-dive-detail>
     </div>
   </div>

@@ -60,7 +60,8 @@ router.delete("/:id", async (req, res) => {
     ]);
 
     batch.add(`
-        delete buddies
+        delete
+          from buddies
          where buddy_id = $2
            and user_id = $1
     `, [

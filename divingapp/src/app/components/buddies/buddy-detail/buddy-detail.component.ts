@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef, EventEmitter, Output } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./buddy-detail.component.css']
 })
 export class BuddyDetailComponent implements OnInit, OnChanges {
+
+  @Output() public onDelete: EventEmitter<void> = new EventEmitter<void>();
 
   @Input()
   public buddy: IBuddyStat;
@@ -50,7 +52,6 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
   }
 
   public async onSubmit(e: Event) {
-    console.log('HERE');
     e.preventDefault();
     const dat = this.form.value;
 
@@ -153,6 +154,7 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
       this.back();
     } else {
       await this.service.delete(this.buddy.buddy_id);
+      this.onDelete.emit();
       this.buddy = undefined;
       this.back();
     }

@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef } from '@angular/core';
+import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { TagService, ITagStat } from 'app/services/tag.service';
@@ -10,6 +10,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./tag-detail.component.css']
 })
 export class TagDetailComponent implements OnInit, OnChanges {
+
+  @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
 
   @Input()
   public tag: ITagStat;
@@ -145,10 +147,11 @@ export class TagDetailComponent implements OnInit, OnChanges {
 
     if (!this.tag.tag_id) {
       this.tag = undefined;
+      this.onDelete.emit();
       this.back();
     } else {
       await this.service.delete(this.tag.tag_id);
-      this.tag = undefined;
+      this.onDelete.emit();
       this.back();
     }
   }

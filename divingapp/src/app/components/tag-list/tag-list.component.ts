@@ -22,16 +22,11 @@ export class TagListComponent implements OnInit, OnDestroy, AfterViewInit {
   private sub: Subscription
 
   constructor(
-    private tagService: TagService,
+    private service: TagService,
     private location: Location,
     private route: ActivatedRoute,
   ) {
-    tagService.summarize().then((c) => {
-      this.tags = c;
-      if (this._id !== undefined) {
-        this.selectById(this._id);
-      }
-    });
+    this.refresh();
   }
 
   public rowClick(bud: ITagStat) {
@@ -54,6 +49,20 @@ export class TagListComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+  }
+
+  public buddyDeleted() {
+    this._id = undefined;
+    this.selected = undefined;
+    this.refresh();
+  }
+
+  public async refresh() {
+    const c = await this.service.summarize();
+    this.tags = c;
+    if (this._id !== undefined) {
+      this.selectById(this._id);
+    }
   }
 
   protected selectById(id: number) {

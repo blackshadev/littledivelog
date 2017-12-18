@@ -33,7 +33,7 @@
       </table>
     </div>
     <div class="detail-component col-lg-6 col-md-12" [appHideWhenMobile]="selected === undefined">
-      <app-tag-detail #detail [tag]="selected" ></app-tag-detail>
+      <app-tag-detail #detail [tag]="selected" (onDelete)="buddyDeleted()" ></app-tag-detail>
     </div>
   </div>
 </div>

@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import {Location} from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Subscription } from 'rxjs';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { BuddyDetailComponent } from 'app/components/buddies/buddy-detail/buddy-detail.component';
 
 @Component({
@@ -25,12 +24,7 @@ export class BuddiesComponent implements OnInit, OnDestroy, AfterViewInit {
     private location: Location,
     private route: ActivatedRoute,
   ) {
-    buddyService.summarize().then((c) => {
-      this.buddies = c;
-      if (this._id !== undefined) {
-        this.selectById(this._id);
-      }
-    });
+    this.refresh();
   }
 
   public rowClick(bud: IBuddyStat) {
@@ -53,6 +47,20 @@ export class BuddiesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy() {
     this.sub.unsubscribe();
+  }
+
+  public async refresh() {
+    const c = await this.buddyService.summarize()
+    this.buddies = c;
+    if (this._id !== undefined) {
+      this.selectById(this._id);
+    }
+  }
+
+  public buddyDeleted() {
+    this._id = undefined;
+    this.selected = undefined;
+    this.refresh();
   }
 
   protected selectById(id: number) {

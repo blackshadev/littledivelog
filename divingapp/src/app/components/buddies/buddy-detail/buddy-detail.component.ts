@@ -64,6 +64,8 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
       email: dat.email,
       text: dat.text,
     });
+    console.log(bud);
+    debugger;
 
     this.onDataChanged.emit({
       type: this.isNew ? 'insert' : 'update',

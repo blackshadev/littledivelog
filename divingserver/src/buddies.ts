@@ -40,7 +40,7 @@ router.post("/", async (req, res) => {
     );
 
     res.json(
-        buds.rows,
+        buds.rows[0],
     );
 });
 
@@ -95,6 +95,6 @@ router.put("/:id", async (req, res) => {
     );
 
     res.json(
-        buds.rows,
+        buds.rows[0],
     );
 });

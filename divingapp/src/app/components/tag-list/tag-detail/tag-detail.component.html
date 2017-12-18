@@ -16,7 +16,7 @@
       <li class="nav-item">
           <a class="nav-link active" href="#tag" aria-controls="tag" role="tab" data-toggle="tab">Tag</a>
       </li>
-      <li class="nav-item">
+      <li *ngIf="!isNew" class="nav-item">
           <a class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
       </li>
       <li class="nav-item">
@@ -30,7 +30,7 @@
 
         <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.text.valid }">
           <label>Name</label>
-          <input class="form-control" formControlName="text" placeholder="Myke" aria-describedby="name" required />
+          <input class="form-control" formControlName="text" placeholder="Deco" aria-describedby="name" required />
         </div>
         <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.color.valid }">
           <label>Color</label>
@@ -60,7 +60,7 @@
         </div>
       </div>
 
-      <div role="tabpanel" class="tab-pane" id="delete">
+      <div *ngIf="!isNew" role="tabpanel" class="tab-pane" id="delete">
         <div class="alert alert-warning">
             <h3>Delete this tag?</h3>
             <p>Are your sure you want to permanently delete this tag?</p>

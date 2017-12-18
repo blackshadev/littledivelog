@@ -1,6 +1,9 @@
 <div class="container-fluid">
   <div class="row">
     <div class="list-component col-lg-6 col-md-12" [appHideWhenMobile]="selected !== undefined">
+      <div class="list-menu">
+        <button class="btn btn-primary" [routerLink]="['/tag/new/']"><i class="fa fa-plus"></i></button>
+      </div>
       <table class="table table-hover">
         <thead>
           <tr>
@@ -33,7 +36,7 @@
       </table>
     </div>
     <div class="detail-component col-lg-6 col-md-12" [appHideWhenMobile]="selected === undefined">
-      <app-tag-detail #detail [tag]="selected" (onDelete)="buddyDeleted()" ></app-tag-detail>
+      <app-tag-detail #detail [tag]="selected" (onDataChanged)="dataChanged($event)" ></app-tag-detail>
     </div>
   </div>
 </div>

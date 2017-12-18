@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
 import {Location} from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Subscription } from 'rxjs';
 import { BuddyDetailComponent } from 'app/components/buddies/buddy-detail/buddy-detail.component';
@@ -12,7 +12,7 @@ import { IDataChanged } from 'app/shared/datachanged.interface';
   templateUrl: './buddies.component.html',
   styleUrls: ['./buddies.component.scss']
 })
-export class BuddiesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class BuddiesComponent implements OnInit, OnDestroy {
   @Input()
   public selected?: IBuddyStat;
   public buddies: IBuddyStat[] = [];
@@ -23,15 +23,14 @@ export class BuddiesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   constructor(
     private buddyService: BuddyService,
-    private location: Location,
+    private router: Router,
     private route: ActivatedRoute,
   ) {
     this.refresh();
   }
 
   public rowClick(bud: IBuddyStat) {
-    this.selected = bud;
-    this.location.go(`/buddy/${bud.buddy_id}`)
+    this.router.navigateByUrl(`/buddy/${bud.buddy_id}`)
   }
 
   ngOnInit() {
@@ -52,13 +51,6 @@ export class BuddiesComponent implements OnInit, OnDestroy, AfterViewInit {
     });
   }
 
-  ngAfterViewInit(): void {
-    this.detail.back = () => {
-      this.selected = undefined;
-      this.location.go('/buddy');
-    }
-  }
-
   ngOnDestroy() {
     this.sub.unsubscribe();
   }
@@ -71,15 +63,15 @@ export class BuddiesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
   }
 
-  public dataChanged(ev: IDataChanged) {
+  public async dataChanged(ev: IDataChanged) {
     if (ev.type === 'delete') {
       this._id = undefined;
       this.selected = undefined;
     } else if (ev.type === 'insert') {
       this._id = ev.key;
-      this.location.go(`/buddy/${ev.key}`);
     }
-    this.refresh();
+    await this.refresh();
+    this.router.navigateByUrl(`/buddy/${ev.key}`);
   }
 
   protected selectById(id: number) {

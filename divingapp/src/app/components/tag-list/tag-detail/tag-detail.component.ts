@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { TagService, ITagStat } from 'app/services/tag.service';
 import { Router } from '@angular/router';
+import { IDataChanged } from 'app/shared/datachanged.interface';
 
 @Component({
   selector: 'app-tag-detail',
@@ -11,10 +12,12 @@ import { Router } from '@angular/router';
 })
 export class TagDetailComponent implements OnInit, OnChanges {
 
-  @Output() onDelete: EventEmitter<void> = new EventEmitter<void>();
+  @Output() onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<IDataChanged>();
 
   @Input()
   public tag: ITagStat;
+
+  public get isNew() { return this.tag.tag_id === undefined; }
 
   public form: FormGroup
 
@@ -52,11 +55,16 @@ export class TagDetailComponent implements OnInit, OnChanges {
     e.preventDefault();
     const dat = this.form.value;
 
-    await this.service.update({
+    const tag = await this.service.update({
       tag_id: this.tag ? this.tag.tag_id : undefined,
       color: dat.color,
       text: dat.text,
     });
+    this.onDataChanged.emit({
+      type: this.tag.tag_id === undefined ? 'insert' :  'update',
+      key: tag.tag_id,
+    });
+    this.tag.tag_id = tag.tag_id;
 
     this.applyData();
     this.reset();
@@ -147,11 +155,13 @@ export class TagDetailComponent implements OnInit, OnChanges {
 
     if (!this.tag.tag_id) {
       this.tag = undefined;
-      this.onDelete.emit();
       this.back();
     } else {
       await this.service.delete(this.tag.tag_id);
-      this.onDelete.emit();
+      this.onDataChanged.emit({
+        type: 'delete',
+        key: this.tag.tag_id,
+      });
       this.back();
     }
   }

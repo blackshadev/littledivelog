@@ -11,6 +11,7 @@ router.get("/", async (req, res) => {
         `select tag.*
            from tags tag
           where tag.user_id = $1
+       order by tag.tag_id asc
         `,
         [req.user.user_id],
     );

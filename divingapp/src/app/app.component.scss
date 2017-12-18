@@ -65,6 +65,15 @@ body {
     }
 }
 
+/deep/ .list-menu {
+    padding: 0.6em 0 0.4em 0.3em;
+
+    .btn {
+        background-color: $color-accent;
+        border-color:  $color-accent;
+    }
+}
+
 /deep/ .list-component {
     position: relative;
     height: 100%;

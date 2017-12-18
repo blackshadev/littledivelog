@@ -11,6 +11,7 @@ router.get("/", async (req, res) => {
         `select bud.*
            from buddies bud
           where bud.user_id = $1
+       order by bud.buddy_id asc
         `,
         [req.user.user_id],
     );

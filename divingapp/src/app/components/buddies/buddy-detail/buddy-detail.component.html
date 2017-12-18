@@ -17,7 +17,7 @@
           <a class="nav-link active" href="#buddy" aria-controls="buddy" role="tab" data-toggle="tab">Buddy</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
+          <a *ngIf="isNew" class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
       </li>
       <li class="nav-item">
           <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
@@ -64,7 +64,7 @@
         </div>
       </div>
 
-      <div role="tabpanel" class="tab-pane" id="delete">
+      <div *ngIf="isNew" role="tabpanel" class="tab-pane" id="delete">
         <div class="alert alert-warning">
             <h3>Delete this buddy?</h3>
             <p>Are your sure you want to permanently delete this buddy?</p>

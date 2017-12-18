@@ -18,6 +18,7 @@ import { Observable } from 'rxjs/Rx';
   ]
 })
 export class TagsControlComponent implements OnInit, ControlValueAccessor {
+
   @Input() source: (keyword: string) => Promise<ITag[]>;
   @Input() tags: ITag[];
   @Input() placeholder = '';
@@ -32,6 +33,13 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   private onChange: (v: ITag[]) => void;
   private onTouched: () => void;
 
+  public static randomColor() {
+    const r = leftpad(2, Math.floor(Math.random() * 255).toString(16));
+    const g = leftpad(2, Math.floor(Math.random() * 255).toString(16));
+    const b = leftpad(2, Math.floor(Math.random() * 255).toString(16));
+    return `#${r}${g}${b}`;
+  }
+
   constructor() {
     this.tags = [];
     this.onChange = () => {};
@@ -42,7 +50,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
   }
 
   public newTag(value: string): ITag {
-    return { color: this.randomColor(), text: value };
+    return { color: TagsControlComponent.randomColor(), text: value };
   }
 
   public async getData(keyword: string): Promise<ITag[]> {
@@ -107,13 +115,6 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     const b = parseInt(color.substr(4, 2), 16);
     const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
     return (yiq >= 128) ? 'black' : 'white';
-  }
-
-  private randomColor() {
-    const r = leftpad(2, Math.floor(Math.random() * 255).toString(16));
-    const g = leftpad(2, Math.floor(Math.random() * 255).toString(16));
-    const b = leftpad(2, Math.floor(Math.random() * 255).toString(16));
-    return `#${r}${g}${b}`;
   }
 
   private doChange() {

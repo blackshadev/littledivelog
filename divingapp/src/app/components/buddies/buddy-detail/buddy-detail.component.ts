@@ -3,6 +3,7 @@ import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Router } from '@angular/router';
+import { IDataChanged } from 'app/shared/datachanged.interface';
 
 @Component({
   selector: 'app-buddy-detail',
@@ -11,10 +12,12 @@ import { Router } from '@angular/router';
 })
 export class BuddyDetailComponent implements OnInit, OnChanges {
 
-  @Output() public onDelete: EventEmitter<void> = new EventEmitter<void>();
+  @Output() public onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<IDataChanged>();
 
   @Input()
   public buddy: IBuddyStat;
+
+  public get isNew() { return this.buddy.buddy_id === undefined; }
 
   public form: FormGroup
 
@@ -55,12 +58,18 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
     e.preventDefault();
     const dat = this.form.value;
 
-    await this.service.update({
+    const bud = await this.service.update({
       buddy_id: this.buddy ? this.buddy.buddy_id : undefined,
       color: dat.color,
       email: dat.email,
       text: dat.text,
     });
+
+    this.onDataChanged.emit({
+      type: this.isNew ? 'insert' : 'update',
+      key: bud.buddy_id,
+    });
+    this.buddy.buddy_id = bud.buddy_id;
 
     this.applyData();
     this.reset();
@@ -154,7 +163,10 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
       this.back();
     } else {
       await this.service.delete(this.buddy.buddy_id);
-      this.onDelete.emit();
+      this.onDataChanged.emit({
+        type: 'delete',
+        key: this.buddy.buddy_id,
+      });
       this.buddy = undefined;
       this.back();
     }

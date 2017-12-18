@@ -1,4 +1,7 @@
 <div class="container-fluid">
+  <div class="list-menu">
+    <button class="btn btn-primary" [routerLink]="['/buddy/new/']"><i class="fa fa-plus"></i></button>
+  </div>
   <div class="row">
     <div class="list-component col-lg-6 col-md-12" [appHideWhenMobile]="selected !== undefined">
       <table class="table table-hover">
@@ -33,7 +36,7 @@
       </table>
     </div>
     <div class="detail-component col-lg-6 col-md-12" [appHideWhenMobile]="selected === undefined">
-      <app-buddy-detail #detail [buddy]="selected" (onDelete)="buddyDeleted()" ></app-buddy-detail>
+      <app-buddy-detail #detail [buddy]="selected" (onDataChanged)="dataChanged($event)" ></app-buddy-detail>
     </div>
   </div>
 </div>

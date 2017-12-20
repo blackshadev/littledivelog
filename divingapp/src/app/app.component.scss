@@ -38,6 +38,18 @@ body {
     }
 }
 
+
+/deep/ .error-text.has-danger {
+    display: none;
+    color: #a94442;
+    margin-left: 7px;
+}
+
+/deep/ .has-danger .error-text  {
+    display: block;
+}
+
+
 /deep/ .detail-menu {
     height: 55px;
     margin-left: -15px;

@@ -16,11 +16,11 @@ export module CustomValidators {
     }
 
     export function integer(v: FormControl) {
-        return /\d+/ ? null : { invalid: true };
+        return /\d+/.test(v.value) ? null : { invalid: true };
     }
 
     export function color(v: FormControl) {
-        return /#([a-f0-9]{3}|[a-f0-9]{6})/i
+        return /^#([a-f0-9]{3}|[a-f0-9]{6})$/i.test(v.value) ? null : { invalid: true };
     }
 
     export function optionalEmail(v: FormControl) {
@@ -29,6 +29,5 @@ export module CustomValidators {
         }
 
         return Validators.email(v);
-
     }
 }

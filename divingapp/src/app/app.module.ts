@@ -34,7 +34,6 @@ import { RegisterComponent } from './components/register/register.component';
 import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.directive';
 import { GuestGuard } from 'app/guards/guest.guard';
 
-
 @NgModule({
   declarations: [
     AppComponent,

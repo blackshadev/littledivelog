@@ -28,11 +28,14 @@
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="buddy">
 
-        <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.text.valid }">
+        <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.text.valid }">
           <label>Name</label>
           <input class="form-control" formControlName="text" placeholder="Myke" aria-describedby="name" required />
+          <small class="error-text has-danger" *ngIf="form.controls.text.errors?.required">
+            Name is required.
+          </small>
         </div>
-        <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.color.valid }">
+        <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.color.valid }">
           <label>Color</label>
           <div class="input-group">
             <span class="input-group-addon input-group-addon-color">
@@ -49,11 +52,20 @@
               required
             />
           </div>
+          <small class="error-text has-danger" *ngIf="form.controls.color.errors?.invalid">
+            Please enter a valid color; eg #ff00ee.
+          </small>
+          <small class="error-text has-danger" *ngIf="form.controls.color.errors?.required">
+            Color is required.
+          </small>
         </div>
-        <div [ngClass]="{ 'form-group':true, 'has-error': !form.controls.email.valid }">
-            <label>Email</label>
-            <input class="form-control" formControlName="email" placeholder="myke@doamin.tld" aria-describedby="email" />
-          </div>
+        <div class="form-group"  [ngClass]="{ 'has-danger': !form.controls.email.valid }">
+          <label>Email</label>
+          <input class="form-control" formControlName="email" placeholder="myke@domain.tld" aria-describedby="email" />
+          <small class="error-text has-danger" *ngIf="form.controls.email.errors?.email">
+            Please enter a valid email; eg myke@domain.tld.
+          </small>
+        </div>
         <div class="form-group">
           <label>Dive count</label>
           <input class="form-control-plaintext" [value]="buddy.dive_count" aria-describedby="DiveCount" readonly />

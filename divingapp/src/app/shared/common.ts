@@ -1,3 +1,5 @@
+import { FormGroup } from '@angular/forms';
+
 export function debounce(func: Function, wait: number, immediate?: boolean): Function {
     let timeout;
     return function() {
@@ -13,6 +15,23 @@ export function debounce(func: Function, wait: number, immediate?: boolean): Fun
         timeout = setTimeout(later, wait);
         if (callNow) {
             func.apply(context, args);
+        }
+    }
+}
+
+/**
+ * Marks all controls in a form group as touched
+ * @param formGroup - The group to caress..hah
+ */
+export function markFormGroupTouched(formGroup: FormGroup) {
+    formGroup.markAsTouched();
+
+    if (formGroup.controls) {
+        for (const k in formGroup.controls) {
+            if (formGroup.controls.hasOwnProperty(k)) {
+                const control = formGroup.controls[k];
+                markFormGroupTouched(control as FormGroup);
+            }
         }
     }
 }

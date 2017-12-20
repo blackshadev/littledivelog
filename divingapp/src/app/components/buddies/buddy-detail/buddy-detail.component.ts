@@ -4,6 +4,7 @@ import { CustomValidators } from 'app/shared/validators';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Router } from '@angular/router';
 import { IDataChanged } from 'app/shared/datachanged.interface';
+import { markFormGroupTouched } from 'app/shared/common';
 
 @Component({
   selector: 'app-buddy-detail',
@@ -56,6 +57,11 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
 
   public async onSubmit(e: Event) {
     e.preventDefault();
+    markFormGroupTouched(this.form);
+    if (!this.form.valid) {
+      return;
+    }
+
     const dat = this.form.value;
 
     const bud = await this.service.update({

@@ -4,6 +4,7 @@ import { CustomValidators } from 'app/shared/validators';
 import { TagService, ITagStat } from 'app/services/tag.service';
 import { Router } from '@angular/router';
 import { IDataChanged } from 'app/shared/datachanged.interface';
+import { markFormGroupTouched } from 'app/shared/common';
 
 @Component({
   selector: 'app-tag-detail',
@@ -17,7 +18,9 @@ export class TagDetailComponent implements OnInit, OnChanges {
   @Input()
   public tag: ITagStat;
 
-  public get isNew() { return this.tag.tag_id === undefined; }
+  public get isNew() {
+    return this.tag.tag_id === undefined;
+  }
 
   public form: FormGroup
 
@@ -53,6 +56,11 @@ export class TagDetailComponent implements OnInit, OnChanges {
 
   public async onSubmit(e: Event) {
     e.preventDefault();
+    markFormGroupTouched(this.form);
+    if (!this.form.valid) {
+      return;
+    }
+
     const dat = this.form.value;
 
     const tag = await this.service.update({
@@ -165,5 +173,6 @@ export class TagDetailComponent implements OnInit, OnChanges {
       this.back();
     }
   }
+
 
 }

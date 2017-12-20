@@ -28,14 +28,14 @@
     <div class="tab-content">
       <div role="tabpanel" class="tab-pane active" id="tag">
 
-        <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.text.valid }">
+        <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.text.valid && form.controls.text.touched }">
           <label>Name</label>
           <input class="form-control" formControlName="text" placeholder="Deco" aria-describedby="name" required />
           <small class="error-text has-danger" *ngIf="form.controls.text.errors?.required">
               Name is required.
           </small>
         </div>
-        <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.color.valid }">
+        <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.color.valid && form.controls.color.touched }">
           <label>Color</label>
           <div class="input-group">
             <span class="input-group-addon input-group-addon-color">

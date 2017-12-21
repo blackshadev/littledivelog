@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import 'rxjs/add/operator/switchMap';
 import { CustomValidators } from 'app/shared/validators';
 import { BuddyService } from 'app/services/buddy.service';
+import { markFormGroupTouched } from 'app/shared/common';
 
 declare function $(...args: any[]): any;
 
@@ -278,6 +279,11 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
   onSubmit(e: Event) {
     e.preventDefault();
+    markFormGroupTouched(this.form);
+    if (!this.form.valid) {
+      return;
+    }
+
     const dat = this.form.value;
     const d = new Dive;
     d.id = this.dive.id;

@@ -1,7 +1,37 @@
 <div class="container-fluid">
   <div class="row">
     <div class="dive-list list-component col-lg-6 col-md-12" [appHideWhenMobile]="dive !== undefined">
-      <app-dive-list #diveList (onDiveSelected)="selectDive($event.id)" [selectedDive]="dive"></app-dive-list>
+      <div class="list-menu">
+        <div class="input-group">
+          <span class="input-group-btn">
+              <button class="btn btn-primary" type="button" (click)="newDive()"><i class="fa fa-plus"></i></button>
+          </span>
+          <input class="form-control" #search type="text" placeholder="Search..."  (keyup.enter)="refresh()" />
+          <span class="input-group-btn">
+              <button class="btn btn-primary" (click)="refresh()"><i class="fa fa-search"></i></button>
+          </span>
+        </div>
+      </div>
+      <div>
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td>Date</td>
+                    <td class="d-none d-xl-table-cell">Divetime</td>
+                    <td>Tags</td>
+                    <td class="d-none d-md-table-cell">Divespot</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let d of dives" (click)="selectDive(d)" [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
+                    <td>{{ d.date | date: "y-MM-dd HH:mm:ss"}}</td>
+                    <td class="d-none d-xl-table-cell">{{ d.divetime }}</td>
+                    <td><app-tags [tags]="d.tags"></app-tags></td>
+                    <td class="d-none d-md-table-cell">{{ d.placeStr }}</td>
+                </tr>
+            </tbody>
+        </table>
+      </div>
     </div>
     <div class="dive-detail detail-component col-lg-6 col-md-12" [appHideWhenMobile]="dive === undefined">
       <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)"></app-dive-detail>

@@ -1,9 +1,8 @@
-import { DiveListComponent } from './dive-list/dive-list.component';
 import { Subscription } from 'rxjs/Rx';
 import { Dive } from '../../shared/dive';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DiveService } from '../../services/dive.service';
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { DiveService, TFilterKeys } from '../../services/dive.service';
+import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Location } from '@angular/common';
@@ -16,15 +15,20 @@ import { Location } from '@angular/common';
 export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
   public dive: Dive;
+  public dives: Dive[];
+
   private subs: Subscription[] = [];
-  @ViewChild('diveList') private diveList: DiveListComponent;
+
+  @ViewChild('search') private input: ElementRef;
   @ViewChild('diveDetail') private diveDetail: DiveDetailComponent;
 
   constructor(
     private service: DiveService,
     private route: ActivatedRoute,
     private location: Location,
-  ) {}
+  ) {
+    this.refresh();
+  }
 
   ngAfterViewInit() {
     // replace default back behaviour to prevent a reload
@@ -35,20 +39,22 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
-    if (this.route.snapshot.data && this.route.snapshot.data.isNew) {
-      this.dive = Dive.New();
-    } else {
-      this.subs.push(
-        this.route.params.flatMap(
-          (params: Params) => {
-            return params['id'] === undefined ?
-              Promise.resolve(undefined) :
-              this.service.getDive(+params['id']);
-          }).subscribe(
-            dive => this.dive = dive
-          )
-      );
-    }
+    this.subs.push(
+      this.route.params.flatMap(
+        (params: Params) => {
+          if (params['id'] === 'new') {
+            return Promise.resolve(Dive.New());
+          }
+          if (params['id'] === undefined) {
+            return Promise.resolve(undefined);
+          } else {
+            return this.service.getDive(+params['id']);
+          }
+        }).subscribe(
+          dive => this.dive = dive
+        )
+    );
+
   }
 
   ngOnDestroy(): void {
@@ -56,18 +62,50 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   diveChanged(d: Dive) {
-    this.diveList.refresh();
+    this.refresh();
     this.dive = d;
   }
 
-  async selectDive(id?: number) {
-    if (id === undefined) {
+  async selectDive(d?: Dive) {
+    if (d === undefined) {
       this.dive = undefined;
+      this.location.go('/dive');
     } else {
-      const dive = await this.service.getDive(id);
-      this.dive = dive;
+      this.dive = await this.service.getDive(d.id);
+      this.location.go('/dive/' + d.id);
     }
     this.diveDetail.reset();
   }
+
+  refresh() {
+    const searchValue = this.input ? this.input.nativeElement.value : '';
+    const o = this.extractSearches(searchValue);
+
+    this.service.getDives(o).then(
+      (d) => {
+        this.dives = d;
+      }
+    );
+  }
+
+  newDive() {
+    this.location.go('/dive/new');
+    this.dive = Dive.New();
+  }
+
+  protected extractSearches(s: string): { [k in TFilterKeys]?: string } {
+    const re = /([^:;]+):([^;$]+)/g;
+    let m: RegExpExecArray;
+
+    const o: { [k in TFilterKeys]?: string } = {};
+    while ( (m = re.exec(s)) !== null ) {
+      const tag = m[1];
+      const value = m[2];
+      o[tag] = value;
+    }
+
+    return o;
+  }
+
 
 }

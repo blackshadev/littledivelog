@@ -7,8 +7,8 @@
     (ngSubmit)="onSubmit($event)"
 >
     <div class="detail-menu">
-        <button class="btn btn-lg btn-primary" type="submit" [disabled]="!form.valid || !form.dirty" title="Save dive"><i class="fa fa-floppy-o"></i></button>
-        <button class="btn btn-lg btn-primary" (click)="reset()" [disabled]="!form.dirty" title="Undo unsaved changes"><i class="fa fa-undo"></i></button>
+        <button class="btn btn-lg btn-primary" type="submit" [disabled]="(!form.valid || !form.dirty) && !dive.isNew" title="Save dive"><i class="fa fa-floppy-o"></i></button>
+        <button class="btn btn-lg btn-primary" (click)="reset()" [disabled]="!form.dirty || dive.isNew" title="Undo unsaved changes"><i class="fa fa-undo"></i></button>
         <button class="btn btn-lg btn-primary" (click)="back()"  [appHideWhenDesktop]="true" title="Go back"><i class="fa fa-arrow-left"></i></button>
     </div>
 
@@ -22,7 +22,7 @@
                 <a class="nav-link" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
             </li>
             <li class="nav-item">
-                <a class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
+                <a *ngIf="!dive.isNew" class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
             </li>
             <li class="nav-item">
                 <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
@@ -33,7 +33,7 @@
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="dive">
 
-                <div [ngClass]="{ 'form-group row':true, 'has-danger': !form.controls.date.valid }">
+                <div class="form-group row" [ngClass]="{ 'has-danger': !form.controls.date.valid && form.controls.date.touched }">
                     <label class="col-sm-2 control-label">Date</label>
                     <div class="col-sm-10">
                         <input class="form-control" formControlName="date" placeholder="{{CurrentDate}}" /> <!--  | date: 'y-MM-dd HH:mm:ss' -->
@@ -45,7 +45,7 @@
                         </small>
                     </div>
                 </div>
-                <div [ngClass]="{ 'form-group row':true, 'has-danger': !form.controls.divetime.valid }">
+                <div class="form-group row" [ngClass]="{ 'has-danger': !form.controls.divetime.valid && form.controls.divetime.touched }">
                     <label class="col-sm-2 control-label">Dive time</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" formControlName="divetime" placeholder="00:00:00" />
@@ -57,7 +57,7 @@
                         </small>
                     </div>
                 </div>
-                <div [ngClass]="{ 'form-group row':true, 'has-danger': !form.controls.maxDepth.valid }">
+                <div class="form-group row" [ngClass]="{ 'has-danger': !form.controls.maxDepth.valid && form.controls.maxDepth.touched }">
                     <label class="col-sm-2 control-label">Max depth</label>
                     <div class="col-sm-10">
                         <input type="text" class="form-control" formControlName="maxDepth" placeholder="0.00" /> <!-- number: "1.1-1" -->
@@ -69,7 +69,7 @@
                         </small>
                     </div>
                 </div>
-                <div [ngClass]="{ 'form-group row':true, 'has-danger': !form.controls.tank.valid }">
+                <div class="form-group row" [ngClass]="{ 'has-danger': !form.controls.tank.valid && form.controls.tank.touched }">
                     <label class="hidden-xs col-sm-2 control-label">Tank</label>
                     <div class="col-sm-10">
 
@@ -120,37 +120,37 @@
                             </div>
                         </div>
 
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.volume.errors?.required">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.volume.errors?.required && form.controls.tank.controls.volume.touched">
                             Tank volume is required
                         </small>
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.volume.errors?.invalid">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.volume.errors?.invalid && form.controls.tank.controls.volume.touched">
                             Tank volume must be a valid integer; eg 10
                         </small>
 
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.airPercentage.errors?.required">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.airPercentage.errors?.required && form.controls.tank.controls.airPercentage.touched">
                             Oxygen percentage is required
                         </small>
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.airPercentage.errors?.invalid">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.airPercentage.errors?.invalid && form.controls.tank.controls.airPercentage.touched">
                             Oxygen percentage must be an integer number; eg 21
                         </small>
 
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureStart.errors?.required">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureStart.errors?.required && form.controls.tank.controls.pressureStart.touched">
                             Start pressure is required
                         </small>
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureStart.errors?.invalid">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureStart.errors?.invalid && form.controls.tank.controls.pressureStart.touched">
                             Start pressure must be a valid number; eg 10.05
                         </small>
 
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureEnd.errors?.required">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureEnd.errors?.required && form.controls.tank.controls.pressureEnd.touched">
                             End pressure is required
                         </small>
-                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureEnd.errors?.invalid">
+                        <small class="has-danger error-text" *ngIf="form.controls.tank.controls.pressureEnd.errors?.invalid && form.controls.tank.controls.pressureEnd.touched">
                             End pressure must be a valid number; eg 10.05
                         </small>
 
                     </div>
                 </div>
-                <div [ngClass]="{ 'form-group row':true, 'has-danger': !form.controls.place.valid  }">
+                <div class="form-group row" [ngClass]="{ 'has-danger': !form.controls.place.valid && form.controls.place.touched }">
                     <label class="col-sm-2 control-label">Divespot</label>
                     <div class="col-sm-10">
 
@@ -210,7 +210,7 @@
                 <app-dive-profile #diveProfile [dive]="dive"></app-dive-profile>
             </div>
 
-            <div role="tabpanel" class="tab-pane" id="delete">
+            <div role="tabpanel" class="tab-pane" id="delete" *ngIf="!dive.isNew">
                 <div class="alert alert-warning">
                     <h3>Delete this dive?</h3>
                     <p>Are your sure you want to permanently delete this dive?</p>

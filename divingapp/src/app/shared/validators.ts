@@ -8,7 +8,7 @@ export module CustomValidators {
     }
 
     export function duration(v: FormControl) {
-        return /\d{1,2}:\d{1,2}(:\d{1,2})?/.test(v.value) ? null : { invalid: true };
+        return /^\d{1,2}:\d{1,2}(:\d{1,2})?$/.test(v.value) ? null : { invalid: true };
     }
 
     export function decimal(v: FormControl) {

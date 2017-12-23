@@ -32,22 +32,41 @@ router.get("/profile", async (req, res) => {
 
 router.put("/profile", async (req, res) => {
 
-    if (req.body.password) {
-        req.body.password = hash(req.body.password);
-    }
-
     const dat = await database.call(
         `
             update users
                set name = $2
-                 , password = coalesc($3, password)
              where user_id = $1
         `, [
             req.user.user_id,
             req.body.name,
-            req.body.password,
         ],
     );
 
     res.json(dat.rowCount > 0);
 });
+
+router.put("/profile/password", async (req, res) => {
+
+    if (typeof(req.body.password) !== "string") {
+        throw new Error("Password required");
+    }
+    if (req.body.password.length < 6) {
+        throw new Error("Minimum length of password is 6");
+    }
+
+    req.body.password = hash(req.body.password);
+
+    const dat = await database.call(
+        `
+            update users
+               set password = $2
+             where user_id = $1
+        `, [
+            req.user.user_id,
+            req.body.password,
+        ],
+    );
+
+    res.json(dat.rowCount > 0);
+})

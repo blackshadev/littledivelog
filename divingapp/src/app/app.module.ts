@@ -17,7 +17,7 @@ import { MyAutoCompletionDirective } from './directives/auto-complete/my-auto-co
 import { AutocompleteComponent } from './components/controls/autocomplete/autocomplete.component';
 import { TagsComponent } from './components/controls/tags/tags.component';
 import { TagsControlComponent } from './components/controls/tags-control/tags-control.component';
-import { DiveProfileComponent } from './components/controls/dive-profile/dive-profile.component';
+import { DiveProfileComponent } from './components/dives/dive-profile/dive-profile.component';
 import { DivetimePipe } from './pipes/divetime.pipe';
 import { LoginComponent } from './components/login/login.component';
 import { ComputersComponent } from './components/computers/computers.component';
@@ -32,6 +32,7 @@ import { TagDetailComponent } from './components/tag-list/tag-detail/tag-detail.
 import { RegisterComponent } from './components/register/register.component';
 import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.directive';
 import { GuestGuard } from 'app/guards/guest.guard';
+import { ProfileComponent } from './components/profile/profile.component';
 
 @NgModule({
     declarations: [
@@ -57,6 +58,7 @@ import { GuestGuard } from 'app/guards/guest.guard';
         TagDetailComponent,
         RegisterComponent,
         HelpOnFocusDirective,
+        ProfileComponent,
     ],
     imports: [
         BrowserModule,

@@ -1,5 +1,5 @@
 import { ITag } from '../../controls/tags/tags.component';
-import { DiveProfileComponent } from '../../controls/dive-profile/dive-profile.component';
+import { DiveProfileComponent } from '../dive-profile/dive-profile.component';
 import { Validators, FormBuilder, FormGroup, NgForm, FormControl } from '@angular/forms';
 import { Observable } from 'rxjs/Rx';
 import { ActivatedRoute, Params, Router } from '@angular/router';

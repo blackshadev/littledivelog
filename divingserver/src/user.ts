@@ -12,15 +12,15 @@ router.get("/profile", async (req, res) => {
 
     const dat = await database.call(
         `select
-                 name
-               , email
-               , inserted
-               , dive_count = (select count(*) from dives d where d.user_id = u.user_id)
-               , computer_count = (select count(*) from computers c where c.user_id = u.user_id)
-               , buddy_count = (select count(*) from buddies b where b.user_id = u.user_id)
-               , tag_count = (select count(*) from tags t where t.user_id = u.user_id)
+                  name
+                , email
+                , inserted
+                , (select count(*) from dives d where d.user_id = u.user_id) as dive_count
+                , (select count(*) from computers c where c.user_id = u.user_id) as computer_count
+                , (select count(*) from buddies b where b.user_id = u.user_id) as buddy_count
+                , (select count(*) from tags t where t.user_id = u.user_id) as tag_count
            from users u
-           where user_id = $1
+          where user_id = $1
         `,
         [
             req.user.user_id,

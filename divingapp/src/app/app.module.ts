@@ -7,7 +7,7 @@ import { DiveDetailComponent } from './components/dives/dive-detail/dive-detail.
 import { DivesComponent } from './components/dives/dives.component';
 import { DiveService } from './services/dive.service';
 import { NgModule } from '@angular/core';
-import {ReactiveFormsModule, FormsModule} from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
@@ -34,49 +34,49 @@ import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.d
 import { GuestGuard } from 'app/guards/guest.guard';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    DivesComponent,
-    DiveDetailComponent,
-    DashboardComponent,
-    MenuComponent,
-    HideWhenMobileDirective,
-    HideWhenDesktopDirective,
-    MyAutoCompletionDirective,
-    AutocompleteComponent,
-    TagsComponent,
-    TagsControlComponent,
-    DiveProfileComponent,
-    DivetimePipe,
-    LoginComponent,
-    ComputersComponent,
-    BuddiesComponent,
-    TagComponent,
-    BuddyDetailComponent,
-    TagListComponent,
-    TagDetailComponent,
-    RegisterComponent,
-    HelpOnFocusDirective,
-  ],
-  imports: [
-    BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
-    HttpModule,
-    AppRoutingModule,
-    Ng2AutoCompleteModule,
-    ColorPickerModule,
-  ],
-  providers: [
-    DiveService,
-    BuddyService,
-    TagService,
-    AuthGuard,
-    GuestGuard,
-    AuthService,
-  ],
-  bootstrap: [
-    AppComponent
-  ]
+    declarations: [
+        AppComponent,
+        DivesComponent,
+        DiveDetailComponent,
+        DashboardComponent,
+        MenuComponent,
+        HideWhenMobileDirective,
+        HideWhenDesktopDirective,
+        MyAutoCompletionDirective,
+        AutocompleteComponent,
+        TagsComponent,
+        TagsControlComponent,
+        DiveProfileComponent,
+        DivetimePipe,
+        LoginComponent,
+        ComputersComponent,
+        BuddiesComponent,
+        TagComponent,
+        BuddyDetailComponent,
+        TagListComponent,
+        TagDetailComponent,
+        RegisterComponent,
+        HelpOnFocusDirective,
+    ],
+    imports: [
+        BrowserModule,
+        FormsModule,
+        ReactiveFormsModule,
+        HttpModule,
+        AppRoutingModule,
+        Ng2AutoCompleteModule,
+        ColorPickerModule,
+    ],
+    providers: [
+        DiveService,
+        BuddyService,
+        TagService,
+        AuthGuard,
+        GuestGuard,
+        AuthService,
+    ],
+    bootstrap: [
+        AppComponent
+    ]
 })
 export class AppModule { }

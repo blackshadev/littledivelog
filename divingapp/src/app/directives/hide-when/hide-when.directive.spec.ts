@@ -1,8 +1,8 @@
-import { HideWhenMobileDirective } from './show-when.directive';
+import { HideWhenMobileDirective } from './hide-when.directive';
 
-describe('ShowWhenDirective', () => {
-  it('should create an instance', () => {
-    // const directive = new HideWhenMobileDirective();
-    // expect(directive).toBeTruthy();
-  });
+describe('HideWhenDirective', () => {
+    it('should create an instance', () => {
+        const directive = new HideWhenMobileDirective();
+        expect(directive).toBeTruthy();
+    });
 });

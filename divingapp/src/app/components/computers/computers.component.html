@@ -1,35 +1,35 @@
 <div class="container">
-  <div class="card">
-    <table class="table table-hover">
-      <thead>
-        <tr>
-          <td>
-            #
-          </td>
-          <td>
-            Last dive
-          </td>
-          <td>
-            Vendor
-          </td>
-          <td>
-            Name
-          </td>
-          <td>
-            Number of dives
-          </td>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let comp of computers">
-          <td>{{comp.computer_id}}</td>
-          <td>{{comp.last_read}}</td>
-          <td>{{comp.vendor}}</td>
-          <td>{{comp.name}}</td>
-          <td>{{comp.dive_count}}</td>
-          <td></td>
-        </tr>
-      </tbody>
-    </table>
-  </div>
+    <div class="card">
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                    <td>
+                        #
+                    </td>
+                    <td>
+                        Last dive
+                    </td>
+                    <td>
+                        Vendor
+                    </td>
+                    <td>
+                        Name
+                    </td>
+                    <td>
+                        Number of dives
+                    </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let comp of computers">
+                    <td>{{comp.computer_id}}</td>
+                    <td>{{comp.last_read}}</td>
+                    <td>{{comp.vendor}}</td>
+                    <td>{{comp.name}}</td>
+                    <td>{{comp.dive_count}}</td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div>

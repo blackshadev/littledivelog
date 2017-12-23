@@ -1,14 +1,15 @@
-<input #input
-  auto-complete
-  [ngClass]="inputClass"
-  [source]="filter.bind(this)"
-  [value]="viewValue"
-  [placeholder]="placeholder"
-  list-formatter="value"
-  (blur)="inputblur($event)"
-  (valueChanged)="valueSelected($event)"
-  (keydown)="keydown.emit($event)"
-  (keydown.tab)="onKeyTab($event)"
-  (keydown.enter)="onKeyEnter($event)"
-  [disabled]="disabled"
+<input
+    #input
+    auto-complete
+    [ngClass]="inputClass"
+    [source]="filter.bind(this)"
+    [value]="viewValue"
+    [placeholder]="placeholder"
+    list-formatter="value"
+    (blur)="inputblur($event)"
+    (valueChanged)="valueSelected($event)"
+    (keydown)="keydown.emit($event)"
+    (keydown.tab)="onKeyTab($event)"
+    (keydown.enter)="onKeyEnter($event)"
+    [disabled]="disabled"
 />

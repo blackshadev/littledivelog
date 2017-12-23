@@ -1,5 +1,5 @@
 import { AuthService, AuthenticatedService } from './auth.service';
-import {Headers, Http,  Response} from '@angular/http';
+import { Headers, Http, Response } from '@angular/http';
 import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, ISample } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 import { Injectable } from '@angular/core';
@@ -10,101 +10,44 @@ import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ITagStat } from 'app/services/tag.service';
 
-export type TFilterKeys = 'buddies'|'tags'|'from'|'till'|'places'|'country';
+export type TFilterKeys = 'buddies' | 'tags' | 'from' | 'till' | 'places' | 'country';
 
-export interface ICountry {
-    code: string;
-    description: string;
-}
 
 export interface IComputer {
-  computer_id: number;
-  name: string;
-  vendor: string;
-  last_read: Date;
-  dive_count: number;
-}
-
-
-export interface IPlaceStat {
-    place_id: number;
+    computer_id: number;
     name: string;
-    country_code: string;
-    color: string;
-    dive_count: Date;
-    last_dive: Date;
+    vendor: string;
+    last_read: Date;
+    dive_count: number;
 }
+
 
 @Injectable()
 export class DiveService extends AuthenticatedService {
-
-    private __countries: ICountry[];
 
     constructor(
         protected http: Http,
         protected auth: AuthService,
     ) {
         super(auth);
-        this.getCountries();
     }
 
-    get countries() {
-        return Observable.fromPromise(this.getCountries());
-    }
-
-    async getDives(filter: { [k in TFilterKeys]?: string } = {}): Promise<Dive[]> {
+    public async list(filter: {[k in TFilterKeys]?: string } = {}): Promise<Dive[]> {
         let res: Response;
         const qs = Object.keys(filter).map(
             (k) => `${encodeURIComponent(k)}=${encodeURIComponent(filter[k])}`,
         ).join('&');
 
-        try {
-            res = await this.http.get(
-                `${serviceUrl}/dive/?${qs}`,
-                this.httpOptions,
-            ).toPromise();
-        } catch (e) {
-            this.handleError(e);
-            return;
-        }
+        res = await this.http.get(
+            `${serviceUrl}/dive/?${qs}`,
+            this.httpOptions,
+        ).toPromise();
+
         const dives: IDbDive[] = res.json() || [];
         return Dive.ParseAll(dives);
     }
 
-    async getCountries(): Promise<ICountry[]> {
-        if (this.__countries) {
-            return this.__countries;
-        }
-
-        let res: Response;
-        try {
-            res = await this.http.get(
-                `${serviceUrl}/country/`,
-                this.httpOptions,
-            ).toPromise();
-        } catch (e) {
-            this.handleError(e);
-            return;
-        }
-
-        const all: { iso2: string, name: string }[] = res.json() || [];
-        this.__countries = all.map(
-            (c) => { return { code: c.iso2, description: c.name }; }
-        );
-
-        return this.__countries;
-    }
-
-    async getDiveSpots(c: string): Promise<IPlace[]> {
-        const res = await this.http.get(
-            `${serviceUrl}/place/${c}`,
-            this.httpOptions,
-        ).toPromise();
-        const all: IPlace[] = res.json() || [];
-        return all;
-    }
-
-    async saveDive(dive: IDbDive, dive_id?: number): Promise<any> {
+    public async save(dive: IDbDive, dive_id?: number): Promise<any> {
         let req: Response;
         if (dive_id !== undefined) {
             req = await this.http.put(
@@ -123,15 +66,7 @@ export class DiveService extends AuthenticatedService {
         return req.json();
     }
 
-    async getTags(): Promise<IDiveTag[]> {
-        const req = await this.http.get(
-            `${serviceUrl}/tag/`,
-            this.httpOptions,
-        ).toPromise();
-        return req.json();
-    }
-
-    async getDive(dive_id: number): Promise<Dive|undefined> {
+    public async get(dive_id: number): Promise<Dive | undefined> {
 
         const res = await this.http.get(
             `${serviceUrl}/dive/${dive_id}/`,
@@ -142,7 +77,7 @@ export class DiveService extends AuthenticatedService {
         return Dive.Parse(r);
     }
 
-    async deleteDive(id: number): Promise<boolean> {
+    public async delete(id: number): Promise<boolean> {
         const resp = await this.http.delete(
             `${serviceUrl}/dive/${id}`,
             this.httpOptions,
@@ -150,59 +85,24 @@ export class DiveService extends AuthenticatedService {
         return resp.json()
     }
 
-
-    async getSamples(dive_id?: number): Promise<ISample[]> {
+    public async samples(dive_id?: number): Promise<ISample[]> {
         if (dive_id === undefined) {
             return [];
         }
 
         const resp = await this.http.get(
-                `${serviceUrl}/dive/${dive_id}/samples/`,
-                this.httpOptions,
-            ).toPromise();
+            `${serviceUrl}/dive/${dive_id}/samples/`,
+            this.httpOptions,
+        ).toPromise();
         return resp.json() as ISample[];
-
     }
 
-    async getComputers(): Promise<IComputer[]> {
+    public async listComputers(): Promise<IComputer[]> {
         const resp = await this.http.get(
-                `${serviceUrl}/computer/`,
-                this.httpOptions,
-            ).toPromise();
+            `${serviceUrl}/computer/`,
+            this.httpOptions,
+        ).toPromise();
         return resp.json() as IComputer[];
     }
 
-
-    async getTagStats(): Promise<ITagStat[]> {
-        const resp = await this.http.get(
-            `${serviceUrl}/stats/tags/`,
-            this.httpOptions,
-        ).toPromise();
-        return resp.json() as ITagStat[];
-    }
-
-    async getPlaceStats(): Promise<IPlaceStat[]> {
-        const resp = await this.http.get(
-            `${serviceUrl}/stats/places/`,
-            this.httpOptions,
-        ).toPromise();
-        return resp.json() as IPlaceStat[];
-    }
-
-    private handleError(error: Response|any) {
-        let errMsg: string;
-        if (error instanceof Response) {
-            if (error.status === 401) {
-                this.auth.logout();
-                return;
-            }
-            const body = error.json() || '';
-            const err = body.error || JSON.stringify(body);
-            errMsg = `${error.status} - ${error.statusText || ''} ${err}`;
-        } else {
-            errMsg = error.message ? error.message : error.toString();
-        }
-        console.error(errMsg);
-        return Observable.throw(errMsg);
-    }
 }

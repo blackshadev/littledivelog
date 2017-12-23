@@ -77,12 +77,12 @@ export class Duration {
     minutes: number;
     seconds: number;
 
-    static Parse(str: Duration|string|number): Duration {
-        if (typeof(str) === 'string') {
-                const parts = str.split(':').map((s) => parseInt(s, 10));
-                const d = new Duration(...parts);
-                return d;
-        } else if (typeof(str) === 'number') {
+    static Parse(str: Duration | string | number): Duration {
+        if (typeof (str) === 'string') {
+            const parts = str.split(':').map((s) => parseInt(s, 10));
+            const d = new Duration(...parts);
+            return d;
+        } else if (typeof (str) === 'number') {
             return new Duration(0, 0, str);
         } else {
             return str;
@@ -101,7 +101,7 @@ export class Duration {
         // tslint:disable-next-line:no-bitwise
         this.minutes = all.length > 1 ? ((all[all.length - 1] / 60) | 0 + all[all.length - 2]) % 60 : 0;
         // tslint:disable-next-line:no-bitwise
-        this.hours   = all.length > 2 ? (((all[all.length - 1] / 60) | 0 + all[all.length - 2]) / 60) | 0 + all[all.length - 3] : 0;
+        this.hours = all.length > 2 ? (((all[all.length - 1] / 60) | 0 + all[all.length - 2]) / 60) | 0 + all[all.length - 3] : 0;
     }
 
     toString() {
@@ -211,7 +211,7 @@ export interface ITank {
     volume: number;
     oxygen: number;
     pressure: {
-        type: 'bar'|'psi';
+        type: 'bar' | 'psi';
         begin: number;
         end: number;
     };
@@ -219,8 +219,8 @@ export interface ITank {
 
 export interface IDbDive {
     dive_id: number;
-    date: Date|string;
-    divetime: Duration|string|number;
+    date: Date | string;
+    divetime: Duration | string | number;
     tags: IDiveTag[]
     place?: IPlace;
     max_depth?: number;

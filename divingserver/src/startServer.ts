@@ -15,6 +15,7 @@ import { database } from "./pg";
 import * as places from "./places";
 import * as stats from "./stats";
 import * as tags from "./tags";
+import * as user from "./user";
 
 export async function start(pmx?: any) {
 
@@ -37,6 +38,7 @@ export async function start(pmx?: any) {
     app.use("/place/", places.router);
     app.use("/import/", imp.router);
     app.use("/computer/", computers.router);
+    app.use("/user/", user.router);
 
     app.get("/country", async (req, res) => {
         const ctry: QueryResult = await database.call(

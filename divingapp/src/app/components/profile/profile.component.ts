@@ -57,7 +57,8 @@ export class ProfileComponent implements OnInit {
                 new: this.passwordForm.controls.newPassword.value,
             });
         } catch (err) {
-            this.alertMessage =  { for: 'password' , type: 'error', text: err.message } ;
+            this.alertMessage =  { for: 'password' , type: 'error', text: err.json().msg } ;
+            return;
         }
         this.alertMessage =  { for: 'password' , type: 'success', text: 'Password  changed' } ;
     }

@@ -59,14 +59,21 @@ router.put("/profile/password", async (req, res) => {
     );
 
     if (verify(old.rows[0].password, req.body.old)) {
-        throw new Error("Invalid old password");
+        res.status(401);
+        res.json({ msg: "Invalid old password" });
+        return;
     }
 
     if (typeof(req.body.new) !== "string") {
-        throw new Error("Password required");
+        res.status(400);
+        res.json({ msg: "Password required" });
+        return;
     }
+
     if (req.body.new.length < 6) {
-        throw new Error("Minimum length of password is 6");
+        res.status(400);
+        res.json({ msg: "Minimum length of password is 6" });
+        return;
     }
 
     req.body.password = hash(req.body.new);

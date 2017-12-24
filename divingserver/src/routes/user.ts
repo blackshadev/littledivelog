@@ -55,7 +55,6 @@ router.put("/profile/password", async (req, res) => {
              where user_id = $1
         `, [
             req.user.user_id,
-            req.body.password,
         ],
     );
 

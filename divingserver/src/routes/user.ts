@@ -2,9 +2,8 @@ import { hash } from "argon2";
 import * as express from "express";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
-import { database } from "./pg";
-import { SqlBatch } from "./sql";
-import { bodyValidator } from "./validator";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
 
 export const router  = express.Router();
 
@@ -12,7 +11,8 @@ router.get("/profile", async (req, res) => {
 
     const dat = await database.call(
         `select
-                  name
+                  user_id
+                , name
                 , email
                 , inserted
                 , (select count(*) from dives d where d.user_id = u.user_id) as dive_count
@@ -69,4 +69,4 @@ router.put("/profile/password", async (req, res) => {
     );
 
     res.json(dat.rowCount > 0);
-})
+});

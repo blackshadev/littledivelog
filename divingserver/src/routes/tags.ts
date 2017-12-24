@@ -1,7 +1,7 @@
 import * as express from "express";
 import { QueryResult } from "pg";
-import { database } from "./pg";
-import { SqlBatch } from "./sql";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
 
 export const router  = express.Router();
 
@@ -18,6 +18,34 @@ router.get("/", async (req, res) => {
 
     res.json(
         buds.rows,
+    );
+});
+
+router.get("/list", async (req, res) => {
+
+    const stats = await database.call(
+        `
+        select
+              t.tag_id
+            , t.text
+            , t.color
+            , (select count(*) from dive_tags d_t where t.tag_id = d_t.tag_id) as dive_count
+            , (
+                select max(d.date)
+                    from dive_tags d_t
+                    join dives d on d.dive_id = d_t.dive_id
+                where t.tag_id = d_t.tag_id
+            ) as last_dive
+            from tags t
+            where t.user_id = $1
+        `,
+        [
+            req.user.user_id,
+        ],
+    );
+
+    res.json(
+        stats.rows,
     );
 });
 

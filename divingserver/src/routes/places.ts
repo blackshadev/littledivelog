@@ -1,7 +1,7 @@
 import * as express from "express";
 import { QueryResult } from "pg";
-import { database } from "./pg";
-import { SqlBatch } from "./sql";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
 
 export const router  = express.Router();
 
@@ -46,6 +46,38 @@ router.get("/", async (req, res) => {
     res.json(
         places.rows,
     );
+});
+
+router.get("/list", async (req, res) => {
+
+    const stats = await database.call(
+        `
+            select p.*
+            , (
+                select count(*)
+                from dives d
+                where d.place_id = p.place_id
+            ) as dive_count
+            , (
+                select max(d.date)
+                from dives d
+                where d.place_id = p.place_id
+            )
+        from (
+            select distinct d.place_id
+            from dives d
+            where d.user_id = $1
+        ) x
+        join places p on x.place_id = p.place_id
+        `, [
+            req.user.user_id,
+        ],
+    );
+
+    res.json(
+        stats.rows,
+    );
+
 });
 
 router.delete("/:id", async (req, res) => {

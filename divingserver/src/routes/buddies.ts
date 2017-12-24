@@ -1,7 +1,7 @@
 import * as express from "express";
 import { QueryResult } from "pg";
-import { database } from "./pg";
-import { SqlBatch } from "./sql";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
 
 export const router  = express.Router();
 
@@ -18,6 +18,36 @@ router.get("/", async (req, res) => {
 
     res.json(
         buds.rows,
+    );
+});
+
+router.get("/list", async (req, res) => {
+
+    const stats = await database.call(
+        `
+        select
+              bud.buddy_id
+            , bud.text
+            , bud.color
+            , bud.email
+            , bud.buddy_user_id
+            , (select count(*) from dive_buddies d_b where bud.buddy_id = d_b.buddy_id) as dive_count
+            , (
+                select max(d.date)
+                  from dive_buddies d_b
+                  join dives d on d.dive_id = d_b.dive_id
+                 where bud.buddy_id = d_b.buddy_id
+             ) as last_dive
+          from buddies bud
+          where bud.user_id = $1
+        `,
+        [
+            req.user.user_id,
+        ],
+    );
+
+    res.json(
+        stats.rows,
     );
 });
 

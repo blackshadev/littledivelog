@@ -1,9 +1,9 @@
 import * as express from "express";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
-import { database } from "./pg";
-import { SqlBatch } from "./sql";
-import { bodyValidator } from "./validator";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
+import { bodyValidator } from "../validator";
 
 export const router  = express.Router();
 

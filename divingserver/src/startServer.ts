@@ -5,17 +5,15 @@ import * as expressLogging from "express-logging";
 import * as unless from "express-unless";
 import { QueryResult } from "pg";
 import * as pmx from "pmx";
-import * as auth from "./auth";
-import * as buddies from "./buddies";
-import * as computers from "./computers";
-import * as dives from "./dives";
-import * as imp from "./import";
 import { options, secret } from "./jwt.config";
 import { database } from "./pg";
-import * as places from "./places";
-import * as stats from "./stats";
-import * as tags from "./tags";
-import * as user from "./user";
+import * as auth from "./routes/auth";
+import * as buddies from "./routes/buddies";
+import * as computers from "./routes/computers";
+import * as dives from "./routes/dives";
+import * as places from "./routes/places";
+import * as tags from "./routes/tags";
+import * as user from "./routes/user";
 
 export async function start(pmx?: any) {
 
@@ -34,9 +32,7 @@ export async function start(pmx?: any) {
     app.use("/dive/", dives.router);
     app.use("/tag/", tags.router);
     app.use("/buddy/", buddies.router);
-    app.use("/stats/", stats.router);
     app.use("/place/", places.router);
-    app.use("/import/", imp.router);
     app.use("/computer/", computers.router);
     app.use("/user/", user.router);
 

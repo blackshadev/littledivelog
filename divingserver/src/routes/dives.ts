@@ -1,8 +1,8 @@
 import * as express from "express";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
-import { database } from "./pg";
-import { SqlBatch } from "./sql";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
 
 export const router  = express.Router();
 

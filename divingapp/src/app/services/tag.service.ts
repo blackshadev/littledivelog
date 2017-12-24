@@ -36,9 +36,9 @@ export class TagService extends AuthenticatedService {
         return req.json() as ITag[];
     }
 
-    public async summarize(): Promise<ITagStat[]> {
+    public async fullList(): Promise<ITagStat[]> {
         const resp = await this.http.get(
-            `${serviceUrl}/stats/tags/`,
+            `${serviceUrl}/tag/full`,
             this.httpOptions,
         ).toPromise();
         return resp.json() as ITagStat[];

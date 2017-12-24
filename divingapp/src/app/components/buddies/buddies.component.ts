@@ -56,7 +56,7 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     }
 
     public async refresh() {
-        const c = await this.buddyService.summarize()
+        const c = await this.buddyService.fullList()
         this.buddies = c;
         if (this._id !== undefined) {
             this.selectById(this._id);

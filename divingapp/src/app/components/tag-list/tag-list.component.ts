@@ -65,7 +65,7 @@ export class TagListComponent implements OnInit, OnDestroy {
     }
 
     public async refresh() {
-        const c = await this.service.summarize();
+        const c = await this.service.fullList();
         this.tags = c;
         if (this._id !== undefined) {
             this.selectById(this._id);

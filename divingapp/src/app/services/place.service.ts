@@ -38,9 +38,9 @@ export class PlaceService extends AuthenticatedService {
         return all;
     }
 
-    public async summarize(): Promise<IPlaceStat[]> {
+    public async fullList(): Promise<IPlaceStat[]> {
         const resp = await this.http.get(
-            `${serviceUrl}/stats/tags/`,
+            `${serviceUrl}/place/full/`,
             this.httpOptions,
         ).toPromise();
         return resp.json() as IPlaceStat[];

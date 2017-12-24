@@ -32,9 +32,9 @@ export class BuddyService extends AuthenticatedService {
         return req.json() as IBuddy[];
     }
 
-    public async summarize(): Promise<IBuddyStat[]> {
+    public async fullList(): Promise<IBuddyStat[]> {
         const resp = await this.http.get(
-            `${serviceUrl}/stats/buddies/`,
+            `${serviceUrl}/buddy/full`,
             this.httpOptions,
         ).toPromise();
         return resp.json() as IBuddyStat[];

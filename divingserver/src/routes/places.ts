@@ -48,7 +48,7 @@ router.get("/", async (req, res) => {
     );
 });
 
-router.get("/list", async (req, res) => {
+router.get("/full", async (req, res) => {
 
     const stats = await database.call(
         `

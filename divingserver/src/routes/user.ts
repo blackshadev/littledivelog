@@ -58,11 +58,11 @@ router.put("/profile/password", async (req, res) => {
         ],
     );
 
-    // if (!await verify(old.rows[0].password, req.body.old)) {
-    //     res.status(401);
-    //     res.json({ msg: "Invalid old password" });
-    //     return;
-    // }
+    if (!await verify(old.rows[0].password, req.body.old)) {
+        res.status(401);
+        res.json({ msg: "Invalid old password" });
+        return;
+    }
 
     if (typeof(req.body.new) !== "string") {
         res.status(400);

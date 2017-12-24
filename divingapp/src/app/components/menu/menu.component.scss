@@ -22,7 +22,7 @@
         position: absolute;
         bottom: 0;
         width: 100%;
-        height: 78px;
+        // height: 78px;
     }
 
     .toggle-container {
@@ -38,7 +38,7 @@
 
     li {
         margin-top: 0;
-       
+
     }
 
     a {
@@ -49,12 +49,12 @@
         display: block;
         color: $color-primary;
 
-        &:hover { 
+        &:hover {
             text-decoration: none;
         }
 
         i.fa {}
-        
+
         span {
             padding-left: 12px;
         }
@@ -64,7 +64,7 @@
         }
 
         &:hover {
-            background: lighten($color-accent, 10%); 
+            background: lighten($color-accent, 10%);
         }
     }
 }

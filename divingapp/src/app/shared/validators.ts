@@ -1,5 +1,5 @@
 import * as moment from 'moment';
-import { FormControl, Validators } from '@angular/forms';
+import { FormControl, Validators, AbstractControl } from '@angular/forms';
 
 export module CustomValidators {
     export const DateTimeFormats = <string[]>Object.freeze(['DD-MM-YYYY HH:mm:ss', 'DD-MM-YYYY', 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD']);
@@ -29,5 +29,26 @@ export module CustomValidators {
         }
 
         return Validators.email(v);
+    }
+
+    export function sameValue(v: string[]) {
+        return function(form: AbstractControl) {
+            let val: any;
+            let valid = true;
+            for (const cName of v) {
+                const ctrl = form.get(cName);
+
+                if (val !== undefined && ctrl.value !== val) {
+                    ctrl.setErrors({
+                        same: true,
+                    });
+                    valid = false;
+                }
+
+                val = ctrl.value;
+            }
+
+            return valid ? null : { same: true };
+        }
     }
 }

@@ -10,6 +10,7 @@ import { BuddiesComponent } from 'app/components/buddies/buddies.component';
 import { TagListComponent } from 'app/components/tag-list/tag-list.component';
 import { RegisterComponent } from 'app/components/register/register.component';
 import { GuestGuard } from 'app/guards/guest.guard';
+import { ProfileComponent } from 'app/components/profile/profile.component';
 
 
 const routes: Routes = [
@@ -22,6 +23,7 @@ const routes: Routes = [
     { path: 'tag', component: TagListComponent, canActivate: [AuthGuard] },
     { path: 'tag/:id', component: TagListComponent, canActivate: [AuthGuard] },
     { path: 'dive/:id', component: DivesComponent, canActivate: [AuthGuard] },
+    { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent, canActivate: [GuestGuard] },
     { path: 'register', component: RegisterComponent, canActivate: [GuestGuard] },
 ];

@@ -37,7 +37,16 @@
         </ul>
         <div class="bottom-menu">
             <ul class="nav nav-pills nav-stacked">
-
+                <li>
+                    <a  [routerLink]="['profile']" *ngIf="isLoggedIn">
+                        <i class="fa fa-user"></i>
+                        <span>Profile</span>
+                    </a>
+                    <a [routerLink]="['login']" *ngIf="!isLoggedIn">
+                        <i class="fa fa-sign-in"></i>
+                        <span>Sign in</span>
+                    </a>
+                </li>
                 <li>
                     <a (click)="logout()" *ngIf="isLoggedIn">
                         <i class="fa fa-sign-out"></i>

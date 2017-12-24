@@ -26,6 +26,7 @@ import { TagComponent } from './components/controls/tags/tag/tag.component';
 import { BuddyDetailComponent } from './components/buddies/buddy-detail/buddy-detail.component';
 import { BuddyService } from 'app/services/buddy.service';
 import { TagService } from 'app/services/tag.service';
+import { PlaceService } from 'app/services/place.service';
 import { ColorPickerModule } from 'ngx-color-picker';
 import { TagListComponent } from './components/tag-list/tag-list.component';
 import { TagDetailComponent } from './components/tag-list/tag-detail/tag-detail.component';
@@ -33,6 +34,7 @@ import { RegisterComponent } from './components/register/register.component';
 import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.directive';
 import { GuestGuard } from 'app/guards/guest.guard';
 import { ProfileComponent } from './components/profile/profile.component';
+import { ProfileService } from 'app/services/profile.service';
 
 @NgModule({
     declarations: [
@@ -75,6 +77,8 @@ import { ProfileComponent } from './components/profile/profile.component';
         TagService,
         AuthGuard,
         GuestGuard,
+        PlaceService,
+        ProfileService,
         AuthService,
     ],
     bootstrap: [

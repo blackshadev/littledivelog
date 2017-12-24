@@ -48,10 +48,10 @@ router.put("/profile", async (req, res) => {
 
 router.put("/profile/password", async (req, res) => {
 
-    if (typeof(req.body.password) !== "string") {
+    if (typeof(req.body.new) !== "string") {
         throw new Error("Password required");
     }
-    if (req.body.password.length < 6) {
+    if (req.body.new.length < 6) {
         throw new Error("Minimum length of password is 6");
     }
 

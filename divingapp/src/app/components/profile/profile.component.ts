@@ -53,7 +53,7 @@ export class ProfileComponent implements OnInit {
 
         try {
             await this.profileService.changePassword({
-                current: this.passwordForm.controls.currentPassword.value,
+                old: this.passwordForm.controls.currentPassword.value,
                 new: this.passwordForm.controls.newPassword.value,
             });
         } catch (err) {

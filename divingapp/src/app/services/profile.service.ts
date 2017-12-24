@@ -42,11 +42,11 @@ export class ProfileService extends AuthenticatedService {
         ).toPromise();
     }
 
-    public async changePassword(o: { current: string, new: string }): Promise<void> {
+    public async changePassword(o: { old: string, new: string }): Promise<void> {
         const res = await this.http.put(
             `${serviceUrl}/user/profile/password`,
             {
-                current: o.current,
+                old: o.old,
                 new: o.new,
             },
             this.httpOptions,

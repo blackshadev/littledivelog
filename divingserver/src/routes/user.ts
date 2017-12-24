@@ -1,4 +1,4 @@
-import { hash } from "argon2";
+import { hash, verify } from "argon2";
 import * as express from "express";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
@@ -48,6 +48,21 @@ router.put("/profile", async (req, res) => {
 
 router.put("/profile/password", async (req, res) => {
 
+    const old = await database.call(
+        `
+            select password
+              from users
+             where user_id = $1
+        `, [
+            req.user.user_id,
+            req.body.password,
+        ],
+    );
+
+    if (verify(old.rows[0].password, req.body.old)) {
+        throw new Error("Invalid old password");
+    }
+
     if (typeof(req.body.new) !== "string") {
         throw new Error("Password required");
     }
@@ -55,7 +70,7 @@ router.put("/profile/password", async (req, res) => {
         throw new Error("Minimum length of password is 6");
     }
 
-    req.body.password = hash(req.body.password);
+    req.body.password = hash(req.body.new);
 
     const dat = await database.call(
         `
@@ -64,7 +79,7 @@ router.put("/profile/password", async (req, res) => {
              where user_id = $1
         `, [
             req.user.user_id,
-            req.body.password,
+            req.body.new,
         ],
     );
 

@@ -76,7 +76,7 @@ router.put("/profile/password", async (req, res) => {
         return;
     }
 
-    req.body.password = hash(req.body.new);
+    req.body.new = hash(req.body.new);
 
     const dat = await database.call(
         `

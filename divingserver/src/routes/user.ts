@@ -58,7 +58,7 @@ router.put("/profile/password", async (req, res) => {
         ],
     );
 
-    if (!verify(old.rows[0].password, req.body.old)) {
+    if (!await verify(old.rows[0].password, req.body.old)) {
         res.status(401);
         res.json({ msg: "Invalid old password" });
         return;

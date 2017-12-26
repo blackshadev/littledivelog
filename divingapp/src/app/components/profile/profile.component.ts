@@ -40,12 +40,35 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    ngOnInit() {
+    public ngOnInit() {
         this.refresh();
     }
 
+    public async refresh() {
+        this.user = await this.profileService.get();
+        this.profileForm.setValue({
+            name: this.user.name,
+        })
+    }
+
+    public async changeProfile() {
+        markFormGroupTouched(this.profileForm);
+        if (!this.profileForm.valid) {
+            return;
+        }
+
+        try {
+            await this.profileService.save({
+                name: this.profileForm.controls.name.value
+            });
+        } catch (err) {
+            this.alertMessage =  { for: 'profile' , type: 'error', text: err.json().msg } ;
+            return;
+        }
+        this.alertMessage =  { for: 'profile' , type: 'success', text: 'Profile changed' } ;
+    }
+
     public async changePassword() {
-        console.log('HERE');
         markFormGroupTouched(this.passwordForm);
         if (!this.passwordForm.valid) {
             return;
@@ -60,14 +83,7 @@ export class ProfileComponent implements OnInit {
             this.alertMessage =  { for: 'password' , type: 'error', text: err.json().msg } ;
             return;
         }
-        this.alertMessage =  { for: 'password' , type: 'success', text: 'Password  changed' } ;
-    }
-
-    public async refresh() {
-        this.user = await this.profileService.get();
-        this.profileForm.setValue({
-            name: this.user.name,
-        })
+        this.alertMessage =  { for: 'password' , type: 'success', text: 'Password changed' } ;
     }
 
 }

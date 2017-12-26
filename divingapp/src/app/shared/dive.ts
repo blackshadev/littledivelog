@@ -117,7 +117,7 @@ export class Duration {
 export class Dive {
     id?: number;
     date: Date;
-    divetime: Duration;
+    divetime?: Duration;
     maxDepth: number;
     samples: ISample[];
     place?: IPlace;
@@ -131,10 +131,10 @@ export class Dive {
     static New() {
         const dive = new Dive;
         dive.date = new Date();
-        dive.divetime = new Duration(0);
+        dive.divetime = undefined;
         dive.maxDepth = 0;
         dive.samples = [];
-        dive.place = { name: '', country_code: '' };
+        dive.place = { name: undefined, country_code: undefined };
         dive.tags = [];
         dive.buddies = [];
         dive.tanks = [];

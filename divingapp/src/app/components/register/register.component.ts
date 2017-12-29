@@ -50,7 +50,7 @@ export class RegisterComponent implements OnInit {
         this.authService.register(
             this.form.value,
         ).then(
-            () => this.router.navigate(['/login?msg=registered']),
+            () => this.router.navigate(['/login'], { queryParams: { msg: 'registered' } } ),
         ).catch(
             (err: Error) => { this.errorMsg = err.message; }
             )

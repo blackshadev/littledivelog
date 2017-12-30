@@ -24,7 +24,6 @@ export class MiscService extends AuthenticatedService {
             },
         ).toPromise();
 
-        console.log(res.blob());
         this.downloadFile(res);
     }
 

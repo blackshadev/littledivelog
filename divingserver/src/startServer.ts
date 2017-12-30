@@ -13,6 +13,7 @@ import * as computers from "./routes/computers";
 import * as dives from "./routes/dives";
 import * as places from "./routes/places";
 import * as tags from "./routes/tags";
+import * as uploader from "./routes/uploader";
 import * as user from "./routes/user";
 
 export async function start(pmx?: any) {
@@ -35,6 +36,7 @@ export async function start(pmx?: any) {
     app.use("/place/", places.router);
     app.use("/computer/", computers.router);
     app.use("/user/", user.router);
+    app.use("/dive-uploader/", uploader.router);
 
     app.get("/country", async (req, res) => {
         const ctry: QueryResult = await database.call(

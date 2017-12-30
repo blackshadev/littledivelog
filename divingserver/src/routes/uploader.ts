@@ -1,0 +1,48 @@
+import * as archiver from "archiver";
+import * as express from "express";
+import * as xmlEscape from "xml-escape";
+
+export const router  = express.Router();
+
+const uploaderDir = __dirname + "../../dive-uploader/";
+function generateUploaderConfig(token: string): string {
+    const jsonObject = {
+        Serial: null,
+        Computer: null,
+        Destination: null,
+        Target: "DiveLog",
+        AppToken: token,
+    };
+    const jsonStr = xmlEscape(JSON.stringify(jsonObject));
+
+    return `
+<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+    <startup>
+    <supportedRuntime version="v4.0" sku=".NETFramework,Version=v4.5.2" />
+    </startup>
+    <appSettings>
+    <add key="last_session" value="${jsonStr}" />
+    </appSettings>
+</configuration>`;
+}
+
+router.get("/download", async (req, res) => {
+
+    const archive = archiver("zip", {});
+    archive.pipe(res);
+    archive.directory(uploaderDir, false);
+
+    const authheader: string = req.headers.authorization as string;
+    const auth = authheader.split(" ");
+    let token: string;
+    if (auth[0] === "Bearer") {
+        token = auth[1];
+    }
+    archive.append(
+        generateUploaderConfig(token),
+        { name: "DiveLogUploader.exe.config" },
+    );
+    archive.finalize();
+
+});

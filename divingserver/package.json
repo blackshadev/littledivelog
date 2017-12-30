@@ -14,6 +14,7 @@
   },
   "dependencies": {
     "@types/ajv": "^1.0.0",
+    "@types/archiver": "^2.0.1",
     "@types/argon2": "^0.15.0",
     "@types/bluebird": "^3.5.8",
     "@types/body-parser": "^1.16.5",
@@ -23,6 +24,7 @@
     "@types/pg": "^7.1.0",
     "@types/request": "^2.0.3",
     "ajv": "^5.2.2",
+    "archiver": "^2.1.0",
     "argon2": "^0.16.1",
     "bluebird": "^3.5.0",
     "body-parser": "^1.17.2",
@@ -32,6 +34,7 @@
     "jsonwebtoken": "^8.0.0",
     "pg": "^7.3.0",
     "pmx": "^1.5.4",
-    "typescript": "^2.5.2"
+    "typescript": "^2.5.2",
+    "xml-escape": "^1.1.0"
   }
 }

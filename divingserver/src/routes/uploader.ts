@@ -29,6 +29,8 @@ function generateUploaderConfig(token: string): string {
 
 router.get("/download", async (req, res) => {
 
+    res.attachment("dive-uploader.zip");
+
     const archive = archiver("zip", {});
     archive.pipe(res);
     archive.directory(uploaderDir, false);
@@ -39,10 +41,12 @@ router.get("/download", async (req, res) => {
     if (auth[0] === "Bearer") {
         token = auth[1];
     }
+
     archive.append(
         generateUploaderConfig(token),
         { name: "DiveLogUploader.exe.config" },
     );
+
     archive.finalize();
 
 });

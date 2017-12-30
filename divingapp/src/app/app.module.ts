@@ -35,6 +35,8 @@ import { HelpOnFocusDirective } from './directives/help-on-focus/help-on-focus.d
 import { GuestGuard } from 'app/guards/guest.guard';
 import { ProfileComponent } from './components/profile/profile.component';
 import { ProfileService } from 'app/services/profile.service';
+import { DownloadUploaderComponent } from './components/download-uploader/download-uploader.component';
+import { MiscService } from 'app/services/misc.service';
 
 @NgModule({
     declarations: [
@@ -61,6 +63,7 @@ import { ProfileService } from 'app/services/profile.service';
         RegisterComponent,
         HelpOnFocusDirective,
         ProfileComponent,
+        DownloadUploaderComponent,
     ],
     imports: [
         BrowserModule,
@@ -74,6 +77,7 @@ import { ProfileService } from 'app/services/profile.service';
     providers: [
         DiveService,
         BuddyService,
+        MiscService,
         TagService,
         AuthGuard,
         GuestGuard,

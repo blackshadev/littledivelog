@@ -11,6 +11,7 @@ import { TagListComponent } from 'app/components/tag-list/tag-list.component';
 import { RegisterComponent } from 'app/components/register/register.component';
 import { GuestGuard } from 'app/guards/guest.guard';
 import { ProfileComponent } from 'app/components/profile/profile.component';
+import { DownloadUploaderComponent } from 'app/components/download-uploader/download-uploader.component';
 
 
 const routes: Routes = [
@@ -26,6 +27,7 @@ const routes: Routes = [
     { path: 'profile', component: ProfileComponent, canActivate: [AuthGuard] },
     { path: 'login', component: LoginComponent, canActivate: [GuestGuard] },
     { path: 'register', component: RegisterComponent, canActivate: [GuestGuard] },
+    { path: 'uploader', component: DownloadUploaderComponent, canActivate: [AuthGuard] },
 ];
 @NgModule({
     imports: [

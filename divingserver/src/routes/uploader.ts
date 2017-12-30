@@ -5,12 +5,12 @@ import * as xmlEscape from "xml-escape";
 export const router  = express.Router();
 
 const uploaderDir = __dirname + "../../dive-uploader/";
-function generateUploaderConfig(token: string): string {
+function generateUploaderConfig(token: string|null): string {
     const jsonObject = {
         Serial: null,
         Computer: null,
         Destination: null,
-        Target: "DiveLog",
+        Target: token !== null ? "DiveLog" : "File",
         AppToken: token,
     };
     const jsonStr = xmlEscape(JSON.stringify(jsonObject));
@@ -35,11 +35,13 @@ router.get("/download", async (req, res) => {
     archive.pipe(res);
     archive.directory(uploaderDir, false);
 
+    let token: string|null = null;
     const authheader: string = req.headers.authorization as string;
-    const auth = authheader.split(" ");
-    let token: string;
-    if (auth[0] === "Bearer") {
-        token = auth[1];
+    if (authheader) {
+        const auth = authheader.split(" ");
+        if (auth[0] === "Bearer") {
+            token = auth[1];
+        }
     }
 
     archive.append(

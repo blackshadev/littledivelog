@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, Router, ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { serviceUrl } from '../shared/config';
+import * as FileSaver from 'file-saver';
 import 'rxjs/add/operator/toPromise';
 
 @Injectable()
@@ -123,5 +124,10 @@ export class AuthenticatedService {
     ) {
         this.headers = new Headers();
         this.headers.append('Authorization', 'Bearer ' + this.auth.token);
+    }
+
+    protected downloadFile(res: Response) {
+        const blob = new Blob([(res as any)._body], { type: 'application/zip'});
+        FileSaver.saveAs(blob, 'dive-uploader.zip');
     }
 }

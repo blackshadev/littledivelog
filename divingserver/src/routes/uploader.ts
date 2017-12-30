@@ -5,7 +5,7 @@ import * as xmlEscape from "xml-escape";
 
 export const router  = express.Router();
 
-const uploaderDir = __dirname + "../../dive-uploader/";
+const uploaderDir = __dirname + "../../../dive-uploader/";
 function generateUploaderConfig(token: string|null): string {
     const jsonObject = {
         Serial: null,

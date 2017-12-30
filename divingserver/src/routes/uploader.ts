@@ -39,13 +39,8 @@ router.get("/download", (req, res) => {
         res.status(500).send({error: err.message});
     });
 
-    // on stream closed we can end the request
-    archive.on("end", () => {
-        console.log("Archive wrote %d bytes", archive.pointer());
-    });
     archive.pipe(res);
     archive.directory(uploaderDir, false);
-    console.log(path.resolve(uploaderDir));
 
     let token: string|null = null;
     const authheader: string = req.headers.authorization as string;

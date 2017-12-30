@@ -1,5 +1,6 @@
 import * as archiver from "archiver";
 import * as express from "express";
+import * as path from "path";
 import * as xmlEscape from "xml-escape";
 
 export const router  = express.Router();
@@ -27,13 +28,23 @@ function generateUploaderConfig(token: string|null): string {
 </configuration>`;
 }
 
-router.get("/download", async (req, res) => {
+router.get("/download", (req, res) => {
 
     res.attachment("dive-uploader.zip");
 
     const archive = archiver("zip", {});
+
+    archive.on("error", (err) => {
+        res.status(500).send({error: err.message});
+    });
+
+    // on stream closed we can end the request
+    archive.on("end", () => {
+        console.log("Archive wrote %d bytes", archive.pointer());
+    });
     archive.pipe(res);
     archive.directory(uploaderDir, false);
+    console.log(path.resolve(uploaderDir));
 
     let token: string|null = null;
     const authheader: string = req.headers.authorization as string;

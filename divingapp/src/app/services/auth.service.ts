@@ -127,7 +127,7 @@ export class AuthenticatedService {
     }
 
     protected downloadFile(res: Response) {
-        const blob = new Blob([(res as any)._body], { type: 'application/zip'});
+        const blob = new Blob([res.blob()], { type: 'application/zip'});
         FileSaver.saveAs(blob, 'dive-uploader.zip');
     }
 }

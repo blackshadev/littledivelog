@@ -31,6 +31,7 @@ function generateUploaderConfig(token: string|null): string {
 router.get("/download", (req, res) => {
 
     res.attachment("dive-uploader.zip");
+    res.setHeader("Content-Type", "application/zip");
 
     const archive = archiver("zip", {});
 

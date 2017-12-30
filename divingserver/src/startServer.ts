@@ -26,7 +26,7 @@ export async function start(pmx?: any) {
         jwt({
             issuer: options.issuer,
             secret,
-        }).unless({ path: ["/auth/", "/auth/register/"] }),
+        }).unless({ path: ["/auth/", "/auth/register/", "/dive-uploader/download"] }),
     );
 
     app.use("/auth/", auth.router);

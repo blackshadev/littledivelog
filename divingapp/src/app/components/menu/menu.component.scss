@@ -43,20 +43,30 @@
 
     a {
         padding: 10px 15px;
-        width: 155px;
+        width: $width-menu-expanded;
         color: $color-primary;
         border-radius: 0;
         display: block;
         color: $color-primary;
+        overflow: hidden;
 
         &:hover {
             text-decoration: none;
         }
 
-        i.fa {}
+        i.fa {
+            float: left;
+            line-height: 24px;
+        }
 
         span {
+            float: left;
+            display: block;
+            width: $width-menu-expanded - 30px - 21px; // 30px is padding (15px + 15px), 21px is fa icon
+            overflow: hidden;
             padding-left: 12px;
+            line-height: 24px;
+            white-space: nowrap;
         }
 
         &.is-active {

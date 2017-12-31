@@ -90,6 +90,20 @@ body {
     position: relative;
     height: 100%;
     min-height: 100vh;
+
+    .list-view {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        overflow-y: scroll;
+
+        &.list-view-with-menu {
+            top: 55px;
+        }
+    }
+
 }
 
 /deep/ .detail-component {

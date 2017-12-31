@@ -1,5 +1,9 @@
 import { FormGroup } from '@angular/forms';
 
+export function randomInt(hi: number, lo: number = 0) {
+    return Math.floor(Math.random() * (hi - lo) + lo);
+}
+
 export function debounce(func: Function, wait: number, immediate?: boolean): Function {
     let timeout;
     return function () {

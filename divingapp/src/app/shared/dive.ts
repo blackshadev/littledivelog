@@ -161,6 +161,7 @@ export class Dive {
         const dive = new Dive;
         dive.id = d.dive_id;
         dive.date = new Date(<string>d.date);
+        console.log(d.date);
         dive.divetime = Duration.Parse(d.divetime);
         dive.maxDepth = Number(d.max_depth);
         dive.samples = d.samples;

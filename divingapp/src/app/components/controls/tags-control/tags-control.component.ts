@@ -71,9 +71,9 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     public addTag(v: ITag) {
         this.tags.push(v);
 
-        this.clearInput();
         this.doChange();
         this.doTouched();
+        this.clearInput();
     }
 
     public removeTag(iX: number) {

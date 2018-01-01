@@ -45,6 +45,11 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
         this._source = v;
     }
 
+    @Input() set listItem(v: string) {
+        this._listItem = v;
+        this.updateGetItem();
+    }
+
     @Input() set displayItem(v: string) {
         this._displayItem = v;
         this.updateGetItem();
@@ -61,9 +66,9 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
         }
         this._selectedValue = undefined;
         this._value = v;
-        this.changed.emit(v);
         this.onChange(v);
         this.onTouched();
+        this.changed.emit(v);
     }
 
     get value(): any {
@@ -73,7 +78,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     get viewValue(): any {
         const val = this._selectedValue ? this._selectedValue.value : this._value;
         if (typeof val === 'object' && this._displayItem) {
-            return val && val[this._displayItem];
+            return val[this._displayItem];
         } else {
             return val;
         }
@@ -96,6 +101,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     private _source: SourceFunction;
     private _value: any = '';
     private _displayItem: string;
+    private _listItem: string;
     private _keyItem: string;
     private _selectedValue: IItem;
     private _items: IItem[] = [];
@@ -117,8 +123,8 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     public valueSelected(v: IItem, e?) {
         if (!this.ignoreAfterTab) {
             this._items = [v];
-            this.value = v.key;
             this._selectedValue = v;
+            this.value = v.key;
         } else {
             this._selectedValue = undefined;
         }
@@ -126,8 +132,10 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }
 
     public inputblur(e: Event) {
-        const inp = this.inputElement.nativeElement as HTMLInputElement;
-        inp.value = this.viewValue;
+        if (this.forceSelection) {
+            const inp = this.inputElement.nativeElement as HTMLInputElement;
+            inp.value = this.viewValue;
+        }
     }
 
     public onKeyEnter(evt: Event) {
@@ -201,12 +209,25 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
         this.disabled = isDisabled;
     }
 
+    public listFormatter(data) {
+        return data[this._displayItem]
+    }
+
     private updateGetItem() {
-        this.getItem = new Function('isNew', 'v', `return {
-      isNew: isNew,
-      value: v${this._displayItem ? '.' + this._displayItem : ''},
-      key: v${this._keyItem ? '.' + this._keyItem : ''}
-    }`) as (v: any, isNew: boolean) => { key: any, value: any, isNew: boolean };
+        const listItem = this._listItem || this._displayItem || this._keyItem;
+
+        const displayGetter = `v${this._displayItem ? '.' + this._displayItem : ''}`;
+        this.getItem = new Function(
+            'isNew',
+            'v',
+            `return {
+                isNew: isNew,
+                listValue: (isNew ? "(new) " : "") + ${displayGetter},
+                value: ${displayGetter},
+                key: v${this._keyItem ? '.' + this._keyItem : ''}
+            }`
+        ) as (v: any, isNew: boolean) => { key: any, listValue: any, value: any, isNew: boolean };
+
     }
 
 }

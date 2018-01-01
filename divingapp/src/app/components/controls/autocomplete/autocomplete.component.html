@@ -5,7 +5,7 @@
     [source]="filter.bind(this)"
     [value]="viewValue"
     [placeholder]="placeholder"
-    list-formatter="value"
+    list-formatter="listValue"
     (blur)="inputblur($event)"
     (valueChanged)="valueSelected($event)"
     (keydown)="keydown.emit($event)"

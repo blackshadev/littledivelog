@@ -7,7 +7,7 @@ export interface ITagStat {
     tag_id: number;
     text: string;
     color: string;
-    dive_count: Date;
+    dive_count: number;
     last_dive: Date;
 }
 

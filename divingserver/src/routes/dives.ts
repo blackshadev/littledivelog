@@ -95,7 +95,7 @@ function injectTagSql(oPar: {
 
 const fld_map = {
     dive_id: "dive_id",
-    date: "date::text",
+    date: "date",
     divetime: "divetime",
     max_depth: "max_depth",
     place: `(

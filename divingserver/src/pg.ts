@@ -5,7 +5,7 @@ const T_TIMESTAMP = 1114;
 const T_TIMESTAMPTZ = 1184;
 pg.types.setTypeParser(T_DATE       , (str) => str);
 pg.types.setTypeParser(T_TIMESTAMP  , (str) => str);
-pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => str);
+pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => str + ":00");
 
 const cnf = {
   database: "divelog",

@@ -4,14 +4,8 @@ const T_DATE = 1082;
 const T_TIMESTAMP = 1114;
 const T_TIMESTAMPTZ = 1184;
 pg.types.setTypeParser(T_DATE       , (str) => str);
-pg.types.setTypeParser(T_TIMESTAMP  , (str) => {
-    console.log("HERE");
-    return str;
-});
-pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => {
-    console.log(str);
-    return str + ":00";
-});
+pg.types.setTypeParser(T_TIMESTAMP  , (str) => str);
+pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => str + ":00");
 
 const cnf = {
   database: "divelog",

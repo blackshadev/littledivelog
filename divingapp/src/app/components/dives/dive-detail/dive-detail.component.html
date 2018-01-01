@@ -173,8 +173,9 @@
                                 formControlName="country"
                                 [source]="getCountries.bind(this)"
                                 (changed)="diveCountryChanged($event)"
-                                displayItem="description"
+                                displayItem="code"
                                 keyItem="code"
+                                listItem="description"
                                 forceSelection="true"
                             ></app-autocomplete>
                         </div>

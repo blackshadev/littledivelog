@@ -217,12 +217,13 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
         const listItem = this._listItem || this._displayItem || this._keyItem;
 
         const displayGetter = `v${this._displayItem ? '.' + this._displayItem : ''}`;
+        const listGetter = `v${listItem ? '.' + listItem : ''}`;
         this.getItem = new Function(
             'isNew',
             'v',
             `return {
                 isNew: isNew,
-                listValue: (isNew ? "(new) " : "") + ${displayGetter},
+                listValue: (isNew ? "(new) " : "") + ${listGetter},
                 value: ${displayGetter},
                 key: v${this._keyItem ? '.' + this._keyItem : ''}
             }`

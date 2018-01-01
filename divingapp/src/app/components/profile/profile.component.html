@@ -1,6 +1,7 @@
 <div class="container" *ngIf="user !== undefined">
     <div class="jumbotron">
-        <h1>My profile</h1>
+        <h1 class="display-4">My profile</h1>
+        <hr class="my-4" />
         <div class="row">
             <div class="col-md-6 col-sm-12">
                 <form [formGroup]="profileForm" (ngSubmit)="changeProfile()">
@@ -44,9 +45,29 @@
             </div>
         </div>
     </div>
+
     <div class="jumbotron">
-        <h1>Change password</h1>
-        <hr />
+        <h1 class="display-4">Default Equipment</h1>
+        <hr class="my-4" />
+        <form [formGroup]="equipmentForm" (ngSubmit)="changeEquipment()">
+            <div class="form-group"  [ngClass]="{ 'has-danger': equipmentForm.controls.tankSize.touched && !equipmentForm.controls.tankSize.valid }">
+                <label>Tank volume (in Liters)</label>
+                <input class="form-control" formControlName="tankSize" type="text" placeholder="10" />
+            </div>
+            <div class="form-group"  [ngClass]="{ 'has-danger': equipmentForm.controls.tankSize.touched && !equipmentForm.controls.tankSize.valid }">
+                <label>Oxygen percentage</label>
+                <input class="form-control" formControlName="oxygen" type="text" placeholder="21" />
+            </div>
+            <div class="form-group"  [ngClass]="{ 'has-danger': equipmentForm.controls.tankSize.touched && !equipmentForm.controls.tankSize.valid }">
+                <label>Starting pressure</label>
+                <input class="form-control" formControlName="startPressure" type="text" placeholder="200" />
+            </div>
+        </form>
+    </div>
+
+    <div class="jumbotron">
+        <h1 class="display-4">Change password</h1>
+        <hr class="my-4" />
         <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
             <div class="form-group"  [ngClass]="{ 'has-danger': passwordForm.controls.currentPassword.touched && !passwordForm.controls.currentPassword.valid }">
                 <label>Current password</label>

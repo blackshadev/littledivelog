@@ -43,26 +43,28 @@
         </ul>
         <div class="bottom-menu">
             <ul class="nav nav-pills nav-stacked">
-                <li>
-                    <a  [routerLink]="['profile']" *ngIf="isLoggedIn">
-                        <i class="fa fa-user"></i>
-                        <span>Profile</span>
-                    </a>
-                    <a [routerLink]="['login']" *ngIf="!isLoggedIn">
-                        <i class="fa fa-sign-in"></i>
-                        <span>Sign in</span>
-                    </a>
-                </li>
-                <li>
-                    <a (click)="logout()" *ngIf="isLoggedIn">
-                        <i class="fa fa-sign-out"></i>
-                        <span>Sign out</span>
-                    </a>
-                    <a [routerLink]="['login']" *ngIf="!isLoggedIn">
-                        <i class="fa fa-sign-in"></i>
-                        <span>Sign in</span>
-                    </a>
-                </li>
+                <ng-container *ngIf="!isLoggedIn">
+                    <li>
+                        <a [routerLink]="['login']">
+                            <i class="fa fa-sign-in"></i>
+                            <span>Sign in</span>
+                        </a>
+                    </li>
+                </ng-container>
+                <ng-container *ngIf="isLoggedIn">
+                    <li>
+                        <a  [routerLink]="['profile']">
+                            <i class="fa fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a (click)="logout()">
+                            <i class="fa fa-sign-out"></i>
+                            <span>Sign out</span>
+                        </a>
+                    </li>
+                </ng-container>
             </ul>
             <div class="toggle-container">
                 <a (click)="toggle()">

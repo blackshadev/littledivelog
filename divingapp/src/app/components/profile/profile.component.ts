@@ -40,12 +40,15 @@ export class ProfileComponent implements OnInit {
             name: ['']
         });
         this.equipmentForm = fb.group({
-            tank: {
+            tank: fb.group({
                 volume: ['', CustomValidators.integer],
-                airPercentage: ['', CustomValidators.integer],
-                pressureStart: ['', CustomValidators.integer],
-                pressureType: ['bar', Validators.pattern(/bar|psi/)],
-            }
+                oxygen: ['', CustomValidators.integer],
+                pressure: fb.group({
+                    begin: ['', CustomValidators.decimal],
+                    end:   ['', CustomValidators.decimal],
+                    type:  ['bar', Validators.pattern(/bar|psi/)],
+                }),
+            }),
         });
     }
 
@@ -98,14 +101,17 @@ export class ProfileComponent implements OnInit {
     public async changeEquipment() {
         markFormGroupTouched(this.equipmentForm);
         if (!this.equipmentForm.valid) {
+            console.log('NOT VALID', this.equipmentForm.errors);
             return;
         }
 
-
         try {
-            await this.profileService.changeEquipment(
-                this.equipmentForm.value,
-            );
+            const val = this.equipmentForm.value;
+            await this.profileService.changeEquipment({
+                tanks: [
+                    val.tank
+                ]
+            });
         } catch (err) {
             this.alertMessage =  { for: 'equipment' , type: 'error', text: err.json().msg } ;
             return;

@@ -18,6 +18,7 @@ export interface IEquipment {
         airPercentage: number,
         pressure: {
             begin: number,
+            end: number,
             type: 'bar'|'psi',
         }
     }>

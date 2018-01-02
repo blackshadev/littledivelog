@@ -70,20 +70,21 @@
                         <div class="input-group">
                             <input type="text" class="form-control" formControlName="volume" placeholder="10" />
                             <span class="input-group-addon">L</span>
-                            <input type="text" class="form-control" formControlName="airPercentage" placeholder="21" />
+                            <input type="text" class="form-control" formControlName="oxygen" placeholder="21" />
                             <span class="input-group-addon">%</span>
                         </div>
-                        <div class="input-group" width="100%">
-                            <input type="text" class="form-control" formControlName="pressureStart" placeholder="200" />
-                            <!-- <span class="input-group-btn" style="width:0px;"></span>
-                            <input type="text" class="form-control" formControlName="pressureEnd" placeholder="50" /> -->
+                        <div class="input-group" width="100%" formGroupName="pressure">
+                            <input type="text" class="form-control" formControlName="begin" placeholder="200" />
+                            <span class="input-group-btn" style="width:0px;"></span>
+                            <input type="text" class="form-control" formControlName="end" placeholder="50" />
+
                             <div class="dropdown">
                                 <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    {{equipmentForm.controls.tank.controls.pressureType.value}}
+                                    {{equipmentForm.controls.tank.controls.pressure.controls.type.value}}
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right">
-                                    <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressureType.setValue('bar')">bar</a>
-                                    <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressureType.setValue('psi')">psi</a>
+                                    <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('bar')">bar</a>
+                                    <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressure.controls.setValue('psi')">psi</a>
                                 </div>
                             </div>
                         </div>
@@ -93,6 +94,10 @@
                             <label>
                                 Start Pressure
                             </label>
+                        </div><div class="col">
+                            <label>
+                                End Pressure
+                            </label>
                         </div>
                     </div>
 
@@ -100,29 +105,28 @@
                         Tank volume must be a valid integer; eg 10
                     </small>
 
-                    <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.airPercentage.errors?.invalid && equipmentForm.controls.tank.controls.airPercentage.touched">
+                    <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.oxygen.errors?.invalid && equipmentForm.controls.tank.controls.oxygen.touched">
                         Oxygen percentage must be an integer number; eg 21
                     </small>
 
-                    <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.pressureStart.errors?.invalid && equipmentForm.controls.tank.controls.pressureStart.touched">
+                    <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.pressure.controls.begin.errors?.invalid && equipmentForm.controls.tank.controls.pressure.controls.begin.touched">
                         Start pressure must be a valid number; eg 10.05
                     </small>
 
+                    <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.pressure.controls.end.errors?.invalid && equipmentForm.controls.tank.controls.pressure.controls.end.touched">
+                        End pressure must be a valid number; eg 10.05
+                    </small>
 
                 </div>
             </div>
-            <!-- <div class="form-group"  [ngClass]="{ 'has-danger': equipmentForm.controls.tank.constrols.volume.touched && !equipmentForm.controls.tank.constrols.volume.valid }">
-                <label>Tank volume (in Liters)</label>
-                <input class="form-control" formControlName="tankSize" type="text" placeholder="10" />
+            <div
+                *ngIf="alertMessage && alertMessage.for === 'equipment'"
+                class="alert"
+                [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }"
+            >
+                {{alertMessage.text}}
             </div>
-            <div class="form-group"  [ngClass]="{ 'has-danger': equipmentForm.controls.tankSize.touched && !equipmentForm.controls.tankSize.valid }">
-                <label>Oxygen percentage</label>
-                <input class="form-control" formControlName="oxygen" type="text" placeholder="21" />
-            </div>
-            <div class="form-group"  [ngClass]="{ 'has-danger': equipmentForm.controls.tankSize.touched && !equipmentForm.controls.tankSize.valid }">
-                <label>Starting pressure</label>
-                <input class="form-control" formControlName="startPressure" type="text" placeholder="200" />
-            </div> -->
+            <button class="btn btn-primary" type="submit">Change Equipment</button>
         </form>
     </div>
 

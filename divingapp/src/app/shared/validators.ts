@@ -12,15 +12,15 @@ export module CustomValidators {
     }
 
     export function decimal(v: FormControl) {
-        return /\d+(\.\d+)?/.test(v.value) ? null : { invalid: true };
+        return /^(\d+(\.\d+)?)?$/.test(v.value) ? null : { invalid: true };
     }
 
     export function integer(v: FormControl) {
-        return /\d+/.test(v.value) ? null : { invalid: true };
+        return /^\d*$/.test(v.value) ? null : { invalid: true };
     }
 
     export function color(v: FormControl) {
-        return /^#([a-f0-9]{3}|[a-f0-9]{6})$/i.test(v.value) ? null : { invalid: true };
+        return /^(#([a-f0-9]{3}|[a-f0-9]{6}))?$/i.test(v.value) ? null : { invalid: true };
     }
 
     export function optionalEmail(v: FormControl) {

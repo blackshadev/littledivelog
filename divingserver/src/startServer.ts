@@ -4,7 +4,6 @@ import * as jwt from "express-jwt";
 import * as expressLogging from "express-logging";
 import * as unless from "express-unless";
 import { QueryResult } from "pg";
-import * as pmx from "pmx";
 import { options, secret } from "./jwt.config";
 import { database } from "./pg";
 import * as auth from "./routes/auth";
@@ -57,7 +56,6 @@ export async function start(pmx?: any) {
     });
 
     app.use((err, req, res, next) => {
-        console.log("ERR", err);
         if (err.name === "UnauthorizedError") {
             res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
         } else if (err.name === "BodyValidationError") {

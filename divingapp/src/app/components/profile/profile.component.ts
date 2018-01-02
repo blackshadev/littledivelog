@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileService, IProfile } from 'app/services/profile.service';
+import { ProfileService, IProfile, IEquipment } from 'app/services/profile.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { markFormGroupTouched } from 'app/shared/common';
 import { CustomValidators } from 'app/shared/validators';
@@ -11,6 +11,8 @@ import { CustomValidators } from 'app/shared/validators';
 })
 export class ProfileComponent implements OnInit {
     public user: IProfile;
+    public equipment: IEquipment;
+
     public passwordForm: FormGroup;
     public profileForm: FormGroup;
     public equipmentForm: FormGroup;
@@ -60,7 +62,12 @@ export class ProfileComponent implements OnInit {
         this.user = await this.profileService.get();
         this.profileForm.setValue({
             name: this.user.name,
-        })
+        });
+
+        this.equipment = await this.profileService.equipment();
+        this.equipmentForm.setValue({
+            tank: this.equipment.tanks[0]
+        });
     }
 
     public async changeProfile() {
@@ -101,12 +108,12 @@ export class ProfileComponent implements OnInit {
     public async changeEquipment() {
         markFormGroupTouched(this.equipmentForm);
         if (!this.equipmentForm.valid) {
-            console.log('NOT VALID', this.equipmentForm.errors);
             return;
         }
 
         try {
             const val = this.equipmentForm.value;
+            this.equipment = undefined;
             await this.profileService.changeEquipment({
                 tanks: [
                     val.tank

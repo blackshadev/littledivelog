@@ -13,6 +13,7 @@ import { BuddyService } from 'app/services/buddy.service';
 import { markFormGroupTouched } from 'app/shared/common';
 import { PlaceService } from 'app/services/place.service';
 import { TagService } from 'app/services/tag.service';
+import { ProfileService } from 'app/services/profile.service';
 
 declare function $(...args: any[]): any;
 
@@ -35,6 +36,7 @@ export class DiveDetailComponent implements OnInit, OnChanges {
         private placeService: PlaceService,
         private buddyService: BuddyService,
         private tagService: TagService,
+        private profileService: ProfileService,
         private _fb: FormBuilder,
         private hostElement: ElementRef,
         private route: Router,

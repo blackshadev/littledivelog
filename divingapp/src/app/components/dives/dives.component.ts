@@ -6,6 +6,7 @@ import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/co
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Location } from '@angular/common';
+import { ProfileService } from 'app/services/profile.service';
 
 @Component({
     selector: 'app-dives',
@@ -25,6 +26,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     constructor(
         private service: DiveService,
         private route: ActivatedRoute,
+        private profile: ProfileService,
         private location: Location,
     ) {
         this.refresh();
@@ -41,17 +43,24 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit(): void {
         this.subs.push(
             this.route.params.flatMap(
-                (params: Params) => {
+                async (params: Params) => {
                     if (params['id'] === 'new') {
-                        return Promise.resolve(Dive.New());
+                        const equipment = await this.profile.equipment();
+                        const dive = Dive.New();
+
+                        if (equipment.tanks) {
+                            dive.tanks = equipment.tanks;
+                        }
+
+                        return dive;
                     }
                     if (params['id'] === undefined) {
-                        return Promise.resolve(undefined);
+                        return undefined;
                     } else {
-                        return this.service.get(+params['id']);
+                        return await this.service.get(+params['id']);
                     }
                 }).subscribe(
-                dive => this.dive = dive
+                    dive => this.dive = dive
                 )
         );
 

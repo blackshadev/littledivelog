@@ -12,6 +12,11 @@ export interface ITank {
 export function tanksJSONtoType(tanks: ITank[]): string {
     return `{"${tanks.map((tank) => {
         // tslint:disable-next-line:max-line-length
-        return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
+        return `(${isNull(tank.volume)},${isNull(tank.oxygen)},\\"(${isNull(tank.pressure.begin)},${isNull(tank.pressure.end)},${isNull(tank.pressure.type)})\\")`;
     }).join('","')}"}`;
+}
+
+
+function isNull(v: any): string {
+    return v === null || v === undefined ? "" : v;
 }

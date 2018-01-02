@@ -15,7 +15,7 @@ export interface IProfile {
 export interface IEquipment {
     tanks: Array<{
         volume: number,
-        airPercentage: number,
+        oxygen: number,
         pressure: {
             begin: number,
             end: number,
@@ -26,6 +26,8 @@ export interface IEquipment {
 
 @Injectable()
 export class ProfileService extends AuthenticatedService {
+
+    private _equipment?: IEquipment;
 
     constructor(
         protected http: Http,
@@ -64,6 +66,19 @@ export class ProfileService extends AuthenticatedService {
             this.httpOptions,
         ).toPromise();
 
+    }
+
+    public async equipment(): Promise<IEquipment> {
+        if (this._equipment) {
+            return this._equipment;
+        }
+
+        const res = await this.http.get(
+            `${serviceUrl}/user/profile/equipment`,
+            this.httpOptions,
+        ).toPromise();
+
+        return res.json();
     }
 
     public async changeEquipment(o: IEquipment): Promise<void> {

@@ -95,6 +95,8 @@ router.put("/profile/password", async (req, res) => {
 });
 
 router.put("/profile/equipment", async (req, res) => {
+    const tank = tanksJSONtoType(req.body.tanks);
+    console.log(req.body.tanks, tank);
     const dat = await database.call(
         `insert into equipment
                     (user_id, tanks)
@@ -105,7 +107,7 @@ router.put("/profile/equipment", async (req, res) => {
         `,
         [
             req.user.user_id,
-            tanksJSONtoType(req.body.tanks),
+            tank,
         ],
     );
 

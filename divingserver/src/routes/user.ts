@@ -97,10 +97,10 @@ router.put("/profile/equipment", async (req, res) => {
     const dat = await database.call(
         `insert into equipment
                     (user_id, tanks)
-             values ($1, $2)
+             values ($1, json_to_record($2::json))
          on conflict (user_id)
            do update
-                 set tanks = $2
+                 set tanks = json_to_record($2::json)
         `,
         [
             req.user.user_id,
@@ -109,4 +109,18 @@ router.put("/profile/equipment", async (req, res) => {
     );
 
     res.json(dat.rowCount > 0);
+});
+
+router.get("/profile/equipment", async (req, res) => {
+    const dat = await database.call(
+        `select *
+          from equipment
+         where user_id = $1
+        `,
+        [
+            req.user.user_id,
+        ],
+    );
+
+    res.json(dat.rows[0]);
 });

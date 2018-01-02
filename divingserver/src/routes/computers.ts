@@ -1,11 +1,12 @@
 import * as express from "express";
+import * as Router from "express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { bodyValidator } from "../validator";
 
-export const router  = express.Router();
+export const router  = Router() as express.Router;
 
 interface IImportSample {
     Time: number;

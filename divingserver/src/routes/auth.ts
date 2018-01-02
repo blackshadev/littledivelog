@@ -1,10 +1,11 @@
 import * as argon2 from "argon2";
 import * as express from "express";
+import * as Router from "express-promise-router";
 import { QueryResult } from "pg";
 import { createToken } from "../jwt";
 import { database } from "../pg";
 
-export const router  = express.Router();
+export const router = Router() as express.Router;
 
 export interface IUserRow {
     user_id: number;

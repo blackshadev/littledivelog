@@ -1,9 +1,10 @@
 import * as archiver from "archiver";
 import * as express from "express";
+import * as Router from "express-promise-router";
 import * as path from "path";
 import * as xmlEscape from "xml-escape";
 
-export const router  = express.Router();
+export const router  = Router() as express.Router;
 
 const uploaderDir = __dirname + "../../../dive-uploader/";
 function generateUploaderConfig(token: string|null): string {

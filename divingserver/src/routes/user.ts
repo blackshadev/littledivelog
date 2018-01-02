@@ -1,11 +1,12 @@
 import { hash, verify } from "argon2";
 import * as express from "express";
+import * as Router from "express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 
-export const router  = express.Router();
+export const router  = Router() as express.Router;
 
 router.get("/profile", async (req, res) => {
 
@@ -86,6 +87,24 @@ router.put("/profile/password", async (req, res) => {
         `, [
             req.user.user_id,
             req.body.new,
+        ],
+    );
+
+    res.json(dat.rowCount > 0);
+});
+
+router.put("/profile/equipment", async (req, res) => {
+    const dat = await database.call(
+        `insert into equipment
+                    (user_id, tanks)
+             values ($1, $2)
+         on conflict (user_id)
+           do update
+                 set tanks = $2
+        `,
+        [
+            req.user.user_id,
+            req.body.tanks,
         ],
     );
 

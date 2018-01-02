@@ -13,9 +13,10 @@ export class ProfileComponent implements OnInit {
     public user: IProfile;
     public passwordForm: FormGroup;
     public profileForm: FormGroup;
+    public equipmentForm: FormGroup;
 
     public alertMessage: {
-        for: 'profile'|'password',
+        for: 'profile'|'password'|'equipment',
         type: 'error'|'success',
         text: string
     }|undefined;
@@ -37,6 +38,14 @@ export class ProfileComponent implements OnInit {
         });
         this.profileForm = fb.group({
             name: ['']
+        });
+        this.equipmentForm = fb.group({
+            tank: {
+                volume: ['', CustomValidators.integer],
+                airPercentage: ['', CustomValidators.integer],
+                pressureStart: ['', CustomValidators.integer],
+                pressureType: ['bar', Validators.pattern(/bar|psi/)],
+            }
         });
     }
 
@@ -84,6 +93,24 @@ export class ProfileComponent implements OnInit {
             return;
         }
         this.alertMessage =  { for: 'password' , type: 'success', text: 'Password changed' } ;
+    }
+
+    public async changeEquipment() {
+        markFormGroupTouched(this.equipmentForm);
+        if (!this.equipmentForm.valid) {
+            return;
+        }
+
+
+        try {
+            await this.profileService.changeEquipment(
+                this.equipmentForm.value,
+            );
+        } catch (err) {
+            this.alertMessage =  { for: 'equipment' , type: 'error', text: err.json().msg } ;
+            return;
+        }
+        this.alertMessage =  { for: 'equipment' , type: 'success', text: 'Equipment changed' } ;
     }
 
 }

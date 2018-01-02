@@ -12,9 +12,19 @@ export interface IProfile {
     tag_count: number;
 }
 
+export interface IEquipment {
+    tanks: Array<{
+        volume: number,
+        airPercentage: number,
+        pressure: {
+            begin: number,
+            type: 'bar'|'psi',
+        }
+    }>
+}
+
 @Injectable()
 export class ProfileService extends AuthenticatedService {
-
 
     constructor(
         protected http: Http,
@@ -53,6 +63,14 @@ export class ProfileService extends AuthenticatedService {
             this.httpOptions,
         ).toPromise();
 
+    }
+
+    public async changeEquipment(o: IEquipment): Promise<void> {
+        const res = await this.http.put(
+            `${serviceUrl}/user/profile/equipment`,
+            o,
+            this.httpOptions,
+        ).toPromise();
     }
 
 }

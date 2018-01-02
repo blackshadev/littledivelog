@@ -4,6 +4,7 @@ import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
+import { tanksJSONtoType } from "../tansforms";
 
 export const router  = Router() as express.Router;
 
@@ -255,10 +256,7 @@ router.put("/:id", async (req, res) => {
         });
     }
 
-    body.tanks = `{"${body.tanks.map((tank) => {
-        // tslint:disable-next-line:max-line-length
-        return `(${tank.volume},${tank.oxygen},\\"(${tank.pressure.begin},${tank.pressure.end},${tank.pressure.type})\\")`;
-    }).join('","')}"}`;
+    body.tanks = tanksJSONtoType(body.tanks);
     let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
     const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
@@ -324,11 +322,7 @@ router.post("/", async (req, res) => {
         body.samples = JSON.stringify(body.samples);
     }
 
-    body.tanks = `{"${body.tanks.map((tank) => {
-        // tslint:disable-next-line:max-line-length
-        return `(${tank.volume},${tank.oxygen},\\"(${Math.round(tank.pressure.begin)},${Math.round(tank.pressure.end)},${tank.pressure.type})\\")`;
-    }).join('","')}"}`;
-
+    body.tanks = tanksJSONtoType(body.tanks);
     body.user_id = userid;
 
     const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id", "fingerprint", "samples"];

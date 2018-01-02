@@ -5,6 +5,7 @@ import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
+import { tanksJSONtoType } from "../tansforms";
 
 export const router  = Router() as express.Router;
 
@@ -97,14 +98,14 @@ router.put("/profile/equipment", async (req, res) => {
     const dat = await database.call(
         `insert into equipment
                     (user_id, tanks)
-             values ($1, json_to_record($2::json))
+             values ($1, $2)
          on conflict (user_id)
            do update
-                 set tanks = json_to_record($2::json)
+                 set tanks = $2
         `,
         [
             req.user.user_id,
-            req.body.tanks,
+            tanksJSONtoType(req.body.tanks),
         ],
     );
 
@@ -113,7 +114,8 @@ router.put("/profile/equipment", async (req, res) => {
 
 router.get("/profile/equipment", async (req, res) => {
     const dat = await database.call(
-        `select *
+        `select
+                to_json(tanks) as tanks
           from equipment
          where user_id = $1
         `,

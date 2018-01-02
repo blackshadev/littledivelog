@@ -42,7 +42,7 @@
                             Date is required
                         </small>
                         <small class="has-danger error-text" *ngIf="form.controls.date.errors?.invalid">
-                            Date must be a valid date, eg 2017-07-22 22:59:59
+                            Date must be a valid date (time). Accepted values are: 2017-07-22 22:59:59, 2017-07-22, 2017-07-22 22, 2017-07-22 22:59.
                         </small>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                             Divetime is required
                         </small>
                         <small class="has-danger error-text" *ngIf="form.controls.divetime.errors?.invalid">
-                            Divetime must be a valid duration; eg. 00:00:00
+                            Divetime must be a valid duration; Accepted values are: 00:00:00 or 00:00
                         </small>
                     </div>
                 </div>
@@ -67,7 +67,7 @@
                             Max depth is required
                         </small>
                         <small class="has-danger error-text" *ngIf="form.controls.maxDepth.errors?.pattern">
-                            Max depth must be a valid numer; eg. 10.05
+                            Max depth must be a valid numer; Accepted values are: 10.05
                         </small>
                     </div>
                 </div>

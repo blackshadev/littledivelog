@@ -2,7 +2,10 @@ import * as moment from 'moment';
 import { FormControl, Validators, AbstractControl } from '@angular/forms';
 
 export module CustomValidators {
-    export const DateTimeFormats = <string[]>Object.freeze(['DD-MM-YYYY HH:mm:ss', 'DD-MM-YYYY', 'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD']);
+    export const DateTimeFormats = <string[]>Object.freeze([
+        'DD-MM-YYYY HH:mm:ss', 'DD-MM-YYYY', 'DD-MM-YYYY HH', 'DD-MM-YYYY HH:mm',
+        'YYYY-MM-DD HH:mm:ss', 'YYYY-MM-DD', 'YYYY-MM-DD HH', 'YYYY-MM-DD HH:mm'
+    ]);
     export function datetime(v: FormControl) {
         return moment(v.value, DateTimeFormats, true).isValid() ? null : { invalid: true };
     }

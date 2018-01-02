@@ -59,7 +59,8 @@ export class DiveDetailComponent implements OnInit, OnChanges {
 
                         return isValid ? null : { 'both-required': true };
                     }
-                }),
+                }
+            ),
             tank: this._fb.group({
                 volume: ['', [Validators.required, CustomValidators.integer]],
                 pressureStart: ['', [Validators.required, CustomValidators.decimal]],

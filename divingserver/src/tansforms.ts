@@ -16,7 +16,6 @@ export function tanksJSONtoType(tanks: ITank[]): string {
     }).join('","')}"}`;
 }
 
-
 function isNull(v: any): string {
     return v === null || v === undefined ? "" : v;
 }

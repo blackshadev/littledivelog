@@ -45,14 +45,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
             this.route.params.flatMap(
                 async (params: Params) => {
                     if (params['id'] === 'new') {
-                        const equipment = await this.profile.equipment();
-                        const dive = Dive.New();
-
-                        if (equipment.tanks) {
-                            dive.tanks = equipment.tanks;
-                        }
-
-                        return dive;
+                        return await this.newDive();
                     }
                     if (params['id'] === undefined) {
                         return undefined;
@@ -97,10 +90,25 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         );
     }
 
-    newDive() {
+    async gotoNewDive() {
         this.location.go('/dive/new');
-        this.dive = Dive.New();
+        this.dive = await this.newDive();
     }
+
+    protected  async newDive(): Promise<Dive> {
+        const equipment = await this.profile.equipment();
+        const dive = Dive.New();
+
+        if (equipment.tanks) {
+            dive.tanks = equipment.tanks;
+        }
+
+        console.log(dive);
+
+        return dive;
+    }
+
+
 
     protected extractSearches(s: string): {[k in TFilterKeys]?: string } {
         const re = /([^:;]+):([^;$]+)/g;

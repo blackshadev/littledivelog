@@ -7,16 +7,6 @@ pg.types.setTypeParser(T_DATE       , (str) => str);
 pg.types.setTypeParser(T_TIMESTAMP  , (str) => str);
 pg.types.setTypeParser(T_TIMESTAMPTZ, (str) => str + ":00");
 
-const cnf = {
-  database: "divelog",
-  host: "yildun.littledev.nl",
-  idleTimeoutMillis: 30000,
-  max: 10,
-  password: "tester",
-  port: 5432,
-  user: "divelog",
-};
-
 enum ConnectionState {
     Disconnected,
     Connecting,
@@ -36,12 +26,39 @@ interface IBulkInsertParams {
     };
 }
 
+interface IDbConfig {
+    database: string;
+    host: string;
+    username: string;
+    password?: string;
+    port?: number;
+}
+
 class DbAdapter {
     private pool: pg.Pool;
+    private cnf: IDbConfig;
 
-    constructor() {
-        this.pool = new pg.Pool(cnf);
+    public setConfig(
+        cnf: IDbConfig,
+    ) {
+        this.cnf = cnf;
     }
+
+    public async start() {
+        if (!this.cnf) {
+            throw new Error("No config set");
+        }
+        this.pool = new pg.Pool({
+            database: this.cnf.database,
+            host: this.cnf.host,
+            port: this.cnf.port,
+            user: this.cnf.username,
+            password: this.cnf.password,
+            application_name: "DiveLog",
+            max: 10,
+        });
+    }
+
     public async call(sql: string, params: any[]): Promise<pg.QueryResult> {
         return this.pool.query(sql, params);
     }

@@ -4,6 +4,7 @@ import * as jwt from "express-jwt";
 import * as expressLogging from "express-logging";
 import * as unless from "express-unless";
 import { QueryResult } from "pg";
+import { config, readConfig } from "./config";
 import { options, secret } from "./jwt.config";
 import { database } from "./pg";
 import * as auth from "./routes/auth";
@@ -17,6 +18,15 @@ import * as user from "./routes/user";
 
 export async function start(pmx?: any) {
 
+    const path = process.env.CONFIG || process.cwd() + "/config.json";
+    console.log("Reading config: " + path);
+    await readConfig(path);
+
+    console.log("Starting database on " + config.database.host);
+    database.setConfig(config.database);
+    await database.start();
+
+    console.log("Setting up expres");
     const app = express();
     app.use(expressLogging(console));
     app.use(bodyParser.json({ limit: "500mb" }));
@@ -67,13 +77,16 @@ export async function start(pmx?: any) {
     });
 
     await new Promise((resolve, reject) => {
-        app.listen(3000, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
-        });
+        app.listen(
+            config.http.port,
+            (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            },
+        );
     });
     console.log("DiveServer listening on 3000");
 }

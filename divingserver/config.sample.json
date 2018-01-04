@@ -1,0 +1,11 @@
+{
+    "http": {
+        "port": 3000
+    },
+    "database": {
+        "host": "sample.domain.tld",
+        "username": "user",
+        "database": "diveDb",
+        "password": "pw"
+    }
+}

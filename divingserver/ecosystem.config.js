@@ -9,6 +9,9 @@ module.exports = {
     {
       name      : 'divingserver',
       script    : 'build/app.js',
+      env: {
+        CONFIG: "~/config.json"
+      }
     }
   ],
 

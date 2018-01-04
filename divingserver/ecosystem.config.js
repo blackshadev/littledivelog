@@ -10,7 +10,7 @@ module.exports = {
       name      : 'divingserver',
       script    : 'build/app.js',
       env: {
-        CONFIG: "~/config.json"
+        CONFIG: "/home/dive.littledev.nl/config.json"
       }
     }
   ],

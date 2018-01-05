@@ -5,7 +5,6 @@ import * as expressLogging from "express-logging";
 import * as unless from "express-unless";
 import { QueryResult } from "pg";
 import { config, readConfig } from "./config";
-import { options, secret } from "./jwt.config";
 import { database } from "./pg";
 import * as auth from "./routes/auth";
 import * as buddies from "./routes/buddies";
@@ -33,8 +32,8 @@ export async function start(pmx?: any) {
 
     app.use(
         jwt({
-            issuer: options.issuer,
-            secret,
+            issuer: config.jwt.issuer,
+            secret: config.jwt.secret,
         }).unless({ path: ["/auth/", "/auth/register/", "/dive-uploader/download"] }),
     );
 

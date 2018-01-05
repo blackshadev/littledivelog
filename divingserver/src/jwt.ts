@@ -1,16 +1,16 @@
 
 import * as jwt from "jsonwebtoken";
-import { options, secret } from "./jwt.config";
+import { config } from "./config";
 
 export async function createToken(dat: any): Promise<string> {
     return new Promise<string> (
         (resolve, reject) => {
             jwt.sign(
                 dat,
-                secret,
+                config.jwt.secret,
                 {
                     algorithm: "HS512",
-                    issuer: options.issuer,
+                    issuer: config.jwt.issuer,
                 },
                 (err, result) => {
                     if (err) {

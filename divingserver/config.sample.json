@@ -2,6 +2,10 @@
     "http": {
         "port": 3000
     },
+    "jwt": {
+        "issuer": "myDiveApp",
+        "secret": "superDuperSecretKey"
+    },
     "database": {
         "host": "sample.domain.tld",
         "username": "user",

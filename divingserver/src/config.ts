@@ -12,23 +12,22 @@ interface IConfig {
         port?: number;
         password?: string;
     };
+    jwt: {
+        secret: string;
+        issuer: string;
+    };
 }
 
-export let config: IConfig = {
-    http: {
-        port: 3000,
-    },
-    database: {
-        host: "please.provide.a.valid.config.json",
-        username: "uname",
-        database: "sample.db",
-    },
-};
+export let config: IConfig;
 
 const ajv = Ajv();
 const validator = ajv.compile({
     type: "object",
     properties: {
+        jwt: {
+            issuer: { type: "string" },
+            secret: { type: "string" },
+        },
         http: {
             type: "object",
             properties: {

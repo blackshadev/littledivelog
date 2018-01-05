@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
+import { Response } from '@angular/http';
 import { AuthService, AuthenticatedService } from 'app/services/auth.service';
 import { IBuddy } from 'app/shared/dive';
 import { serviceUrl } from 'app/shared/config';
+import { CommonHttp } from 'app/shared/http';
 
 export interface IBuddyStat {
     buddy_id: number;
@@ -18,7 +19,7 @@ export interface IBuddyStat {
 export class BuddyService extends AuthenticatedService {
 
     constructor(
-        protected http: Http,
+        protected http: CommonHttp,
         protected auth: AuthService,
     ) {
         super(auth);

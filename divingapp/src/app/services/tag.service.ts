@@ -1,7 +1,8 @@
 import { Injectable } from '@angular/core';
 import { AuthenticatedService, AuthService } from 'app/services/auth.service';
-import { Http, Response } from '@angular/http';
+import { Response } from '@angular/http';
 import { serviceUrl } from 'app/shared/config';
+import { CommonHttp } from 'app/shared/http';
 
 export interface ITagStat {
     tag_id: number;
@@ -21,7 +22,7 @@ export interface ITag {
 export class TagService extends AuthenticatedService {
 
     constructor(
-        protected http: Http,
+        protected http: CommonHttp,
         protected auth: AuthService,
     ) {
         super(auth);

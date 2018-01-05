@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
-import { Http } from '@angular/http';
 import { AuthenticatedService, AuthService } from 'app/services/auth.service';
 import { serviceUrl } from 'app/shared/config';
+import { CommonHttp } from 'app/shared/http';
 
 export interface IProfile {
     name: string;
@@ -30,7 +30,7 @@ export class ProfileService extends AuthenticatedService {
     private _equipment?: IEquipment;
 
     constructor(
-        protected http: Http,
+        protected http: CommonHttp,
         protected auth: AuthService,
     ) {
         super(auth);

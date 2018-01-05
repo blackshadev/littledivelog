@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { serviceUrl } from 'app/shared/config';
 import { AuthenticatedService, AuthService } from 'app/services/auth.service';
-import { Http, Response } from '@angular/http';
+import { Response } from '@angular/http';
 import { IPlace } from 'app/shared/dive';
+import { CommonHttp } from 'app/shared/http';
 
 export interface ICountry {
     code: string;
@@ -23,7 +24,7 @@ export class PlaceService extends AuthenticatedService {
     private __countries: ICountry[];
 
     constructor(
-        protected http: Http,
+        protected http: CommonHttp,
         protected auth: AuthService,
     ) {
         super(auth);

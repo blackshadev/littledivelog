@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { AuthService, AuthenticatedService } from 'app/services/auth.service';
-import { Http, ResponseContentType } from '@angular/http';
+import { ResponseContentType } from '@angular/http';
 import { serviceUrl } from 'app/shared/config';
+import { CommonHttp } from 'app/shared/http';
 
 @Injectable()
 export class MiscService extends AuthenticatedService {
 
     constructor(
-        protected http: Http,
+        protected http: CommonHttp,
         protected auth: AuthService,
     ) {
         super(auth);

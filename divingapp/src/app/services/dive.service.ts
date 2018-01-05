@@ -1,5 +1,5 @@
 import { AuthService, AuthenticatedService } from './auth.service';
-import { Headers, Http, Response } from '@angular/http';
+import { Headers, Response } from '@angular/http';
 import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, ISample } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 import { Injectable } from '@angular/core';
@@ -9,6 +9,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ITagStat } from 'app/services/tag.service';
+import { CommonHttp } from 'app/shared/http';
 
 export type TFilterKeys = 'buddies' | 'tags' | 'from' | 'till' | 'places' | 'country';
 
@@ -26,7 +27,7 @@ export interface IComputer {
 export class DiveService extends AuthenticatedService {
 
     constructor(
-        protected http: Http,
+        protected http: CommonHttp,
         protected auth: AuthService,
     ) {
         super(auth);

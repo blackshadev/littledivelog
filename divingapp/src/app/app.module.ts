@@ -37,6 +37,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ProfileService } from 'app/services/profile.service';
 import { DownloadUploaderComponent } from './components/download-uploader/download-uploader.component';
 import { MiscService } from 'app/services/misc.service';
+import { CommonHttp } from 'app/shared/http';
 
 @NgModule({
     declarations: [
@@ -84,6 +85,7 @@ import { MiscService } from 'app/services/misc.service';
         PlaceService,
         ProfileService,
         AuthService,
+        CommonHttp,
     ],
     bootstrap: [
         AppComponent

@@ -77,53 +77,60 @@ body {
     }
 }
 
-/deep/ .list-menu {
-    padding: 0.6em 0 0.4em 0.3em;
+// /deep/ .list-menu {
+//     padding: 0.6em 0 0.4em 0.3em;
 
-    .btn {
-        background-color: $color-accent;
-        border-color:  $color-accent;
-    }
-}
+//     .btn {
+//         background-color: $color-accent;
+//         border-color:  $color-accent;
+//     }
+// }
 
-/deep/ .list-component {
-    position: relative;
-    height: 100%;
-    min-height: 100vh;
+// /deep/ .list-component {
+//     position: relative;
+//     height: 100%;
+//     min-height: 100vh;
 
-    .list-view {
+//     .list-view {
+//         position: absolute;
+//         top: 0;
+//         bottom: 0;
+//         left: 0;
+//         right: 0;
+//         overflow-y: scroll;
+
+//         &.list-view-with-menu {
+//             top: 55px;
+//         }
+//     }
+
+// }
+
+/deep/ .detail-component {
+
+    .form-content {
         position: absolute;
-        top: 0;
+        top: 55px;
         bottom: 0;
         left: 0;
         right: 0;
-        overflow-y: scroll;
-
-        &.list-view-with-menu {
-            top: 55px;
-        }
-    }
-
-}
-
-/deep/ .detail-component {
-    position: relative;
-    min-height: 100vh;
-    height: 100%;
-
-    .form-content {
         padding: 7px;
     }
 
-    .tab-pane {
-        position: absolute;
-        top: 100px;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        overflow: auto;
-        padding: 32px 32px 0 32px;
+    .nav-tabs {
+        width: 100%;
+
     }
+
+    // .tab-pane {
+    //     position: absolute;
+    //     top: 112px;
+    //     bottom: 0;
+    //     right: 0;
+    //     left: 0;
+    //     overflow: auto;
+    //     padding: 32px 32px 0 32px;
+    // }
 
 }
 

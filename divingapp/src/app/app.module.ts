@@ -38,6 +38,7 @@ import { ProfileService } from 'app/services/profile.service';
 import { DownloadUploaderComponent } from './components/download-uploader/download-uploader.component';
 import { MiscService } from 'app/services/misc.service';
 import { CommonHttp } from 'app/shared/http';
+import { ListDetailComponent } from './components/controls/list-detail/list-detail.component';
 
 @NgModule({
     declarations: [
@@ -65,6 +66,7 @@ import { CommonHttp } from 'app/shared/http';
         HelpOnFocusDirective,
         ProfileComponent,
         DownloadUploaderComponent,
+        ListDetailComponent,
     ],
     imports: [
         BrowserModule,

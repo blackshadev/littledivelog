@@ -176,7 +176,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         const el = (this.parentEl.nativeElement as Element).parentElement;
         const width = el.clientWidth;
         const height = width / 2;
-        this.svg.attr('width', width);
+        this.svg.attr('width', Math.max(0, width - 64));
         this.svg.attr('height', height);
         this._boundingbox.width = width - this._margin.left - this._margin.right;
         this._boundingbox.height = height - this._margin.top - this._margin.bottom;

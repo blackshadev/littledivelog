@@ -1,45 +1,47 @@
-<div class="container-fluid">
+<ng-template #listTemplate>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    Number of dives
+                </td>
+                <td>
+                    Last dive
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let bud of buddies" [ngClass]="{ 'table-active': selected !== undefined && bud.buddy_id === selected.buddy_id  }"
+                (click)="rowClick(bud)">
+                <td>
+                    <app-tag class="badge" [color]="bud.color" fontSize="100%">
+                        {{bud.text}}
+                    </app-tag>
+                </td>
+                <td>{{bud.dive_count}}</td>
+                <td>{{bud.last_dive | date:'y-MM-dd HH:mm:ss'}}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</ng-template>
 
-    <div class="row">
-        <div class="list-component col-lg-6 col-md-12" [appHideWhenMobile]="selected !== undefined">
-            <div class="list-menu">
-                <button class="btn btn-primary" [routerLink]="['/buddy/new/']">
-                    <i class="fa fa-plus"></i>
-                </button>
-            </div>
-            <div class="list-view list-view-with-menu">
-                <table class="table table-hover">
-                    <thead>
-                        <tr>
-                            <td>
-                                Name
-                            </td>
-                            <td>
-                                Number of dives
-                            </td>
-                            <td>
-                                Last dive
-                            </td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr *ngFor="let bud of buddies" [ngClass]="{ 'table-active': selected !== undefined && bud.buddy_id === selected.buddy_id  }"
-                            (click)="rowClick(bud)">
-                            <td>
-                                <app-tag class="badge" [color]="bud.color" fontSize="100%">
-                                    {{bud.text}}
-                                </app-tag>
-                            </td>
-                            <td>{{bud.dive_count}}</td>
-                            <td>{{bud.last_dive | date:'y-MM-dd HH:mm:ss'}}</td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        <div class="detail-component col-lg-6 col-md-12" [appHideWhenMobile]="selected === undefined">
-            <app-buddy-detail #detail [buddy]="selected" (onDataChanged)="dataChanged($event)"></app-buddy-detail>
-        </div>
-    </div>
-</div>
+<ng-template #detailTemplate>
+    <app-buddy-detail #detail [buddy]="selected" (onDataChanged)="dataChanged($event)"></app-buddy-detail>
+</ng-template>
+
+<ng-template #menuTemplate>
+    <button class="btn btn-primary" [routerLink]="['/buddy/new/']">
+        <i class="fa fa-plus"></i>
+    </button>
+</ng-template>
+
+<app-list-detail
+    [listTemplate]="listTemplate"
+    [detailTemplate]="detailTemplate"
+    [menuTemplate]="menuTemplate"
+    [selected]="selected"
+></app-list-detail>

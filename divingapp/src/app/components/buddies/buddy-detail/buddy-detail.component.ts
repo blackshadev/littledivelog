@@ -1,17 +1,21 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef, EventEmitter, Output } from '@angular/core';
+import {
+    Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef,
+    EventEmitter, Output, ViewChild
+} from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
 import { Router } from '@angular/router';
 import { IDataChanged } from 'app/shared/datachanged.interface';
 import { markFormGroupTouched } from 'app/shared/common';
+import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
 
 @Component({
     selector: 'app-buddy-detail',
     templateUrl: './buddy-detail.component.html',
     styleUrls: ['./buddy-detail.component.css']
 })
-export class BuddyDetailComponent implements OnInit, OnChanges {
+export class BuddyDetailComponent implements OnInit {
 
     @Output() public onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<IDataChanged>();
 
@@ -19,13 +23,13 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
     public buddy: IBuddyStat;
 
     public get isNew() { return this.buddy.buddy_id === undefined; }
-
     public form: FormGroup
+
+    @ViewChild('detailComponent') private detailComponent: DetailComponentComponent;
 
     constructor(
         private service: BuddyService,
         private _fb: FormBuilder,
-        private hostElement: ElementRef,
         private router: Router,
     ) {
 
@@ -38,21 +42,6 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
     }
 
     ngOnInit() {
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.reset();
-    }
-
-    public reset() {
-        this.form.reset();
-        if (this.buddy) {
-            this.form.setValue({
-                text: this.buddy.text,
-                color: this.buddy.color,
-                email: this.buddy.email,
-            });
-        }
     }
 
     public async onSubmit(e: Event) {
@@ -78,34 +67,7 @@ export class BuddyDetailComponent implements OnInit, OnChanges {
         this.buddy.buddy_id = bud.buddy_id;
 
         this.applyData();
-        this.reset();
-    }
-
-    public onEnter(e: Event) {
-        // prevent submit
-        e.preventDefault();
-
-        // tab on enter
-        const hostEl = this.hostElement.nativeElement as HTMLElement;
-        if (e.target instanceof HTMLInputElement) {
-            e.target.blur();
-            const all = hostEl.querySelectorAll('input');
-            let iX: number;
-            for (iX = 0; iX < all.length; iX++) {
-                if (all.item(iX) === e.target) {
-                    break;
-                }
-            }
-            if (iX + 1 < all.length) {
-                all.item(iX + 1).select();
-            }
-        }
-
-    }
-
-    public controlChanged(ctrl: string) {
-        this.form.controls[ctrl].markAsDirty();
-        this.form.controls[ctrl].setValue(this.form.controls[ctrl].value);
+        this.detailComponent.reset();
     }
 
     protected applyData() {

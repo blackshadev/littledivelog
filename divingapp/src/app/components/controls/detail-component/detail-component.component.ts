@@ -1,4 +1,7 @@
-import { Component, OnInit, Input, EventEmitter, Output, TemplateRef, ElementRef, ViewChild } from '@angular/core';
+import {
+    Component, OnInit, Input, EventEmitter, Output, TemplateRef,
+    ElementRef, ViewChild, OnChanges, SimpleChanges
+} from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
@@ -7,7 +10,9 @@ import { FormGroup } from '@angular/forms';
     styleUrls: ['./detail-component.component.scss']
 })
 export class DetailComponentComponent implements OnInit {
+
     @Input() data: any;
+
     @Input() form: FormGroup;
     @Output() onSubmit: EventEmitter<any> = new EventEmitter();
     @Output() onBack: EventEmitter<any> = new EventEmitter();
@@ -25,6 +30,7 @@ export class DetailComponentComponent implements OnInit {
     ) { }
 
     ngOnInit() {
+        this.reset();
     }
 
     reset() {

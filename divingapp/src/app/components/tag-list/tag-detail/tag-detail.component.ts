@@ -9,7 +9,7 @@ import { markFormGroupTouched } from 'app/shared/common';
 @Component({
     selector: 'app-tag-detail',
     templateUrl: './tag-detail.component.html',
-    styleUrls: ['./tag-detail.component.css']
+    styleUrls: ['./tag-detail.component.scss']
 })
 export class TagDetailComponent implements OnInit, OnChanges {
 

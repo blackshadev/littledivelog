@@ -39,6 +39,7 @@ import { DownloadUploaderComponent } from './components/download-uploader/downlo
 import { MiscService } from 'app/services/misc.service';
 import { CommonHttp } from 'app/shared/http';
 import { ListDetailComponent } from './components/controls/list-detail/list-detail.component';
+import { DetailComponentComponent } from './components/controls/detail-component/detail-component.component';
 
 @NgModule({
     declarations: [
@@ -67,6 +68,7 @@ import { ListDetailComponent } from './components/controls/list-detail/list-deta
         ProfileComponent,
         DownloadUploaderComponent,
         ListDetailComponent,
+        DetailComponentComponent,
     ],
     imports: [
         BrowserModule,

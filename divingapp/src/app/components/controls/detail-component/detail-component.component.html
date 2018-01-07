@@ -1,4 +1,4 @@
-<form [formGroup]="form" *ngIf="tag !== undefined" (ngSubmit)="onSubmit.emit($event)" (keydown.enter)="onEnter($event)">
+<form (ngSubmit)="onSubmit.emit($event)" (keydown.enter)="onEnter($event)">
         <div class="detail-menu">
             <button class="btn btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save">
                 <i class="fa fa-floppy-o"></i>
@@ -6,79 +6,37 @@
             <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty || isNew" title="Undo unsaved changes">
                 <i class="fa fa-undo"></i>
             </button>
-            <button class="btn btn-primary" (click)="back()" [appHideWhenDesktop]="true" title="Go back">
+            <button class="btn btn-primary" (click)="onBack.emit()" [appHideWhenDesktop]="true" title="Go back">
                 <i class="fa fa-arrow-left"></i>
             </button>
         </div>
 
         <div class="form-content">
             <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#tag" aria-controls="tag" role="tab" data-toggle="tab">Tag</a>
-                </li>
-                <li *ngIf="!isNew" class="nav-item">
-                    <a class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
+                <li class="nav-item" *ngFor="let key of pageKeys">
+                    <a
+                        class="nav-link"
+                        [ngClass]="{ 'active': key === defaultPage }"
+                        [attr.href]="'#' + key"
+                        [attr.aria-controls]="key"
+                        role="tab"
+                        data-toggle="tab"
+                    >
+                        {{key}}
+                    </a>
                 </li>
             </ul>
 
             <!-- Tab panes -->
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="tag">
-
-                    <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.text.valid && form.controls.text.touched }">
-                        <label>Name</label>
-                        <input class="form-control" formControlName="text" placeholder="Deco" aria-describedby="name" required />
-                        <small class="error-text has-danger" *ngIf="form.controls.text.errors?.required">
-                            Name is required.
-                        </small>
-                    </div>
-                    <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.color.valid && form.controls.color.touched }">
-                        <label>Color</label>
-                        <div class="input-group">
-                            <span class="input-group-addon input-group-addon-color">
-                                <i [style.background-color]="form.controls.color.value"></i>
-                            </span>
-                            <input class="form-control" [(colorPicker)]="form.controls.color.value" [cpPosition]="'bottom'" (colorPickerChange)="controlChanged('color')"
-                                formControlName="color" placeholder="#cccccc" aria-describedby="color" required />
-                        </div>
-                        <small class="error-text has-danger" *ngIf="form.controls.color.errors?.invalid">
-                            Please enter a valid color; eg #ff00ee.
-                        </small>
-                        <small class="error-text has-danger" *ngIf="form.controls.color.errors?.required">
-                            Color is required.
-                        </small>
-                    </div>
-                    <div class="form-group" *ngIf="tag.dive_count !== null">
-                        <label>Dive count</label>
-                        <input class="form-control-plaintext" [value]="tag.dive_count" aria-describedby="DiveCount" readonly />
-                    </div>
-                    <div class="form-group" *ngIf="tag.last_dive !== null">
-                        <label>Last dive</label>
-                        <input class="form-control-plaintext" [value]="tag.last_dive | date:'y-MM-dd HH:mm:ss'" aria-describedby="LastDive" readonly
-                        />
-                    </div>
-                </div>
-
-                <div *ngIf="!isNew" role="tabpanel" class="tab-pane" id="delete">
-                    <div class="alert alert-warning">
-                        <h3>Delete this tag?</h3>
-                        <p>Are your sure you want to permanently delete this tag?</p>
-                        <p>All dives linked to this tag will be unlinked; the dive itself will not be deleted.</p>
-                        <button type="button" class="btn btn-danger" (click)="delete()">
-                            Yes, delete this tag.
-                        </button>
-                    </div>
-                </div>
-
-                <div role="tabpanel" class="tab-pane" id="debug">
-                    <div class="card">
-                        <div class="card-body">
-                            <pre><code>{{diagnostic | json}}</code></pre>
-                        </div>
-                    </div>
+            <div class="tab-content" #content>
+                <div
+                    *ngFor="let key of pageKeys"
+                    role="tabpanel"
+                    class="tab-pane"
+                    [attr.id]="key"
+                    [ngClass]="{ 'active': key === defaultPage }"
+                >
+                    <template *ngTemplateOutlet="pages[key]"></template>
                 </div>
             </div>
         </div>

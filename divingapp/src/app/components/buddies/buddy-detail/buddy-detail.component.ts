@@ -25,7 +25,7 @@ export class BuddyDetailComponent implements OnInit {
     public get isNew() { return this.buddy.buddy_id === undefined; }
     public form: FormGroup
 
-    @ViewChild('detailComponent') private detailComponent: DetailComponentComponent;
+    @ViewChild('detailComponent') private detailComp: DetailComponentComponent;
 
     constructor(
         private service: BuddyService,
@@ -67,7 +67,7 @@ export class BuddyDetailComponent implements OnInit {
         this.buddy.buddy_id = bud.buddy_id;
 
         this.applyData();
-        this.detailComponent.reset();
+        this.detailComp.reset();
     }
 
     protected applyData() {
@@ -75,50 +75,6 @@ export class BuddyDetailComponent implements OnInit {
         this.buddy.email = d.email;
         this.buddy.text = d.text;
         this.buddy.color = d.color;
-    }
-
-    get diagnostic() {
-        function getDirtyValues(cg: FormGroup) {
-            const dirtyValues = {};  // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-
-                const currentControl = cg.controls[c];
-
-                if (currentControl.dirty) {
-                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
-                        dirtyValues[c] = getDirtyValues(<FormGroup>currentControl);  // recursion for nested controlGroups
-                    } else {
-                        dirtyValues[c] = true;  // simple control
-                    }
-                }
-
-            });
-            return dirtyValues;
-        }
-        function getInvalidValues(cg: FormGroup) {
-            const invalidValues = {};  // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-
-                const currentControl = cg.controls[c];
-
-                if (!currentControl.valid) {
-                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
-                        invalidValues[c] = getInvalidValues(<FormGroup>currentControl);  // recursion for nested controlGroups
-                    } else {
-                        invalidValues[c] = true;  // simple control
-                    }
-                }
-
-            });
-            return invalidValues;
-        }
-
-        return {
-            value: this.form.value,
-            formDirty: this.form.dirty,
-            dirty: getDirtyValues(this.form),
-            invalid: getInvalidValues(this.form),
-        };
     }
 
     public back() {

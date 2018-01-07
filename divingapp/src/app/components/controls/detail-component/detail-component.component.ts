@@ -22,12 +22,14 @@ export class DetailComponentComponent implements OnInit {
     get pageKeys() { return Object.keys(this.pages); }
     @Input() pages: { [name: string]: TemplateRef<any> } = {};
     @Input() defaultPage;
+    @Input() showDebug = true;
+
 
     @ViewChild('content') private content;
 
     constructor(
         private hostElement: ElementRef,
-    ) { }
+    ) {}
 
     ngOnInit() {
         this.reset();
@@ -59,6 +61,50 @@ export class DetailComponentComponent implements OnInit {
             }
         }
 
+    }
+
+    get diagnostic() {
+        function getDirtyValues(cg: FormGroup) {
+            const dirtyValues = {};  // initialize empty object
+            Object.keys(cg.controls).forEach((c) => {
+
+                const currentControl = cg.controls[c];
+
+                if (currentControl.dirty) {
+                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
+                        dirtyValues[c] = getDirtyValues(<FormGroup>currentControl);  // recursion for nested controlGroups
+                    } else {
+                        dirtyValues[c] = true;  // simple control
+                    }
+                }
+
+            });
+            return dirtyValues;
+        }
+        function getInvalidValues(cg: FormGroup) {
+            const invalidValues = {};  // initialize empty object
+            Object.keys(cg.controls).forEach((c) => {
+
+                const currentControl = cg.controls[c];
+
+                if (!currentControl.valid) {
+                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
+                        invalidValues[c] = getInvalidValues(<FormGroup>currentControl);  // recursion for nested controlGroups
+                    } else {
+                        invalidValues[c] = true;  // simple control
+                    }
+                }
+
+            });
+            return invalidValues;
+        }
+
+        return {
+            value: this.form.value,
+            formDirty: this.form.dirty,
+            dirty: getDirtyValues(this.form),
+            invalid: getInvalidValues(this.form),
+        };
     }
 
 }

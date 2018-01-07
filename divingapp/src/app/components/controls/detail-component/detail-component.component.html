@@ -1,3 +1,7 @@
+<ng-template #debug>
+    <pre *ngIf="form"><code>{{diagnostic | json}}</code></pre>
+</ng-template>
+
 <form (ngSubmit)="onSubmit.emit($event)" (keydown.enter)="onEnter($event)">
         <div class="detail-menu">
             <button class="btn btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save">
@@ -25,6 +29,9 @@
                         {{key}}
                     </a>
                 </li>
+                <li *ngIf="showDebug">
+                    <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
+                </li>
             </ul>
 
             <!-- Tab panes -->
@@ -37,6 +44,13 @@
                     [ngClass]="{ 'active': key === defaultPage }"
                 >
                     <template *ngTemplateOutlet="pages[key]"></template>
+                </div>
+                <div *ngIf="showDebug" role="tabpanel" class="tab-pane" id="debug">
+                    <div class="card">
+                        <div class="card-body">
+                            <pre><code>{{ diagnostic | json }}</code></pre>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

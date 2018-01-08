@@ -14,6 +14,7 @@ import { markFormGroupTouched } from 'app/shared/common';
 import { PlaceService } from 'app/services/place.service';
 import { TagService } from 'app/services/tag.service';
 import { ProfileService } from 'app/services/profile.service';
+import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
 
 declare function $(...args: any[]): any;
 
@@ -22,14 +23,46 @@ declare function $(...args: any[]): any;
     templateUrl: './dive-detail.component.html',
     styleUrls: ['./dive-detail.component.scss']
 })
-export class DiveDetailComponent implements OnInit, OnChanges {
+export class DiveDetailComponent implements OnInit {
     @Input() dive: Dive;
+
+    public get diveFormData() {
+        if (!this.dive) {
+            return {};
+        }
+
+        return {
+            date: this.dive.date ? moment(this.dive.date).format('YYYY-MM-DD HH:mm:ss') : '',
+            divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
+            maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
+            place: this.dive.place ? {
+                id: this.dive.place.place_id || null,
+                name: this.dive.place.name || '',
+                country: this.dive.place.country_code || ''
+            } : {
+                    id: null,
+                    name: null,
+                    country: null,
+                },
+            tank: {
+                volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
+                airPercentage: this.dive.tanks.length ? this.dive.tanks[0].oxygen : '',
+                pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.begin : '',
+                pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
+                pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
+            },
+            buddies: this.dive.buddies.map((b) => { return { id: b.buddy_id, text: b.text, color: b.color }; }),
+            tags: this.dive.tags.map((b) => { return { id: b.tag_id, text: b.text, color: b.color }; }),
+        };
+    }
     @Output() onDiveChanged = new EventEmitter<Dive>();
 
     public form: FormGroup;
     public CurrentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
 
     @ViewChild('diveProfile') public diveProfile: DiveProfileComponent;
+    @ViewChild('detailComponent') public detailComponent: DetailComponentComponent;
+    private _dive: Dive;
 
     constructor(
         private diveService: DiveService,
@@ -76,92 +109,11 @@ export class DiveDetailComponent implements OnInit, OnChanges {
     ngOnInit(): void {
         $(this.hostElement.nativeElement).on(
             'shown.bs.tab',
-            'a[data-toggle="tab"][aria-controls="profile"]',
+            'a[data-toggle="tab"][aria-controls="Profile"]',
             () => {
                 this.diveProfile.resize();
             },
         )
-    }
-
-    ngOnChanges(changes: SimpleChanges): void {
-        this.reset();
-    }
-
-    onEnter(e: Event) {
-        // prevent submit
-        e.preventDefault();
-
-        // tab on enter
-        const hostEl = this.hostElement.nativeElement as HTMLElement;
-        if (e.target instanceof HTMLInputElement) {
-            e.target.blur();
-            const all = hostEl.querySelectorAll('input');
-            let iX: number;
-            for (iX = 0; iX < all.length; iX++) {
-                if (all.item(iX) === e.target) {
-                    break;
-                }
-            }
-            if (iX + 1 < all.length) {
-                all.item(iX + 1).select();
-            }
-        }
-
-    }
-
-    public reset() {
-        this.form.reset();
-        if (this.dive) {
-            this.form.setValue({
-                date: this.dive.date ? moment(this.dive.date).format('YYYY-MM-DD HH:mm:ss') : '',
-                divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
-                maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
-                place: this.dive.place ? {
-                    id: this.dive.place.place_id || null,
-                    name: this.dive.place.name || '',
-                    country: this.dive.place.country_code || ''
-                } : {
-                        id: null,
-                        name: null,
-                        country: null,
-                    },
-                tank: {
-                    volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
-                    airPercentage: this.dive.tanks.length ? this.dive.tanks[0].oxygen : '',
-                    pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.begin : '',
-                    pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
-                    pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
-                },
-                buddies: this.dive.buddies.map((b) => { return { id: b.buddy_id, text: b.text, color: b.color }; }),
-                tags: this.dive.tags.map((b) => { return { id: b.tag_id, text: b.text, color: b.color }; }),
-            });
-        }
-    }
-
-    get diagnostic() {
-        function getDirtyValues(cg: FormGroup) {
-            const dirtyValues = {};  // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-
-                const currentControl = cg.controls[c];
-
-                if (currentControl.dirty) {
-                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
-                        dirtyValues[c] = getDirtyValues(<FormGroup>currentControl);  // recursion for nested controlGroups
-                    } else {
-                        dirtyValues[c] = true;  // simple control
-                    }
-                }
-
-            });
-            return dirtyValues;
-        }
-
-        return {
-            value: this.form.value,
-            formDirty: this.form.dirty,
-            dirty: getDirtyValues(this.form),
-        };
     }
 
     diveSpotChanged(place: IPlace) {
@@ -347,11 +299,10 @@ export class DiveDetailComponent implements OnInit, OnChanges {
                 this.onDiveChanged.emit(d);
             }
             ).catch(
-            (e) => console.log('error', e)
+                (e) => console.log('error', e)
             );
 
         this.dive = d;
-        this.reset();
     }
 
     public back() {

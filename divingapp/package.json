@@ -26,7 +26,7 @@
         "@types/jquery": "^3.2.17",
         "@types/moment": "^2.13.0",
         "angular-tslint-rules": "^1.1.0",
-        "bootstrap": "^4.0.0-beta.2",
+        "bootstrap": "4.0.0-beta.2",
         "core-js": "^2.5.3",
         "d3": "^4.12.2",
         "express-logging": "^1.1.1",

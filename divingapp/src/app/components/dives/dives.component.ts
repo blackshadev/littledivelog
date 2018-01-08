@@ -76,7 +76,6 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
             this.dive = await this.service.get(d.id);
             this.location.go('/dive/' + d.id);
         }
-        this.diveDetail.reset();
     }
 
     refresh() {
@@ -102,8 +101,6 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         if (equipment.tanks) {
             dive.tanks = equipment.tanks;
         }
-
-        console.log(dive);
 
         return dive;
     }

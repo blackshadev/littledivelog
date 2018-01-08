@@ -1,4 +1,4 @@
-<ng-template #delete>
+<ng-template #deleteTemplate>
     <div class="alert alert-warning">
         <h3>Delete this buddy?</h3>
         <p>Are your sure you want to permanently delete this buddy?</p>
@@ -9,7 +9,7 @@
     </div>
 </ng-template>
 
-<ng-template #detail>
+<ng-template #detailTemplate>
     <form [formGroup]="form">
         <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.text.valid && form.controls.text.touched }">
             <label>Name</label>
@@ -56,8 +56,8 @@
 <app-detail-component
     #detailComponent
     [pages]="{
-        'Detail': detail,
-        'Delete': delete
+        'Detail': detailTemplate,
+        'Delete': deleteTemplate
     }"
     [form]="form"
     defaultPage="Detail"

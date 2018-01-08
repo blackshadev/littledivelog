@@ -11,7 +11,11 @@ import { FormGroup } from '@angular/forms';
 })
 export class DetailComponentComponent implements OnInit {
 
-    @Input() data: any;
+    @Input() set data(v: any) {
+        this._data = v;
+        this.reset();
+    }
+    get data() { return this._data; }
 
     @Input() form: FormGroup;
     @Output() onSubmit: EventEmitter<any> = new EventEmitter();
@@ -26,6 +30,7 @@ export class DetailComponentComponent implements OnInit {
 
 
     @ViewChild('content') private content;
+    private _data: any;
 
     constructor(
         private hostElement: ElementRef,
@@ -36,7 +41,9 @@ export class DetailComponentComponent implements OnInit {
     }
 
     reset() {
-        this.form.reset(this.data);
+        if (this.form) {
+            this.form.reset(this.data);
+        }
     }
 
     onEnter(e: KeyboardEvent) {

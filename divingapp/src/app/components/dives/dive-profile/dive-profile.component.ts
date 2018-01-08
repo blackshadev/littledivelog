@@ -191,9 +191,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
     public selectEvent(idx: number) {
         const evtIdx = this.allEvents[idx];
-        console.log('selected', evtIdx);
         const evt = this.data[evtIdx.dataIndex].Events[evtIdx.eventIndex];
-        console.log(evt);
 
         this.select(evtIdx.dataIndex);
     }

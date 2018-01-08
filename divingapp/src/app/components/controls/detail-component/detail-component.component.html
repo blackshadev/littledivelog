@@ -3,36 +3,44 @@
 </ng-template>
 
 <form (ngSubmit)="onSubmit.emit($event)" (keydown.enter)="onEnter($event)">
-        <div class="detail-menu">
-            <button class="btn btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save">
-                <i class="fa fa-floppy-o"></i>
-            </button>
-            <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty || isNew" title="Undo unsaved changes">
-                <i class="fa fa-undo"></i>
-            </button>
-            <button class="btn btn-primary" (click)="onBack.emit()" [appHideWhenDesktop]="true" title="Go back">
-                <i class="fa fa-arrow-left"></i>
-            </button>
-        </div>
+    <div class="detail-menu">
+        <button class="btn btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save">
+            <i class="fa fa-floppy-o"></i>
+        </button>
+        <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty || isNew" title="Undo unsaved changes">
+            <i class="fa fa-undo"></i>
+        </button>
+        <button class="btn btn-primary" (click)="onBack.emit()" [appHideWhenDesktop]="true" title="Go back">
+            <i class="fa fa-arrow-left"></i>
+        </button>
+    </div>
 
+    <div class="detail-content">
         <div class="form-content">
-            <ul class="nav nav-tabs" role="tablist">
-                <li class="nav-item" *ngFor="let key of pageKeys">
-                    <a
-                        class="nav-link"
-                        [ngClass]="{ 'active': key === defaultPage }"
-                        [attr.href]="'#' + key"
-                        [attr.aria-controls]="key"
-                        role="tab"
-                        data-toggle="tab"
-                    >
-                        {{key}}
-                    </a>
-                </li>
-                <li *ngIf="showDebug">
-                    <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
-                </li>
-            </ul>
+            <nav class="navbar navbar-expand-md navbar-light">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#detailMenu" aria-controls="detailMenu" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="collapse navbar-collapse" id="detailMenu">
+                    <ul class="nav nav-tabs navbar-nav mr-auto w-100" role="tablist">
+                        <li class="nav-item" *ngFor="let key of pageKeys">
+                            <a
+                                class="nav-link"
+                                [ngClass]="{ 'active': key === defaultPage }"
+                                [attr.href]="'#' + key"
+                                [attr.aria-controls]="key"
+                                [attr.aria-selected]="key === defaultPage"
+                                role="tab"
+                                data-toggle="tab"
+                            >{{key}}</a>
+                        </li>
+                        <li class="nav-item" *ngIf="showDebug">
+                            <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
             <!-- Tab panes -->
             <div class="tab-content" #content>
@@ -54,4 +62,5 @@
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+</form>

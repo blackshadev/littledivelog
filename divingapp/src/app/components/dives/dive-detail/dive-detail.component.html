@@ -194,6 +194,7 @@
     [form]="form"
     defaultPage="Detail"
     [data]="diveFormData"
+    [isNew]="dive.isNew"
     *ngIf="dive !== undefined"
     (onSubmit)="onSubmit($event)"
     (onBack)="back()"

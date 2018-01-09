@@ -11,6 +11,7 @@ import { FormGroup } from '@angular/forms';
 })
 export class DetailComponentComponent implements OnInit {
 
+    @Input() deleteTab = 'Delete';
     @Input() set data(v: any) {
         this._data = v;
         this.reset();
@@ -18,12 +19,15 @@ export class DetailComponentComponent implements OnInit {
     get data() { return this._data; }
 
     @Input() form: FormGroup;
+    @Input() isNew: boolean;
     @Output() onSubmit: EventEmitter<any> = new EventEmitter();
     @Output() onBack: EventEmitter<any> = new EventEmitter();
     // @Output() onReset: EventEmitter<any> = new EventEmitter();
     // @Output() onReset: EventEmitter<any> = new EventEmitter();
 
-    get pageKeys() { return Object.keys(this.pages); }
+    get pageKeys() {
+        return Object.keys(this.pages).filter((p) => !this.isNew || p !== this.deleteTab);
+    }
     @Input() pages: { [name: string]: TemplateRef<any> } = {};
     @Input() defaultPage;
     @Input() showDebug = true;

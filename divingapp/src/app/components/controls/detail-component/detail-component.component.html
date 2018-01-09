@@ -33,6 +33,7 @@
                                 [attr.aria-selected]="key === defaultPage"
                                 role="tab"
                                 data-toggle="tab"
+                                *ngIf="key !== deleteTab || !isNew"
                             >{{key}}</a>
                         </li>
                         <li class="nav-item" *ngIf="showDebug">

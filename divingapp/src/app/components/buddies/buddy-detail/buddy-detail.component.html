@@ -62,6 +62,7 @@
     [form]="form"
     defaultPage="Detail"
     [data]="buddy"
+    [isNew]="isNew"
     *ngIf="buddy !== undefined"
     (onSubmit)="onSubmit($event)"
     (onBack)="back()"

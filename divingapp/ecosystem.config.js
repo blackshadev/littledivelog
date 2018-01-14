@@ -27,7 +27,7 @@ module.exports = {
             ref: 'origin/master',
             repo: 'git@git.littledev.nl:blackshade/divecomputer.git',
             path: '/home/dive.littledev.nl/',
-            'post-deploy': 'cd divingapp && npm install && ./node_modules/.bin/ng build --aot --prod && cd app-server && npm install && ./node_modules/.bin/tsc && cd .. && pm2 reload ecosystem.config.js'
+            'post-deploy': 'cd divingapp &&yarn && ./node_modules/.bin/ng build --aot --prod && cd app-server && yarn && ./node_modules/.bin/tsc && cd .. && pm2 reload ecosystem.config.js'
         }
     }
 };

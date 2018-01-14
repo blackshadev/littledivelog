@@ -151,6 +151,7 @@ export class DiveDetailComponent implements OnInit {
                 threshold: 0.6,
                 distance: 100,
                 location: 0,
+                tokenize: true,
                 shouldSort: true,
                 maxPatternLength: 32,
                 keys: [

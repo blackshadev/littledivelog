@@ -33,13 +33,12 @@ router.get("/", async (req, res) => {
     const places: QueryResult = await database.call(
         `select plc.*
            from places plc
-          where 1=1
-            and exists (
-                select 1
-                  from dives d
-                where d.user_id = $1
-                  and d.place_id = plc.place_id
-            )
+          order by (
+              select count(*)
+                from dives d
+               where d.place_id = plc.place_id
+                 and d.user_id = 1
+            ) desc
         `,
         [req.user.user_id],
     );

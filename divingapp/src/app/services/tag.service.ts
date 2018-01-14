@@ -21,6 +21,8 @@ export interface ITag {
 @Injectable()
 export class TagService extends AuthenticatedService {
 
+    private __cache?: ITag[];
+
     constructor(
         protected http: CommonHttp,
         protected auth: AuthService,
@@ -28,13 +30,19 @@ export class TagService extends AuthenticatedService {
         super(auth);
     }
 
+    public clearCache() {
+        this.__cache = undefined;
+    }
 
     public async list(): Promise<ITag[]> {
-        const req = await this.http.get(
-            `${serviceUrl}/tag/`,
-            this.httpOptions,
-        ).toPromise();
-        return req.json() as ITag[];
+        if(!this.__cache) {
+            const req = await this.http.get(
+                `${serviceUrl}/tag/`,
+                this.httpOptions,
+            ).toPromise();
+            this.__cache = req.json() as ITag[];
+        }
+        return this.__cache;
     }
 
     public async fullList(): Promise<ITagStat[]> {
@@ -60,6 +68,8 @@ export class TagService extends AuthenticatedService {
                 this.httpOptions,
             ).toPromise();
         }
+
+        this.clearCache();
         return req.json() as ITag;
     }
 
@@ -68,6 +78,8 @@ export class TagService extends AuthenticatedService {
             `${serviceUrl}/tag/${id}`,
             this.httpOptions,
         ).toPromise();
+
+        this.clearCache();
         return req.json();
     }
 

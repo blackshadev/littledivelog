@@ -24,37 +24,13 @@ declare function $(...args: any[]): any;
     styleUrls: ['./dive-detail.component.scss']
 })
 export class DiveDetailComponent implements OnInit {
-    @Input() dive: Dive;
-
-    public get diveFormData() {
-        if (!this.dive) {
-            return {};
-        }
-
-        return {
-            date: this.dive.date ? moment(this.dive.date).format('YYYY-MM-DD HH:mm:ss') : '',
-            divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
-            maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
-            place: this.dive.place ? {
-                id: this.dive.place.place_id || null,
-                name: this.dive.place.name || '',
-                country: this.dive.place.country_code || ''
-            } : {
-                    id: null,
-                    name: null,
-                    country: null,
-                },
-            tank: {
-                volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
-                airPercentage: this.dive.tanks.length ? this.dive.tanks[0].oxygen : '',
-                pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.begin : '',
-                pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
-                pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
-            },
-            buddies: this.dive.buddies.map((b) => { return { id: b.buddy_id, text: b.text, color: b.color }; }),
-            tags: this.dive.tags.map((b) => { return { id: b.tag_id, text: b.text, color: b.color }; }),
-        };
+    @Input() public set dive(d: Dive) {
+        this._dive = d;
+        this.updDiveFormData();
     }
+    public get dive(): Dive { return this._dive; }
+    public diveFormData: any;
+
     @Output() onDiveChanged = new EventEmitter<Dive>();
 
     public form: FormGroup;
@@ -114,6 +90,36 @@ export class DiveDetailComponent implements OnInit {
                 this.diveProfile.resize();
             },
         )
+    }
+
+    public updDiveFormData() {
+        if (!this.dive) {
+            return {};
+        }
+
+        this.diveFormData = {
+            date: this.dive.date ? moment(this.dive.date).format('YYYY-MM-DD HH:mm:ss') : '',
+            divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
+            maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
+            place: this.dive.place ? {
+                id: this.dive.place.place_id || null,
+                name: this.dive.place.name || '',
+                country: this.dive.place.country_code || ''
+            } : {
+                    id: null,
+                    name: null,
+                    country: null,
+                },
+            tank: {
+                volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
+                airPercentage: this.dive.tanks.length ? this.dive.tanks[0].oxygen : '',
+                pressureStart: this.dive.tanks.length ? this.dive.tanks[0].pressure.begin : '',
+                pressureEnd: this.dive.tanks.length ? this.dive.tanks[0].pressure.end : '',
+                pressureType: this.dive.tanks.length ? this.dive.tanks[0].pressure.type : 'bar',
+            },
+            buddies: this.dive.buddies.map((b) => { return { id: b.buddy_id, text: b.text, color: b.color }; }),
+            tags: this.dive.tags.map((b) => { return { id: b.tag_id, text: b.text, color: b.color }; }),
+        };
     }
 
     diveSpotChanged(place: IPlace) {
@@ -236,7 +242,7 @@ export class DiveDetailComponent implements OnInit {
         });
     }
 
-    onSubmit(e: Event) {
+    async onSubmit(e: Event) {
         e.preventDefault();
         markFormGroupTouched(this.form);
         if (!this.form.valid) {
@@ -290,19 +296,12 @@ export class DiveDetailComponent implements OnInit {
             }
         );
 
-        this.diveService.save(
+        const resp = await this.diveService.save(
             d.toJSON(),
             d.id
-        ).then(
-            (v) => {
-                d.id = v.dive_id;
-                this.onDiveChanged.emit(d);
-            }
-            ).catch(
-                (e) => console.log('error', e)
-            );
-
-        this.dive = d;
+        );
+        this.dive = await this.diveService.get(resp.dive_id);
+        this.onDiveChanged.emit(this.dive);
     }
 
     public back() {

@@ -12,7 +12,6 @@ import * as d3 from 'd3';
     styleUrls: ['./dive-profile.component.scss']
 })
 export class DiveProfileComponent implements OnInit, AfterViewInit {
-    get dive() { return this._dive; }
     get selectedItem(): ISample {
         if (!this.data || this.selectedIndex === undefined) {
             return {
@@ -32,12 +31,12 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     @Output() onhover = new EventEmitter<{ item: ISample, index: number }>();
 
     @Input() set dive(v: Dive) {
-        this._dive = v;
+        this._dive_id = v.id;
         this.update();
     }
 
     protected samples: ISample[];
-    protected _dive: Dive;
+    protected _dive_id: number;
     protected svg: d3.Selection<any, any, null, undefined>;
     protected groups: {
         graph: d3.Selection<any, any, null, undefined>,
@@ -297,7 +296,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     }
 
     protected async getSamples() {
-        return await this.service.samples(this._dive.id);
+        return await this.service.samples(this._dive_id);
     }
 
     protected repaintAxes() {

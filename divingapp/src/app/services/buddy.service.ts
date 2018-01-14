@@ -17,7 +17,7 @@ export interface IBuddyStat {
 
 @Injectable()
 export class BuddyService extends AuthenticatedService {
-
+    private __cache?: IBuddy[];
     constructor(
         protected http: CommonHttp,
         protected auth: AuthService,
@@ -25,12 +25,21 @@ export class BuddyService extends AuthenticatedService {
         super(auth);
     }
 
+    public clearCache() {
+        this.__cache = undefined;
+    }
+
     public async list(): Promise<IBuddy[]> {
-        const req = await this.http.get(
-            `${serviceUrl}/buddy/`,
-            this.httpOptions,
-        ).toPromise();
-        return req.json() as IBuddy[];
+        if (!this.__cache) {
+            const req = await this.http.get(
+                `${serviceUrl}/buddy/`,
+                this.httpOptions,
+            ).toPromise();
+            const buds = req.json() as IBuddy[];
+            this.__cache = buds;
+        }
+
+        return this.__cache;
     }
 
     public async fullList(): Promise<IBuddyStat[]> {
@@ -56,6 +65,8 @@ export class BuddyService extends AuthenticatedService {
                 this.httpOptions,
             ).toPromise();
         }
+
+        this.clearCache();
         return req.json() as IBuddy;
     }
 
@@ -64,6 +75,8 @@ export class BuddyService extends AuthenticatedService {
             `${serviceUrl}/buddy/${id}`,
             this.httpOptions,
         ).toPromise();
+
+        this.clearCache();
         return req.json();
     }
 

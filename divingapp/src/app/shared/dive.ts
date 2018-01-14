@@ -226,7 +226,7 @@ export interface IDbDive {
     max_depth?: number;
     samples?: any[];
     tanks?: ITank[];
-    buddies?: IDiveTag[];
+    buddies?: IBuddy[];
 }
 
 export interface IDiveRecordDC {

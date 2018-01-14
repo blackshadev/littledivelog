@@ -23,6 +23,15 @@ export function debounce(func: Function, wait: number, immediate?: boolean): Fun
     }
 }
 
+export function arrayContains<T>(arr: T[], pred: (item: T) => boolean) {
+    for (const i of arr) {
+        if (pred(i)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 /**
  * Marks all controls in a form group as touched
  * @param formGroup - The group to caress..hah

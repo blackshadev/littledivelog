@@ -21,7 +21,8 @@ export interface IPlaceStat {
 @Injectable()
 export class PlaceService extends AuthenticatedService {
 
-    private __countries: ICountry[];
+    private __cache?: IPlace[];
+    private __countries?: ICountry[];
 
     constructor(
         protected http: CommonHttp,

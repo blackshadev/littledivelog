@@ -8,8 +8,10 @@ import { Observable } from 'rxjs/Observable';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
-import { ITagStat } from 'app/services/tag.service';
+import { ITagStat, TagService } from 'app/services/tag.service';
 import { CommonHttp } from 'app/shared/http';
+import { BuddyService } from 'app/services/buddy.service';
+import { arrayContains } from 'app/shared/common';
 
 export type TFilterKeys = 'buddies' | 'tags' | 'from' | 'till' | 'places' | 'country';
 
@@ -29,6 +31,8 @@ export class DiveService extends AuthenticatedService {
     constructor(
         protected http: CommonHttp,
         protected auth: AuthService,
+        protected buddyService: BuddyService,
+        protected tagService: TagService,
     ) {
         super(auth);
     }
@@ -50,6 +54,15 @@ export class DiveService extends AuthenticatedService {
 
     public async save(dive: IDbDive, dive_id?: number): Promise<any> {
         let req: Response;
+
+        if (arrayContains(dive.buddies, (b) => b.buddy_id === undefined)) {
+            this.buddyService.clearCache();
+        }
+
+        if (arrayContains(dive.tags, (t) => t.tag_id === undefined)) {
+            this.tagService.clearCache();
+        }
+
         if (dive_id !== undefined) {
             req = await this.http.put(
                 `${serviceUrl}/dive/${dive_id}/`,

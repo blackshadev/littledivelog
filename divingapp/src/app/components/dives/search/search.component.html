@@ -1,0 +1,35 @@
+<div class="input-group">
+    <span class="input-group-btn">
+        <button
+            type="button"
+            class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false"
+        >
+            {{ currentTopic ? currentTopic.caption : 'Topic'  }}
+        </button>
+        <div class="dropdown-menu">
+            <a
+                *ngFor="let t of topics"
+                class="dropdown-item"
+                (click)="currentTopic = t"
+            >
+                {{ t.caption }}
+            </a>
+            <!-- <a class="dropdown-item">Date on</a>
+            <a class="dropdown-item">Date before</a>
+            <a class="dropdown-item">Date after</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item">With buddy</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item">With tag</a>
+            <div role="separator" class="dropdown-divider"></div>
+            <a class="dropdown-item">On place</a> -->
+        </div>
+    </span>
+    <input type="text" class="form-control" aria-label="Text input with segmented dropdown button">
+    <span class="input-group-btn">
+        <button type="button" class="btn btn-outline-secondary">
+            <i class="fa fa-search"></i>
+        </button>
+    </span>
+</div>

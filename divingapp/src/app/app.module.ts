@@ -40,6 +40,7 @@ import { MiscService } from 'app/services/misc.service';
 import { CommonHttp } from 'app/shared/http';
 import { ListDetailComponent } from './components/controls/list-detail/list-detail.component';
 import { DetailComponentComponent } from './components/controls/detail-component/detail-component.component';
+import { SearchComponent } from './components/dives/search/search.component';
 
 @NgModule({
     declarations: [
@@ -69,6 +70,7 @@ import { DetailComponentComponent } from './components/controls/detail-component
         DownloadUploaderComponent,
         ListDetailComponent,
         DetailComponentComponent,
+        SearchComponent,
     ],
     imports: [
         BrowserModule,

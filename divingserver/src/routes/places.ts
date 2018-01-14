@@ -37,7 +37,7 @@ router.get("/", async (req, res) => {
               select count(*)
                 from dives d
                where d.place_id = plc.place_id
-                 and d.user_id = 1
+                 and d.user_id = $1
             ) desc
         `,
         [req.user.user_id],

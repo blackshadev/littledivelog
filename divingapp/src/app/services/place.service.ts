@@ -31,12 +31,19 @@ export class PlaceService extends AuthenticatedService {
         super(auth);
     }
 
-    public async list(c: string): Promise<IPlace[]> {
+    public async list(c?: string): Promise<IPlace[]> {
+        if (!c && this.__cache) {
+            return this.__cache;
+        }
+
         const res = await this.http.get(
             `${serviceUrl}/place/${c}/`,
             this.httpOptions,
         ).toPromise();
         const all: IPlace[] = res.json() || [];
+        if (!c) {
+            this.__cache = all;
+        }
         return all;
     }
 

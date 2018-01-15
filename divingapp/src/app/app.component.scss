@@ -156,6 +156,10 @@ body {
     }
 }
 
+/deep/ .input-group .ng2-auto-complete-wrapper {
+    display: flex;
+}
+
 /deep/ .input-group-group {
     .input-group {
 

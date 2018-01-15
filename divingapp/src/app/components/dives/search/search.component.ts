@@ -1,11 +1,17 @@
 import { Component, OnInit } from '@angular/core';
+import { Observable } from 'rxjs/Observable';
+import { BehaviorSubject } from 'rxjs';
+
+interface ISearchItem {
+    text: string, key: string
+}
 
 interface ITopic {
     name: string;
     caption: string;
-    source?: () => { text: string, key: string }
+    source?: () => Promise<{ text: string, key: string }[]>
 }
-interface IItem {
+interface IFilter {
     name: string;
     caption: string;
     value: string;
@@ -20,7 +26,7 @@ export class SearchComponent implements OnInit {
 
     public searchValue = '';
     public currentTopic: ITopic;
-    public items: IItem[] = [];
+    public currentFilters: IFilter[] = [];
 
     public topics: ITopic[] = [
         {
@@ -57,18 +63,33 @@ export class SearchComponent implements OnInit {
     }
 
     public addSearch() {
-        this.items.push({
+        this.currentFilters.push({
             name: this.currentTopic.name,
             caption: this.currentTopic.caption,
             value: this.searchValue,
         });
     }
 
-    public removeItem(item: IItem) {
-        const idx = this.items.indexOf(item);
+    public removeItem(item: IFilter) {
+        const idx = this.currentFilters.indexOf(item);
         if (idx > -1) {
-            this.items.splice(idx, 1)
+            this.currentFilters.splice(idx, 1)
         }
+    }
+
+    public getSearchItems(v: string): Observable<ISearchItem[]> {
+        return new Observable((obs) => {
+            if (!(this.currentTopic && this.currentTopic.source)) {
+                obs.next([]);
+                obs.complete();
+            } else {
+                const prom = this.currentTopic.source();
+                prom.then((items) => {
+                    obs.next(items);
+                    obs.complete();
+                }).catch((err) => obs.error(err));
+            }
+        });
     }
 
 }

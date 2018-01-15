@@ -28,11 +28,13 @@
         </div>
     </span>
     <input
+        auto-complete
         type="text"
         class="form-control"
-        aria-label="Search value"
+        (keydown.enter)="addSearch()"
+        [source]="getSearchItems.bind(this)"
         [(ngModel)]="searchValue"
-    >
+    />
 
     <span class="input-group-btn">
         <button

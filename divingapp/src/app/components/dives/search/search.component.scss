@@ -1,3 +1,11 @@
 .search-tags {
     margin-top: 7px;
 }
+
+.input-group /deep/ .ng2-auto-complete-wrapper {
+    flex-grow: 1;
+
+    .form-control {
+        border-radius: 0;
+    }
+}

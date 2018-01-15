@@ -11,20 +11,18 @@
 
 .list-component {
     position: relative;
-    height: 100%;
+    height: 100vh;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 
+    .list-menu {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
     .list-view {
-        position: absolute;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        right: 0;
+        flex-grow: 1;
         overflow-y: scroll;
-
-        &.list-view-with-menu {
-            top: 55px;
-        }
     }
 
 }

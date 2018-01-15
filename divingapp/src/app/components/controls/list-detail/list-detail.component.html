@@ -1,7 +1,7 @@
 <div class="container-fluid">
 
     <div class="row">
-        <div class="list-component col-lg-6 col-md-12" [appHideWhenMobile]="!!selected">
+        <div class="list-component col-lg-6 col-md-12 p-0" [appHideWhenMobile]="!!selected">
             <div *ngIf="menuTemplate" class="list-menu">
                 <template *ngTemplateOutlet="menuTemplate"></template>
             </div>

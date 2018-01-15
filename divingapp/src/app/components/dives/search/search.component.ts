@@ -5,6 +5,11 @@ interface ITopic {
     caption: string;
     source?: () => { text: string, key: string }
 }
+interface IItem {
+    name: string;
+    caption: string;
+    value: string;
+}
 
 @Component({
     selector: 'app-dive-search',
@@ -13,7 +18,9 @@ interface ITopic {
 })
 export class SearchComponent implements OnInit {
 
+    public searchValue = '';
     public currentTopic: ITopic;
+    public items: IItem[] = [];
 
     public topics: ITopic[] = [
         {
@@ -36,10 +43,32 @@ export class SearchComponent implements OnInit {
             name: 'place',
         },
     ];
+    private topicMap: { [name: string]: ITopic };
 
-    constructor() { }
+    constructor() {
+        const o: { [name: string]: ITopic } = {};
+        for (const t of this.topics) {
+            o[t.name] = t;
+        }
+        this.topicMap = o;
+    }
 
     ngOnInit() {
+    }
+
+    public addSearch() {
+        this.items.push({
+            name: this.currentTopic.name,
+            caption: this.currentTopic.caption,
+            value: this.searchValue,
+        });
+    }
+
+    public removeItem(item: IItem) {
+        const idx = this.items.indexOf(item);
+        if (idx > -1) {
+            this.items.splice(idx, 1)
+        }
     }
 
 }

@@ -1,12 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { BuddyService } from 'app/services/buddy.service';
 import { TagService } from 'app/services/tag.service';
 import { PlaceService } from 'app/services/place.service';
-import { Validators, ValidatorFn } from '@angular/forms';
+import { Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
-import { AbstractControl } from '@angular/forms/src/model';
 
 interface ISearchItem {
     text: string, key: string
@@ -30,6 +29,8 @@ interface IFilter {
     styleUrls: ['./search.component.scss']
 })
 export class SearchComponent implements OnInit {
+
+    // @ViewChild('inpModel') public inputModel: AbstractControl;
 
     public searchValue: any = '';
     public currentTopic: ITopic;

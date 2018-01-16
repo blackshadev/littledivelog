@@ -12,7 +12,7 @@
             <a
                 *ngFor="let t of topics"
                 class="dropdown-item"
-                (click)="currentTopic = t"
+                (click)="currentTopic = t; inpModel.control.reset();"
             >
                 {{ t.caption }}
             </a>
@@ -38,10 +38,10 @@
             list-formatter="text"
         />
         <input
-            #inp="ngModel"
+            #inpModel="ngModel"
             type="text"
             class="form-control"
-            [ngClass]="{'is-invalid': inp.invalid }"
+            [ngClass]="{'is-invalid': inpModel.invalid }"
             (keydown.enter)="addSearch()"
             [(ngModel)]="searchValue"
             [validateFunction]="validate.bind(this)"

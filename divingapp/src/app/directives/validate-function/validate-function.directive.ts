@@ -14,7 +14,7 @@ export class ValidateFunctionDirective implements Validator {
     constructor() { }
 
     validate(c: AbstractControl): { [key: string]: any; } {
-        return this.validateFunction ? this.validateFunction(c.value) : null;
+        return this.validateFunction ? this.validateFunction(c) : null;
     }
 
 }

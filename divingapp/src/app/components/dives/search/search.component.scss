@@ -2,10 +2,20 @@
     margin-top: 7px;
 }
 
-.input-group /deep/ .ng2-auto-complete-wrapper {
-    flex-grow: 1;
+.input-group {
+    .autocomplete, .plain {
+        flex-grow: 1;
 
-    .form-control {
-        border-radius: 0;
+        .form-control {
+            border-radius: 0;
+            width: 100%;
+        }
+
+    }
+    .plain>/deep/.ng2-auto-complete-wrapper {
+        display: none;
+    }
+    .autocomplete>.form-control {
+        display: none;
     }
 }

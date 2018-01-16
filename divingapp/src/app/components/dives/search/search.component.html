@@ -27,14 +27,26 @@
             <a class="dropdown-item">On place</a> -->
         </div>
     </span>
-    <input
-        auto-complete
-        type="text"
-        class="form-control"
-        (keydown.enter)="addSearch()"
-        [source]="getSearchItems.bind(this)"
-        [(ngModel)]="searchValue"
-    />
+    <div [ngClass]="{ 'autocomplete': currentTopic && currentTopic.source, 'plain': !(currentTopic && currentTopic.source) }">
+        <input
+            auto-complete
+            type="text"
+            class="form-control"
+            (keydown.enter)="addSearch()"
+            [source]="getSearchItems.bind(this)"
+            [(ngModel)]="searchValue"
+            list-formatter="text"
+        />
+        <input
+            #inp="ngModel"
+            type="text"
+            class="form-control"
+            [ngClass]="{'is-invalid': inp.invalid }"
+            (keydown.enter)="addSearch()"
+            [(ngModel)]="searchValue"
+            [validateFunction]="validate.bind(this)"
+        />
+    </div>
 
     <span class="input-group-btn">
         <button
@@ -46,8 +58,9 @@
         </button>
     </span>
 </div>
+
 <div class="search-tags">
-    <div class="badge badge-secondary" *ngFor="let item of items">
+    <div class="badge badge-secondary" *ngFor="let item of currentFilters">
         {{item.caption}} '{{item.value}}'
         <a (click)="removeItem(item)"><i class="fa fa-times" aria-label="Delete"></i></a>
     </div>

@@ -7,6 +7,7 @@ import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detai
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Location } from '@angular/common';
 import { ProfileService } from 'app/services/profile.service';
+import { IFilter } from 'app/components/dives/search/search.component';
 
 @Component({
     selector: 'app-dives',
@@ -19,8 +20,8 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     public dives: Dive[];
 
     private subs: Subscription[] = [];
+    private filters: IFilter[] = [];
 
-    @ViewChild('search') private input: ElementRef;
     @ViewChild('diveDetail') private diveDetail: DiveDetailComponent;
 
     constructor(
@@ -79,8 +80,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     refresh() {
-        const searchValue = this.input ? this.input.nativeElement.value : '';
-        const o = this.extractSearches(searchValue);
+        const o = this.extractListFilter(this.filters);
 
         this.service.list(o).then(
             (d) => {
@@ -107,15 +107,21 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
 
 
-    protected extractSearches(s: string): {[k in TFilterKeys]?: string } {
-        const re = /([^:;]+):([^;$]+)/g;
-        let m: RegExpExecArray;
+    protected extractListFilter(filters: IFilter[]): {[k in TFilterKeys]?: string } {
+        const o: {[k in TFilterKeys]?: any } = {};
 
-        const o: {[k in TFilterKeys]?: string } = {};
-        while ((m = re.exec(s)) !== null) {
-            const tag = m[1];
-            const value = m[2];
-            o[tag] = value;
+        for (const flt of filters) {
+            switch (flt.name) {
+                case 'buddy':
+                    o.buddies = o.buddies || []
+                    o.buddies.push(flt.value);
+                    break;
+                case 'tag':
+                    o.tags = o.tags || []
+                    o.tags.push(flt.value);
+                    break;
+
+            }
         }
 
         return o;

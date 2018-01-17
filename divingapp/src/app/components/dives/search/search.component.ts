@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { BuddyService } from 'app/services/buddy.service';
@@ -17,10 +17,11 @@ interface ITopic {
     source?: () => Promise<{ text: string, key: any }[]>
     validate?: ValidatorFn;
 }
-interface IFilter {
+export interface IFilter {
     name: string;
     caption: string;
     value: string;
+    displayValue?: string;
 }
 
 @Component({
@@ -30,7 +31,8 @@ interface IFilter {
 })
 export class SearchComponent implements OnInit {
 
-    // @ViewChild('inpModel') public inputModel: AbstractControl;
+    @Output()
+    public filterChanged: EventEmitter<IFilter[]> = new EventEmitter<IFilter[]>();
 
     public searchValue: any = '';
     public currentTopic: ITopic;
@@ -60,14 +62,14 @@ export class SearchComponent implements OnInit {
                 validate: CustomValidators.datetime,
             }, {
                 caption: 'With buddy',
-                name: 'buddies',
+                name: 'buddy',
                 source: async () => {
                     const buds = await this.buddyService.list();
                     return buds.map((b) => ({ text: b.text, key: b.buddy_id }));
                 },
             }, {
                 caption: 'With tag',
-                name: 'tags',
+                name: 'tag',
                 source: async () => {
                     const tags = await this.tagService.list();
                     return tags.map((t) => ({ text: t.text, key: t.tag_id }));
@@ -94,17 +96,22 @@ export class SearchComponent implements OnInit {
 
     public addSearch() {
         let value: string;
+        let displayValue: string|undefined;
         if (typeof(this.searchValue) === 'string') {
             value = this.searchValue;
         } else {
             value = this.searchValue.key;
+            displayValue = this.searchValue.text;
         }
 
         this.currentFilters.push({
             name: this.currentTopic.name,
             caption: this.currentTopic.caption,
             value,
+            displayValue,
         });
+
+        this.filterChanged.emit(this.currentFilters);
     }
 
     public removeItem(item: IFilter) {
@@ -112,6 +119,8 @@ export class SearchComponent implements OnInit {
         if (idx > -1) {
             this.currentFilters.splice(idx, 1)
         }
+
+        this.filterChanged.emit(this.currentFilters);
     }
 
     public getSearchItems(v: string): Observable<ISearchItem[]> {

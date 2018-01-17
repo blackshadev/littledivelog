@@ -61,7 +61,7 @@
 
 <div class="search-tags">
     <div class="badge badge-secondary" *ngFor="let item of currentFilters">
-        {{item.caption}} '{{item.value}}'
+        {{item.caption}} '{{item.displayValue || item.value}}'
         <a (click)="removeItem(item)"><i class="fa fa-times" aria-label="Delete"></i></a>
     </div>
 </div>

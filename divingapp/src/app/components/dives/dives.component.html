@@ -39,7 +39,9 @@
             </button>
         </span>
     </div> -->
-    <app-dive-search></app-dive-search>
+    <app-dive-search
+        (filterChanged)="filters = $event; this.refresh()"
+    ></app-dive-search>
 </ng-template>
 
 <app-list-detail

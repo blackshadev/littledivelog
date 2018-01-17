@@ -180,7 +180,7 @@ router.get("/", async (req, res) => {
         filterSql += ` and d.date::date = $${pars.length}::date`;
     }
     if (req.query.place) {
-        pars.push(`{${req.query.place}}`);
+        pars.push(`${req.query.place}`);
         filterSql += ` and d.place_id = $${pars.length}::integer`;
     }
     if (req.query.country) {

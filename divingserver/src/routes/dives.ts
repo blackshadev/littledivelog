@@ -181,7 +181,7 @@ router.get("/", async (req, res) => {
     }
     if (req.query.place) {
         pars.push(`{${req.query.place}}`);
-        filterSql += ` and d.place_id = $${pars.length}::integer)`;
+        filterSql += ` and d.place_id = $${pars.length}::integer`;
     }
     if (req.query.country) {
         pars.push(req.query.country);

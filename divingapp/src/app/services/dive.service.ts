@@ -13,7 +13,7 @@ import { CommonHttp } from 'app/shared/http';
 import { BuddyService } from 'app/services/buddy.service';
 import { arrayContains } from 'app/shared/common';
 
-export type TFilterKeys = 'buddies' | 'tags' | 'from' | 'till' | 'places' | 'country';
+export type TFilterKeys = 'buddies' | 'tags' | 'from' | 'till' | 'date' | 'place' | 'country';
 
 
 export interface IComputer {

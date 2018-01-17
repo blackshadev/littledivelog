@@ -120,7 +120,18 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
                     o.tags = o.tags || []
                     o.tags.push(flt.value);
                     break;
-
+                case 'place':
+                    o.place = flt.value;
+                    break;
+                case 'dateTill':
+                    o.till = flt.value;
+                    break;
+                case 'dateFrom':
+                    o.till = flt.value;
+                    break;
+                case 'dateOn':
+                    o.date = flt.value;
+                    break;
             }
         }
 

@@ -149,21 +149,33 @@ router.get("/", async (req, res) => {
 
     if (req.query.buddies) {
         pars.push(`{${req.query.buddies}}`);
-        filterSql += ` and exists (
-            select
-              from dive_buddies d_b
-             where d_b.dive_id = d.dive_id
-               and d_b.buddy_id = any($${pars.length}::integer[])
-        )`;
+        filterSql += `
+            and array(
+                select buddy_id
+                from dive_buddies d_b
+                where d_b.dive_id = d.dive_id
+            ) <@ $${pars.length}::integer[]
+            and array(
+                select buddy_id
+                from dive_buddies d_b
+                where d_b.dive_id = d.dive_id
+            ) @> $${pars.length}::integer[]
+        `;
     }
     if (req.query.tags) {
         pars.push(`{${req.query.tags}}`);
-        filterSql += ` and exists (
-            select 1
-              from dive_tags d_t
-             where d_t.dive_id = d.dive_id
-               and d_t.tag_id = any($${pars.length}::integer[])
-        )`;
+        filterSql += `
+            and array(
+                select tag_id
+                  from dive_tags d_t
+                 where d_t.dive_id = d.dive_id
+            ) <@ $${pars.length}::integer[]
+            and array(
+                select tag_id
+                  from dive_tags d_t
+                 where d_t.dive_id = d.dive_id
+            ) @> $${pars.length}::integer[]
+            `;
     }
     if (req.query.till) {
         pars.push(req.query.till);
@@ -173,9 +185,13 @@ router.get("/", async (req, res) => {
         pars.push(req.query.from);
         filterSql += ` and d.date > $${pars.length}::date`;
     }
-    if (req.query.places) {
-        pars.push(`{${req.query.places}}`);
-        filterSql += ` and d.place_id = any($${pars.length}::integer[])`;
+    if (req.query.date) {
+        pars.push(req.query.date);
+        filterSql += ` and d.date::date = $${pars.length}::date`;
+    }
+    if (req.query.place) {
+        pars.push(`{${req.query.place}}`);
+        filterSql += ` and d.place_id = $${pars.length}::integer)`;
     }
     if (req.query.country) {
         pars.push(req.query.country);

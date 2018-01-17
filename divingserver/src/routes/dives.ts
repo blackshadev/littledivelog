@@ -154,11 +154,6 @@ router.get("/", async (req, res) => {
                 select buddy_id
                 from dive_buddies d_b
                 where d_b.dive_id = d.dive_id
-            ) <@ $${pars.length}::integer[]
-            and array(
-                select buddy_id
-                from dive_buddies d_b
-                where d_b.dive_id = d.dive_id
             ) @> $${pars.length}::integer[]
         `;
     }
@@ -169,13 +164,8 @@ router.get("/", async (req, res) => {
                 select tag_id
                   from dive_tags d_t
                  where d_t.dive_id = d.dive_id
-            ) <@ $${pars.length}::integer[]
-            and array(
-                select tag_id
-                  from dive_tags d_t
-                 where d_t.dive_id = d.dive_id
             ) @> $${pars.length}::integer[]
-            `;
+        `;
     }
     if (req.query.till) {
         pars.push(req.query.till);

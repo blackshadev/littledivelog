@@ -4,6 +4,7 @@ import * as Router from "express-promise-router";
 import { QueryResult } from "pg";
 import { createToken } from "../jwt";
 import { database } from "../pg";
+import { HttpError } from "../errors";
 
 export const router = Router() as express.Router;
 
@@ -77,6 +78,21 @@ router.post(
             res.json({
                 error: err.message,
             });
+        }
+    },
+);
+
+router.get(
+    "/access-token",
+    async (req, res) => {
+        const auth = req.headers['Authorization'] as string;
+        if(!auth) {
+            throw new HttpError(401, "Unauthorized, Authorization header expected");
+        }
+
+        const [type, token, ...rest] = auth.split(" ");
+        if(rest.length !== 0) {
+            throw new HttpError(400, "");
         }
     },
 );

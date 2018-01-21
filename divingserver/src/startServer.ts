@@ -14,6 +14,7 @@ import * as places from "./routes/places";
 import * as tags from "./routes/tags";
 import * as uploader from "./routes/uploader";
 import * as user from "./routes/user";
+import { HttpError } from "./errors";
 
 export async function start(pmx?: any) {
 
@@ -64,8 +65,10 @@ export async function start(pmx?: any) {
         next();
     });
 
-    app.use((err, req, res, next) => {
-        if (err.name === "UnauthorizedError") {
+    app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+        if (err instanceof HttpError) {
+            res.status(err.code).json({ error: err.message });
+        } else if (err.name === "UnauthorizedError") {
             res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
         } else if (err.name === "BodyValidationError") {
             res.status(400).json({ error: err.toString() });

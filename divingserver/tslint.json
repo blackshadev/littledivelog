@@ -1,15 +1,8 @@
 {
-    "extends": [
-        "tslint:recommended"
-    ],
-    "rules": {
-        "max-classes-per-file": [
-            false
-        ],
-        "variable-name": [
-            true,
-            "allow-leading-underscore"
-        ],
-        "object-literal-sort-keys": false
-    }
+  "extends": ["tslint:recommended", "tslint-config-prettier"],
+  "rules": {
+    "max-classes-per-file": [false],
+    "variable-name": [true, "allow-leading-underscore"],
+    "object-literal-sort-keys": false
+  }
 }

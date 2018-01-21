@@ -1,7 +1,7 @@
 import * as argon2 from "argon2";
 import * as express from "express";
-import * as Router from "express-promise-router";
 import * as jwt from "express-jwt";
+import * as Router from "express-promise-router";
 import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
@@ -125,15 +125,10 @@ router.get(
     jwt({
         secret: config.jwt.secret,
         issuer: config.jwt.issuer,
-        subject: "refreh-token",
+        subject: "refresh-token",
         algorithms: ["HS512"],
     }),
     async (req, res) => {
-        // const dat = await verifyAsync(getToken(req), config.jwt.secret, {
-        //     subject: "refresh-token",
-        //     issuer: config.jwt.issuer,
-        //     algorithms: ["HS512"],
-        // });
         const dat = req.user;
 
         const q = await database.call(

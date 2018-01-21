@@ -48,7 +48,7 @@ export async function verifyAsync(
 }
 
 export function getToken(req: Request): string {
-    const auth = req.headers.Authorization as string;
+    const auth = req.headers.authorization as string;
     if (!auth) {
         throw new HttpError(
             400,

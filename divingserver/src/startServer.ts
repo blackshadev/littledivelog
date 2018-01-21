@@ -17,7 +17,6 @@ import * as user from "./routes/user";
 import { HttpError } from "./errors";
 
 export async function start(pmx?: any) {
-
     const path = process.env.CONFIG || process.cwd() + "/config.json";
     console.log("Reading config: " + path);
     await readConfig(path);
@@ -35,7 +34,15 @@ export async function start(pmx?: any) {
         jwt({
             issuer: config.jwt.issuer,
             secret: config.jwt.secret,
-        }).unless({ path: ["/auth/", "/auth/register/", "/dive-uploader/download"] }),
+        }).unless({
+            path: [
+                "/auth/",
+                "/auth/register/",
+                "/auth/refresh-token",
+                "/auth/access-token",
+                "/dive-uploader/download",
+            ],
+        }),
     );
 
     app.use("/auth/", auth.router);
@@ -55,9 +62,7 @@ export async function start(pmx?: any) {
             [],
         );
 
-        res.json(
-            ctry.rows,
-        );
+        res.json(ctry.rows);
     });
 
     app.param("session", (req, res, next, id) => {
@@ -65,30 +70,36 @@ export async function start(pmx?: any) {
         next();
     });
 
-    app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
-        if (err instanceof HttpError) {
-            res.status(err.code).json({ error: err.message });
-        } else if (err.name === "UnauthorizedError") {
-            res.status(401).json({ error: "Invalid JWT token. Please authenticate first." });
-        } else if (err.name === "BodyValidationError") {
-            res.status(400).json({ error: err.toString() });
-        } else {
-            res.status(500).json({ error: err.toString() });
-        }
-        next();
-    });
+    app.use(
+        (
+            err: Error,
+            req: express.Request,
+            res: express.Response,
+            next: express.NextFunction,
+        ) => {
+            if (err instanceof HttpError) {
+                res.status(err.code).json({ error: err.message });
+            } else if (err.name === "UnauthorizedError") {
+                res.status(401).json({
+                    error: "Invalid JWT token. Please authenticate first.",
+                });
+            } else if (err.name === "BodyValidationError") {
+                res.status(400).json({ error: err.toString() });
+            } else {
+                res.status(500).json({ error: err.toString() });
+            }
+            next();
+        },
+    );
 
     await new Promise((resolve, reject) => {
-        app.listen(
-            config.http.port,
-            (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            },
-        );
+        app.listen(config.http.port, err => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
+        });
     });
     console.log("DiveServer listening on 3000");
 }

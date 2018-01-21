@@ -7,14 +7,6 @@ import { QueryResult } from "pg";
 import { config, readConfig } from "./config";
 import { HttpError } from "./errors";
 import { database } from "./pg";
-import * as auth from "./routes/auth";
-import * as buddies from "./routes/buddies";
-import * as computers from "./routes/computers";
-import * as dives from "./routes/dives";
-import * as places from "./routes/places";
-import * as tags from "./routes/tags";
-import * as uploader from "./routes/uploader";
-import * as user from "./routes/user";
 
 export async function start(pmx?: any) {
     const path = process.env.CONFIG || process.cwd() + "/config.json";
@@ -44,6 +36,15 @@ export async function start(pmx?: any) {
             ],
         }),
     );
+
+    const auth = require("./routes/auth");
+    const buddies = require("./routes/buddies");
+    const computers = require("./routes/computers");
+    const dives = require("./routes/dives");
+    const places = require("./routes/places");
+    const tags = require("./routes/tags");
+    const uploader = require("./routes/uploader");
+    const user = require("./routes/user");
 
     app.use("/auth/", auth.router);
     app.use("/dive/", dives.router);

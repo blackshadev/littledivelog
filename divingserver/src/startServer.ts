@@ -82,7 +82,7 @@ export async function start(pmx?: any) {
                 res.status(err.code).json({ error: err.message });
             } else if (err.name === "UnauthorizedError") {
                 res.status(401).json({
-                    error: "Invalid JWT token; " + err.message,
+                    error: "Invalid JWT token: " + err.message,
                 });
             } else if (err.name === "BodyValidationError") {
                 res.status(400).json({ error: err.toString() });

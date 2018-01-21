@@ -47,31 +47,3 @@ export async function verifyAsync(
         });
     });
 }
-
-export function getToken(req: Request): string {
-    const auth = req.headers.authorization as string;
-    if (!auth) {
-        throw new HttpError(
-            400,
-            "Bad request; Expected to have an authorization header",
-        );
-    }
-
-    const authParts = auth.split(" ");
-    if (authParts.length !== 2) {
-        throw new HttpError(
-            400,
-            "Bad request; Expected authorization header to have no more then 2 values seperated by a space, tye and token.",
-        );
-    }
-    const [type, token] = authParts;
-
-    if (type.toLowerCase() !== "bearer") {
-        throw new HttpError(
-            400,
-            "Bad request; Expected authorization header to be of type bearer",
-        );
-    }
-
-    return token;
-}

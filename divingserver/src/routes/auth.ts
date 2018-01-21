@@ -5,7 +5,7 @@ import * as Router from "express-promise-router";
 import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
-import { createToken, getToken, verifyAsync } from "../jwt";
+import { createToken } from "../jwt";
 import { database } from "../pg";
 
 export const router = Router() as express.Router;
@@ -161,7 +161,10 @@ router.get(
 router.post("/register/", async (req, res) => {
     try {
         if (!(req.body.password && req.body.name && req.body.email)) {
-            throw new Error("Password, email and name required");
+            throw new HttpError(
+                400,
+                "Bad request: Password, email and name required",
+            );
         }
 
         const hash = await argon2.hash(req.body.password);

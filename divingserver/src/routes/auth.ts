@@ -144,10 +144,13 @@ router.get("/access-token", async (req, res) => {
 
     const tok = await createToken(
         { user_id: req.user.user_id },
-        "1m", // needs to be higher
+        {
+            expiresIn: "1m", // needs to be higher
+            subject: "access-token",
+        },
     );
 
-    res.json({ token: tok });
+    res.json({ jwt: tok });
 });
 
 router.post("/register/", async (req, res) => {

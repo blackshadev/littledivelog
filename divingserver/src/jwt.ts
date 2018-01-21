@@ -7,9 +7,9 @@ import { HttpError } from "./errors";
 export async function createToken(
     dat: any,
     opt: {
-        subject: string;
+        subject?: string;
         expiresIn?: string;
-    },
+    } = {},
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
         jwt.sign(

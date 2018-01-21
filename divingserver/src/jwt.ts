@@ -18,6 +18,7 @@ export async function createToken(
             {
                 algorithm: "HS512",
                 issuer: config.jwt.issuer,
+                subject: opt.subject,
                 expiresIn: opt.expiresIn,
             },
             (err, result) => {

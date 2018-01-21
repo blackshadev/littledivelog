@@ -1,4 +1,10 @@
-import { Component, OnInit, ViewChild, EventEmitter, Output } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    ViewChild,
+    EventEmitter,
+    Output,
+} from '@angular/core';
 import { Observable } from 'rxjs/Observable';
 import { BehaviorSubject } from 'rxjs';
 import { BuddyService } from 'app/services/buddy.service';
@@ -8,13 +14,14 @@ import { Validators, ValidatorFn, AbstractControl } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 
 interface ISearchItem {
-    text: string, key: string
+    text: string;
+    key: string;
 }
 
 interface ITopic {
     name: string;
     caption: string;
-    source?: () => Promise<{ text: string, key: any }[]>
+    source?: () => Promise<{ text: string; key: any }[]>;
     validate?: ValidatorFn;
 }
 export interface IFilter {
@@ -27,12 +34,13 @@ export interface IFilter {
 @Component({
     selector: 'app-dive-search',
     templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss']
+    styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
-
     @Output()
-    public filterChanged: EventEmitter<IFilter[]> = new EventEmitter<IFilter[]>();
+    public filterChanged: EventEmitter<IFilter[]> = new EventEmitter<
+        IFilter[]
+    >();
 
     public searchValue: any = '';
     public currentTopic: ITopic;
@@ -46,40 +54,44 @@ export class SearchComponent implements OnInit {
         private tagService: TagService,
         private placeService: PlaceService,
     ) {
-
         this.topics = [
             {
                 caption: 'Date on',
                 name: 'dateOn',
                 validate: CustomValidators.datetime,
-            }, {
+            },
+            {
                 caption: 'Date before',
                 name: 'dateFrom',
                 validate: CustomValidators.datetime,
-            }, {
+            },
+            {
                 caption: 'Date After',
                 name: 'dateTill',
                 validate: CustomValidators.datetime,
-            }, {
+            },
+            {
                 caption: 'With buddy',
                 name: 'buddy',
                 source: async () => {
                     const buds = await this.buddyService.list();
-                    return buds.map((b) => ({ text: b.text, key: b.buddy_id }));
+                    return buds.map(b => ({ text: b.text, key: b.buddy_id }));
                 },
-            }, {
+            },
+            {
                 caption: 'With tag',
                 name: 'tag',
                 source: async () => {
                     const tags = await this.tagService.list();
-                    return tags.map((t) => ({ text: t.text, key: t.tag_id }));
+                    return tags.map(t => ({ text: t.text, key: t.tag_id }));
                 },
-            }, {
+            },
+            {
                 caption: 'On place',
                 name: 'place',
                 source: async () => {
                     const plc = await this.placeService.list();
-                    return plc.map((p) => ({ text: p.name, key: p.place_id }));
+                    return plc.map(p => ({ text: p.name, key: p.place_id }));
                 },
             },
         ];
@@ -91,13 +103,12 @@ export class SearchComponent implements OnInit {
         this.topicMap = o;
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     public addSearch() {
         let value: string;
-        let displayValue: string|undefined;
-        if (typeof(this.searchValue) === 'string') {
+        let displayValue: string | undefined;
+        if (typeof this.searchValue === 'string') {
             value = this.searchValue;
         } else {
             value = this.searchValue.key;
@@ -117,24 +128,26 @@ export class SearchComponent implements OnInit {
     public removeItem(item: IFilter) {
         const idx = this.currentFilters.indexOf(item);
         if (idx > -1) {
-            this.currentFilters.splice(idx, 1)
+            this.currentFilters.splice(idx, 1);
         }
 
         this.filterChanged.emit(this.currentFilters);
     }
 
     public getSearchItems(v: string): Observable<ISearchItem[]> {
-        return new Observable((obs) => {
+        return new Observable(obs => {
             if (!(this.currentTopic && this.currentTopic.source)) {
                 obs.next([]);
                 obs.complete();
             } else {
                 const prom = this.currentTopic.source();
-                prom.then((items) => {
-                    console.log(items);
-                    obs.next(items);
-                    obs.complete();
-                }).catch((err) => obs.error(err));
+                prom
+                    .then(items => {
+                        console.log(items);
+                        obs.next(items);
+                        obs.complete();
+                    })
+                    .catch(err => obs.error(err));
             }
         });
     }
@@ -146,5 +159,4 @@ export class SearchComponent implements OnInit {
             return null;
         }
     }
-
 }

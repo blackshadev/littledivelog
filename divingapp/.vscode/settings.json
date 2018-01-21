@@ -2,5 +2,6 @@
     "typescript.tsdk": "node_modules\\typescript\\lib",
     "editor.detectIndentation": false,
     "editor.autoIndent": true,
-    "editor.insertSpaces": true
+    "editor.insertSpaces": true,
+    "editor.formatOnSave": true
 }

@@ -39,7 +39,7 @@ export async function verifyAsync(
     return new Promise((resolve, reject) => {
         jwt.verify(token, secretOrPublicKey, options, (err, dat) => {
             if (err) {
-                reject(new HttpError(401, "Invalid JWT"));
+                reject(new HttpError(401, "Invalid JWT; " + err.message));
             } else {
                 resolve(dat);
             }

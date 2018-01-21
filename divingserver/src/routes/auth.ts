@@ -125,6 +125,7 @@ router.get("/access-token", async (req, res) => {
         subject: "refresh-token",
         issuer: config.jwt.issuer,
     });
+    console.log(dat);
 
     const q = await database.call(
         `

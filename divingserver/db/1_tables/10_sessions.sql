@@ -4,6 +4,7 @@ create table if not exists session_tokens (
     , last_used     timestamp                                                       null
     , last_ip       text                                                            null
     , description   text                                                            null
+    , insert_ip     text                                                        not null
     , inserted      timestamp   default (current_timestamp at time zone 'UTC')  not null
     , primary key (token, user_id)
 );

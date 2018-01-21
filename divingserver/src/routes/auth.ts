@@ -92,8 +92,8 @@ router.post("/refresh-token", async (req, res) => {
         `
             insert
               into session_tokens
-                   (user_id, last_ip, description)
-            values ($1     , $2     , $3)
+                   (user_id, insert_ip, description)
+            values ($1     , $2       , $3)
             returning *
         `,
         [user.user_id, req.socket.remoteAddress, b.description || null],

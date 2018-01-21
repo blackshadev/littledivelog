@@ -150,7 +150,7 @@ router.get(
         const tok = await createToken(
             { user_id: dat.user_id },
             {
-                expiresIn: "1m", // needs to be higher
+                expiresIn: "1h", // needs to be higher
                 subject: "access-token",
             },
         );

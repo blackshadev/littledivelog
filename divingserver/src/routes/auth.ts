@@ -1,7 +1,7 @@
 import * as argon2 from "argon2";
 import * as express from "express";
 import * as Router from "express-promise-router";
-import * as jwt from "jsonwebtoken";
+import * as jwt from "express-jwt";
 import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
@@ -120,15 +120,24 @@ router.post("/refresh-token", async (req, res) => {
     });
 });
 
-router.get("/access-token", async (req, res) => {
-    const dat = await verifyAsync(getToken(req), config.jwt.secret, {
-        subject: "refresh-token",
+router.get(
+    "/access-token",
+    jwt({
+        secret: config.jwt.secret,
         issuer: config.jwt.issuer,
+        subject: "refreh-token",
         algorithms: ["HS512"],
-    });
+    }),
+    async (req, res) => {
+        // const dat = await verifyAsync(getToken(req), config.jwt.secret, {
+        //     subject: "refresh-token",
+        //     issuer: config.jwt.issuer,
+        //     algorithms: ["HS512"],
+        // });
+        const dat = req.user;
 
-    const q = await database.call(
-        `
+        const q = await database.call(
+            `
             update session_tokens
                set last_used = (current_timestamp at time zone 'UTC')
                  , last_ip =  $3
@@ -136,23 +145,24 @@ router.get("/access-token", async (req, res) => {
                and token = $2
          returning *
         `,
-        [dat.user_id, dat.refresh_token, req.socket.remoteAddress],
-    );
+            [dat.user_id, dat.refresh_token, req.socket.remoteAddress],
+        );
 
-    if (!q.rows.length) {
-        throw new HttpError(401, "Invalid token given");
-    }
+        if (!q.rows.length) {
+            throw new HttpError(401, "Invalid token given");
+        }
 
-    const tok = await createToken(
-        { user_id: dat.user_id },
-        {
-            expiresIn: "1m", // needs to be higher
-            subject: "access-token",
-        },
-    );
+        const tok = await createToken(
+            { user_id: dat.user_id },
+            {
+                expiresIn: "1m", // needs to be higher
+                subject: "access-token",
+            },
+        );
 
-    res.json({ jwt: tok });
-});
+        res.json({ jwt: tok });
+    },
+);
 
 router.post("/register/", async (req, res) => {
     try {

@@ -1,10 +1,12 @@
 import * as argon2 from "argon2";
 import * as express from "express";
 import * as Router from "express-promise-router";
+import * as jwt from "jsonwebtoken";
 import { QueryResult } from "pg";
-import { createToken } from "../jwt";
-import { database } from "../pg";
+import { config } from "../config";
 import { HttpError } from "../errors";
+import { createToken, getToken, verifyAsync } from "../jwt";
+import { database } from "../pg";
 
 export const router = Router() as express.Router;
 
@@ -86,39 +88,43 @@ router.post("/refresh-token", async (req, res) => {
 
     const user = await login(b.email, b.password);
 
+    const dt = await database.call(
+        `
+            insert
+              into session_tokens
+                   (user_id, last_ip, description)
+            values ($1     , $2     , $3)
+            returning *
+        `,
+        [user.user_id, req.socket.remoteAddress, b.description || null],
+    );
+    if (!dt.rows[0]) {
+        throw new Error(
+            "Unexpected result from databse; unable to insert and get refrehs token",
+        );
+    }
+
     const tok = await createToken(
         {
+            refresh_token: dt.rows[0].token,
             user_id: user.user_id,
         },
-        "1w",
+        {
+            subject: "refresh-token",
+            expiresIn: "1w",
+        },
     );
+
+    res.json({
+        jwt: tok,
+    });
 });
 
 router.get("/access-token", async (req, res) => {
-    const auth = req.headers["Authorization"] as string;
-    if (!auth) {
-        throw new HttpError(
-            400,
-            "Exptected authorization header with basic type and user_id + refresh token",
-        );
-    }
-
-    const [type, encAuthContent, ...rest] = auth.split(" ");
-    if (rest.length !== 0) {
-        throw new HttpError(
-            400,
-            "Invalid authorization header content, expected basic type and token",
-        );
-    }
-    if (type.toLowerCase() !== "basic") {
-        throw new HttpError(
-            400,
-            "Invalid authorization header content, expected type to be basic",
-        );
-    }
-
-    const uidToken = Buffer.from(encAuthContent, "base64").toString();
-    const [uid, token] = uidToken.split(":");
+    const dat = await verifyAsync(getToken(req), config.jwt.secret, {
+        subject: "refresh-token",
+        issuer: config.jwt.issuer,
+    });
 
     const q = await database.call(
         `
@@ -129,7 +135,7 @@ router.get("/access-token", async (req, res) => {
                and token = $2
          returning *
         `,
-        [uid, token, req.socket.remoteAddress],
+        [dat.user_id, dat.refresh_token, req.socket.remoteAddress],
     );
 
     if (!q.rows.length) {
@@ -137,7 +143,7 @@ router.get("/access-token", async (req, res) => {
     }
 
     const tok = await createToken(
-        { user_id: uid },
+        { user_id: req.user.user_id },
         "1m", // needs to be higher
     );
 

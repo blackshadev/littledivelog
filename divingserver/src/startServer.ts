@@ -5,6 +5,7 @@ import * as expressLogging from "express-logging";
 import * as unless from "express-unless";
 import { QueryResult } from "pg";
 import { config, readConfig } from "./config";
+import { HttpError } from "./errors";
 import { database } from "./pg";
 import * as auth from "./routes/auth";
 import * as buddies from "./routes/buddies";
@@ -14,7 +15,6 @@ import * as places from "./routes/places";
 import * as tags from "./routes/tags";
 import * as uploader from "./routes/uploader";
 import * as user from "./routes/user";
-import { HttpError } from "./errors";
 
 export async function start(pmx?: any) {
     const path = process.env.CONFIG || process.cwd() + "/config.json";

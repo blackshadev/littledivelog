@@ -2,7 +2,13 @@ import { Subscription } from 'rxjs/Rx';
 import { Dive } from '../../shared/dive';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveService, TFilterKeys } from '../../services/dive.service';
-import { Component, OnDestroy, OnInit, ViewChild, ElementRef } from '@angular/core';
+import {
+    Component,
+    OnDestroy,
+    OnInit,
+    ViewChild,
+    ElementRef,
+} from '@angular/core';
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
 import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Location } from '@angular/common';
@@ -12,10 +18,9 @@ import { IFilter } from 'app/components/dives/search/search.component';
 @Component({
     selector: 'app-dives',
     templateUrl: './dives.component.html',
-    styleUrls: ['./dives.component.scss']
+    styleUrls: ['./dives.component.scss'],
 })
 export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
-
     public dive: Dive;
     public dives: Dive[];
 
@@ -43,8 +48,8 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngOnInit(): void {
         this.subs.push(
-            this.route.params.flatMap(
-                async (params: Params) => {
+            this.route.params
+                .flatMap(async (params: Params) => {
                     if (params['id'] === 'new') {
                         return await this.newDive();
                     }
@@ -53,15 +58,13 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
                     } else {
                         return await this.service.get(+params['id']);
                     }
-                }).subscribe(
-                    dive => this.dive = dive
-                )
+                })
+                .subscribe(dive => (this.dive = dive)),
         );
-
     }
 
     ngOnDestroy(): void {
-        this.subs.forEach((s) => s.unsubscribe());
+        this.subs.forEach(s => s.unsubscribe());
     }
 
     diveChanged(d: Dive) {
@@ -82,11 +85,9 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     refresh() {
         const o = this.extractListFilter(this.filters);
 
-        this.service.list(o).then(
-            (d) => {
-                this.dives = d;
-            }
-        );
+        this.service.list(o).then(d => {
+            this.dives = d;
+        });
     }
 
     async gotoNewDive() {
@@ -94,7 +95,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dive = await this.newDive();
     }
 
-    protected  async newDive(): Promise<Dive> {
+    protected async newDive(): Promise<Dive> {
         const equipment = await this.profile.equipment();
         const dive = Dive.New();
 
@@ -105,19 +106,19 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         return dive;
     }
 
-
-
-    protected extractListFilter(filters: IFilter[]): {[k in TFilterKeys]?: string } {
-        const o: {[k in TFilterKeys]?: any } = {};
+    protected extractListFilter(
+        filters: IFilter[],
+    ): { [k in TFilterKeys]?: string } {
+        const o: { [k in TFilterKeys]?: any } = {};
 
         for (const flt of filters) {
             switch (flt.name) {
                 case 'buddy':
-                    o.buddies = o.buddies || []
+                    o.buddies = o.buddies || [];
                     o.buddies.push(flt.value);
                     break;
                 case 'tag':
-                    o.tags = o.tags || []
+                    o.tags = o.tags || [];
                     o.tags.push(flt.value);
                     break;
                 case 'place':
@@ -137,6 +138,4 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
         return o;
     }
-
-
 }

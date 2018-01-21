@@ -72,7 +72,7 @@ export class AuthService {
     }
 
     async login(email: string, password: string): Promise<void> {
-        handleServerErrors(async () => {
+        await handleServerErrors(async () => {
             const a = await this.http
                 .post(`${serviceUrl}/auth/refresh-token`, {
                     email,
@@ -95,27 +95,24 @@ export class AuthService {
         if (!this._refreshToken) {
             throw new Error('No refresh token');
         }
-        handleServerErrors(
+        await handleServerErrors(
             async () => {
                 const headers = new Headers();
                 headers.append('Authorization', 'Bearer ' + this._refreshToken);
 
                 const a = await this.http
-                    .post(
-                        `${serviceUrl}/auth/refresh-token`,
-                        {},
-                        {
-                            headers,
-                        },
-                    )
+                    .get(`${serviceUrl}/auth/access-token`, {
+                        headers,
+                    })
                     .toPromise();
 
                 const o = a.json();
                 if (o.error) {
                     throw new Error(o.error);
                 } else {
-                    this._refreshToken = o.jwt;
-                    localStorage.setItem('jwt_access', this._refreshToken);
+                    console.log('Got ', o);
+                    this._accessToken = o.jwt;
+                    localStorage.setItem('jwt_access', this._accessToken);
                 }
             },
             (resp, errObj) => {
@@ -129,7 +126,7 @@ export class AuthService {
     }
 
     async register(oPar: { email: string; password: string; name?: string }) {
-        handleServerErrors(async () => {
+        await handleServerErrors(async () => {
             const a = await this.http
                 .post(`${serviceUrl}/auth/register/`, oPar)
                 .toPromise();
@@ -152,7 +149,7 @@ export class AuthenticatedService {
 
     constructor(protected auth: AuthService) {
         this.headers = new Headers();
-        this.headers.append('Authorization', 'Bearer ' + this.auth.accessToken);
+        // this.headers.append('Authorization', 'Bearer ' + this.auth.accessToken);
     }
 
     protected downloadFile(res: Response) {

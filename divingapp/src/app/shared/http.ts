@@ -5,6 +5,7 @@ import {
     RequestOptionsArgs,
     Request,
     Response,
+    Headers,
 } from '@angular/http';
 import { Observable } from 'rxjs/Observable';
 import { AuthService } from 'app/services/auth.service';
@@ -21,14 +22,39 @@ export class ResourceHttp extends Http {
         super(backend, options);
     }
 
+    public setHeaders(
+        url: string | Request,
+        options?: RequestOptionsArgs,
+    ): void {
+        if (url instanceof Request) {
+            url.headers.set('Authorization', 'Bearer ' + this.auth.accessToken);
+        } else if (options) {
+            options.headers = options.headers || new Headers();
+            options.headers.set(
+                'Authorization',
+                'Bearer ' + this.auth.accessToken,
+            );
+        }
+    }
+
     public request(
         url: string | Request,
         options?: RequestOptionsArgs,
     ): Observable<Response> {
-        // todo on 401 request new access token and retry
-        return super.request(url, options).catch(err => {
+        this.setHeaders(url, options);
+        return super.request(url, options).catch<Response, Response>(err => {
             if (err.status === 401) {
-                this.auth.logout();
+                return Observable.from(
+                    this.auth.fetchAccessToken().catch((_err: Error) => {
+                        this.auth.logout();
+                        throw new Error(
+                            'Error while fetching access token ' + _err.message,
+                        );
+                    }),
+                ).flatMap(() => {
+                    this.setHeaders(url, options);
+                    return super.request(url, options);
+                });
             } else {
                 return Observable.throw(err);
             }

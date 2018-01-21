@@ -111,7 +111,6 @@ router.post("/refresh-token", async (req, res) => {
         },
         {
             subject: "refresh-token",
-            expiresIn: "1w",
         },
     );
 

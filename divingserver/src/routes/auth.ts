@@ -124,8 +124,8 @@ router.get("/access-token", async (req, res) => {
     const dat = await verifyAsync(getToken(req), config.jwt.secret, {
         subject: "refresh-token",
         issuer: config.jwt.issuer,
+        algorithms: ["HS512"],
     });
-    console.log(dat);
 
     const q = await database.call(
         `
@@ -144,7 +144,7 @@ router.get("/access-token", async (req, res) => {
     }
 
     const tok = await createToken(
-        { user_id: req.user.user_id },
+        { user_id: dat.user_id },
         {
             expiresIn: "1m", // needs to be higher
             subject: "access-token",

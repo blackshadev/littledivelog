@@ -42,7 +42,6 @@ export async function verifyAsync(
             if (err) {
                 reject(new HttpError(401, "Invalid JWT; " + err.message));
             } else {
-                console.log(err, dat);
                 resolve(dat);
             }
         });

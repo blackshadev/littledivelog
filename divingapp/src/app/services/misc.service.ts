@@ -2,30 +2,24 @@ import { Injectable } from '@angular/core';
 import { AuthService, AuthenticatedService } from 'app/services/auth.service';
 import { ResponseContentType } from '@angular/http';
 import { serviceUrl } from 'app/shared/config';
-import { CommonHttp } from 'app/shared/http';
+import { ResourceHttp } from 'app/shared/http';
 
 @Injectable()
 export class MiscService extends AuthenticatedService {
-
-    constructor(
-        protected http: CommonHttp,
-        protected auth: AuthService,
-    ) {
+    constructor(protected http: ResourceHttp, protected auth: AuthService) {
         super(auth);
     }
 
     public async getUploader() {
         const opt = this.httpOptions;
 
-        const res = await this.http.get(
-            `${serviceUrl}/dive-uploader/download`,
-            {
+        const res = await this.http
+            .get(`${serviceUrl}/dive-uploader/download`, {
                 headers: opt.headers,
                 responseType: ResponseContentType.Blob,
-            },
-        ).toPromise();
+            })
+            .toPromise();
 
         this.downloadFile(res);
     }
-
 }

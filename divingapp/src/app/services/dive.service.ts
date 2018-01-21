@@ -1,6 +1,14 @@
 import { AuthService, AuthenticatedService } from './auth.service';
 import { Headers, Response } from '@angular/http';
-import { Dive, IBuddy, IDbDive, IDiveRecordDC, IDiveTag, IPlace, ISample } from '../shared/dive';
+import {
+    Dive,
+    IBuddy,
+    IDbDive,
+    IDiveRecordDC,
+    IDiveTag,
+    IPlace,
+    ISample,
+} from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
@@ -9,12 +17,18 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { BehaviorSubject } from 'rxjs/Rx';
 import { ITagStat, TagService } from 'app/services/tag.service';
-import { CommonHttp } from 'app/shared/http';
+import { ResourceHttp } from 'app/shared/http';
 import { BuddyService } from 'app/services/buddy.service';
 import { arrayContains } from 'app/shared/common';
 
-export type TFilterKeys = 'buddies' | 'tags' | 'from' | 'till' | 'date' | 'place' | 'country';
-
+export type TFilterKeys =
+    | 'buddies'
+    | 'tags'
+    | 'from'
+    | 'till'
+    | 'date'
+    | 'place'
+    | 'country';
 
 export interface IComputer {
     computer_id: number;
@@ -24,12 +38,10 @@ export interface IComputer {
     dive_count: number;
 }
 
-
 @Injectable()
 export class DiveService extends AuthenticatedService {
-
     constructor(
-        protected http: CommonHttp,
+        protected http: ResourceHttp,
         protected auth: AuthService,
         protected buddyService: BuddyService,
         protected tagService: TagService,
@@ -37,16 +49,20 @@ export class DiveService extends AuthenticatedService {
         super(auth);
     }
 
-    public async list(filter: {[k in TFilterKeys]?: string } = {}): Promise<Dive[]> {
+    public async list(
+        filter: { [k in TFilterKeys]?: string } = {},
+    ): Promise<Dive[]> {
         let res: Response;
-        const qs = Object.keys(filter).map(
-            (k) => `${encodeURIComponent(k)}=${encodeURIComponent(filter[k])}`,
-        ).join('&');
+        const qs = Object.keys(filter)
+            .map(
+                k =>
+                    `${encodeURIComponent(k)}=${encodeURIComponent(filter[k])}`,
+            )
+            .join('&');
 
-        res = await this.http.get(
-            `${serviceUrl}/dive/?${qs}`,
-            this.httpOptions,
-        ).toPromise();
+        res = await this.http
+            .get(`${serviceUrl}/dive/?${qs}`, this.httpOptions)
+            .toPromise();
 
         const dives: IDbDive[] = res.json() || [];
         return Dive.ParseAll(dives);
@@ -55,48 +71,41 @@ export class DiveService extends AuthenticatedService {
     public async save(dive: IDbDive, dive_id?: number): Promise<any> {
         let req: Response;
 
-        if (arrayContains(dive.buddies, (b) => b.buddy_id === undefined)) {
+        if (arrayContains(dive.buddies, b => b.buddy_id === undefined)) {
             this.buddyService.clearCache();
         }
 
-        if (arrayContains(dive.tags, (t) => t.tag_id === undefined)) {
+        if (arrayContains(dive.tags, t => t.tag_id === undefined)) {
             this.tagService.clearCache();
         }
 
         if (dive_id !== undefined) {
-            req = await this.http.put(
-                `${serviceUrl}/dive/${dive_id}/`,
-                dive,
-                this.httpOptions,
-            ).toPromise();
+            req = await this.http
+                .put(`${serviceUrl}/dive/${dive_id}/`, dive, this.httpOptions)
+                .toPromise();
         } else {
-            req = await this.http.post(
-                `${serviceUrl}/dive/`,
-                dive,
-                this.httpOptions,
-            ).toPromise();
+            req = await this.http
+                .post(`${serviceUrl}/dive/`, dive, this.httpOptions)
+                .toPromise();
         }
 
         return req.json();
     }
 
     public async get(dive_id: number): Promise<Dive | undefined> {
-
-        const res = await this.http.get(
-            `${serviceUrl}/dive/${dive_id}/`,
-            this.httpOptions,
-        ).toPromise();
+        const res = await this.http
+            .get(`${serviceUrl}/dive/${dive_id}/`, this.httpOptions)
+            .toPromise();
 
         const r = res.json();
         return Dive.Parse(r);
     }
 
     public async delete(id: number): Promise<boolean> {
-        const resp = await this.http.delete(
-            `${serviceUrl}/dive/${id}`,
-            this.httpOptions,
-        ).toPromise();
-        return resp.json()
+        const resp = await this.http
+            .delete(`${serviceUrl}/dive/${id}`, this.httpOptions)
+            .toPromise();
+        return resp.json();
     }
 
     public async samples(dive_id?: number): Promise<ISample[]> {
@@ -104,19 +113,16 @@ export class DiveService extends AuthenticatedService {
             return [];
         }
 
-        const resp = await this.http.get(
-            `${serviceUrl}/dive/${dive_id}/samples/`,
-            this.httpOptions,
-        ).toPromise();
+        const resp = await this.http
+            .get(`${serviceUrl}/dive/${dive_id}/samples/`, this.httpOptions)
+            .toPromise();
         return resp.json() as ISample[];
     }
 
     public async listComputers(): Promise<IComputer[]> {
-        const resp = await this.http.get(
-            `${serviceUrl}/computer/`,
-            this.httpOptions,
-        ).toPromise();
+        const resp = await this.http
+            .get(`${serviceUrl}/computer/`, this.httpOptions)
+            .toPromise();
         return resp.json() as IComputer[];
     }
-
 }

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AuthenticatedService, AuthService } from 'app/services/auth.service';
 import { serviceUrl } from 'app/shared/config';
-import { CommonHttp } from 'app/shared/http';
+import { ResourceHttp } from 'app/shared/http';
 
 export interface IProfile {
     name: string;
@@ -14,58 +14,58 @@ export interface IProfile {
 
 export interface IEquipment {
     tanks: Array<{
-        volume: number,
-        oxygen: number,
+        volume: number;
+        oxygen: number;
         pressure: {
-            begin: number,
-            end: number,
-            type: 'bar'|'psi',
-        }
-    }>
+            begin: number;
+            end: number;
+            type: 'bar' | 'psi';
+        };
+    }>;
 }
 
 @Injectable()
 export class ProfileService extends AuthenticatedService {
-
     private _equipment?: IEquipment;
 
-    constructor(
-        protected http: CommonHttp,
-        protected auth: AuthService,
-    ) {
+    constructor(protected http: ResourceHttp, protected auth: AuthService) {
         super(auth);
     }
 
     public async get(): Promise<IProfile> {
-        const res = await this.http.get(
-            `${serviceUrl}/user/profile/`,
-            this.httpOptions,
-        ).toPromise();
+        const res = await this.http
+            .get(`${serviceUrl}/user/profile/`, this.httpOptions)
+            .toPromise();
 
-        return res.json() as IProfile
+        return res.json() as IProfile;
     }
 
     public async save(o: { name: string }): Promise<void> {
-        const res = await this.http.put(
-            `${serviceUrl}/user/profile/`,
-            {
-                name: o.name,
-            },
-            this.httpOptions,
-        ).toPromise();
+        const res = await this.http
+            .put(
+                `${serviceUrl}/user/profile/`,
+                {
+                    name: o.name,
+                },
+                this.httpOptions,
+            )
+            .toPromise();
     }
 
-    public async changePassword(o: { old: string, new: string }): Promise<void> {
-
-        const res = await this.http.put(
-            `${serviceUrl}/user/profile/password`,
-            {
-                old: o.old,
-                new: o.new,
-            },
-            this.httpOptions,
-        ).toPromise();
-
+    public async changePassword(o: {
+        old: string;
+        new: string;
+    }): Promise<void> {
+        const res = await this.http
+            .put(
+                `${serviceUrl}/user/profile/password`,
+                {
+                    old: o.old,
+                    new: o.new,
+                },
+                this.httpOptions,
+            )
+            .toPromise();
     }
 
     public async equipment(): Promise<IEquipment> {
@@ -73,20 +73,16 @@ export class ProfileService extends AuthenticatedService {
             return this._equipment;
         }
 
-        const res = await this.http.get(
-            `${serviceUrl}/user/profile/equipment`,
-            this.httpOptions,
-        ).toPromise();
+        const res = await this.http
+            .get(`${serviceUrl}/user/profile/equipment`, this.httpOptions)
+            .toPromise();
 
         return res.json();
     }
 
     public async changeEquipment(o: IEquipment): Promise<void> {
-        const res = await this.http.put(
-            `${serviceUrl}/user/profile/equipment`,
-            o,
-            this.httpOptions,
-        ).toPromise();
+        const res = await this.http
+            .put(`${serviceUrl}/user/profile/equipment`, o, this.httpOptions)
+            .toPromise();
     }
-
 }

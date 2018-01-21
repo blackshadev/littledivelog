@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { AuthenticatedService, AuthService } from 'app/services/auth.service';
 import { Response } from '@angular/http';
 import { serviceUrl } from 'app/shared/config';
-import { CommonHttp } from 'app/shared/http';
+import { ResourceHttp } from 'app/shared/http';
 
 export interface ITagStat {
     tag_id: number;
@@ -20,13 +20,9 @@ export interface ITag {
 
 @Injectable()
 export class TagService extends AuthenticatedService {
-
     private __cache?: ITag[];
 
-    constructor(
-        protected http: CommonHttp,
-        protected auth: AuthService,
-    ) {
+    constructor(protected http: ResourceHttp, protected auth: AuthService) {
         super(auth);
     }
 
@@ -35,38 +31,32 @@ export class TagService extends AuthenticatedService {
     }
 
     public async list(): Promise<ITag[]> {
-        if(!this.__cache) {
-            const req = await this.http.get(
-                `${serviceUrl}/tag/`,
-                this.httpOptions,
-            ).toPromise();
+        if (!this.__cache) {
+            const req = await this.http
+                .get(`${serviceUrl}/tag/`, this.httpOptions)
+                .toPromise();
             this.__cache = req.json() as ITag[];
         }
         return this.__cache;
     }
 
     public async fullList(): Promise<ITagStat[]> {
-        const resp = await this.http.get(
-            `${serviceUrl}/tag/full`,
-            this.httpOptions,
-        ).toPromise();
+        const resp = await this.http
+            .get(`${serviceUrl}/tag/full`, this.httpOptions)
+            .toPromise();
         return resp.json() as ITagStat[];
     }
 
     public async update(data: ITag): Promise<ITag> {
         let req: Response;
         if (data.tag_id === undefined) {
-            req = await this.http.post(
-                `${serviceUrl}/tag/`,
-                data,
-                this.httpOptions,
-            ).toPromise();
+            req = await this.http
+                .post(`${serviceUrl}/tag/`, data, this.httpOptions)
+                .toPromise();
         } else {
-            req = await this.http.put(
-                `${serviceUrl}/tag/${data.tag_id}`,
-                data,
-                this.httpOptions,
-            ).toPromise();
+            req = await this.http
+                .put(`${serviceUrl}/tag/${data.tag_id}`, data, this.httpOptions)
+                .toPromise();
         }
 
         this.clearCache();
@@ -74,13 +64,11 @@ export class TagService extends AuthenticatedService {
     }
 
     public async delete(id: number): Promise<boolean> {
-        const req = await this.http.delete(
-            `${serviceUrl}/tag/${id}`,
-            this.httpOptions,
-        ).toPromise();
+        const req = await this.http
+            .delete(`${serviceUrl}/tag/${id}`, this.httpOptions)
+            .toPromise();
 
         this.clearCache();
         return req.json();
     }
-
 }

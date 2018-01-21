@@ -11,7 +11,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
 import { MenuComponent } from './components/menu/menu.component';
-import { HideWhenMobileDirective, HideWhenDesktopDirective } from './directives/hide-when/hide-when.directive';
+import {
+    HideWhenMobileDirective,
+    HideWhenDesktopDirective,
+} from './directives/hide-when/hide-when.directive';
 import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
 import { MyAutoCompletionDirective } from './directives/auto-complete/my-auto-completion.directive';
 import { AutocompleteComponent } from './components/controls/autocomplete/autocomplete.component';
@@ -37,7 +40,7 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ProfileService } from 'app/services/profile.service';
 import { DownloadUploaderComponent } from './components/download-uploader/download-uploader.component';
 import { MiscService } from 'app/services/misc.service';
-import { CommonHttp } from 'app/shared/http';
+import { ResourceHttp } from 'app/shared/http';
 import { ListDetailComponent } from './components/controls/list-detail/list-detail.component';
 import { DetailComponentComponent } from './components/controls/detail-component/detail-component.component';
 import { SearchComponent } from './components/dives/search/search.component';
@@ -93,10 +96,8 @@ import { ValidateFunctionDirective } from './directives/validate-function/valida
         PlaceService,
         ProfileService,
         AuthService,
-        CommonHttp,
+        ResourceHttp,
     ],
-    bootstrap: [
-        AppComponent
-    ]
+    bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}

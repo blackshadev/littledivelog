@@ -130,6 +130,10 @@ router.delete(
     async (req, res) => {
         const clearAll = req.query.all ? true : false;
 
+        const params = [req.user.user_id];
+        if (clearAll) {
+            params.push(req.params.token);
+        }
         const q = await database.call(
             `
              delete
@@ -137,7 +141,7 @@ router.delete(
               where user_id = $1
                 ${clearAll ? "and token = $2" : ""}
             `,
-            [req.user.user_id, clearAll ? req.params.token : undefined],
+            params,
         );
 
         res.json({ deleted: q.rowCount });

@@ -96,7 +96,7 @@ router.post("/refresh-token", async (req, res) => {
             values ($1     , $2       , $3)
             returning *
         `,
-        [user.user_id, req.socket.remoteAddress, b.description || null],
+        [user.user_id, req.ip, b.description || null],
     );
     if (!dt.rows[0]) {
         throw new Error(

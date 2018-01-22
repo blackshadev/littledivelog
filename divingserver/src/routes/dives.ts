@@ -6,7 +6,7 @@ import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { tanksJSONtoType } from "../tansforms";
 
-export const router  = Router() as express.Router;
+export const router = Router() as express.Router;
 
 interface IBuddy {
     buddy_id?: number;
@@ -26,15 +26,12 @@ interface IPlace {
     country_code: string;
 }
 
-function injectPlaceSql(oPar: {
-    batch: SqlBatch,
-    place: IPlace,
-}): void {
+function injectPlaceSql(oPar: { batch: SqlBatch; place: IPlace }): void {
     if (!oPar.place.place_id) {
         oPar.batch.add(
             "insert into places (name, country_code) values ($1, $2) returning *",
             [oPar.place.name, oPar.place.country_code],
-            (res) => {
+            res => {
                 oPar.place.place_id = res.rows[0].place_id;
             },
         );
@@ -42,13 +39,12 @@ function injectPlaceSql(oPar: {
 }
 
 function injectBuddySql(oPar: {
-    userId: number,
-    diveId: number|(() => number),
-    batch: SqlBatch,
-    buddies: IBuddy[],
+    userId: number;
+    diveId: number | (() => number);
+    batch: SqlBatch;
+    buddies: IBuddy[];
 }): void {
-
-    oPar.buddies.forEach((buddy) => {
+    oPar.buddies.forEach(buddy => {
         if (buddy.buddy_id !== undefined) {
             return;
         }
@@ -56,11 +52,13 @@ function injectBuddySql(oPar: {
         oPar.batch.add(
             "insert into buddies (text, color, user_id) values ($1, $2, $3) returning *",
             [buddy.text, buddy.color, oPar.userId],
-            (ds) => { buddy.buddy_id = ds.rows[0].buddy_id; },
+            ds => {
+                buddy.buddy_id = ds.rows[0].buddy_id;
+            },
         );
     });
 
-    oPar.buddies.forEach((buddy) => {
+    oPar.buddies.forEach(buddy => {
         oPar.batch.add(
             "insert into dive_buddies (dive_id, buddy_id) values ($1, $2)",
             [oPar.diveId, () => buddy.buddy_id],
@@ -69,13 +67,12 @@ function injectBuddySql(oPar: {
 }
 
 function injectTagSql(oPar: {
-    userId: number,
-    diveId: number|( () => number ),
-    batch: SqlBatch,
-    tags: ITag[],
+    userId: number;
+    diveId: number | (() => number);
+    batch: SqlBatch;
+    tags: ITag[];
 }): void {
-
-    oPar.tags.forEach((tag) => {
+    oPar.tags.forEach(tag => {
         if (tag.tag_id !== undefined) {
             return;
         }
@@ -83,11 +80,13 @@ function injectTagSql(oPar: {
         oPar.batch.add(
             "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
             [tag.text, tag.color, oPar.userId],
-            (ds) => {  tag.tag_id = ds.rows[0].tag_id; },
+            ds => {
+                tag.tag_id = ds.rows[0].tag_id;
+            },
         );
     });
 
-    oPar.tags.forEach((tag) => {
+    oPar.tags.forEach(tag => {
         oPar.batch.add(
             "insert into dive_tags (dive_id, tag_id) values ($1, $2)",
             [oPar.diveId, () => tag.tag_id],
@@ -127,13 +126,13 @@ const fld_map = {
     tanks: `to_json(d.tanks) as tanks`,
 };
 
-function diveQuery(flds: string[]|"*", where: string = "") {
+function diveQuery(flds: string[] | "*", where: string = "") {
     if (flds === "*") {
         flds = Object.keys(fld_map);
     }
 
     return `
-        select ${flds.map((f) => fld_map[f]).join(",")}
+        select ${flds.map(f => fld_map[f]).join(",")}
           from dives d
           left join places p on p.place_id = d.place_id
          where d.user_id = $1
@@ -193,62 +192,55 @@ router.get("/", async (req, res) => {
         pars,
     );
 
-    res.json(
-        dives.rows,
-    );
+    res.json(dives.rows);
 });
 
 router.get("/:id", async (req, res) => {
-
     const dives: QueryResult = await database.call(
         diveQuery("*", "d.dive_id = $2"),
         [req.user.user_id, req.params.id],
     );
 
-    res.json(
-        dives.rows[0],
-    );
+    res.json(dives.rows[0]);
 });
 
 router.delete("/:id", async (req, res) => {
-
     const batch = new SqlBatch();
 
-    batch.add(`
+    batch.add(
+        `
         delete
           from dive_tags
          where dive_id = $2
            and dive_id in (
                 select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
            )
-    `, [
-        req.user.user_id,
-        req.params.id,
-    ]);
-    batch.add(`
+    `,
+        [req.user.user_id, req.params.id],
+    );
+    batch.add(
+        `
         delete
           from dive_buddies
          where dive_id = $2
            and dive_id in (
                 select dive_id from dives d where d.dive_id = $2 and d.user_id = $1
            )
-    `, [
-        req.user.user_id,
-        req.params.id,
-    ]);
-    batch.add(`
+    `,
+        [req.user.user_id, req.params.id],
+    );
+    batch.add(
+        `
         delete from dives where user_id = $1 and dive_id = $2
-    `, [
-        req.user.user_id,
-        req.params.id,
-    ]);
+    `,
+        [req.user.user_id, req.params.id],
+    );
     const c = await batch.execute();
 
     res.json(c > 0);
 });
 
 router.put("/:id", async (req, res) => {
-
     const userid = req.user.user_id;
 
     const body = req.body;
@@ -263,7 +255,8 @@ router.put("/:id", async (req, res) => {
     }
 
     body.tanks = tanksJSONtoType(body.tanks);
-    let sql = "update dives set updated = (current_timestamp at time zone 'UTC')";
+    let sql =
+        "update dives set updated = (current_timestamp at time zone 'UTC')";
     const flds = ["date", "divetime", "max_depth", "tanks"];
     const params = [];
     for (const fld of flds) {
@@ -273,9 +266,11 @@ router.put("/:id", async (req, res) => {
         sql += `, place_id = $${params.push(() => body.place.place_id)}`;
     }
 
-    sql += ` where dive_id = $${params.push(req.params.id)} and user_id = $${params.push(userid)}`;
+    sql += ` where dive_id = $${params.push(
+        req.params.id,
+    )} and user_id = $${params.push(userid)}`;
 
-    batch.add(sql, params, (ds) => {
+    batch.add(sql, params, ds => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
@@ -314,25 +309,32 @@ router.put("/:id", async (req, res) => {
             stacktrace: err.stack,
         });
     }
-
 });
 
 router.post("/", async (req, res) => {
-
     const userid = req.user.user_id;
 
     const body = req.body;
     const batch = new SqlBatch();
 
-    if (body.samples && typeof(body.samples) === "object")  {
+    if (body.samples && typeof body.samples === "object") {
         body.samples = JSON.stringify(body.samples);
     }
 
     body.tanks = tanksJSONtoType(body.tanks);
     body.user_id = userid;
 
-    const flds = ["date", "divetime", "max_depth", "tanks", "user_id", "computer_id", "fingerprint", "samples"];
-    const params = flds.map((fld) => body[fld]);
+    const flds = [
+        "date",
+        "divetime",
+        "max_depth",
+        "tanks",
+        "user_id",
+        "computer_id",
+        "fingerprint",
+        "samples",
+    ];
+    const params = flds.map(fld => body[fld]);
 
     if (body.place) {
         injectPlaceSql({
@@ -356,12 +358,12 @@ router.post("/", async (req, res) => {
     let diveId: number;
     let skipped: boolean = false;
 
-    batch.add(sql, params, (ds) => {
+    batch.add(sql, params, ds => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
 
-        skipped =  ds.rows[0].updated !==  ds.rows[0].inserted;
+        skipped = ds.rows[0].updated !== ds.rows[0].inserted;
         diveId = ds.rows[0].id;
     });
 
@@ -383,18 +385,16 @@ router.post("/", async (req, res) => {
     }
 
     if (body.computer_id && body.fingerprint) {
-
-        batch.add(`
+        batch.add(
+            `
            update computers
               set last_fingerprint = $3
                 , last_read = $2
             where computer_id = $1
               and coalesce(last_read, '1970-01-01 00:00:00') < $2
-        `, [
-            body.computer_id,
-            body.date,
-            body.fingerprint,
-        ]);
+        `,
+            [body.computer_id, body.date, body.fingerprint],
+        );
     }
 
     await batch.execute();
@@ -403,25 +403,20 @@ router.post("/", async (req, res) => {
         dive_id: diveId,
         skipped,
     });
-
 });
 
 router.get("/:id/samples", async (req, res) => {
-
     const samples: QueryResult = await database.call(
         "select samples from dives d where d.user_id = $1 and dive_id=$2",
         [req.user.user_id, req.params.id],
     );
 
-    res.json(
-        samples.rows.length ? (samples.rows[0].samples || []) : [],
-    );
+    res.json(samples.rows.length ? samples.rows[0].samples || [] : []);
 });
 
 interface IComputerBatch {
     computer_id: number;
     dives: any[];
-
 }
 
 router.post("/batch", async (req, res) => {

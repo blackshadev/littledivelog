@@ -26,15 +26,13 @@ export class ResourceHttp extends Http {
         url: string | Request,
         options?: RequestOptionsArgs,
     ): void {
+        let headers: Headers;
         if (url instanceof Request) {
-            url.headers.set('Authorization', 'Bearer ' + this.auth.accessToken);
+            headers = url.headers;
         } else if (options) {
-            options.headers = options.headers || new Headers();
-            options.headers.set(
-                'Authorization',
-                'Bearer ' + this.auth.accessToken,
-            );
+            headers = options.headers;
         }
+        this.auth.setAccessHeaders(headers);
     }
 
     public request(
@@ -46,10 +44,7 @@ export class ResourceHttp extends Http {
             if (err.status === 401) {
                 return Observable.from(
                     this.auth.fetchAccessToken().catch((_err: Error) => {
-                        this.auth.logout();
-                        throw new Error(
-                            'Error while fetching access token ' + _err.message,
-                        );
+                        this.auth.resetSessions();
                     }),
                 ).flatMap(() => {
                     this.setHeaders(url, options);

@@ -63,7 +63,24 @@ export class AuthService {
         });
     }
 
-    logout() {
+    public setAccessHeaders(headers: Headers): void {
+        headers.set('Authorization', 'Bearer ' + this.accessToken);
+    }
+
+    async logout(): Promise<void> {
+        const headers = new Headers();
+        this.setRefreshHeader(headers);
+
+        await this.http
+            .delete(`${serviceUrl}/auth/resource-token/`, {
+                headers,
+            })
+            .toPromise();
+
+        this.resetSessions();
+    }
+
+    resetSessions() {
         localStorage.removeItem('jwt_refresh');
         localStorage.removeItem('jwt_access');
         this._refreshToken = null;
@@ -98,7 +115,7 @@ export class AuthService {
         await handleServerErrors(
             async () => {
                 const headers = new Headers();
-                headers.append('Authorization', 'Bearer ' + this._refreshToken);
+                this.setRefreshHeader(headers);
 
                 const a = await this.http
                     .get(`${serviceUrl}/auth/access-token`, {
@@ -110,7 +127,6 @@ export class AuthService {
                 if (o.error) {
                     throw new Error(o.error);
                 } else {
-                    console.log('Got ', o);
                     this._accessToken = o.jwt;
                     localStorage.setItem('jwt_access', this._accessToken);
                 }
@@ -136,6 +152,10 @@ export class AuthService {
                 throw new Error(o.error);
             }
         });
+    }
+
+    protected setRefreshHeader(headers: Headers) {
+        headers.set('Authorization', 'Bearer ' + this._refreshToken);
     }
 }
 

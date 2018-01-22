@@ -3,7 +3,8 @@ import * as fs from "fs";
 
 interface IConfig {
     http: {
-        port: number|string;
+        port: number | string;
+        proxy: boolean | string[] | string | undefined;
     };
     database: {
         host: string;
@@ -32,6 +33,18 @@ const validator = ajv.compile({
             type: "object",
             properties: {
                 port: { type: "number" },
+                proxy: {
+                    anyOf: [
+                        { type: "boolean" },
+                        { type: "string" },
+                        {
+                            type: "array",
+                            items: {
+                                type: "string",
+                            },
+                        },
+                    ],
+                },
             },
             required: ["port"],
         },
@@ -51,7 +64,6 @@ const validator = ajv.compile({
 });
 
 export async function readConfig(path: string): Promise<IConfig> {
-
     return new Promise<IConfig>((resolve, reject) => {
         fs.readFile(path, { encoding: "utf8" }, (err, data) => {
             if (err) {
@@ -66,8 +78,6 @@ export async function readConfig(path: string): Promise<IConfig> {
             } catch (err) {
                 return reject(err);
             }
-
         });
-
     });
 }

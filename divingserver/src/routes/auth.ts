@@ -137,7 +137,7 @@ router.delete(
               where user_id = $1
                 ${clearAll ? "and token = $2" : ""}
             `,
-            [req.user.user_id, req.params.token],
+            [req.user.user_id, clearAll ? req.params.token : undefined],
         );
 
         res.json({ deleted: q.rowCount });
@@ -164,7 +164,7 @@ router.get(
                and token = $2
          returning *
         `,
-            [dat.user_id, dat.refresh_token, req.socket.remoteAddress],
+            [dat.user_id, dat.refresh_token, req.ip],
         );
 
         if (!q.rows.length) {

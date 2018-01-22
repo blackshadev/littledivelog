@@ -72,7 +72,7 @@ export class AuthService {
         this.setRefreshHeader(headers);
 
         await this.http
-            .delete(`${serviceUrl}/auth/resource-token/`, {
+            .delete(`${serviceUrl}/auth/refresh-token`, {
                 headers,
             })
             .toPromise();

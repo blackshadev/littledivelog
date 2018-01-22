@@ -12,23 +12,26 @@ export async function createToken(
     } = {},
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        jwt.sign(
-            dat,
-            config.jwt.secret,
-            {
-                algorithm: "HS512",
-                issuer: config.jwt.issuer,
-                subject: opt.subject,
-                expiresIn: opt.expiresIn,
-            },
-            (err, result) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(result);
-                }
-            },
-        );
+        console.log(opt);
+
+        const oPar = {
+            algorithm: "HS512",
+            issuer: config.jwt.issuer,
+        } as jwt.SignOptions;
+        if (opt.subject) {
+            oPar.subject = opt.subject;
+        }
+        if (opt.expiresIn) {
+            oPar.expiresIn = opt.expiresIn;
+        }
+
+        jwt.sign(dat, config.jwt.secret, oPar, (err, result) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(result);
+            }
+        });
     });
 }
 

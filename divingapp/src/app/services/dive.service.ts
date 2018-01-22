@@ -46,7 +46,7 @@ export class DiveService extends AuthenticatedService {
         protected buddyService: BuddyService,
         protected tagService: TagService,
     ) {
-        super(auth);
+        super(http);
     }
 
     public async list(
@@ -60,9 +60,7 @@ export class DiveService extends AuthenticatedService {
             )
             .join('&');
 
-        res = await this.http
-            .get(`${serviceUrl}/dive/?${qs}`, this.httpOptions)
-            .toPromise();
+        res = await this.http.get(`${serviceUrl}/dive/?${qs}`).toPromise();
 
         const dives: IDbDive[] = res.json() || [];
         return Dive.ParseAll(dives);
@@ -81,12 +79,10 @@ export class DiveService extends AuthenticatedService {
 
         if (dive_id !== undefined) {
             req = await this.http
-                .put(`${serviceUrl}/dive/${dive_id}/`, dive, this.httpOptions)
+                .put(`${serviceUrl}/dive/${dive_id}/`, dive)
                 .toPromise();
         } else {
-            req = await this.http
-                .post(`${serviceUrl}/dive/`, dive, this.httpOptions)
-                .toPromise();
+            req = await this.http.post(`${serviceUrl}/dive/`, dive).toPromise();
         }
 
         return req.json();
@@ -94,7 +90,7 @@ export class DiveService extends AuthenticatedService {
 
     public async get(dive_id: number): Promise<Dive | undefined> {
         const res = await this.http
-            .get(`${serviceUrl}/dive/${dive_id}/`, this.httpOptions)
+            .get(`${serviceUrl}/dive/${dive_id}/`)
             .toPromise();
 
         const r = res.json();
@@ -103,7 +99,7 @@ export class DiveService extends AuthenticatedService {
 
     public async delete(id: number): Promise<boolean> {
         const resp = await this.http
-            .delete(`${serviceUrl}/dive/${id}`, this.httpOptions)
+            .delete(`${serviceUrl}/dive/${id}`)
             .toPromise();
         return resp.json();
     }
@@ -114,15 +110,13 @@ export class DiveService extends AuthenticatedService {
         }
 
         const resp = await this.http
-            .get(`${serviceUrl}/dive/${dive_id}/samples/`, this.httpOptions)
+            .get(`${serviceUrl}/dive/${dive_id}/samples/`)
             .toPromise();
         return resp.json() as ISample[];
     }
 
     public async listComputers(): Promise<IComputer[]> {
-        const resp = await this.http
-            .get(`${serviceUrl}/computer/`, this.httpOptions)
-            .toPromise();
+        const resp = await this.http.get(`${serviceUrl}/computer/`).toPromise();
         return resp.json() as IComputer[];
     }
 }

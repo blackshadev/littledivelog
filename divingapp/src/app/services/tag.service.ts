@@ -23,7 +23,7 @@ export class TagService extends AuthenticatedService {
     private __cache?: ITag[];
 
     constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(auth);
+        super(http);
     }
 
     public clearCache() {
@@ -32,30 +32,24 @@ export class TagService extends AuthenticatedService {
 
     public async list(): Promise<ITag[]> {
         if (!this.__cache) {
-            const req = await this.http
-                .get(`${serviceUrl}/tag/`, this.httpOptions)
-                .toPromise();
+            const req = await this.http.get(`${serviceUrl}/tag/`).toPromise();
             this.__cache = req.json() as ITag[];
         }
         return this.__cache;
     }
 
     public async fullList(): Promise<ITagStat[]> {
-        const resp = await this.http
-            .get(`${serviceUrl}/tag/full`, this.httpOptions)
-            .toPromise();
+        const resp = await this.http.get(`${serviceUrl}/tag/full`).toPromise();
         return resp.json() as ITagStat[];
     }
 
     public async update(data: ITag): Promise<ITag> {
         let req: Response;
         if (data.tag_id === undefined) {
-            req = await this.http
-                .post(`${serviceUrl}/tag/`, data, this.httpOptions)
-                .toPromise();
+            req = await this.http.post(`${serviceUrl}/tag/`, data).toPromise();
         } else {
             req = await this.http
-                .put(`${serviceUrl}/tag/${data.tag_id}`, data, this.httpOptions)
+                .put(`${serviceUrl}/tag/${data.tag_id}`, data)
                 .toPromise();
         }
 
@@ -65,7 +59,7 @@ export class TagService extends AuthenticatedService {
 
     public async delete(id: number): Promise<boolean> {
         const req = await this.http
-            .delete(`${serviceUrl}/tag/${id}`, this.httpOptions)
+            .delete(`${serviceUrl}/tag/${id}`)
             .toPromise();
 
         this.clearCache();

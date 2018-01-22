@@ -6,8 +6,8 @@ import {
 } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { serviceUrl } from '../shared/config';
-import * as FileSaver from 'file-saver';
 import 'rxjs/add/operator/toPromise';
+import { ResourceHttp } from 'app/shared/http';
 
 async function handleServerErrors(
     fn: () => Promise<void>,
@@ -140,20 +140,5 @@ export class AuthService {
 }
 
 export class AuthenticatedService {
-    protected headers: Headers;
-    protected get httpOptions() {
-        return {
-            headers: this.headers,
-        };
-    }
-
-    constructor(protected auth: AuthService) {
-        this.headers = new Headers();
-        // this.headers.append('Authorization', 'Bearer ' + this.auth.accessToken);
-    }
-
-    protected downloadFile(res: Response) {
-        const blob = new Blob([res.blob()], { type: 'application/zip' });
-        FileSaver.saveAs(blob, 'dive-uploader.zip');
-    }
+    constructor(protected http: ResourceHttp) {}
 }

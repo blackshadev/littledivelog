@@ -29,12 +29,12 @@ export class ProfileService extends AuthenticatedService {
     private _equipment?: IEquipment;
 
     constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(auth);
+        super(http);
     }
 
     public async get(): Promise<IProfile> {
         const res = await this.http
-            .get(`${serviceUrl}/user/profile/`, this.httpOptions)
+            .get(`${serviceUrl}/user/profile/`)
             .toPromise();
 
         return res.json() as IProfile;
@@ -42,13 +42,9 @@ export class ProfileService extends AuthenticatedService {
 
     public async save(o: { name: string }): Promise<void> {
         const res = await this.http
-            .put(
-                `${serviceUrl}/user/profile/`,
-                {
-                    name: o.name,
-                },
-                this.httpOptions,
-            )
+            .put(`${serviceUrl}/user/profile/`, {
+                name: o.name,
+            })
             .toPromise();
     }
 
@@ -57,14 +53,10 @@ export class ProfileService extends AuthenticatedService {
         new: string;
     }): Promise<void> {
         const res = await this.http
-            .put(
-                `${serviceUrl}/user/profile/password`,
-                {
-                    old: o.old,
-                    new: o.new,
-                },
-                this.httpOptions,
-            )
+            .put(`${serviceUrl}/user/profile/password`, {
+                old: o.old,
+                new: o.new,
+            })
             .toPromise();
     }
 
@@ -74,7 +66,7 @@ export class ProfileService extends AuthenticatedService {
         }
 
         const res = await this.http
-            .get(`${serviceUrl}/user/profile/equipment`, this.httpOptions)
+            .get(`${serviceUrl}/user/profile/equipment`)
             .toPromise();
 
         return res.json();
@@ -82,7 +74,7 @@ export class ProfileService extends AuthenticatedService {
 
     public async changeEquipment(o: IEquipment): Promise<void> {
         const res = await this.http
-            .put(`${serviceUrl}/user/profile/equipment`, o, this.httpOptions)
+            .put(`${serviceUrl}/user/profile/equipment`, o)
             .toPromise();
     }
 }

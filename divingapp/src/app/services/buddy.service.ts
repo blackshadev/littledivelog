@@ -19,7 +19,7 @@ export interface IBuddyStat {
 export class BuddyService extends AuthenticatedService {
     private __cache?: IBuddy[];
     constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(auth);
+        super(http);
     }
 
     public clearCache() {
@@ -28,9 +28,7 @@ export class BuddyService extends AuthenticatedService {
 
     public async list(): Promise<IBuddy[]> {
         if (!this.__cache) {
-            const req = await this.http
-                .get(`${serviceUrl}/buddy/`, this.httpOptions)
-                .toPromise();
+            const req = await this.http.get(`${serviceUrl}/buddy/`).toPromise();
             const buds = req.json() as IBuddy[];
             this.__cache = buds;
         }
@@ -40,7 +38,7 @@ export class BuddyService extends AuthenticatedService {
 
     public async fullList(): Promise<IBuddyStat[]> {
         const resp = await this.http
-            .get(`${serviceUrl}/buddy/full`, this.httpOptions)
+            .get(`${serviceUrl}/buddy/full`)
             .toPromise();
         return resp.json() as IBuddyStat[];
     }
@@ -49,15 +47,11 @@ export class BuddyService extends AuthenticatedService {
         let req: Response;
         if (data.buddy_id === undefined) {
             req = await this.http
-                .post(`${serviceUrl}/buddy/`, data, this.httpOptions)
+                .post(`${serviceUrl}/buddy/`, data)
                 .toPromise();
         } else {
             req = await this.http
-                .put(
-                    `${serviceUrl}/buddy/${data.buddy_id}`,
-                    data,
-                    this.httpOptions,
-                )
+                .put(`${serviceUrl}/buddy/${data.buddy_id}`, data)
                 .toPromise();
         }
 
@@ -67,7 +61,7 @@ export class BuddyService extends AuthenticatedService {
 
     public async delete(id: number): Promise<boolean> {
         const req = await this.http
-            .delete(`${serviceUrl}/buddy/${id}`, this.httpOptions)
+            .delete(`${serviceUrl}/buddy/${id}`)
             .toPromise();
 
         this.clearCache();

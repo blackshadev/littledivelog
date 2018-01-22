@@ -24,7 +24,7 @@ export class PlaceService extends AuthenticatedService {
     private __countries?: ICountry[];
 
     constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(auth);
+        super(http);
     }
 
     public async list(c: string = ''): Promise<IPlace[]> {
@@ -33,7 +33,7 @@ export class PlaceService extends AuthenticatedService {
         }
 
         const res = await this.http
-            .get(`${serviceUrl}/place/${c}/`, this.httpOptions)
+            .get(`${serviceUrl}/place/${c}/`)
             .toPromise();
         const all: IPlace[] = res.json() || [];
         if (!c) {
@@ -44,7 +44,7 @@ export class PlaceService extends AuthenticatedService {
 
     public async fullList(): Promise<IPlaceStat[]> {
         const resp = await this.http
-            .get(`${serviceUrl}/place/full/`, this.httpOptions)
+            .get(`${serviceUrl}/place/full`)
             .toPromise();
         return resp.json() as IPlaceStat[];
     }
@@ -56,9 +56,7 @@ export class PlaceService extends AuthenticatedService {
 
         let res: Response;
         try {
-            res = await this.http
-                .get(`${serviceUrl}/country/`, this.httpOptions)
-                .toPromise();
+            res = await this.http.get(`${serviceUrl}/country/`).toPromise();
         } catch (e) {
             console.error(e);
             return;

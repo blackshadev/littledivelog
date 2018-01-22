@@ -12,8 +12,6 @@ export async function createToken(
     } = {},
 ): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-        console.log(opt);
-
         const oPar = {
             algorithm: "HS512",
             issuer: config.jwt.issuer,

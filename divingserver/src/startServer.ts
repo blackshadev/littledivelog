@@ -19,6 +19,11 @@ export async function start(pmx?: any) {
 
     console.log("Setting up expres");
     const app = express();
+
+    if (config.http.proxy) {
+        console.log("Use with proxy: ", config.http.proxy);
+        app.set("trust proxy", config.http.proxy);
+    }
     app.use(expressLogging(console));
     app.use(bodyParser.json({ limit: "500mb" }));
 

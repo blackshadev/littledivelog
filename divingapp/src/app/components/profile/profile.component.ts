@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { ProfileService, IProfile, IEquipment } from 'app/services/profile.service';
+import {
+    ProfileService,
+    IProfile,
+    IEquipment,
+} from 'app/services/profile.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { markFormGroupTouched } from 'app/shared/common';
 import { CustomValidators } from 'app/shared/validators';
@@ -7,7 +11,7 @@ import { CustomValidators } from 'app/shared/validators';
 @Component({
     selector: 'app-profile',
     templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss']
+    styleUrls: ['./profile.component.scss'],
 })
 export class ProfileComponent implements OnInit {
     public user: IProfile;
@@ -17,29 +21,32 @@ export class ProfileComponent implements OnInit {
     public profileForm: FormGroup;
     public equipmentForm: FormGroup;
 
-    public alertMessage: {
-        for: 'profile'|'password'|'equipment',
-        type: 'error'|'success',
-        text: string
-    }|undefined;
+    public alertMessage:
+        | {
+              for: 'profile' | 'password' | 'equipment';
+              type: 'error' | 'success';
+              text: string;
+          }
+        | undefined;
 
+    public sessions: any[];
 
-    constructor(
-        private profileService: ProfileService,
-        fb: FormBuilder,
-    ) {
-        this.passwordForm = fb.group({
-            currentPassword: ['', Validators.required],
-            newPassword: ['', Validators.required],
-            confirmNewPassword: ['', Validators.required]
-        }, {
-            validator: CustomValidators.sameValue([
-                'newPassword',
-                'confirmNewPassword',
-            ])
-        });
+    constructor(private profileService: ProfileService, fb: FormBuilder) {
+        this.passwordForm = fb.group(
+            {
+                currentPassword: ['', Validators.required],
+                newPassword: ['', Validators.required],
+                confirmNewPassword: ['', Validators.required],
+            },
+            {
+                validator: CustomValidators.sameValue([
+                    'newPassword',
+                    'confirmNewPassword',
+                ]),
+            },
+        );
         this.profileForm = fb.group({
-            name: ['']
+            name: [''],
         });
         this.equipmentForm = fb.group({
             tank: fb.group({
@@ -47,8 +54,8 @@ export class ProfileComponent implements OnInit {
                 oxygen: ['', CustomValidators.integer],
                 pressure: fb.group({
                     begin: ['', CustomValidators.decimal],
-                    end:   ['', CustomValidators.decimal],
-                    type:  ['bar', Validators.pattern(/bar|psi/)],
+                    end: ['', CustomValidators.decimal],
+                    type: ['bar', Validators.pattern(/bar|psi/)],
                 }),
             }),
         });
@@ -56,6 +63,7 @@ export class ProfileComponent implements OnInit {
 
     public ngOnInit() {
         this.refresh();
+        this.ensureSessions();
     }
 
     public async refresh() {
@@ -66,8 +74,12 @@ export class ProfileComponent implements OnInit {
 
         this.equipment = await this.profileService.equipment();
         this.equipmentForm.setValue({
-            tank: this.equipment.tanks[0]
+            tank: this.equipment.tanks[0],
         });
+    }
+
+    public async ensureSessions() {
+        await this.profileService.getSessions();
     }
 
     public async changeProfile() {
@@ -78,13 +90,21 @@ export class ProfileComponent implements OnInit {
 
         try {
             await this.profileService.save({
-                name: this.profileForm.controls.name.value
+                name: this.profileForm.controls.name.value,
             });
         } catch (err) {
-            this.alertMessage =  { for: 'profile' , type: 'error', text: err.json().msg } ;
+            this.alertMessage = {
+                for: 'profile',
+                type: 'error',
+                text: err.json().msg,
+            };
             return;
         }
-        this.alertMessage =  { for: 'profile' , type: 'success', text: 'Profile changed' } ;
+        this.alertMessage = {
+            for: 'profile',
+            type: 'success',
+            text: 'Profile changed',
+        };
     }
 
     public async changePassword() {
@@ -99,10 +119,18 @@ export class ProfileComponent implements OnInit {
                 new: this.passwordForm.controls.newPassword.value,
             });
         } catch (err) {
-            this.alertMessage =  { for: 'password' , type: 'error', text: err.json().msg } ;
+            this.alertMessage = {
+                for: 'password',
+                type: 'error',
+                text: err.json().msg,
+            };
             return;
         }
-        this.alertMessage =  { for: 'password' , type: 'success', text: 'Password changed' } ;
+        this.alertMessage = {
+            for: 'password',
+            type: 'success',
+            text: 'Password changed',
+        };
     }
 
     public async changeEquipment() {
@@ -115,15 +143,20 @@ export class ProfileComponent implements OnInit {
             const val = this.equipmentForm.value;
             this.equipment = undefined;
             await this.profileService.changeEquipment({
-                tanks: [
-                    val.tank
-                ]
+                tanks: [val.tank],
             });
         } catch (err) {
-            this.alertMessage =  { for: 'equipment' , type: 'error', text: err.json().msg } ;
+            this.alertMessage = {
+                for: 'equipment',
+                type: 'error',
+                text: err.json().msg,
+            };
             return;
         }
-        this.alertMessage =  { for: 'equipment' , type: 'success', text: 'Equipment changed' } ;
+        this.alertMessage = {
+            for: 'equipment',
+            type: 'success',
+            text: 'Equipment changed',
+        };
     }
-
 }

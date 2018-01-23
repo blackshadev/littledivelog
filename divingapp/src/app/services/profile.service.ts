@@ -77,4 +77,18 @@ export class ProfileService extends AuthenticatedService {
             .put(`${serviceUrl}/user/profile/equipment`, o)
             .toPromise();
     }
+
+    public async getSessions(): Promise<void> {
+        const res = await this.http
+            .get(`${serviceUrl}/auth/refresh-token`)
+            .toPromise();
+
+        return res.json();
+    }
+
+    public async deleteSession(token: string): Promise<void> {
+        const res = await this.http
+            .delete(`${serviceUrl}/auth/refresh-token/${token}`)
+            .toPromise();
+    }
 }

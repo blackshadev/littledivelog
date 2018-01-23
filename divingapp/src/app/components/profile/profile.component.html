@@ -5,10 +5,13 @@
             <a class="nav-link active" href="#profile" aria-controls="profile" role="tab" data-toggle="tab">Profile</a>
         </li>
         <li class="nav-item">
-            <a  class="nav-link" href="#equipment" aria-controls="equipment" role="tab" data-toggle="tab">Equipment</a>
+            <a class="nav-link" href="#equipment" aria-controls="equipment" role="tab" data-toggle="tab">Equipment</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#password" aria-controls="password" role="tab" data-toggle="tab">Change Password</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#sessions" aria-controls="sessions" role="tab" data-toggle="tab">Sessions</a>
         </li>
     </ul>
 
@@ -32,11 +35,7 @@
                             <p class="form-control-static">{{ user.inserted | date: "y-MM-dd HH:mm:ss" }}</p>
                         </div>
 
-                        <div
-                            *ngIf="alertMessage && alertMessage.for === 'profile'"
-                            class="alert"
-                            [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }"
-                        >
+                        <div *ngIf="alertMessage && alertMessage.for === 'profile'" class="alert" [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
                             {{alertMessage.text}}
                         </div>
                         <button class="btn btn-primary" type="submit">Update Profile</button>
@@ -110,7 +109,8 @@
                                 <label>
                                     Start Pressure
                                 </label>
-                            </div><div class="col">
+                            </div>
+                            <div class="col">
                                 <label>
                                     End Pressure
                                 </label>
@@ -135,11 +135,7 @@
 
                     </div>
                 </div>
-                <div
-                    *ngIf="alertMessage && alertMessage.for === 'equipment'"
-                    class="alert"
-                    [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }"
-                >
+                <div *ngIf="alertMessage && alertMessage.for === 'equipment'" class="alert" [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
                     {{alertMessage.text}}
                 </div>
                 <button class="btn btn-primary" type="submit">Change Equipment</button>
@@ -147,40 +143,76 @@
         </div>
 
 
-    <div role="tabpanel" class="tab-pane p-4" id="password">
-        <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-            <div class="form-group"  [ngClass]="{ 'has-danger': passwordForm.controls.currentPassword.touched && !passwordForm.controls.currentPassword.valid }">
-                <label>Current password</label>
-                <input class="form-control" formControlName="currentPassword" type="password" placeholder="Old password" />
-                <small class="error-text has-danger" *ngIf="passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.errors?.required">
-                    Current password is required.
-                </small>
+        <div role="tabpanel" class="tab-pane p-4" id="password">
+            <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+                <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.currentPassword.touched && !passwordForm.controls.currentPassword.valid }">
+                    <label>Current password</label>
+                    <input class="form-control" formControlName="currentPassword" type="password" placeholder="Old password" />
+                    <small class="error-text has-danger" *ngIf="passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.errors?.required">
+                        Current password is required.
+                    </small>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.newPassword.touched && !passwordForm.controls.newPassword.valid }">
+                    <label>New password</label>
+                    <input class="form-control" formControlName="newPassword" type="password" placeholder="New password" />
+                    <small class="error-text has-danger" *ngIf="passwordForm.controls.newPassword.errors?.required">
+                        New password is required.
+                    </small>
+                </div>
+                <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.confirmNewPassword.touched && !passwordForm.controls.confirmNewPassword.valid }">
+                    <label>Confirm new password</label>
+                    <input class="form-control" formControlName="confirmNewPassword" type="password" placeholder="New password" />
+                    <small class="error-text has-danger" *ngIf="passwordForm.controls.confirmNewPassword.errors?.required">
+                        Please re-enter your new password for confirmation
+                    </small>
+                    <small class="error-text has-danger" *ngIf="passwordForm.controls.confirmNewPassword.errors?.same">
+                        New password and confirmation password are not the same
+                    </small>
+                </div>
+                <div *ngIf="alertMessage && alertMessage.for === 'password'" class="alert" [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
+                    {{alertMessage.text}}
+                </div>
+                <button class="btn btn-primary" type="submit">Change password</button>
+            </form>
+        </div>
+
+        <div role="tabpanel" class="tab-pane active p-4" id="sessions">
+            <div *ngIf="sessions" class="card">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <td>
+                                Token
+                            </td>
+                            <td>
+                                Last used
+                            </td>
+                            <td>
+                                Last IP
+                            </td>
+                            <!-- <td>
+                            Description
+                        </td> -->
+                            <td>
+                                Created
+                            </td>
+                            <td>
+                                Created by
+                            </td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let sess of sessions">
+                            <td>{{sess.token>
+                                <td>{{sess.last_used}}</td>
+                                <td>{{sess.last_ip}}</td>
+                                <!-- <td>{{sess.description}}</td> -->
+                                <td>{{sess.inserted}}</td>
+                                <td>{{sess.insert_ip}}</td>
+                                <td></td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
-            <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.newPassword.touched && !passwordForm.controls.newPassword.valid }">
-                <label>New password</label>
-                <input class="form-control"  formControlName="newPassword" type="password" placeholder="New password" />
-                <small class="error-text has-danger" *ngIf="passwordForm.controls.newPassword.errors?.required">
-                    New password is required.
-                </small>
-            </div>
-            <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.confirmNewPassword.touched && !passwordForm.controls.confirmNewPassword.valid }">
-                <label>Confirm new password</label>
-                <input class="form-control" formControlName="confirmNewPassword" type="password" placeholder="New password" />
-                <small class="error-text has-danger" *ngIf="passwordForm.controls.confirmNewPassword.errors?.required">
-                    Please re-enter your new password for confirmation
-                </small>
-                <small class="error-text has-danger" *ngIf="passwordForm.controls.confirmNewPassword.errors?.same">
-                    New password and confirmation password are not the same
-                </small>
-            </div>
-            <div
-                *ngIf="alertMessage && alertMessage.for === 'password'"
-                class="alert"
-                [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }"
-            >
-                {{alertMessage.text}}
-            </div>
-            <button class="btn btn-primary" type="submit">Change password</button>
-        </form>
+        </div>
     </div>
-</div>

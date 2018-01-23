@@ -119,6 +119,19 @@ router.post("/refresh-token", async (req, res) => {
     });
 });
 
+router.delete("/refresh-token/:token", async (req, res) => {
+    const q = await database.call(
+        `
+             delete
+               from session_tokens
+              where user_id = $1
+                and token = $2
+            `,
+        [req.user.user_id, req.params.token],
+    );
+    res.json({ deleted: q.rowCount });
+});
+
 router.delete(
     "/refresh-token",
     jwt({

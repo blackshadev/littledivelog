@@ -1,13 +1,12 @@
 import * as express from "express";
-import * as Router from "express-promise-router";
+import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 
-export const router  = Router() as express.Router;
+export const router = Router();
 
 router.get("/", async (req, res) => {
-
     const buds: QueryResult = await database.call(
         `select bud.*
            from buddies bud
@@ -17,13 +16,10 @@ router.get("/", async (req, res) => {
         [req.user.user_id],
     );
 
-    res.json(
-        buds.rows,
-    );
+    res.json(buds.rows);
 });
 
 router.get("/full", async (req, res) => {
-
     const stats = await database.call(
         `
         select
@@ -42,18 +38,13 @@ router.get("/full", async (req, res) => {
           from buddies bud
           where bud.user_id = $1
         `,
-        [
-            req.user.user_id,
-        ],
+        [req.user.user_id],
     );
 
-    res.json(
-        stats.rows,
-    );
+    res.json(stats.rows);
 });
 
 router.post("/", async (req, res) => {
-
     const body = req.body;
     const buds: QueryResult = await database.call(
         `
@@ -62,22 +53,16 @@ router.post("/", async (req, res) => {
                       values ($1, $2, $3, $4)
                    returning *
         `,
-        [
-            req.user.user_id,
-            body.text,
-            body.color,
-            body.email,
-        ],
+        [req.user.user_id, body.text, body.color, body.email],
     );
 
-    res.json(
-        buds.rows[0],
-    );
+    res.json(buds.rows[0]);
 });
 
 router.delete("/:id", async (req, res) => {
     const batch = new SqlBatch();
-    batch.add(`
+    batch.add(
+        `
         delete
           from dive_buddies
          where buddy_id = $2
@@ -86,27 +71,25 @@ router.delete("/:id", async (req, res) => {
                  from dives d
                 where user_id = $1
            )
-    `, [
-        req.user.user_id,
-        req.params.id,
-    ]);
+    `,
+        [req.user.user_id, req.params.id],
+    );
 
-    batch.add(`
+    batch.add(
+        `
         delete
           from buddies
          where buddy_id = $2
            and user_id = $1
-    `, [
-        req.user.user_id,
-        req.params.id,
-    ]);
+    `,
+        [req.user.user_id, req.params.id],
+    );
 
     const c = await batch.execute();
     res.json(c > 0);
 });
 
 router.put("/:id", async (req, res) => {
-
     const body = req.body;
     const buds: QueryResult = await database.call(
         `
@@ -117,15 +100,8 @@ router.put("/:id", async (req, res) => {
              where buddy_id = $4
                returning *
         `,
-        [
-            body.text,
-            body.color,
-            body.email,
-            req.params.id,
-        ],
+        [body.text, body.color, body.email, req.params.id],
     );
 
-    res.json(
-        buds.rows[0],
-    );
+    res.json(buds.rows[0]);
 });

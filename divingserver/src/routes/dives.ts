@@ -1,12 +1,12 @@
 import * as express from "express";
-import * as Router from "express-promise-router";
+import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { tanksJSONtoType } from "../tansforms";
 
-export const router = Router() as express.Router;
+export const router = Router();
 
 interface IBuddy {
     buddy_id?: number;

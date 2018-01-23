@@ -1,16 +1,15 @@
 import { hash, verify } from "argon2";
 import * as express from "express";
-import * as Router from "express-promise-router";
+import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { tanksJSONtoType } from "../tansforms";
 
-export const router  = Router() as express.Router;
+export const router = Router();
 
 router.get("/profile", async (req, res) => {
-
     const dat = await database.call(
         `select
                   user_id
@@ -24,40 +23,33 @@ router.get("/profile", async (req, res) => {
            from users u
           where user_id = $1
         `,
-        [
-            req.user.user_id,
-        ],
+        [req.user.user_id],
     );
 
     res.json(dat.rows[0]);
 });
 
 router.put("/profile", async (req, res) => {
-
     const dat = await database.call(
         `
             update users
                set name = $2
              where user_id = $1
-        `, [
-            req.user.user_id,
-            req.body.name,
-        ],
+        `,
+        [req.user.user_id, req.body.name],
     );
 
     res.json(dat.rowCount > 0);
 });
 
 router.put("/profile/password", async (req, res) => {
-
     const old = await database.call(
         `
             select password
               from users
              where user_id = $1
-        `, [
-            req.user.user_id,
-        ],
+        `,
+        [req.user.user_id],
     );
 
     if (!await verify(old.rows[0].password, req.body.old)) {
@@ -66,7 +58,7 @@ router.put("/profile/password", async (req, res) => {
         return;
     }
 
-    if (typeof(req.body.new) !== "string") {
+    if (typeof req.body.new !== "string") {
         res.status(400);
         res.json({ msg: "Password required" });
         return;
@@ -85,10 +77,8 @@ router.put("/profile/password", async (req, res) => {
             update users
                set password = $2
              where user_id = $1
-        `, [
-            req.user.user_id,
-            req.body.new,
-        ],
+        `,
+        [req.user.user_id, req.body.new],
     );
 
     res.json(dat.rowCount > 0);
@@ -105,10 +95,7 @@ router.put("/profile/equipment", async (req, res) => {
            do update
                  set tanks = $2
         `,
-        [
-            req.user.user_id,
-            tank,
-        ],
+        [req.user.user_id, tank],
     );
 
     res.json(dat.rowCount > 0);
@@ -121,9 +108,7 @@ router.get("/profile/equipment", async (req, res) => {
           from equipment
          where user_id = $1
         `,
-        [
-            req.user.user_id,
-        ],
+        [req.user.user_id],
     );
 
     res.json(dat.rows[0]);

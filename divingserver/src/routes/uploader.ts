@@ -1,13 +1,13 @@
 import * as archiver from "archiver";
 import * as express from "express";
-import * as Router from "express-promise-router";
+import { Router } from "../express-promise-router";
 import * as path from "path";
 import * as xmlEscape from "xml-escape";
 
-export const router  = Router() as express.Router;
+export const router = Router();
 
 const uploaderDir = __dirname + "../../../dive-uploader/";
-function generateUploaderConfig(token: string|null): string {
+function generateUploaderConfig(token: string | null): string {
     const jsonObject = {
         Serial: null,
         Computer: null,
@@ -29,20 +29,19 @@ function generateUploaderConfig(token: string|null): string {
 }
 
 router.get("/download", (req, res) => {
-
     res.attachment("dive-uploader.zip");
     res.setHeader("Content-Type", "application/zip");
 
     const archive = archiver("zip", {});
 
-    archive.on("error", (err) => {
-        res.status(500).send({error: err.message});
+    archive.on("error", err => {
+        res.status(500).send({ error: err.message });
     });
 
     archive.pipe(res);
     archive.directory(uploaderDir, false);
 
-    let token: string|null = null;
+    let token: string | null = null;
     const authheader: string = req.headers.authorization as string;
     if (authheader) {
         const auth = authheader.split(" ");
@@ -51,11 +50,9 @@ router.get("/download", (req, res) => {
         }
     }
 
-    archive.append(
-        generateUploaderConfig(token),
-        { name: "DiveLogUploader.exe.config" },
-    );
+    archive.append(generateUploaderConfig(token), {
+        name: "DiveLogUploader.exe.config",
+    });
 
     archive.finalize();
-
 });

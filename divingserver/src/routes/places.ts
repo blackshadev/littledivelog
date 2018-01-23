@@ -1,13 +1,12 @@
 import * as express from "express";
-import * as Router from "express-promise-router";
+import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 
-export const router  = Router() as express.Router;
+export const router = Router();
 
 router.get("/:country_code", async (req, res) => {
-
     const places: QueryResult = await database.call(
         `select plc.*
            from places plc
@@ -23,13 +22,10 @@ router.get("/:country_code", async (req, res) => {
         [req.params.country_code, req.user.user_id],
     );
 
-    res.json(
-        places.rows,
-    );
+    res.json(places.rows);
 });
 
 router.get("/", async (req, res) => {
-
     const places: QueryResult = await database.call(
         `select plc.*
            from places plc
@@ -43,13 +39,10 @@ router.get("/", async (req, res) => {
         [req.user.user_id],
     );
 
-    res.json(
-        places.rows,
-    );
+    res.json(places.rows);
 });
 
 router.get("/full", async (req, res) => {
-
     const stats = await database.call(
         `
             select p.*
@@ -69,15 +62,11 @@ router.get("/full", async (req, res) => {
             where d.user_id = $1
         ) x
         join places p on x.place_id = p.place_id
-        `, [
-            req.user.user_id,
-        ],
+        `,
+        [req.user.user_id],
     );
 
-    res.json(
-        stats.rows,
-    );
-
+    res.json(stats.rows);
 });
 
 router.delete("/:id", async (req, res) => {
@@ -87,10 +76,8 @@ router.delete("/:id", async (req, res) => {
             set place_id = null
             where place_id = $2
               and user_id = $1
-        `, [
-            req.user.user_id,
-            req.params.id,
-        ],
+        `,
+        [req.user.user_id, req.params.id],
     );
 
     batch.add(
@@ -103,9 +90,8 @@ router.delete("/:id", async (req, res) => {
                   from dive_places dp
                  where dp.place_id = $1
             ) = 0
-        `, [
-            req.params.id,
-        ],
+        `,
+        [req.params.id],
     );
 
     const c = await batch.execute();

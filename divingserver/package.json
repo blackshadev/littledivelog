@@ -20,6 +20,7 @@
     "@types/body-parser": "^1.16.8",
     "@types/express": "^4.11.0",
     "@types/express-jwt": "0.0.38",
+    "@types/express-promise-router": "^2.0.0",
     "@types/jsonwebtoken": "^7.2.5",
     "@types/pg": "^7.4.1",
     "@types/request": "^2.0.13",

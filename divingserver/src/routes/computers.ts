@@ -1,12 +1,12 @@
 import * as express from "express";
-import * as Router from "express-promise-router";
+import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { bodyValidator } from "../validator";
 
-export const router  = Router() as express.Router;
+export const router = Router();
 
 interface IImportSample {
     Time: number;
@@ -68,7 +68,6 @@ interface IImportRequestBody {
 }
 
 router.get("/", async (req, res) => {
-
     const computers: QueryResult = await database.call(
         `select
             comp.*,
@@ -84,9 +83,7 @@ router.get("/", async (req, res) => {
         [req.user.user_id],
     );
 
-    res.json(
-        computers.rows,
-    );
+    res.json(computers.rows);
 });
 
 const computerPostSchema = {
@@ -102,7 +99,6 @@ const computerPostSchema = {
 };
 
 router.post("/", bodyValidator(computerPostSchema), async (req, res) => {
-
     const computer = await database.call(
         `insert into computers (user_id, serial, vendor, model, type, name)
                         values ($1     , $2    , $3    , $4   , $5  , $6  )

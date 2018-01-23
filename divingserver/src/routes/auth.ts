@@ -119,6 +119,18 @@ router.post("/refresh-token", async (req, res) => {
     });
 });
 
+router.get("/refresh-token", async (req, res) => {
+    const q = await database.call(
+        `
+             select *
+               from session_tokens
+              where user_id = $1
+            `,
+        [req.user.user_id],
+    );
+    res.json(q.rows);
+});
+
 router.delete("/refresh-token/:token", async (req, res) => {
     const q = await database.call(
         `

@@ -10,11 +10,11 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^8.5.2"
+    "@types/node": "^9.3.0"
   },
   "dependencies": {
     "@types/ajv": "^1.0.0",
-    "@types/archiver": "^2.0.1",
+    "@types/archiver": "^2.1.0",
     "@types/argon2": "^0.15.0",
     "@types/bluebird": "^3.5.19",
     "@types/body-parser": "^1.16.8",
@@ -22,19 +22,19 @@
     "@types/express-jwt": "0.0.38",
     "@types/jsonwebtoken": "^7.2.5",
     "@types/pg": "^7.4.1",
-    "@types/request": "^2.0.9",
-    "ajv": "^5.5.2",
-    "archiver": "^2.1.0",
-    "argon2": "^0.16.2",
+    "@types/request": "^2.0.13",
+    "ajv": "^6.0.1",
+    "archiver": "^2.1.1",
+    "argon2": "^0.17.0",
     "bluebird": "^3.5.1",
     "body-parser": "^1.18.2",
     "express": "^4.16.2",
     "express-jwt": "^5.3.0",
     "express-logging": "^1.1.1",
-    "express-promise-router": "^2.0.0",
-    "jsonwebtoken": "^8.1.0",
-    "pg": "^7.4.0",
-    "pmx": "^1.5.5",
+    "express-promise-router": "^3.0.1",
+    "jsonwebtoken": "^8.1.1",
+    "pg": "^7.4.1",
+    "pmx": "^1.5.6",
     "typescript": "^2.6.2",
     "xml-escape": "^1.1.0"
   }

@@ -1,4 +1,4 @@
-@import "./shared/global.scss";
+@import './shared/global.scss';
 
 body {
     background: $color-primary;
@@ -13,17 +13,17 @@ body {
     }
 }
 
-/deep/ ng2-auto-complete, /deep/ .ng2-auto-complete {
+/deep/ ng2-auto-complete,
+/deep/ .ng2-auto-complete {
     z-index: 5 !important;
 }
 
 /deep/ .input-group-addon.input-group-addon-color i {
     width: 16px;
     height: 16px;
-
 }
 
-/deep/ .collapsed-input-group, {
+/deep/ .collapsed-input-group {
     .form-control {
         &:not(:last-child) {
             border-bottom-left-radius: 0;
@@ -38,17 +38,15 @@ body {
     }
 }
 
-
 /deep/ .error-text.has-danger {
     display: none;
     color: #a94442;
     margin-left: 7px;
 }
 
-/deep/ .has-danger .error-text  {
+/deep/ .has-danger .error-text {
     display: block;
 }
-
 
 // /deep/ .detail-menu {
 //     height: 55px;
@@ -162,11 +160,11 @@ body {
 
 /deep/ .input-group-group {
     .input-group {
-
-        .form-control,.input-group-addon,.input-group-btn .btn, .dropdown .btn {
+        .form-control,
+        .input-group-text,
+        .btn {
             border-radius: 0;
             border-top-width: 0;
-
         }
         .input-group-btn .btn {
             border-top-width: 1px;
@@ -174,39 +172,39 @@ body {
         }
 
         &:first-child {
-            .form-control,.input-group-addon,.input-group-btn .btn, .dropdown .btn {
+            .form-control,
+            .input-group-text,
+            .input-group-btn .btn,
+            .btn.dropdown-toggle {
                 border-top-width: 1px;
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
-            }
-            &.input-group-btn .btn {
-                border-top-color: initial;
             }
 
-            .form-control:not(:last-child),.input-group-addon:not(:last-child),.input-group-btn:not(:last-child) .btn, .dropdown:not(:last-child) .btn {
-                border-top-right-radius: 0;
+            .form-control:first-child,
+            .input-group-prepend:first-child .input-group-text,
+            .input-group-prepend:first-child .btn {
+                border-top-left-radius: 0.25rem;
             }
 
-            .form-control:not(:first-child),.input-group-addon:not(:first-child),.input-group-btn:not(:first-child) .btn, .dropdown:not(:first-child) .btn {
-                border-top-left-radius: 0;
+            .form-control:last-child,
+            .input-group-append:last-child .input-group-text,
+            .input-group-append:last-child .btn {
+                border-top-right-radius: 0.25rem;
             }
         }
 
         &:last-child {
-            .form-control,.input-group-addon,.input-group-btn .btn, .dropdown .btn {
-                border-bottom-left-radius: 4px;
-                border-bottom-right-radius: 4px;
+            .form-control:first-child,
+            .input-group-prepend:first-child .input-group-text,
+            .input-group-prepend:first-child .btn {
+                border-bottom-left-radius: 0.25rem;
             }
 
-            .form-control:not(:last-child),.input-group-addon:not(:last-child),.input-group-btn:not(:last-child) .btn, .dropdown:not(:last-child) .btn {
-                border-bottom-right-radius: 0;
-            }
-
-            .form-control:not(:first-child),.input-group-addon:not(:first-child),.input-group-btn:not(:first-child) .btn, .dropdown:not(:first-child) .btn {
-                border-bottom-left-radius: 0;
+            .form-control:last-child,
+            .input-group-append:last-child .input-group-text,
+            .input-group-append:last-child .btn {
+                border-bottom-right-radius: 0.25rem;
             }
         }
-
     }
 }
 

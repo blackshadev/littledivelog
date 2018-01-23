@@ -72,21 +72,25 @@
                 <div class="input-group-group" formGroupName="tank">
                     <div class="input-group">
                         <input type="text" class="form-control" formControlName="volume" placeholder="10" required />
-                        <span class="input-group-addon">L</span>
+                        <div class="input-group-append">
+                            <span class="input-group-text">L</span>
+                        </div>
                         <input type="text" class="form-control" formControlName="airPercentage" placeholder="21" required />
-                        <span class="input-group-addon">%</span>
+                        <div class="input-group-append">
+                            <span class="input-group-text">%</span>
+                        </div>
                     </div>
-                    <div class="input-group" width="100%">
+                    <div class="input-group">
                         <input type="text" class="form-control" formControlName="pressureStart" placeholder="200" required />
-                        <span class="input-group-btn" style="width:0px;"></span>
                         <input type="text" class="form-control" formControlName="pressureEnd" placeholder="50" required />
-                        <div class="dropdown">
+                        <div class="input-group-append">
                             <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 {{form.controls.tank.controls.pressureType.value}}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
                                 <a class="dropdown-item" (click)="form.controls.tank.controls.pressureType.setValue('bar')">bar</a>
                                 <a class="dropdown-item" (click)="form.controls.tank.controls.pressureType.setValue('psi')">psi</a>
+
                             </div>
                         </div>
                     </div>
@@ -139,27 +143,11 @@
             <div class="col-sm-10">
 
                 <div class="input-group manual-radius" style="width: 100%" formGroupName="place">
-                    <app-autocomplete
-                        placeholder="Name"
-                        inputClass="form-control left-control"
-                        [value]="form.controls.place.controls.name.value"
-                        [source]="getDivespots.bind(this)"
-                        [newItem]="newDiveSpot.bind(this)"
-                        (changed)="diveSpotChanged($event)"
-                        displayItem="name"
-                    ></app-autocomplete>
-                    <span class="input-group-btn" style="width:0px;"></span>
-                    <app-autocomplete
-                        placeholder="Country"
-                        inputClass="form-control right-control"
-                        formControlName="country"
-                        [source]="getCountries.bind(this)"
-                        (changed)="diveCountryChanged($event)"
-                        displayItem="code"
-                        keyItem="code"
-                        listItem="description"
-                        forceSelection="true"
-                    ></app-autocomplete>
+                    <app-autocomplete placeholder="Name" inputClass="form-control left-control" [value]="form.controls.place.controls.name.value"
+                        [source]="getDivespots.bind(this)" [newItem]="newDiveSpot.bind(this)" (changed)="diveSpotChanged($event)"
+                        displayItem="name"></app-autocomplete>
+                    <app-autocomplete placeholder="Country" inputClass="form-control right-control" formControlName="country" [source]="getCountries.bind(this)"
+                        (changed)="diveCountryChanged($event)" displayItem="code" keyItem="code" listItem="description" forceSelection="true"></app-autocomplete>
                 </div>
                 <small class="has-danger error-text">
                     Both or none need to be filled
@@ -184,21 +172,12 @@
     </form>
 </ng-template>
 
-<app-detail-component
-    #detailComponent
-    [pages]="{
+<app-detail-component #detailComponent [pages]="{
         'Detail': detailTemplate,
         'Profile': profileTemplate,
         'Delete': deleteTemplate
-    }"
-    [form]="form"
-    defaultPage="Detail"
-    [data]="diveFormData"
-    [isNew]="dive.isNew"
-    *ngIf="dive !== undefined"
-    (onSubmit)="onSubmit($event)"
-    (onBack)="back()"
->
+    }" [form]="form" defaultPage="Detail" [data]="diveFormData" [isNew]="dive.isNew" *ngIf="dive !== undefined" (onSubmit)="onSubmit($event)"
+    (onBack)="back()">
 </app-detail-component>
 
 <!-- <form

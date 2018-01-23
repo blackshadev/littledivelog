@@ -1,19 +1,11 @@
 <div class="input-group">
-    <span class="input-group-btn">
-        <button
-            type="button"
-            class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false"
-            aria-label="Search topic"
-        >
-            {{ currentTopic ? currentTopic.caption : 'Topic'  }}
+    <div class="input-group-prepend">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
+            aria-expanded="false" aria-label="Search topic">
+            {{ currentTopic ? currentTopic.caption : 'Topic' }}
         </button>
         <div class="dropdown-menu">
-            <a
-                *ngFor="let t of topics"
-                class="dropdown-item"
-                (click)="currentTopic = t; inpModel.control.reset();"
-            >
+            <a *ngFor="let t of topics" class="dropdown-item" (click)="currentTopic = t; inpModel.control.reset();">
                 {{ t.caption }}
             </a>
             <!-- <a class="dropdown-item">Date on</a>
@@ -26,34 +18,16 @@
             <div role="separator" class="dropdown-divider"></div>
             <a class="dropdown-item">On place</a> -->
         </div>
-    </span>
+    </div>
     <div [ngClass]="{ 'autocomplete': currentTopic && currentTopic.source, 'plain': !(currentTopic && currentTopic.source) }">
-        <input
-            auto-complete
-            type="text"
-            class="form-control"
-            (keydown.enter)="addSearch()"
-            [source]="getSearchItems.bind(this)"
-            [(ngModel)]="searchValue"
-            list-formatter="text"
-        />
-        <input
-            #inpModel="ngModel"
-            type="text"
-            class="form-control"
-            [ngClass]="{'is-invalid': inpModel.invalid }"
-            (keydown.enter)="addSearch()"
-            [(ngModel)]="searchValue"
-            [validateFunction]="validate.bind(this)"
-        />
+        <input auto-complete type="text" class="form-control" (keydown.enter)="addSearch()" [source]="getSearchItems.bind(this)"
+            [(ngModel)]="searchValue" list-formatter="text" />
+        <input #inpModel="ngModel" type="text" class="form-control" [ngClass]="{'is-invalid': inpModel.invalid }" (keydown.enter)="addSearch()"
+            [(ngModel)]="searchValue" [validateFunction]="validate.bind(this)" />
     </div>
 
-    <span class="input-group-btn">
-        <button
-            type="button"
-            class="btn btn-outline-secondary"
-            (click)="addSearch()"
-        >
+    <span class="input-group-append">
+        <button type="button" class="btn btn-outline-secondary" (click)="addSearch()">
             <i class="fa fa-search"></i>
         </button>
     </span>
@@ -62,6 +36,8 @@
 <div class="search-tags">
     <div class="badge badge-secondary" *ngFor="let item of currentFilters">
         {{item.caption}} '{{item.displayValue || item.value}}'
-        <a (click)="removeItem(item)"><i class="fa fa-times" aria-label="Delete"></i></a>
+        <a (click)="removeItem(item)">
+            <i class="fa fa-times" aria-label="Delete"></i>
+        </a>
     </div>
 </div>

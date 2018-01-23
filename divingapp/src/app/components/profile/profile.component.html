@@ -83,23 +83,26 @@
                         </div>
                         <div class="input-group-group" formGroupName="tank">
                             <div class="input-group">
-                                <input type="text" class="form-control" formControlName="volume" placeholder="10" />
-                                <span class="input-group-addon">L</span>
-                                <input type="text" class="form-control" formControlName="oxygen" placeholder="21" />
-                                <span class="input-group-addon">%</span>
+                                <input type="text" class="form-control" formControlName="volume" placeholder="10" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">L</span>
+                                </div>
+                                <input type="text" class="form-control" formControlName="oxygen" placeholder="21" required />
+                                <div class="input-group-append">
+                                    <span class="input-group-text">%</span>
+                                </div>
                             </div>
-                            <div class="input-group" width="100%" formGroupName="pressure">
-                                <input type="text" class="form-control" formControlName="begin" placeholder="200" />
-                                <span class="input-group-btn" style="width:0px;"></span>
-                                <input type="text" class="form-control" formControlName="end" placeholder="50" />
-
-                                <div class="dropdown">
+                            <div class="input-group" formGroupName="pressure">
+                                <input type="text" class="form-control" formControlName="begin" placeholder="200" required />
+                                <input type="text" class="form-control" formControlName="end" placeholder="50" required />
+                                <div class="input-group-append">
                                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         {{equipmentForm.controls.tank.controls.pressure.controls.type.value}}
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right">
                                         <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('bar')">bar</a>
                                         <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('psi')">psi</a>
+
                                     </div>
                                 </div>
                             </div>

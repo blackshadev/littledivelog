@@ -63,7 +63,7 @@ export class ProfileComponent implements OnInit {
 
     public ngOnInit() {
         this.refresh();
-        this.ensureSessions();
+        this.refreshSessions();
     }
 
     public async refresh() {
@@ -78,8 +78,8 @@ export class ProfileComponent implements OnInit {
         });
     }
 
-    public async ensureSessions() {
-        await this.profileService.getSessions();
+    public async refreshSessions() {
+        this.sessions = await this.profileService.getSessions();
     }
 
     public async changeProfile() {
@@ -158,5 +158,10 @@ export class ProfileComponent implements OnInit {
             type: 'success',
             text: 'Equipment changed',
         };
+    }
+
+    public async deleteSession(token: string) {
+        await this.profileService.deleteSession(token);
+        this.refreshSessions();
     }
 }

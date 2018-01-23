@@ -78,7 +78,7 @@ export class ProfileService extends AuthenticatedService {
             .toPromise();
     }
 
-    public async getSessions(): Promise<void> {
+    public async getSessions(): Promise<any[]> {
         const res = await this.http
             .get(`${serviceUrl}/auth/refresh-token`)
             .toPromise();

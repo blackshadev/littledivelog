@@ -176,13 +176,13 @@
             </form>
         </div>
 
-        <div role="tabpanel" class="tab-pane active p-4" id="sessions">
+        <div role="tabpanel" class="tab-pane p-4" id="sessions">
             <div *ngIf="sessions" class="card">
                 <table class="table table-hover">
                     <thead>
                         <tr>
                             <td>
-                                Token
+                                Description
                             </td>
                             <td>
                                 Last used
@@ -190,26 +190,27 @@
                             <td>
                                 Last IP
                             </td>
-                            <!-- <td>
-                            Description
-                        </td> -->
                             <td>
                                 Created
                             </td>
                             <td>
                                 Created by
                             </td>
+                            <td></td>
                         </tr>
                     </thead>
                     <tbody>
                         <tr *ngFor="let sess of sessions">
-                            <td>{{sess.token>
-                                <td>{{sess.last_used}}</td>
-                                <td>{{sess.last_ip}}</td>
-                                <!-- <td>{{sess.description}}</td> -->
-                                <td>{{sess.inserted}}</td>
-                                <td>{{sess.insert_ip}}</td>
-                                <td></td>
+                            <td>{{sess.description}}</td>
+                            <td>{{sess.last_used | date: "y-MM-dd HH:mm:ss"}}</td>
+                            <td>{{sess.last_ip}}</td>
+                            <td>{{sess.inserted | date: "y-MM-dd HH:mm:ss"}}</td>
+                            <td>{{sess.insert_ip}}</td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-danger" (click)="deleteSession(sess.token)">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            </td>
                         </tr>
                     </tbody>
                 </table>

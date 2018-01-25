@@ -16,7 +16,7 @@ export function tanksJSONtoType(tanks: ITank[]): string {
                 tank.oxygen,
             )},\\"(${isNullOrRound(tank.pressure.begin)},${isNullOrRound(
                 tank.pressure.end,
-            )},${isNullOrRound(tank.pressure.type)})\\")`;
+            )},${isNull(tank.pressure.type)})\\")`;
         })
         .join('","')}"}`;
 }

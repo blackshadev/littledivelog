@@ -26,6 +26,9 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
     public data: ISample[] = [];
     public allEvents: { dataIndex: number, eventIndex: number }[] = [];
+    public get hasSamples() {
+        return this.data.length > 0;
+    }
 
     @Output() onselect = new EventEmitter<{ item: ISample | undefined, index: number }>();
     @Output() onhover = new EventEmitter<{ item: ISample, index: number }>();

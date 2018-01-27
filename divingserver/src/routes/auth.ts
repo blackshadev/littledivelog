@@ -1,10 +1,10 @@
 import * as argon2 from "argon2";
 import * as express from "express";
 import * as jwt from "express-jwt";
-import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
+import { Router } from "../express-promise-router";
 import { createToken } from "../jwt";
 import { database } from "../pg";
 
@@ -28,6 +28,39 @@ function sendError(err: Error, res: express.Response): void {
     res.json({
         error: err.message,
     });
+}
+
+export async function createRefreshToken(
+    userId: number,
+    ip: string,
+    descr?: string,
+): Promise<string> {
+    const recs = await database.call(
+        `
+        insert
+        into session_tokens
+               (user_id, insert_ip, description)
+        values ($1     , $2       , $3)
+        returning *
+        `,
+        [userId, ip, descr || null],
+    );
+
+    if (recs.rows.length !== 1) {
+        throw new Error("Unexpected error; creation of refresh token failed");
+    }
+
+    const tok = await createToken(
+        {
+            refresh_token: recs.rows[0].token,
+            user_id: userId,
+        },
+        {
+            subject: "refresh-token",
+        },
+    );
+
+    return tok;
 }
 
 export async function login(
@@ -88,31 +121,7 @@ router.post("/refresh-token", async (req, res) => {
 
     const user = await login(b.email, b.password);
 
-    const dt = await database.call(
-        `
-            insert
-              into session_tokens
-                   (user_id, insert_ip, description)
-            values ($1     , $2       , $3)
-            returning *
-        `,
-        [user.user_id, req.ip, b.description || null],
-    );
-    if (!dt.rows[0]) {
-        throw new Error(
-            "Unexpected result from databse; unable to insert and get refrehs token",
-        );
-    }
-
-    const tok = await createToken(
-        {
-            refresh_token: dt.rows[0].token,
-            user_id: user.user_id,
-        },
-        {
-            subject: "refresh-token",
-        },
-    );
+    const tok = await createRefreshToken(user.user_id, req.ip, b.description);
 
     res.json({
         jwt: tok,

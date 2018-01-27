@@ -1,8 +1,10 @@
 import * as archiver from "archiver";
 import * as express from "express";
-import { Router } from "../express-promise-router";
 import * as path from "path";
 import * as xmlEscape from "xml-escape";
+import { Router } from "../express-promise-router";
+import { database } from "../pg";
+import { createRefreshToken } from "./auth";
 
 export const router = Router();
 
@@ -28,7 +30,7 @@ function generateUploaderConfig(token: string | null): string {
 </configuration>`;
 }
 
-router.get("/download", (req, res) => {
+router.get("/download", async (req, res) => {
     res.attachment("dive-uploader.zip");
     res.setHeader("Content-Type", "application/zip");
 
@@ -42,12 +44,12 @@ router.get("/download", (req, res) => {
     archive.directory(uploaderDir, false);
 
     let token: string | null = null;
-    const authheader: string = req.headers.authorization as string;
-    if (authheader) {
-        const auth = authheader.split(" ");
-        if (auth[0] === "Bearer") {
-            token = auth[1];
-        }
+    if (req.user.user_id) {
+        token = await createRefreshToken(
+            req.user.user_id,
+            req.ip,
+            "DiveUploader tool",
+        );
     }
 
     archive.append(generateUploaderConfig(token), {

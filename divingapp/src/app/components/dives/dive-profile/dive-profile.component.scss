@@ -1,11 +1,11 @@
-@import "../../../shared/global.scss";
+@import '../../../shared/global.scss';
 
 .graph {
-
     /deep/ g.graph {
         /deep/ .line path {
             fill: none;
-            stroke: $color-accent;
+            // stroke: $color-accent;
+            stroke: url(#line-gradient);
         }
 
         /deep/ .hover {
@@ -28,6 +28,5 @@
         /deep/ .events circle {
             fill: darken($color-accent, 25%);
         }
-
     }
 }

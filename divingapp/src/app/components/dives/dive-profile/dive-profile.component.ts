@@ -66,6 +66,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         topAxis: d3.Selection<any, any, null, undefined>;
         hover: d3.Selection<any, any, null, undefined>;
         select: d3.Selection<any, any, null, undefined>;
+        gradient: d3.Selection<any, any, null, undefined>;
     };
     protected _margin = {
         left: 60,
@@ -80,6 +81,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected _scale: {
         x: d3.ScaleLinear<number, number>;
         y: d3.ScaleLinear<number, number>;
+        temp: d3.ScaleLinear<d3.RGBColor, string>;
     };
     protected _line: d3.Line<ISample>;
 
@@ -100,6 +102,15 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this._scale = {
             x: d3.scaleLinear(),
             y: d3.scaleLinear(),
+            temp: d3
+                .scaleLinear<d3.RGBColor, string>()
+                .interpolate(d3.interpolateRgb as any)
+                .domain([0, 60])
+                .range([
+                    d3.rgb('#ff0000'),
+                    d3.rgb('#00ff00'),
+                    d3.rgb('#0000ff'),
+                ]),
         };
         this._line = d3
             .line<ISample>()
@@ -171,11 +182,26 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             d3.max(this.data, d => d.Time),
         ];
 
-        this._scale.x.domain([minTime, maxTime]);
-        this._scale.y.domain([
+        const [minTemp, maxTemp] = [
+            d3.min(this.data, d => d.Temperature),
+            d3.max(this.data, d => d.Temperature),
+        ];
+        const [minDepth, maxDepth] = [
             d3.min(data, d => d.Depth),
             d3.max(data, d => d.Depth),
-        ]);
+        ];
+
+        // console.log(this._scale.temp(minTemp), this._scale.temp(maxTemp));
+
+        // this.groups.gradient
+        //     .attr('x0', this._scale.x(0))
+        //     .attr('y0', this._scale.y(0))
+        //     .attr('y2', maxDepth)
+        //     .attr('x2', maxTime);
+
+        this._scale.x.domain([minTime, maxTime]);
+        this._scale.y.domain([minDepth, maxDepth]);
+        this._scale.temp.domain([minTemp, maxTemp]);
 
         this.allEvents = [];
         for (let iX = 0; iX < this.data.length; iX++) {
@@ -193,6 +219,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         }
         this.repaintAxes();
         this.repaintLine();
+        this.repaintGradient();
         this.repaintEvents();
     }
 
@@ -247,6 +274,12 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 .append('g')
                 .attr('class', 'top-axis')
                 .attr('transform', `translate(${this._margin.left}, 20)`),
+            gradient: graph
+                .append('linearGradient')
+                .attr('id', 'line-gradient'),
+            // .attr('gradientUnits', 'userSpaceOnUse'),
+            // .attr('x1', 0)
+            // .attr('y1', 0),
         };
         this._axes = {
             left: d3.axisLeft(this._scale.y),
@@ -368,6 +401,24 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         line.merge(line).attr('d', this._line(this.data));
 
         line.exit().remove();
+    }
+
+    protected repaintGradient() {
+        const gradient = this.groups.gradient.selectAll('stop');
+
+        gradient
+            .data(this.data)
+            .enter()
+            .append('stop');
+        gradient
+            .merge(gradient)
+            .attr('offset', (d, iX) => {
+                return iX / this.data.length * 100 + '%';
+            })
+            .attr('stop-color', (d: ISample) => {
+                return this._scale.temp(d.Temperature);
+            });
+        gradient.exit().remove();
     }
 
     protected repaintEvents() {

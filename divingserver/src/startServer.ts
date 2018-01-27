@@ -35,7 +35,10 @@ export async function start(pmx?: any) {
             path: [
                 "/auth/",
                 "/auth/register/",
-                { url: "/auth/refresh-token", methods: ["POST", "DELETE"] },
+                {
+                    url: "/auth/refresh-token",
+                    methods: ["POST", "DELETE", "OPTIONS"],
+                },
                 "/auth/access-token",
                 "/dive-uploader/download",
             ],

@@ -13,8 +13,12 @@ export function divetime(value: number) {
     const t = {
         hh: leftpad(2, Math.floor(value / 3600).toFixed(0), '0'),
         mm: leftpad(2, (Math.floor(value / 60) % 60).toFixed(0), '0'),
-        ss: leftpad(2, (Math.floor(value % 60)).toFixed(0), '0'),
-    }
+        ss: leftpad(2, Math.floor(value % 60).toFixed(0), '0'),
+    };
 
     return `${t.hh}:${t.mm}:${t.ss}`;
+}
+
+export function temperature(value: number) {
+    return `${value.toFixed(1)}&#2103;`;
 }

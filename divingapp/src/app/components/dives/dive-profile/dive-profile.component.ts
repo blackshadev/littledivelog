@@ -1,4 +1,4 @@
-import { divetime } from '../../../shared/formatters';
+import { divetime, temperature } from '../../../shared/formatters';
 import { debounce } from '../../../shared/common';
 import {
     Dive,
@@ -20,6 +20,7 @@ import {
     Output,
 } from '@angular/core';
 import * as d3 from 'd3';
+import { RGBColor } from 'd3';
 
 @Component({
     selector: 'app-dive-profile',
@@ -63,15 +64,22 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         line: d3.Selection<any, any, null, undefined>;
         events: d3.Selection<any, any, null, undefined>;
         leftAxis: d3.Selection<any, any, null, undefined>;
+        tempetureLegend: d3.Selection<any, any, null, undefined>;
+        // tempetureAxis: d3.Selection<any, any, null, undefined>;
         topAxis: d3.Selection<any, any, null, undefined>;
         hover: d3.Selection<any, any, null, undefined>;
         select: d3.Selection<any, any, null, undefined>;
-        gradient: d3.Selection<any, any, null, undefined>;
+        tempetureOverlay: d3.Selection<any, any, null, undefined>;
+        labels: {
+            x: d3.Selection<any, any, null, undefined>;
+            y: d3.Selection<any, any, null, undefined>;
+            temperature: d3.Selection<any, any, null, undefined>;
+        };
     };
     protected _margin = {
         left: 60,
-        right: 20,
-        top: 20,
+        right: 60,
+        top: 60,
         bottom: 20,
     };
     protected _boundingbox = {
@@ -81,13 +89,15 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected _scale: {
         x: d3.ScaleLinear<number, number>;
         y: d3.ScaleLinear<number, number>;
-        temp: d3.ScaleLinear<d3.RGBColor, string>;
+        temperature: d3.ScaleLinear<d3.RGBColor, string>;
+        temperatureRev: d3.ScaleLinear<number, number>;
     };
     protected _line: d3.Line<ISample>;
 
     protected _axes: {
         left: d3.Axis<number | { valueOf(): number }>;
         top: d3.Axis<number | { valueOf(): number }>;
+        temperature: d3.Axis<number | { valueOf(): number }>;
     };
     protected bisect = d3.bisector<ISample, number>((d: ISample) => d.Time)
         .left;
@@ -102,15 +112,15 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this._scale = {
             x: d3.scaleLinear(),
             y: d3.scaleLinear(),
-            temp: d3
+            temperature: d3
                 .scaleLinear<d3.RGBColor, string>()
-                .interpolate(d3.interpolateRgb as any)
-                .domain([0, 60])
+                .interpolate(d3.interpolateHcl as any)
                 .range([
-                    d3.rgb('#ff0000'),
-                    d3.rgb('#00ff00'),
                     d3.rgb('#0000ff'),
+                    d3.rgb('#00ff00'),
+                    d3.rgb('#ff0000'),
                 ]),
+            temperatureRev: d3.scaleLinear(),
         };
         this._line = d3
             .line<ISample>()
@@ -182,26 +192,22 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             d3.max(this.data, d => d.Time),
         ];
 
-        const [minTemp, maxTemp] = [
+        const [minTemp, maxTemp, medianTemp] = [
             d3.min(this.data, d => d.Temperature),
             d3.max(this.data, d => d.Temperature),
+            d3.median(this.data, d => d.Temperature),
         ];
         const [minDepth, maxDepth] = [
             d3.min(data, d => d.Depth),
             d3.max(data, d => d.Depth),
         ];
 
-        // console.log(this._scale.temp(minTemp), this._scale.temp(maxTemp));
-
-        // this.groups.gradient
-        //     .attr('x0', this._scale.x(0))
-        //     .attr('y0', this._scale.y(0))
-        //     .attr('y2', maxDepth)
-        //     .attr('x2', maxTime);
-
         this._scale.x.domain([minTime, maxTime]);
         this._scale.y.domain([minDepth, maxDepth]);
-        this._scale.temp.domain([minTemp, maxTemp]);
+        this._scale.temperature
+            .domain([minTemp, medianTemp, maxTemp])
+            .range([d3.rgb('#0000ff'), d3.rgb('#00ff00'), d3.rgb('#ff0000')]);
+        this._scale.temperatureRev.domain([minTemp, maxTemp]);
 
         this.allEvents = [];
         for (let iX = 0; iX < this.data.length; iX++) {
@@ -228,18 +234,59 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         const el = (this.parentEl.nativeElement as Element).parentElement;
         const width = el.clientWidth;
         const height = width / 2;
-        this.svg.attr('width', Math.max(0, width - 64));
+        this.svg.attr('width', Math.max(0, width));
         this.svg.attr('height', height);
+
         this._boundingbox.width =
             width - this._margin.left - this._margin.right;
         this._boundingbox.height =
             height - this._margin.top - this._margin.bottom;
 
+        if (this._boundingbox.width < 0 || this._boundingbox.height < 0) {
+            return;
+        }
+
+        this.groups.leftAxis.attr(
+            'transform',
+            `translate(50, ${this._margin.top})`,
+        );
+
+        this.groups.topAxis.attr(
+            'transform',
+            `translate(${this._margin.left}, 50)`,
+        );
+        this.groups.tempetureLegend.attr(
+            'transform',
+            `translate(${width - this._margin.right + 10}, ${
+                this._margin.top
+            })`,
+        );
+        this.groups.tempetureLegend
+            .select('rect')
+            .attr('height', this._boundingbox.height);
         this.groups.hover.select('line.x').attr('y2', height);
         this.groups.hover.select('line.y').attr('x2', width);
 
+        this.groups.labels.x.attr(
+            'transform',
+            `translate(${this._boundingbox.width / 2 + this._margin.left}, 20)`,
+        );
+
+        this.groups.labels.y.attr(
+            'transform',
+            `translate(20, ${this._boundingbox.height / 2 +
+                this._margin.top})rotate(-90)`,
+        );
+
+        this.groups.labels.temperature.attr(
+            'transform',
+            `translate(${width - 20}, ${this._boundingbox.height / 2 +
+                this._margin.top})rotate(90)`,
+        );
+
         this._scale.x.range([0, this._boundingbox.width]);
         this._scale.y.range([0, this._boundingbox.height]);
+        this._scale.temperatureRev.range([0, this._boundingbox.height]);
         this.paint();
     }
 
@@ -260,26 +307,36 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 'transform',
                 `translate(${this._margin.left},${this._margin.top})`,
             );
+        const labels = this.svg.append('g').attr('class', 'labels');
+
         this.groups = {
             graph,
             line: graph.append('g').attr('class', 'line'),
             events: graph.append('g').attr('class', 'events'),
             hover: graph.append('g').attr('class', 'hover'),
             select: graph.append('g').attr('class', 'select'),
-            leftAxis: this.svg
-                .append('g')
-                .attr('class', 'left-axis')
-                .attr('transform', 'translate(50, 20)'),
-            topAxis: this.svg
-                .append('g')
-                .attr('class', 'top-axis')
-                .attr('transform', `translate(${this._margin.left}, 20)`),
-            gradient: graph
+            leftAxis: this.svg.append('g').attr('class', 'left-axis'),
+            topAxis: this.svg.append('g').attr('class', 'top-axis'),
+            tempetureOverlay: graph
                 .append('linearGradient')
                 .attr('id', 'line-gradient'),
-            // .attr('gradientUnits', 'userSpaceOnUse'),
-            // .attr('x1', 0)
-            // .attr('y1', 0),
+            tempetureLegend: this.svg
+                .append('g')
+                .attr('class', 'temperature-legend'),
+            labels: {
+                x: labels
+                    .append('text')
+                    .attr('text-anchor', 'middle')
+                    .text('Time'),
+                y: labels
+                    .append('text')
+                    .attr('text-anchor', 'middle')
+                    .text('Depth in Meters'),
+                temperature: labels
+                    .append('text')
+                    .attr('text-anchor', 'middle')
+                    .text('Temperature in ℃'),
+            },
         };
         this._axes = {
             left: d3.axisLeft(this._scale.y),
@@ -287,13 +344,44 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 .axisTop(this._scale.x)
                 .tickFormat(divetime)
                 .ticks(5),
+            temperature: d3
+                .axisRight(this._scale.temperatureRev)
+                .ticks(3)
+                .tickFormat((v: number) => v.toFixed(1)),
         };
 
         this.groups.line.append('path').attr('class', 'line');
 
+        this.createTempetureLegend();
         this.createHover();
         this.createSelection();
         this.isReady = true;
+    }
+
+    protected createTempetureLegend() {
+        const tempLegend = this.svg
+            .append('linearGradient')
+            .attr('id', 'line-gradient-legend')
+            .attr('x2', '0%')
+            .attr('y2', '100%');
+        tempLegend
+            .append('stop')
+            .attr('offset', '0%')
+            .attr('stop-color', '#0000ff');
+        tempLegend
+            .append('stop')
+            .attr('offset', '50%')
+            .attr('stop-color', '#00ff00');
+        tempLegend
+            .append('stop')
+            .attr('offset', '100%')
+            .attr('stop-color', '#ff0000');
+
+        this.groups.tempetureLegend
+            .append('rect')
+            .attr('width', 5)
+            .attr('transform', 'translate(-5, 0)')
+            .style('fill', 'url(#line-gradient-legend)');
     }
 
     protected fixData() {
@@ -389,34 +477,47 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected repaintAxes() {
         this.groups.leftAxis.call(this._axes.left);
         this.groups.topAxis.call(this._axes.top);
+        this.groups.tempetureLegend.call(this._axes.temperature);
     }
 
     protected repaintLine() {
-        const line = this.groups.line.selectAll('path');
+        const line = this.groups.line.selectAll('path').data([this.data]);
 
-        line.data([this.data]);
+        line
+            .enter()
+            .append('path')
+            .attr('d', this._line(this.data));
 
-        line.enter().append('path');
-
-        line.merge(line).attr('d', this._line(this.data));
+        line
+            .transition()
+            .duration(500)
+            .attr('d', this._line(this.data));
 
         line.exit().remove();
     }
 
     protected repaintGradient() {
-        const gradient = this.groups.gradient.selectAll('stop');
+        const gradient = this.groups.tempetureOverlay
+            .selectAll('stop')
+            .data(this.data);
 
         gradient
-            .data(this.data)
             .enter()
-            .append('stop');
-        gradient
-            .merge(gradient)
+            .append('stop')
             .attr('offset', (d, iX) => {
                 return iX / this.data.length * 100 + '%';
             })
             .attr('stop-color', (d: ISample) => {
-                return this._scale.temp(d.Temperature);
+                return this._scale.temperature(d.Temperature);
+            });
+        gradient
+            .transition()
+            .duration(500)
+            .attr('offset', (d, iX) => {
+                return iX / this.data.length * 100 + '%';
+            })
+            .attr('stop-color', (d: ISample) => {
+                return this._scale.temperature(d.Temperature);
             });
         gradient.exit().remove();
     }

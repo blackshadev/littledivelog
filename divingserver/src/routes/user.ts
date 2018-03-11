@@ -16,10 +16,10 @@ router.get("/profile", async (req, res) => {
                 , name
                 , email
                 , inserted
-                , (select count(*) from dives d where d.user_id = u.user_id) as dive_count
-                , (select count(*) from computers c where c.user_id = u.user_id) as computer_count
-                , (select count(*) from buddies b where b.user_id = u.user_id) as buddy_count
-                , (select count(*) from tags t where t.user_id = u.user_id) as tag_count
+                , (select count(*) from dives d where d.user_id = u.user_id)::int as dive_count
+                , (select count(*) from computers c where c.user_id = u.user_id)::int as computer_count
+                , (select count(*) from buddies b where b.user_id = u.user_id)::int as buddy_count
+                , (select count(*) from tags t where t.user_id = u.user_id)::int as tag_count
            from users u
           where user_id = $1
         `,

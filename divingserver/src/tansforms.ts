@@ -9,16 +9,16 @@ export interface ITank {
 }
 
 export function tanksJSONtoType(tanks: ITank[]): string {
-    return `{"${tanks
+    return `{${tanks
         .map(tank => {
             // tslint:disable-next-line:max-line-length
-            return `(${isNullOrRound(tank.volume)},${isNullOrRound(
+            return `"(${isNullOrRound(tank.volume)},${isNullOrRound(
                 tank.oxygen,
             )},\\"(${isNullOrRound(tank.pressure.begin)},${isNullOrRound(
                 tank.pressure.end,
-            )},${isNull(tank.pressure.type)})\\")`;
+            )},${isNull(tank.pressure.type)})\\")"`;
         })
-        .join('","')}"}`;
+        .join(",")}}`;
 }
 
 function isNull(v: any): any {

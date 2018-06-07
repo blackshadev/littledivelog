@@ -5,7 +5,7 @@ import {
     EventEmitter,
     Output,
 } from '@angular/core';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
 import { BuddyService } from 'app/services/buddy.service';
 import { TagService } from 'app/services/tag.service';
@@ -141,13 +141,11 @@ export class SearchComponent implements OnInit {
                 obs.complete();
             } else {
                 const prom = this.currentTopic.source();
-                prom
-                    .then(items => {
-                        console.log(items);
-                        obs.next(items);
-                        obs.complete();
-                    })
-                    .catch(err => obs.error(err));
+                prom.then(items => {
+                    console.log(items);
+                    obs.next(items);
+                    obs.complete();
+                }).catch(err => obs.error(err));
             }
         });
     }

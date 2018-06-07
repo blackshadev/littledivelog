@@ -1,12 +1,7 @@
 import { Injectable } from '@angular/core';
-import {
-    ActivatedRouteSnapshot,
-    Router,
-    ActivatedRoute,
-} from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { serviceUrl } from '../shared/config';
-import 'rxjs/add/operator/toPromise';
 import { ResourceHttp } from 'app/shared/http';
 
 async function handleServerErrors(

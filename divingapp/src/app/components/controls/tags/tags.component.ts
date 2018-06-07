@@ -1,7 +1,4 @@
-import { leftpad } from '../../../shared/formatters';
-import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export interface ITag {
     id?: number;
@@ -13,11 +10,10 @@ export interface ITag {
     selector: 'app-tags',
     templateUrl: './tags.component.html',
     styleUrls: ['./tags.component.scss'],
-    providers: []
+    providers: [],
 })
 export class TagsComponent {
     @Input() canremove = false;
     @Input() tags: ITag[] = [];
     @Output() onremove = new EventEmitter();
-
 }

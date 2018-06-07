@@ -1,9 +1,17 @@
 import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
 import { ITag } from '../tags/tags.component';
 import { leftpad } from '../../../shared/formatters';
-import { Component, ElementRef, EventEmitter, forwardRef, Input, OnInit, Output, ViewChild } from '@angular/core';
+import {
+    Component,
+    ElementRef,
+    EventEmitter,
+    forwardRef,
+    Input,
+    OnInit,
+    Output,
+    ViewChild,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { Observable } from 'rxjs/Rx';
 
 @Component({
     selector: 'app-tags-control',
@@ -13,12 +21,11 @@ import { Observable } from 'rxjs/Rx';
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => TagsControlComponent),
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class TagsControlComponent implements OnInit, ControlValueAccessor {
-
     @Input() source: (keyword: string) => Promise<ITag[]>;
     @Input() tags: ITag[];
     @Input() placeholder = '';
@@ -26,8 +33,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     @Output() change = new EventEmitter<ITag[]>();
     @Output() touched = new EventEmitter<ITag[]>();
 
-    @ViewChild('tagInput')
-    private tagInput: ElementRef;
+    @ViewChild('tagInput') private tagInput: ElementRef;
 
     @ViewChild('tagAutocomplete')
     private tagAutocomplete: AutocompleteComponent;
@@ -44,12 +50,11 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
 
     constructor() {
         this.tags = [];
-        this.onChange = () => { };
-        this.onTouched = () => { };
+        this.onChange = () => {};
+        this.onTouched = () => {};
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     public newTag(value: string): ITag {
         return { color: TagsControlComponent.randomColor(), text: value };
@@ -61,11 +66,10 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
             map[tag.id] = true;
         }
         let res = await this.source(keyword);
-        res = res.filter((v) => {
-            return !v.id || !map[v.id]
+        res = res.filter(v => {
+            return !v.id || !map[v.id];
         });
         return res;
-
     }
 
     public addTag(v: ITag) {
@@ -115,8 +119,8 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
         const r = parseInt(color.substr(0, 2), 16);
         const g = parseInt(color.substr(2, 2), 16);
         const b = parseInt(color.substr(4, 2), 16);
-        const yiq = ((r * 299) + (g * 587) + (b * 114)) / 1000;
-        return (yiq >= 128) ? 'black' : 'white';
+        const yiq = (r * 299 + g * 587 + b * 114) / 1000;
+        return yiq >= 128 ? 'black' : 'white';
     }
 
     private doChange() {
@@ -128,5 +132,4 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
         this.onTouched();
         this.touched.emit();
     }
-
 }

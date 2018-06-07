@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs';
 import { Dive } from '../../shared/dive';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DiveService, TFilterKeys } from '../../services/dive.service';
@@ -14,6 +14,7 @@ import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Location } from '@angular/common';
 import { ProfileService } from 'app/services/profile.service';
 import { IFilter } from 'app/components/dives/search/search.component';
+import { flatMap } from 'rxjs/operators';
 
 @Component({
     selector: 'app-dives',
@@ -49,16 +50,18 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     ngOnInit(): void {
         this.subs.push(
             this.route.params
-                .flatMap(async (params: Params) => {
-                    if (params['id'] === 'new') {
-                        return await this.newDive();
-                    }
-                    if (params['id'] === undefined) {
-                        return undefined;
-                    } else {
-                        return await this.service.get(+params['id']);
-                    }
-                })
+                .pipe(
+                    flatMap(async (params: Params) => {
+                        if (params['id'] === 'new') {
+                            return await this.newDive();
+                        }
+                        if (params['id'] === undefined) {
+                            return undefined;
+                        } else {
+                            return await this.service.get(+params['id']);
+                        }
+                    }),
+                )
                 .subscribe(dive => (this.dive = dive)),
         );
     }

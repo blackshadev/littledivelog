@@ -1,22 +1,9 @@
 import { AuthService, AuthenticatedService } from './auth.service';
-import { Headers, Response } from '@angular/http';
-import {
-    Dive,
-    IBuddy,
-    IDbDive,
-    IDiveRecordDC,
-    IDiveTag,
-    IPlace,
-    ISample,
-} from '../shared/dive';
+import { Response } from '@angular/http';
+import { Dive, IDbDive, ISample } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 import { Injectable } from '@angular/core';
-import 'rxjs/add/operator/toPromise';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/catch';
-import 'rxjs/add/operator/map';
-import { BehaviorSubject } from 'rxjs/Rx';
-import { ITagStat, TagService } from 'app/services/tag.service';
+import { TagService } from 'app/services/tag.service';
 import { ResourceHttp } from 'app/shared/http';
 import { BuddyService } from 'app/services/buddy.service';
 import { arrayContains } from 'app/shared/common';

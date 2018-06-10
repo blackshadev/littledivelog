@@ -1,6 +1,14 @@
 @import '../../../shared/global.scss';
 
 .graph {
+    /deep/ .temperature-pointer line {
+        stroke: #000;
+    }
+
+    /deep/ .temperature-pointer text {
+        font-size: 0.8em;
+    }
+
     /deep/ g.graph {
         /deep/ .line path {
             fill: none;

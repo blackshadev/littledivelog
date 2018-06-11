@@ -49,7 +49,7 @@ export enum SampleEventType {
     RGBM,
     Heading,
     'Tissue level warning',
-    'gaschange2'
+    'gaschange2',
 }
 
 export enum SampleEventFlag {
@@ -69,7 +69,7 @@ export interface ISample {
     Time: number;
     Depth: number;
     Temperature: number;
-    Events: ISampleEvent[];
+    Events: undefined | ISampleEvent[];
 }
 
 export class Duration {
@@ -78,16 +78,15 @@ export class Duration {
     seconds: number;
 
     static Parse(str: Duration | string | number): Duration {
-        if (typeof (str) === 'string') {
-            const parts = str.split(':').map((s) => parseInt(s, 10));
+        if (typeof str === 'string') {
+            const parts = str.split(':').map(s => parseInt(s, 10));
             const d = new Duration(...parts);
             return d;
-        } else if (typeof (str) === 'number') {
+        } else if (typeof str === 'number') {
             return new Duration(0, 0, str);
         } else {
             return str;
         }
-
     }
 
     constructor(seconds: number);
@@ -98,20 +97,30 @@ export class Duration {
     constructor(...all: number[]);
     constructor(...all: number[]) {
         this.seconds = all.length > 0 ? all[all.length - 1] % 60 : 0;
-        // tslint:disable-next-line:no-bitwise
-        this.minutes = all.length > 1 ? ((all[all.length - 1] / 60) | 0 + all[all.length - 2]) % 60 : 0;
-        // tslint:disable-next-line:no-bitwise
-        this.hours = all.length > 2 ? (((all[all.length - 1] / 60) | 0 + all[all.length - 2]) / 60) | 0 + all[all.length - 3] : 0;
+        // tslint:disable:no-bitwise
+        this.minutes =
+            all.length > 1
+                ? ((all[all.length - 1] / 60) | (0 + all[all.length - 2])) % 60
+                : 0;
+        this.hours =
+            all.length > 2
+                ? (((all[all.length - 1] / 60) | (0 + all[all.length - 2])) /
+                      60) |
+                  (0 + all[all.length - 3])
+                : 0;
+
+        // tslint:enable:no-bitwise
     }
 
     toString() {
-        return `${formatNumber(this.hours)}:${formatNumber(this.minutes)}:${formatNumber(this.seconds)}`;
+        return `${formatNumber(this.hours)}:${formatNumber(
+            this.minutes,
+        )}:${formatNumber(this.seconds)}`;
     }
 
     valueOf() {
         return this.seconds + this.minutes * 60 + this.hours * (60 * 60);
     }
-
 }
 
 export class Dive {
@@ -124,12 +133,19 @@ export class Dive {
     tanks: ITank[];
     tags: IDiveTag[];
     buddies: IBuddy[];
-    get isNew(): boolean { return this.id === undefined; }
+    get isNew(): boolean {
+        return this.id === undefined;
+    }
 
-    get placeStr() { return (this.place.name || '') + (this.place.country_code ? (', ' + this.place.country_code) : ''); }
+    get placeStr() {
+        return (
+            (this.place.name || '') +
+            (this.place.country_code ? ', ' + this.place.country_code : '')
+        );
+    }
 
     static New() {
-        const dive = new Dive;
+        const dive = new Dive();
         dive.date = new Date();
         dive.divetime = undefined;
         dive.maxDepth = 0;
@@ -143,7 +159,7 @@ export class Dive {
     }
 
     static ParseDC(d: IDiveRecordDC, id?: number): Dive {
-        const dive = new Dive;
+        const dive = new Dive();
         dive.id = id;
         dive.date = new Date(d.Date);
         dive.divetime = Duration.Parse(d.DiveTime);
@@ -158,7 +174,7 @@ export class Dive {
     }
 
     static Parse(d: IDbDive): Dive {
-        const dive = new Dive;
+        const dive = new Dive();
         dive.id = d.dive_id;
         dive.date = new Date(<string>d.date);
         dive.divetime = Duration.Parse(d.divetime);
@@ -168,7 +184,7 @@ export class Dive {
         dive.place = {
             place_id: d.place.place_id,
             name: d.place.name || '',
-            country_code: d.place.country_code || ''
+            country_code: d.place.country_code || '',
         };
         dive.tanks = d.tanks || [];
         dive.buddies = d.buddies || [];
@@ -178,7 +194,7 @@ export class Dive {
 
     static ParseAllDC(arr: IDiveRecordDC[]): Dive[] {
         let iX = 0;
-        return arr.map((d) => Dive.ParseDC(d, iX++));
+        return arr.map(d => Dive.ParseDC(d, iX++));
     }
 
     static ParseAll(arr: IDbDive[]): Dive[] {
@@ -194,17 +210,18 @@ export class Dive {
             divetime: this.divetime.valueOf(),
             max_depth: this.maxDepth,
             samples: this.samples,
-            place: this.place ? {
-                place_id: this.place.place_id,
-                name: this.place.name,
-                country_code: this.place.country_code,
-            } : undefined,
+            place: this.place
+                ? {
+                      place_id: this.place.place_id,
+                      name: this.place.name,
+                      country_code: this.place.country_code,
+                  }
+                : undefined,
             tanks: this.tanks,
             tags: this.tags,
-            buddies: this.buddies
+            buddies: this.buddies,
         };
     }
-
 }
 
 export interface ITank {
@@ -221,7 +238,7 @@ export interface IDbDive {
     dive_id: number;
     date: Date | string;
     divetime: Duration | string | number;
-    tags: IDiveTag[]
+    tags: IDiveTag[];
     place?: IPlace;
     max_depth?: number;
     samples?: any[];
@@ -235,4 +252,3 @@ export interface IDiveRecordDC {
     MaxDepth: number;
     Samples?: ISample[];
 }
-

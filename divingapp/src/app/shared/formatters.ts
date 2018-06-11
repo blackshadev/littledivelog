@@ -6,7 +6,7 @@ export function leftpad(length: number, str: string, char: string = '0') {
     return str;
 }
 
-export function divetime(value: number) {
+export function divetime(value: number | null): string {
     if (!value) {
         return '00:00:00';
     }

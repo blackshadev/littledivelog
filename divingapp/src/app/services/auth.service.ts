@@ -65,12 +65,13 @@ export class AuthService {
     }
 
     async logout(): Promise<void> {
-        await this.http
-            .delete(`${serviceUrl}/auth/refresh-token`, {
-                headers: this.refreshHeader,
-            })
-            .toPromise();
-
+        try {
+            await this.http
+                .delete(`${serviceUrl}/auth/refresh-token`, {
+                    headers: this.refreshHeader,
+                })
+                .toPromise();
+        } catch {}
         this.resetSessions();
     }
 

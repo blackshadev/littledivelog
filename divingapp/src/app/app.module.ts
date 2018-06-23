@@ -44,7 +44,11 @@ import { ListDetailComponent } from './components/controls/list-detail/list-deta
 import { DetailComponentComponent } from './components/controls/detail-component/detail-component.component';
 import { SearchComponent } from './components/dives/search/search.component';
 import { ValidateFunctionDirective } from './directives/validate-function/validate-function.directive';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import {
+    HTTP_INTERCEPTORS,
+    HttpClient,
+    HttpClientModule,
+} from '@angular/common/http';
 import { TokenInterceptor } from './services/interceptors/token.interceptor';
 
 @NgModule({
@@ -86,6 +90,7 @@ import { TokenInterceptor } from './services/interceptors/token.interceptor';
         AppRoutingModule,
         Ng2AutoCompleteModule,
         ColorPickerModule,
+        HttpClientModule,
     ],
     providers: [
         DiveService,
@@ -104,6 +109,5 @@ import { TokenInterceptor } from './services/interceptors/token.interceptor';
         },
     ],
     bootstrap: [AppComponent],
-    exports: [AppModule],
 })
 export class AppModule {}

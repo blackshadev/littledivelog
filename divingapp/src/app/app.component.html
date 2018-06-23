@@ -1,9 +1,6 @@
-<app-menu 
-  (ontoggle)="toggleMenuCollapsed($event)"
-  [state]="isCollapsed"
-></app-menu>
+<app-menu (ontoggle)="toggleMenuCollapsed($event)" [state]="isCollapsed"></app-menu>
 <div class="content" #appContainer>
 
-  <router-outlet>
-  </router-outlet>
+    <router-outlet>
+    </router-outlet>
 </div>

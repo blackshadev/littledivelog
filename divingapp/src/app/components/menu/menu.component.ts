@@ -1,17 +1,24 @@
-import { ViewChild, Component, OnInit, ElementRef, Output, EventEmitter, Input } from '@angular/core';
+import {
+    ViewChild,
+    Component,
+    OnInit,
+    ElementRef,
+    Output,
+    EventEmitter,
+    Input,
+} from '@angular/core';
 import { AuthService } from 'app/services/auth.service';
-
 
 @Component({
     selector: 'app-menu',
     templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss']
+    styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-
     @ViewChild('menuContainer') menuContainer: ElementRef;
     @Output() ontoggle = new EventEmitter<boolean>();
-    @Input() set state(v: boolean) {
+    @Input('state')
+    set state(v: boolean) {
         this.toggle(v);
     }
 
@@ -19,14 +26,12 @@ export class MenuComponent implements OnInit {
         return this.auth.isLoggedIn;
     }
 
-    constructor(
-        private auth: AuthService
-    ) { }
+    constructor(private auth: AuthService) {}
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     toggle(state?: boolean) {
-        const hElm = (<HTMLElement>this.menuContainer.nativeElement);
+        const hElm = <HTMLElement>this.menuContainer.nativeElement;
         const isCollapsed = hElm.classList.contains('collapsed');
         state = state === undefined ? !isCollapsed : state;
         if (state) {
@@ -40,5 +45,4 @@ export class MenuComponent implements OnInit {
     logout() {
         this.auth.logout();
     }
-
 }

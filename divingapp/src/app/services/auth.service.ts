@@ -41,11 +41,7 @@ export class AuthService {
         return !!this._refreshToken;
     }
 
-    constructor(
-        private http: Http,
-        private route: ActivatedRoute,
-        private router: Router,
-    ) {
+    constructor(private http: Http) {
         // tslint:disable-next-line:max-line-length
         this._refreshToken = localStorage.getItem('jwt_refresh');
         this._accessToken = localStorage.getItem('jwt_access');
@@ -75,7 +71,7 @@ export class AuthService {
         this.resetSessions();
     }
 
-    resetSessions() {
+    public resetSessions() {
         localStorage.removeItem('jwt_refresh');
         localStorage.removeItem('jwt_access');
         this._refreshToken = null;
@@ -83,7 +79,7 @@ export class AuthService {
         window.location.reload();
     }
 
-    async login(email: string, password: string): Promise<void> {
+    public async login(email: string, password: string): Promise<void> {
         await handleServerErrors(async () => {
             const a = await this.http
                 .post(`${serviceUrl}/auth/refresh-token`, {
@@ -103,7 +99,7 @@ export class AuthService {
         });
     }
 
-    async fetchAccessToken() {
+    public async fetchAccessToken() {
         if (!this._refreshToken) {
             throw new Error('No refresh token');
         }

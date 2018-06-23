@@ -99,5 +99,6 @@ import { ValidateFunctionDirective } from './directives/validate-function/valida
         ResourceHttp,
     ],
     bootstrap: [AppComponent],
+    exports: [AppModule]
 })
 export class AppModule {}

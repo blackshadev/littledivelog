@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { serviceUrl } from 'app/shared/config';
-import { AuthenticatedService, AuthService } from 'app/services/auth.service';
+import { AuthService } from 'app/services/auth.service';
 import { Response } from '@angular/http';
 import { IPlace } from 'app/shared/dive';
-import { ResourceHttp } from 'app/shared/http';
+import { HttpClient } from '@angular/common/http';
 
 export interface ICountry {
     code: string;
@@ -18,24 +18,26 @@ export interface IPlaceStat {
     last_dive: Date;
 }
 
+export interface IDbCountry {
+    iso2: string;
+    name: string;
+}
+
 @Injectable()
-export class PlaceService extends AuthenticatedService {
+export class PlaceService {
     private __cache?: IPlace[];
     private __countries?: ICountry[];
 
-    constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(http);
-    }
+    constructor(protected http: HttpClient) {}
 
     public async list(c: string = ''): Promise<IPlace[]> {
         if (!c && this.__cache) {
             return this.__cache;
         }
 
-        const res = await this.http
-            .get(`${serviceUrl}/place/${c}/`)
+        const all = await this.http
+            .get<IPlace[]>(`${serviceUrl}/place/${c}/`)
             .toPromise();
-        const all: IPlace[] = res.json() || [];
         if (!c) {
             this.__cache = all;
         }
@@ -43,10 +45,9 @@ export class PlaceService extends AuthenticatedService {
     }
 
     public async fullList(): Promise<IPlaceStat[]> {
-        const resp = await this.http
-            .get(`${serviceUrl}/place/full`)
+        return await this.http
+            .get<IPlaceStat[]>(`${serviceUrl}/place/full`)
             .toPromise();
-        return resp.json() as IPlaceStat[];
     }
 
     public async countries(): Promise<ICountry[]> {
@@ -54,15 +55,10 @@ export class PlaceService extends AuthenticatedService {
             return this.__countries;
         }
 
-        let res: Response;
-        try {
-            res = await this.http.get(`${serviceUrl}/country/`).toPromise();
-        } catch (e) {
-            console.error(e);
-            return;
-        }
+        const all: IDbCountry[] = await this.http
+            .get<IDbCountry[]>(`${serviceUrl}/country/`)
+            .toPromise();
 
-        const all: { iso2: string; name: string }[] = res.json() || [];
         this.__countries = all.map(c => {
             return { code: c.iso2, description: c.name };
         });

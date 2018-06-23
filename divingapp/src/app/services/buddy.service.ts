@@ -1,9 +1,9 @@
-import { Injectable } from '@angular/core';
 import { Response } from '@angular/http';
-import { AuthService, AuthenticatedService } from 'app/services/auth.service';
+import { Injectable } from '@angular/core';
+import { AuthService } from 'app/services/auth.service';
 import { IBuddy } from 'app/shared/dive';
 import { serviceUrl } from 'app/shared/config';
-import { ResourceHttp } from 'app/shared/http';
+import { HttpClient } from '@angular/common/http';
 
 export interface IBuddyStat {
     buddy_id: number;
@@ -16,11 +16,9 @@ export interface IBuddyStat {
 }
 
 @Injectable()
-export class BuddyService extends AuthenticatedService {
+export class BuddyService {
     private __cache?: IBuddy[];
-    constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(http);
-    }
+    constructor(protected http: HttpClient) {}
 
     public clearCache() {
         this.__cache = undefined;
@@ -28,43 +26,42 @@ export class BuddyService extends AuthenticatedService {
 
     public async list(): Promise<IBuddy[]> {
         if (!this.__cache) {
-            const req = await this.http.get(`${serviceUrl}/buddy/`).toPromise();
-            const buds = req.json() as IBuddy[];
-            this.__cache = buds;
+            this.__cache = await this.http
+                .get<IBuddy[]>(`${serviceUrl}/buddy/`)
+                .toPromise();
         }
 
         return this.__cache;
     }
 
     public async fullList(): Promise<IBuddyStat[]> {
-        const resp = await this.http
-            .get(`${serviceUrl}/buddy/full`)
+        return await this.http
+            .get<IBuddyStat[]>(`${serviceUrl}/buddy/full`)
             .toPromise();
-        return resp.json() as IBuddyStat[];
     }
 
     public async update(data: IBuddy): Promise<IBuddy> {
-        let req: Response;
+        let req: IBuddy;
         if (data.buddy_id === undefined) {
             req = await this.http
-                .post(`${serviceUrl}/buddy/`, data)
+                .post<IBuddy>(`${serviceUrl}/buddy/`, data)
                 .toPromise();
         } else {
             req = await this.http
-                .put(`${serviceUrl}/buddy/${data.buddy_id}`, data)
+                .put<IBuddy>(`${serviceUrl}/buddy/${data.buddy_id}`, data)
                 .toPromise();
         }
 
         this.clearCache();
-        return req.json() as IBuddy;
+        return req;
     }
 
     public async delete(id: number): Promise<boolean> {
-        const req = await this.http
-            .delete(`${serviceUrl}/buddy/${id}`)
+        const res = await this.http
+            .delete<boolean>(`${serviceUrl}/buddy/${id}`)
             .toPromise();
 
         this.clearCache();
-        return req.json();
+        return res;
     }
 }

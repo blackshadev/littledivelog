@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { AuthenticatedService, AuthService } from 'app/services/auth.service';
+import { AuthService } from 'app/services/auth.service';
 import { Response } from '@angular/http';
 import { serviceUrl } from 'app/shared/config';
-import { ResourceHttp } from 'app/shared/http';
+import { HttpClient } from '@angular/common/http';
 
 export interface ITagStat {
     tag_id: number;
@@ -19,12 +19,10 @@ export interface ITag {
 }
 
 @Injectable()
-export class TagService extends AuthenticatedService {
+export class TagService {
     private __cache?: ITag[];
 
-    constructor(protected http: ResourceHttp, protected auth: AuthService) {
-        super(http);
-    }
+    constructor(protected http: HttpClient, protected auth: AuthService) {}
 
     public clearCache() {
         this.__cache = undefined;
@@ -32,37 +30,41 @@ export class TagService extends AuthenticatedService {
 
     public async list(): Promise<ITag[]> {
         if (!this.__cache) {
-            const req = await this.http.get(`${serviceUrl}/tag/`).toPromise();
-            this.__cache = req.json() as ITag[];
+            this.__cache = await this.http
+                .get<ITag[]>(`${serviceUrl}/tag/`)
+                .toPromise();
         }
         return this.__cache;
     }
 
     public async fullList(): Promise<ITagStat[]> {
-        const resp = await this.http.get(`${serviceUrl}/tag/full`).toPromise();
-        return resp.json() as ITagStat[];
+        return await this.http
+            .get<ITagStat[]>(`${serviceUrl}/tag/full`)
+            .toPromise();
     }
 
     public async update(data: ITag): Promise<ITag> {
-        let req: Response;
+        let tag: ITag;
         if (data.tag_id === undefined) {
-            req = await this.http.post(`${serviceUrl}/tag/`, data).toPromise();
+            tag = await this.http
+                .post<ITag>(`${serviceUrl}/tag/`, data)
+                .toPromise();
         } else {
-            req = await this.http
-                .put(`${serviceUrl}/tag/${data.tag_id}`, data)
+            tag = await this.http
+                .put<ITag>(`${serviceUrl}/tag/${data.tag_id}`, data)
                 .toPromise();
         }
 
         this.clearCache();
-        return req.json() as ITag;
+        return tag;
     }
 
     public async delete(id: number): Promise<boolean> {
-        const req = await this.http
-            .delete(`${serviceUrl}/tag/${id}`)
+        const st = await this.http
+            .delete<boolean>(`${serviceUrl}/tag/${id}`)
             .toPromise();
 
         this.clearCache();
-        return req.json();
+        return st;
     }
 }

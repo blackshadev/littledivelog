@@ -40,11 +40,12 @@ import { ProfileComponent } from './components/profile/profile.component';
 import { ProfileService } from 'app/services/profile.service';
 import { DownloadUploaderComponent } from './components/download-uploader/download-uploader.component';
 import { MiscService } from 'app/services/misc.service';
-import { ResourceHttp } from 'app/shared/http';
 import { ListDetailComponent } from './components/controls/list-detail/list-detail.component';
 import { DetailComponentComponent } from './components/controls/detail-component/detail-component.component';
 import { SearchComponent } from './components/dives/search/search.component';
 import { ValidateFunctionDirective } from './directives/validate-function/validate-function.directive';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { TokenInterceptor } from './services/interceptors/token.interceptor';
 
 @NgModule({
     declarations: [
@@ -96,9 +97,13 @@ import { ValidateFunctionDirective } from './directives/validate-function/valida
         PlaceService,
         ProfileService,
         AuthService,
-        ResourceHttp,
+        {
+            provide: HTTP_INTERCEPTORS,
+            useClass: TokenInterceptor,
+            multi: true,
+        },
     ],
     bootstrap: [AppComponent],
-    exports: [AppModule]
+    exports: [AppModule],
 })
 export class AppModule {}

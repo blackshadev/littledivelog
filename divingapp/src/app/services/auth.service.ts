@@ -2,31 +2,33 @@ import { Injectable } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { Headers, Http, Response } from '@angular/http';
 import { serviceUrl } from '../shared/config';
-import { ResourceHttp } from 'app/shared/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 
-async function handleServerErrors(
+async function handleErrors(
     fn: () => Promise<void>,
-    errFn?: (res: Response, bod: { error: string }) => void,
+    errFn: (res: HttpErrorResponse) => void = res => {
+        throw new Error(res.message);
+    },
 ) {
     try {
         await fn();
-    } catch (e) {
-        if (e instanceof Response) {
-            let o: any;
-            try {
-                o = e.json();
-            } catch (_e) {
-                /* NOOP, will be thrown by next statement */
+    } catch (error) {
+        if (error instanceof HttpErrorResponse) {
+            if (error.error instanceof ErrorEvent) {
+                // A client-side or network error occurred. Handle it accordingly.
+                console.error('An error occurred:', error.error.message);
+            } else {
+                // The backend returned an unsuccessful response code.
+                // The response body may contain clues as to what went wrong,
+                console.error(
+                    `Backend returned code ${error.status}, ` +
+                        `body was: ${error.error}`,
+                );
+                return errFn(error);
             }
-            if (o && o.error) {
-                if (errFn) {
-                    errFn(e, o);
-                } else {
-                    throw new Error(o.error);
-                }
-            }
+            // return an observable with a user-facing error message
         }
-        throw new Error('Unable to parse server response');
+        throw new Error('Something bad happened; please try again later.');
     }
 }
 
@@ -41,7 +43,15 @@ export class AuthService {
         return !!this._refreshToken;
     }
 
-    constructor(private http: Http) {
+    public get accessHeader() {
+        return { Authenticated: 'Bearer ' + this._accessToken };
+    }
+
+    protected get refreshHeader() {
+        return { Authenticated: 'Bearer ' + this._refreshToken };
+    }
+
+    constructor(private http: HttpClient) {
         // tslint:disable-next-line:max-line-length
         this._refreshToken = localStorage.getItem('jwt_refresh');
         this._accessToken = localStorage.getItem('jwt_access');
@@ -54,17 +64,10 @@ export class AuthService {
         });
     }
 
-    public setAccessHeaders(headers: Headers): void {
-        headers.set('Authorization', 'Bearer ' + this.accessToken);
-    }
-
     async logout(): Promise<void> {
-        const headers = new Headers();
-        this.setRefreshHeader(headers);
-
         await this.http
             .delete(`${serviceUrl}/auth/refresh-token`, {
-                headers,
+                headers: this.refreshHeader,
             })
             .toPromise();
 
@@ -80,22 +83,17 @@ export class AuthService {
     }
 
     public async login(email: string, password: string): Promise<void> {
-        await handleServerErrors(async () => {
+        await handleErrors(async () => {
             const a = await this.http
-                .post(`${serviceUrl}/auth/refresh-token`, {
+                .post<{ jwt: string }>(`${serviceUrl}/auth/refresh-token`, {
                     email,
                     password,
                     description: 'dive.littledev.nl User Login',
                 })
                 .toPromise();
 
-            const o = a.json();
-            if (o.error) {
-                throw new Error(o.error);
-            } else {
-                this._refreshToken = o.jwt;
-                localStorage.setItem('jwt_refresh', this._refreshToken);
-            }
+            this._refreshToken = a.jwt;
+            localStorage.setItem('jwt_refresh', this._refreshToken);
         });
     }
 
@@ -103,53 +101,34 @@ export class AuthService {
         if (!this._refreshToken) {
             throw new Error('No refresh token');
         }
-        await handleServerErrors(
+        await handleErrors(
             async () => {
                 const headers = new Headers();
-                this.setRefreshHeader(headers);
 
                 const a = await this.http
-                    .get(`${serviceUrl}/auth/access-token`, {
-                        headers,
+                    .get<{ jwt: string }>(`${serviceUrl}/auth/access-token`, {
+                        headers: this.refreshHeader,
                     })
                     .toPromise();
 
-                const o = a.json();
-                if (o.error) {
-                    throw new Error(o.error);
-                } else {
-                    this._accessToken = o.jwt;
-                    localStorage.setItem('jwt_access', this._accessToken);
-                }
+                this._accessToken = a.jwt;
+                localStorage.setItem('jwt_access', this._accessToken);
             },
-            (resp, errObj) => {
+            resp => {
                 if (resp.status === 401) {
                     this.logout();
                 } else {
-                    throw new Error(errObj.error);
+                    throw new Error(resp.error);
                 }
             },
         );
     }
 
     async register(oPar: { email: string; password: string; name?: string }) {
-        await handleServerErrors(async () => {
+        await handleErrors(async () => {
             const a = await this.http
                 .post(`${serviceUrl}/auth/register/`, oPar)
                 .toPromise();
-
-            const o = a.json();
-            if (o.error) {
-                throw new Error(o.error);
-            }
         });
     }
-
-    protected setRefreshHeader(headers: Headers) {
-        headers.set('Authorization', 'Bearer ' + this._refreshToken);
-    }
-}
-
-export class AuthenticatedService {
-    constructor(protected http: ResourceHttp) {}
 }

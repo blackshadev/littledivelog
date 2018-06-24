@@ -37,7 +37,7 @@ router.get("/download", async (req, res) => {
     const archive = archiver("zip", {});
 
     archive.on("error", err => {
-        res.status(500).send({ error: err.message });
+        res.status(500).send({ error: (err.message || err.toString()) });
     });
 
     archive.pipe(res);

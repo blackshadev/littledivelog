@@ -10,7 +10,7 @@ import {
 import { serviceUrl } from '../shared/config';
 
 fdescribe('AuthService', () => {
-    let service: AuthService;
+    let service: AuthService & { reloadWindow: () => void };
     let httpMock: HttpTestingController;
 
     beforeAll(() => {
@@ -21,7 +21,7 @@ fdescribe('AuthService', () => {
 
         service = TestBed.get(AuthService);
         httpMock = TestBed.get(HttpTestingController);
-        (service as any).reloadWindow = () => {};
+        service.reloadWindow = () => {};
     });
 
     beforeEach(() => {
@@ -54,7 +54,40 @@ fdescribe('AuthService', () => {
         });
 
         it('Empty access token', () => {
-            expect(service.accessToken).toBeUndefined();
+            expect(service.accessToken).toBeNull();
+        });
+
+        describe('Logout', () => {
+            let req: TestRequest;
+            beforeEach(done => {
+                spyOn(service, 'reloadWindow');
+                service.logout().then(done);
+
+                req = httpMock.expectOne(`${serviceUrl}/auth/refresh-token`);
+                req.flush('true');
+            });
+
+            it('Should be delete request', () => {
+                expect(req.request.method).toEqual('DELETE');
+            });
+
+            it('Delete request should contain refresh token', () => {
+                expect(req.request.headers.get('Authorization')).toEqual(
+                    'Bearer ' + refreshToken,
+                );
+            });
+
+            it('Should have reloadedWindow', () => {
+                expect(service.reloadWindow).toHaveBeenCalled();
+            });
+
+            it('Should not be loggedin', () => {
+                expect(service.isLoggedIn).toEqual(false);
+            });
+
+            it('Should empty access token', () => {
+                expect(service.accessToken).toBeNull();
+            });
         });
 
         describe('Access token', () => {
@@ -67,6 +100,12 @@ fdescribe('AuthService', () => {
                 );
                 expect(accessReq.request.method).toEqual('GET');
                 accessReq.flush({ jwt: accessToken });
+            });
+
+            it('Should set refresh token in request', () => {
+                expect(accessReq.request.headers.get('Authorization')).toEqual(
+                    'Bearer ' + refreshToken,
+                );
             });
 
             it('Should have access token', () => {

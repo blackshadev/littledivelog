@@ -44,11 +44,11 @@ export class AuthService {
     }
 
     public get accessHeader() {
-        return { Authenticated: 'Bearer ' + this._accessToken };
+        return { Authorization: 'Bearer ' + this._accessToken };
     }
 
     protected get refreshHeader() {
-        return { Authenticated: 'Bearer ' + this._refreshToken };
+        return { Authorization: 'Bearer ' + this._refreshToken };
     }
 
     constructor(private http: HttpClient) {
@@ -104,8 +104,6 @@ export class AuthService {
         }
         await handleErrors(
             async () => {
-                const headers = new Headers();
-
                 const a = await this.http
                     .get<{ jwt: string }>(`${serviceUrl}/auth/access-token`, {
                         headers: this.refreshHeader,

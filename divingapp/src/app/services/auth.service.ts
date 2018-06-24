@@ -80,7 +80,7 @@ export class AuthService {
         localStorage.removeItem('jwt_access');
         this._refreshToken = null;
         this._accessToken = null;
-        window.location.reload();
+        this.reloadWindow();
     }
 
     public async login(email: string, password: string): Promise<void> {
@@ -129,5 +129,9 @@ export class AuthService {
                 .post(`${serviceUrl}/auth/register/`, oPar)
                 .toPromise();
         });
+    }
+
+    protected reloadWindow() {
+        window.location.reload();
     }
 }

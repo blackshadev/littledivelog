@@ -18,44 +18,48 @@ import { serviceUrl } from '../../shared/config';
 export class TokenInterceptor implements HttpInterceptor {
     constructor(public auth: AuthService) {}
 
-    intercept(
+    public intercept(
         request: HttpRequest<any>,
         next: HttpHandler,
     ): Observable<HttpEvent<any>> {
-        if (
-            request.url.indexOf(serviceUrl) === -1 ||
-            request.url.indexOf('auth/refresh-token') > -1
-        ) {
+        if (!this.shouldIntercept(request)) {
             return next.handle(request);
         }
 
-        if (!request.headers.has('Authorization')) {
-            if (!this.auth.accessToken) {
-                return from(this.auth.fetchAccessToken()).pipe(
-                    switchMap(() => {
-                        return this.intercept(request.clone(), next);
-                    }),
-                    catchError(err => {
-                        console.error(
-                            'Failed to get access token ' + err.toString(),
-                        );
-                        return Observable.throw(err);
-                    }),
-                );
+        console.log('url', request.url);
+        request = request.clone({
+            setHeaders: {
+                Authorization: `Bearer ${this.auth.accessToken}`,
+            },
+        });
+
+        return next.handle(request).catch(err => {
+            if (err instanceof HttpErrorResponse && err.status === 401) {
+                return this.fetchAccessToken(request.clone(), next);
+            } else {
+                return Observable.throw(err);
             }
+        });
 
-            console.log('Token');
-            request = request.clone({
-                setHeaders: {
-                    Authorization: `Bearer ${this.auth.accessToken}`,
-                },
-            });
-            console.log(request.headers);
-        } else {
-            request = request.clone();
-            request.headers.delete('x-no-token');
-        }
+        // return next.handle(request);
+    }
 
-        return next.handle(request);
+    public shouldIntercept(request): boolean {
+        return (
+            request.url.indexOf(serviceUrl) > -1 &&
+            request.url.indexOf('/auth/') === -1
+        );
+    }
+
+    public fetchAccessToken(request: HttpRequest<any>, next: HttpHandler) {
+        return from(this.auth.fetchAccessToken())
+            .catch(() => {
+                return from(this.auth.logout());
+            })
+            .pipe(
+                switchMap(() => {
+                    return this.intercept(request, next);
+                }),
+            );
     }
 }

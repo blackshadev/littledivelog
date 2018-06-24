@@ -11,6 +11,7 @@ import { serviceUrl } from '../shared/config';
 fdescribe('AuthService', () => {
     let service: AuthService;
     let httpMock: HttpTestingController;
+
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -29,16 +30,18 @@ fdescribe('AuthService', () => {
     //     expect(service.isLoggedIn).toBe(false);
     // });
 
-    // it('Logged in', async () => {
-    //     beforeEach(async () => {
-    //         await service.login('dive@littledev.nl', 'superSecret');
-    //         const req = httpMock.expectOne(`${serviceUrl}/auth/refresh-token`);
-    //         expect(req.request.method).toEqual('POST');
-    //         req.flush({ jwt: 'myJWT' });
-    //     });
+    describe('Logged in', () => {
+        beforeEach(done => {
+            service
+                .login('dive@littledev.nl', 'superSecret')
+                .then(() => done());
+            const req = httpMock.expectOne(`${serviceUrl}/auth/refresh-token`);
+            expect(req.request.method).toEqual('POST');
+            req.flush({ jwt: 'myJWT' });
+        });
 
-    //     it('Should be isLoggedIn', async () => {
-    //         expect(service.isLoggedIn).toBe(true);
-    //     });
-    // });
+        it('Should be isLoggedIn', () => {
+            expect(service.isLoggedIn).toBe(true);
+        });
+    });
 });

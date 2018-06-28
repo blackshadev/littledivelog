@@ -1,7 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { AuthService } from './auth.service';
-import { Http, BaseRequestOptions } from '@angular/http';
-import { MockBackend } from '@angular/http/testing';
+import { Http } from '@angular/http';
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -13,7 +12,7 @@ fdescribe('AuthService', () => {
     let service: AuthService & { reloadWindow: () => void };
     let httpMock: HttpTestingController;
 
-    beforeAll(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
             providers: [Http, AuthService],
@@ -28,9 +27,10 @@ fdescribe('AuthService', () => {
         service.resetSessions();
     });
 
-    it('should be created', () => {
-        expect(service).toBeTruthy();
-    });
+    it('should be created', inject([AuthService], (s: AuthService) => {
+        expect(s).toBeTruthy();
+        expect(s).toEqual(service);
+    }));
 
     it('Should not be logged in', () => {
         expect(service.isLoggedIn).toBe(false);

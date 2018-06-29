@@ -9,7 +9,7 @@ import {
 import { IBuddy } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 
-describe('BuddyService', () => {
+fdescribe('BuddyService', () => {
     let service: BuddyService;
     let httpMock: HttpTestingController;
     beforeEach(() => {
@@ -54,12 +54,11 @@ describe('BuddyService', () => {
                 })
                 .catch(done);
 
-            req = httpMock.expectOne(`${serviceUrl}/buddy/`);
+            req = httpMock.expectOne({
+                url: `${serviceUrl}/buddy/`,
+                method: 'GET',
+            });
             req.flush(testData);
-        });
-
-        it('Should be GET request', () => {
-            expect(req.request.method).toEqual('GET');
         });
 
         it('Should have valid output', () => {
@@ -93,7 +92,7 @@ describe('BuddyService', () => {
         });
     });
 
-    describe('fullList', () => {
+    it('fullList', async done => {
         const testData: IBuddyStat[] = [
             {
                 buddy_id: 0,
@@ -114,107 +113,78 @@ describe('BuddyService', () => {
                 last_dive: new Date('2017-06-01'),
             },
         ];
-        let list: IBuddy[];
-        let req: TestRequest;
 
-        beforeEach(done => {
-            service
-                .fullList()
-                .then(d => {
-                    list = d;
-                    done();
-                })
-                .catch(done);
+        service
+            .fullList()
+            .then(list => {
+                expect(list).toBe(testData);
 
-            req = httpMock.expectOne(`${serviceUrl}/buddy/full`);
-            req.flush(testData);
+                done();
+            })
+            .catch(done);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/buddy/full`,
+            method: 'GET',
         });
-
-        it('Should be GET request', () => {
-            expect(req.request.method).toEqual('GET');
-        });
-
-        it('Should have valid output', () => {
-            expect(list).toBe(testData);
-        });
+        req.flush(testData);
     });
 
-    describe('delete', () => {
+    it('delete', done => {
         const testData = true;
-        let result: any;
         let req: TestRequest;
         let spy: jasmine.Spy;
-        beforeEach(done => {
-            spy = spyOn(service, 'clearCache');
-            service
-                .delete(5)
-                .then(d => {
-                    result = d;
-                    done();
-                })
-                .catch(done);
 
-            req = httpMock.expectOne(`${serviceUrl}/buddy/5`);
-            req.flush(JSON.stringify(testData));
-        });
+        spy = spyOn(service, 'clearCache');
+        service
+            .delete(5)
+            .then(result => {
+                expect(result as any).toEqual(JSON.stringify(testData));
+                expect(spy).toHaveBeenCalled();
 
-        it('Should be DELETE request', () => {
-            expect(req.request.method).toEqual('DELETE');
-        });
+                done();
+            })
+            .catch(done.fail);
 
-        it('Should output testData', () => {
-            expect(result).toEqual(JSON.stringify(testData));
+        req = httpMock.expectOne({
+            url: `${serviceUrl}/buddy/5`,
+            method: 'DELETE',
         });
-
-        it('Should clear cache', () => {
-            expect(spy).toHaveBeenCalled();
-        });
+        req.flush(JSON.stringify(testData));
     });
 
-    describe('update', () => {
+    it('update', done => {
         const testData: IBuddy = {
             buddy_id: 1,
             color: '#fff',
             email: 'teste01r@test.com',
             text: 'tester01 test',
         };
-        let result: IBuddy;
         let req: TestRequest;
-        let spy: jasmine.Spy;
-        beforeEach(done => {
-            spy = spyOn(service, 'clearCache');
-            service
-                .update(testData)
-                .then(d => {
-                    result = d;
-                    done();
-                })
-                .catch(done);
 
-            req = httpMock.expectOne(
-                `${serviceUrl}/buddy/${testData.buddy_id}`,
-            );
-            req.flush(testData);
-        });
+        const spy = spyOn(service, 'clearCache');
+        service
+            .update(testData)
+            .then(result => {
+                expect(result).toEqual(
+                    testData,
+                    'Invalid output, expected input and output to be the same',
+                );
+                expect(spy).toHaveBeenCalled();
 
-        it('Should be PUT request', () => {
-            expect(req.request.method).toEqual('PUT');
-        });
+                done();
+            })
+            .catch(done);
 
-        it('Should output testData', () => {
-            expect(result).toEqual(testData);
+        req = httpMock.expectOne({
+            url: `${serviceUrl}/buddy/${testData.buddy_id}`,
+            method: 'PUT',
         });
-
-        it('Should send testData in body', () => {
-            expect(req.request.body).toBe(testData);
-        });
-
-        it('Should clear cache', () => {
-            expect(spy).toHaveBeenCalled();
-        });
+        req.flush(testData);
+        expect(req.request.body).toBe(testData);
     });
 
-    describe('insert', () => {
+    it('insert', done => {
         const testData: IBuddy = {
             buddy_id: undefined,
             color: '#fff',
@@ -222,38 +192,31 @@ describe('BuddyService', () => {
             text: 'tester01 test',
         };
         const resData: IBuddy = Object.assign({}, testData, { buddy_id: 9 });
-        let result: IBuddy;
+
         let req: TestRequest;
-        let spy: jasmine.Spy;
-        beforeEach(done => {
-            spy = spyOn(service, 'clearCache');
-            service
-                .update(testData)
-                .then(d => {
-                    result = d;
-                    done();
-                })
-                .catch(done);
+        const spy: jasmine.Spy = spyOn(service, 'clearCache');
+        service
+            .update(testData)
+            .then(result => {
+                expect(result).toEqual(
+                    resData,
+                    'Unexpected result data, expected input data with buddy_id filled',
+                );
+                expect(result).not.toEqual(
+                    testData,
+                    'Input and output should not be same',
+                );
+                expect(spy).toHaveBeenCalled();
 
-            req = httpMock.expectOne(`${serviceUrl}/buddy/`);
-            req.flush(resData);
-        });
+                done();
+            })
+            .catch(done.fail);
 
-        it('Should be POST request', () => {
-            expect(req.request.method).toEqual('POST');
+        req = httpMock.expectOne({
+            url: `${serviceUrl}/buddy/`,
+            method: 'POST',
         });
-
-        it('Should output testData', () => {
-            expect(result).toEqual(resData);
-            expect(result).not.toEqual(testData);
-        });
-
-        it('Should send testData in body', () => {
-            expect(req.request.body).toBe(testData);
-        });
-
-        it('Should clear cache', () => {
-            expect(spy).toHaveBeenCalled();
-        });
+        req.flush(resData);
+        expect(req.request.body).toBe(testData);
     });
 });

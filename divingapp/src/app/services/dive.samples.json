@@ -1,0 +1,40 @@
+[
+    {
+        "dive_id": 6,
+        "divetime": 180,
+        "date": "2014-09-06 15:00:35+02:00",
+        "tags": [
+            { "tag_id": 1, "color": "#9914ff", "text": "Test" },
+            { "tag_id": 2, "color": "#687bd5", "text": "Test2" }
+        ],
+        "place": { "country_code": "NL", "place_id": 18, "name": "De Beldert" }
+    },
+    {
+        "dive_id": 1,
+        "divetime": 1980,
+        "date": "2014-09-06 14:07:35+02:00",
+        "tags": [],
+        "place": null
+    },
+    {
+        "dive_id": 2,
+        "divetime": 4140,
+        "date": "2014-07-13 13:26:45+02:00",
+        "tags": [],
+        "place": null
+    },
+    {
+        "dive_id": 3,
+        "divetime": 3240,
+        "date": "2013-06-30 14:40:35+02:00",
+        "tags": [],
+        "place": null
+    },
+    {
+        "dive_id": 5,
+        "divetime": 2700,
+        "date": "2011-09-04 12:36:20+02:00",
+        "tags": [],
+        "place": null
+    }
+]

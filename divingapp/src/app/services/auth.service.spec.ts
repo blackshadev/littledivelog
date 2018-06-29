@@ -44,8 +44,10 @@ describe('AuthService', () => {
             service
                 .login('dive@littledev.nl', 'superSecret')
                 .then(() => done());
-            const req = httpMock.expectOne(`${serviceUrl}/auth/refresh-token`);
-            expect(req.request.method).toEqual('POST');
+            const req = httpMock.expectOne({
+                url: `${serviceUrl}/auth/refresh-token`,
+                method: 'POST',
+            });
             req.flush({ jwt: refreshToken });
         });
 
@@ -63,12 +65,11 @@ describe('AuthService', () => {
                 spyOn(service, 'reloadWindow');
                 service.logout().then(done);
 
-                req = httpMock.expectOne(`${serviceUrl}/auth/refresh-token`);
+                req = httpMock.expectOne({
+                    url: `${serviceUrl}/auth/refresh-token`,
+                    method: 'DELETE',
+                });
                 req.flush('true');
-            });
-
-            it('Should be delete request', () => {
-                expect(req.request.method).toEqual('DELETE');
             });
 
             it('Delete request should contain refresh token', () => {
@@ -95,10 +96,10 @@ describe('AuthService', () => {
 
             beforeEach(done => {
                 service.fetchAccessToken().then(() => done());
-                accessReq = httpMock.expectOne(
-                    `${serviceUrl}/auth/access-token`,
-                );
-                expect(accessReq.request.method).toEqual('GET');
+                accessReq = httpMock.expectOne({
+                    url: `${serviceUrl}/auth/access-token`,
+                    method: 'GET',
+                });
                 accessReq.flush({ jwt: accessToken });
             });
 
@@ -113,11 +114,9 @@ describe('AuthService', () => {
             });
 
             it('Should have authorization header', () => {
-                expect(service.accessHeader).toEqual(
-                    jasmine.objectContaining({
-                        Authorization: 'Bearer ' + accessToken,
-                    }),
-                );
+                expect(service.accessHeader).toEqual({
+                    Authorization: 'Bearer ' + accessToken,
+                });
             });
         });
     });

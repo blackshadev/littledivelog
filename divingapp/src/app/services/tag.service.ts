@@ -22,7 +22,7 @@ export interface ITag {
 export class TagService {
     private __cache?: ITag[];
 
-    constructor(protected http: HttpClient, protected auth: AuthService) {}
+    constructor(protected http: HttpClient) {}
 
     public clearCache() {
         this.__cache = undefined;

@@ -9,7 +9,7 @@ import {
 import { IBuddy } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
 
-fdescribe('BuddyService', () => {
+describe('BuddyService', () => {
     let service: BuddyService;
     let httpMock: HttpTestingController;
     beforeEach(() => {

@@ -31,23 +31,19 @@ fdescribe('DiveService', () => {
         expect(ser).toBe(service);
     }));
 
-    describe('List', () => {
-        let res: Dive[];
-        let req: TestRequest;
-        beforeEach(done => {
-            service
-                .list()
-                .then(d => {
-                    res = d;
-                    done();
-                })
-                .catch(err => done.fail(err));
-            req = httpMock.expectOne(`${serviceUrl}/dive/?`);
-            req.flush(sampleDives);
-        });
+    it('List', done => {
+        service
+            .list()
+            .then(res => {
+                expect(res).toEqual(Dive.ParseAll(sampleDives));
 
-        it('Should return parsed dives', () => {
-            expect(res).toEqual(Dive.ParseAll(sampleDives));
+                done();
+            })
+            .catch(done.fail);
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/dive/?`,
+            method: 'GET',
         });
+        req.flush(sampleDives);
     });
 });

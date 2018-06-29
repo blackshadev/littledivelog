@@ -8,10 +8,8 @@ import {
 } from '@angular/common/http/testing';
 import { IBuddy } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
-import { HttpResponse } from '@angular/common/http';
-import { Observable, of } from 'rxjs';
 
-fdescribe('BuddyService', () => {
+describe('BuddyService', () => {
     let service: BuddyService;
     let httpMock: HttpTestingController;
     beforeEach(() => {

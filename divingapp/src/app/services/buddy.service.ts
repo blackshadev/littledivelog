@@ -9,7 +9,7 @@ export interface IBuddyStat {
     buddy_id: number;
     text: string;
     color: string;
-    dive_count: Date;
+    dive_count: number;
     last_dive: Date;
     email: string;
     buddy_user_id: number;

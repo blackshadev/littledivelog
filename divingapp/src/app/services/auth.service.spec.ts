@@ -8,7 +8,7 @@ import {
 } from '@angular/common/http/testing';
 import { serviceUrl } from '../shared/config';
 
-fdescribe('AuthService', () => {
+describe('AuthService', () => {
     let service: AuthService & { reloadWindow: () => void };
     let httpMock: HttpTestingController;
 

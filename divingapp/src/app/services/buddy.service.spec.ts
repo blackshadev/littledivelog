@@ -1,5 +1,5 @@
 import { TestBed, inject } from '@angular/core/testing';
-import { BuddyService } from './buddy.service';
+import { BuddyService, IBuddyStat } from './buddy.service';
 import { Http } from '@angular/http';
 import {
     HttpClientTestingModule,
@@ -63,7 +63,79 @@ fdescribe('BuddyService', () => {
         });
 
         it('Should have valid output', () => {
-            expect(list).toEqual(testData);
+            expect(list).toBe(testData);
+        });
+
+        it('Should use cache with in later requests', async done => {
+            service
+                .list()
+                .then(d => {
+                    expect(d).toBe(list);
+                    expect(d).toBe(testData);
+                    done();
+                })
+                .catch(done);
+
+            httpMock.expectNone(`${serviceUrl}/buddy/`);
+        });
+
+        it('Should request after clear cache', () => {
+            const newDat = testData.slice(1);
+            service.clearCache();
+
+            service.list().then(d => {
+                expect(d).not.toEqual(testData);
+                expect(d).toBe(newDat);
+            });
+            const _req = httpMock.expectOne(`${serviceUrl}/buddy/`);
+            expect(_req.request.method).toEqual('GET');
+            _req.flush(newDat);
+        });
+    });
+
+    describe('fullList', () => {
+        const testData: IBuddyStat[] = [
+            {
+                buddy_id: 0,
+                color: '#fff',
+                email: 'tester@test.com',
+                text: 'tester test',
+                buddy_user_id: 5,
+                dive_count: 10,
+                last_dive: new Date('2017-01-01'),
+            },
+            {
+                buddy_id: 1,
+                color: '#fff',
+                email: 'teste01r@test.com',
+                text: 'tester01 test',
+                buddy_user_id: 6,
+                dive_count: 15,
+                last_dive: new Date('2017-06-01'),
+            },
+        ];
+        let list: IBuddy[];
+        let req: TestRequest;
+
+        beforeEach(done => {
+            service
+                .fullList()
+                .then(d => {
+                    list = d;
+                    done();
+                })
+                .catch(done);
+
+            req = httpMock.expectOne(`${serviceUrl}/buddy/full`);
+            req.flush(testData);
+        });
+
+        it('Should be GET request', () => {
+            expect(req.request.method).toEqual('GET');
+        });
+
+        it('Should have valid output', () => {
+            expect(list).toBe(testData);
         });
     });
 });

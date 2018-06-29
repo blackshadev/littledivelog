@@ -8,6 +8,8 @@ import {
 } from '@angular/common/http/testing';
 import { IBuddy } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
+import { HttpResponse } from '@angular/common/http';
+import { Observable, of } from 'rxjs';
 
 fdescribe('BuddyService', () => {
     let service: BuddyService;
@@ -136,6 +138,124 @@ fdescribe('BuddyService', () => {
 
         it('Should have valid output', () => {
             expect(list).toBe(testData);
+        });
+    });
+
+    describe('delete', () => {
+        const testData = true;
+        let result: any;
+        let req: TestRequest;
+        let spy: jasmine.Spy;
+        beforeEach(done => {
+            spy = spyOn(service, 'clearCache');
+            service
+                .delete(5)
+                .then(d => {
+                    result = d;
+                    done();
+                })
+                .catch(done);
+
+            req = httpMock.expectOne(`${serviceUrl}/buddy/5`);
+            req.flush(JSON.stringify(testData));
+        });
+
+        it('Should be DELETE request', () => {
+            expect(req.request.method).toEqual('DELETE');
+        });
+
+        it('Should output testData', () => {
+            expect(result).toEqual(JSON.stringify(testData));
+        });
+
+        it('Should clear cache', () => {
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('update', () => {
+        const testData: IBuddy = {
+            buddy_id: 1,
+            color: '#fff',
+            email: 'teste01r@test.com',
+            text: 'tester01 test',
+        };
+        let result: IBuddy;
+        let req: TestRequest;
+        let spy: jasmine.Spy;
+        beforeEach(done => {
+            spy = spyOn(service, 'clearCache');
+            service
+                .update(testData)
+                .then(d => {
+                    result = d;
+                    done();
+                })
+                .catch(done);
+
+            req = httpMock.expectOne(
+                `${serviceUrl}/buddy/${testData.buddy_id}`,
+            );
+            req.flush(testData);
+        });
+
+        it('Should be PUT request', () => {
+            expect(req.request.method).toEqual('PUT');
+        });
+
+        it('Should output testData', () => {
+            expect(result).toEqual(testData);
+        });
+
+        it('Should send testData in body', () => {
+            expect(req.request.body).toBe(testData);
+        });
+
+        it('Should clear cache', () => {
+            expect(spy).toHaveBeenCalled();
+        });
+    });
+
+    describe('insert', () => {
+        const testData: IBuddy = {
+            buddy_id: undefined,
+            color: '#fff',
+            email: 'teste01r@test.com',
+            text: 'tester01 test',
+        };
+        const resData: IBuddy = Object.assign({}, testData, { buddy_id: 9 });
+        let result: IBuddy;
+        let req: TestRequest;
+        let spy: jasmine.Spy;
+        beforeEach(done => {
+            spy = spyOn(service, 'clearCache');
+            service
+                .update(testData)
+                .then(d => {
+                    result = d;
+                    done();
+                })
+                .catch(done);
+
+            req = httpMock.expectOne(`${serviceUrl}/buddy/`);
+            req.flush(resData);
+        });
+
+        it('Should be POST request', () => {
+            expect(req.request.method).toEqual('POST');
+        });
+
+        it('Should output testData', () => {
+            expect(result).toEqual(resData);
+            expect(result).not.toEqual(testData);
+        });
+
+        it('Should send testData in body', () => {
+            expect(req.request.body).toBe(testData);
+        });
+
+        it('Should clear cache', () => {
+            expect(spy).toHaveBeenCalled();
         });
     });
 });

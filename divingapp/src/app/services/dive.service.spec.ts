@@ -13,7 +13,7 @@ import { serviceUrl } from '../shared/config';
 
 const sampleDives: IDbDive[] = require('./dive.samples.json');
 
-fdescribe('DiveService', () => {
+describe('DiveService', () => {
     let service: DiveService;
     let httpMock: HttpTestingController;
     let buddyService: BuddyService;

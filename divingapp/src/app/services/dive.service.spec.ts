@@ -181,4 +181,11 @@ fdescribe('DiveService', () => {
         });
         req.flush(JSON.stringify(value));
     });
+
+    describe('Save', () => {
+        it('Insert');
+        it('Update');
+        it('Should clear buddy cache with new buddies');
+        it('Should clear tags cache with new tags');
+    });
 });

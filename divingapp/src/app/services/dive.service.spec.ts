@@ -73,4 +73,70 @@ fdescribe('DiveService', () => {
             req.flush(sampleDives);
         });
     });
+
+    it('Get dive should parse dive', done => {
+        service
+            .get(2)
+            .then(d => {
+                expect(d).toEqual(Dive.Parse(sampleDives[2]));
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/dive/2`,
+            method: 'GET',
+        });
+        req.flush(sampleDives[2]);
+    });
+
+    it('Get dive on error', done => {
+        service
+            .get(2)
+            .then(d => {
+                done.fail('Expected error');
+            })
+            .catch(done);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/dive/2`,
+            method: 'GET',
+        });
+        req.error(new ErrorEvent('errr'), {
+            status: 400,
+        });
+    });
+
+    it('Get samples', done => {
+        const samples = require('./divesamples.json');
+
+        service
+            .samples(2)
+            .then(d => {
+                expect(d).toBe(samples);
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/dive/2/samples`,
+            method: 'GET',
+        });
+        req.flush(samples);
+    });
+
+    it('Get samples', done => {
+        service
+            .samples()
+            .then(d => {
+                expect(d).toEqual([]);
+                done();
+            })
+            .catch(done.fail);
+
+        httpMock.expectNone({
+            url: `${serviceUrl}/dive/2/samples`,
+            method: 'GET',
+        });
+    });
 });

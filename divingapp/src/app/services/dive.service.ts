@@ -72,7 +72,7 @@ export class DiveService {
 
     public async get(dive_id: number): Promise<Dive | undefined> {
         const dive = await this.http
-            .get<IDbDive>(`${serviceUrl}/dive/${dive_id}/`)
+            .get<IDbDive>(`${serviceUrl}/dive/${dive_id}`)
             .toPromise();
 
         return Dive.Parse(dive);
@@ -91,13 +91,13 @@ export class DiveService {
         }
 
         return await this.http
-            .get<ISample[]>(`${serviceUrl}/dive/${dive_id}/samples/`)
+            .get<ISample[]>(`${serviceUrl}/dive/${dive_id}/samples`)
             .toPromise();
     }
 
     public async listComputers(): Promise<IComputer[]> {
         return await this.http
-            .get<IComputer[]>(`${serviceUrl}/computer/`)
+            .get<IComputer[]>(`${serviceUrl}/computer`)
             .toPromise();
     }
 }

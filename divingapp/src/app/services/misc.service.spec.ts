@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { serviceUrl } from '../shared/config';
 import * as FileSaver from 'file-saver';
 
-fdescribe('MiscService', () => {
+describe('MiscService', () => {
     let service: MiscService;
     let httpMock: HttpTestingController;
 

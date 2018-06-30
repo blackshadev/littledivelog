@@ -10,13 +10,14 @@ import { BuddyService } from './buddy.service';
 import { TagService } from './tag.service';
 import { IDbDive, Dive } from '../shared/dive';
 import { serviceUrl } from '../shared/config';
-import { sample } from 'rxjs/operators';
 
 const sampleDives: IDbDive[] = require('./dive.samples.json');
 
 fdescribe('DiveService', () => {
     let service: DiveService;
     let httpMock: HttpTestingController;
+    let buddyService: BuddyService;
+    let tagService: TagService;
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
@@ -24,6 +25,8 @@ fdescribe('DiveService', () => {
         });
 
         service = TestBed.get(DiveService);
+        buddyService = TestBed.get(BuddyService);
+        tagService = TestBed.get(TagService);
         httpMock = TestBed.get(HttpTestingController);
     });
 
@@ -183,9 +186,123 @@ fdescribe('DiveService', () => {
     });
 
     describe('Save', () => {
-        it('Insert');
-        it('Update');
-        it('Should clear buddy cache with new buddies');
-        it('Should clear tags cache with new tags');
+        const saveSample: IDbDive = {
+            dive_id: 1,
+            buddies: [
+                {
+                    email: 'xxx',
+                    color: '#fff',
+                    text: 'test',
+                    buddy_id: 1,
+                },
+            ],
+            date: new Date('2018-01-01'),
+            divetime: '01:01:01',
+            max_depth: 7,
+            place: {
+                country_code: 'NL',
+                name: 'mahPlace',
+            },
+            samples: [],
+            tags: [
+                {
+                    color: '#fff',
+                    text: 'test',
+                    tag_id: 1,
+                },
+            ],
+        };
+        it('Insert', done => {
+            service
+                .save(saveSample)
+                .then(d => {
+                    expect(d).toBe(saveSample);
+                    done();
+                })
+                .catch(done.fail);
+            const req = httpMock.expectOne({
+                url: `${serviceUrl}/dive`,
+                method: 'POST',
+            });
+            req.flush(saveSample);
+        });
+
+        it('Update', done => {
+            service
+                .save(saveSample, 2)
+                .then(d => {
+                    expect(d).toBe(saveSample);
+                    done();
+                })
+                .catch(done.fail);
+            const req = httpMock.expectOne({
+                url: `${serviceUrl}/dive/2`,
+                method: 'PUT',
+            });
+            req.flush(saveSample);
+        });
+
+        it('Should clear buddy cache with new buddies', done => {
+            const sample = Object.assign({}, saveSample, {
+                dive_id: undefined,
+            });
+            sample.buddies = [
+                {
+                    color: '#ff0000',
+                    email: 'tester@tester.te',
+                    text: 'TEster tester',
+                },
+            ];
+
+            const budSpy = spyOn(buddyService, 'clearCache');
+            const tagSpy = spyOn(tagService, 'clearCache');
+            service
+                .save(sample)
+                .then(d => {
+                    expect(d).toBe(sample);
+                    expect(budSpy).toHaveBeenCalled();
+                    expect(tagSpy).not.toHaveBeenCalled();
+
+                    done();
+                })
+                .catch(done.fail);
+
+            const req = httpMock.expectOne({
+                url: `${serviceUrl}/dive`,
+                method: 'POST',
+            });
+            req.flush(sample);
+        });
+
+        it('Should clear tags cache with new tags', done => {
+            const sample = Object.assign({}, saveSample, {
+                dive_id: undefined,
+            });
+            sample.tags = [
+                {
+                    color: '#ff0000',
+                    text: 'TEster tester',
+                },
+            ];
+
+            const budSpy = spyOn(buddyService, 'clearCache');
+            const tagSpy = spyOn(tagService, 'clearCache');
+            service
+                .save(sample)
+                .then(d => {
+                    expect(d).toBe(sample);
+                    expect(tagSpy).toHaveBeenCalled();
+                    expect(budSpy).not.toHaveBeenCalled();
+
+                    done();
+                })
+                .catch(done.fail);
+
+            const req = httpMock.expectOne({
+                url: `${serviceUrl}/dive`,
+                method: 'POST',
+            });
+            req.flush(sample);
+        });
     });
 });

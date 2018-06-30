@@ -61,11 +61,11 @@ export class DiveService {
 
         if (dive_id !== undefined) {
             return await this.http
-                .put<IDbDive>(`${serviceUrl}/dive/${dive_id}/`, dive)
+                .put<IDbDive>(`${serviceUrl}/dive/${dive_id}`, dive)
                 .toPromise();
         } else {
             return await this.http
-                .post<IDbDive>(`${serviceUrl}/dive/`, dive)
+                .post<IDbDive>(`${serviceUrl}/dive`, dive)
                 .toPromise();
         }
     }

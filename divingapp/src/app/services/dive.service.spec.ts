@@ -164,4 +164,21 @@ fdescribe('DiveService', () => {
         });
         req.flush(comp);
     });
+
+    it('Delete', done => {
+        const value = true;
+        service
+            .delete(3)
+            .then(d => {
+                expect(d as any).toEqual(JSON.stringify(value));
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/dive/3`,
+            method: 'DELETE',
+        });
+        req.flush(JSON.stringify(value));
+    });
 });

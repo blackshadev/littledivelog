@@ -141,13 +141,15 @@ fdescribe('DiveService', () => {
     });
 
     it('listComputers', done => {
-        const comp: IComputer = {
-            computer_id: 1,
-            dive_count: 2,
-            name: 'Test Comp',
-            last_read: new Date('2018-02-03T15:15:33'),
-            vendor: 'Test',
-        };
+        const comp: IComputer[] = [
+            {
+                computer_id: 1,
+                dive_count: 2,
+                name: 'Test Comp',
+                last_read: new Date('2018-02-03T15:15:33'),
+                vendor: 'Test',
+            },
+        ];
         service
             .listComputers()
             .then(d => {

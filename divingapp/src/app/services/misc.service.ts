@@ -20,7 +20,6 @@ export class MiscService {
     }
 
     protected downloadFile(blob: Blob) {
-        console.log(blob);
         // const blob = new Blob([res.blob()], { type: 'application/zip' });
         FileSaver.saveAs(blob, 'dive-uploader.zip');
     }

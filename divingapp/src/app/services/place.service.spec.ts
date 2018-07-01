@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 import { serviceUrl } from '../shared/config';
 import { IPlace } from '../shared/dive';
 
-fdescribe('PlaceService', () => {
+describe('PlaceService', () => {
     let service: PlaceService;
     let httpMock: HttpTestingController;
 

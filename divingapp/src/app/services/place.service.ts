@@ -14,7 +14,7 @@ export interface IPlaceStat {
     name: string;
     country_code: string;
     color: string;
-    dive_count: Date;
+    dive_count: number;
     last_dive: Date;
 }
 
@@ -28,15 +28,21 @@ export class PlaceService {
     private __cache?: IPlace[];
     private __countries?: ICountry[];
 
+    public static transformCountries(all: IDbCountry[]): ICountry[] {
+        return all.map(c => {
+            return { code: c.iso2, description: c.name };
+        });
+    }
+
     constructor(protected http: HttpClient) {}
 
-    public async list(c: string = ''): Promise<IPlace[]> {
+    public async list(c?: string): Promise<IPlace[]> {
         if (!c && this.__cache) {
             return this.__cache;
         }
 
         const all = await this.http
-            .get<IPlace[]>(`${serviceUrl}/place/${c}/`)
+            .get<IPlace[]>(`${serviceUrl}/place${c ? `/${c}` : ``}`)
             .toPromise();
         if (!c) {
             this.__cache = all;
@@ -56,7 +62,7 @@ export class PlaceService {
         }
 
         const all: IDbCountry[] = await this.http
-            .get<IDbCountry[]>(`${serviceUrl}/country/`)
+            .get<IDbCountry[]>(`${serviceUrl}/country`)
             .toPromise();
 
         this.__countries = all.map(c => {

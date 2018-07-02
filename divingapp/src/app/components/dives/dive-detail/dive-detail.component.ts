@@ -3,7 +3,7 @@ import { DiveProfileComponent } from '../dive-profile/dive-profile.component';
 import { Validators, FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
 import { DiveService } from '../../../services/dive.service';
-import { Dive, Duration, IPlace } from '../../../shared/dive';
+import { Dive, Duration, IPlace, IBuddy } from '../../../shared/dive';
 import {
     OnInit,
     Component,
@@ -155,10 +155,10 @@ export class DiveDetailComponent implements OnInit {
                     : 'bar',
             },
             buddies: this.dive.buddies.map(b => {
-                return { id: b.buddy_id, text: b.text, color: b.color };
+                return { buddy_id: b.buddy_id, text: b.text, color: b.color };
             }),
             tags: this.dive.tags.map(b => {
-                return { id: b.tag_id, text: b.text, color: b.color };
+                return { tag_id: b.tag_id, text: b.text, color: b.color };
             }),
         };
     }
@@ -229,7 +229,7 @@ export class DiveDetailComponent implements OnInit {
         };
     }
 
-    async getBuddies(keyword: string) {
+    async getBuddies(keyword: string): Promise<IBuddy[]> {
         const buds = await this.buddyService.list();
 
         const fuse = new Fuse(buds, {
@@ -245,14 +245,14 @@ export class DiveDetailComponent implements OnInit {
             : buds.slice(0, 10);
         return list.map(b => {
             return {
-                id: b.buddy_id,
+                buddy_id: b.buddy_id,
                 text: b.text,
                 color: b.color,
             };
         });
     }
 
-    async getTags(keyword: string) {
+    async getTags(keyword: string): Promise<ITag[]> {
         const tags = await this.tagService.list();
 
         const fuse = new Fuse(tags, {
@@ -268,7 +268,7 @@ export class DiveDetailComponent implements OnInit {
             : tags.slice(0, 10);
         return list.map(b => {
             return {
-                id: b.tag_id,
+                tag_id: b.tag_id,
                 text: b.text,
                 color: b.color,
             };
@@ -318,14 +318,14 @@ export class DiveDetailComponent implements OnInit {
         d.samples = this.dive.samples;
         d.tags = (dat.tags as ITag[]).map(t => {
             return {
-                tag_id: t.id,
+                tag_id: t.tag_id,
                 text: t.text,
                 color: t.color,
             };
         });
-        d.buddies = (dat.buddies as ITag[]).map(t => {
+        d.buddies = (dat.buddies as IBuddy[]).map(t => {
             return {
-                buddy_id: t.id,
+                buddy_id: t.buddy_id,
                 text: t.text,
                 color: t.color,
             };

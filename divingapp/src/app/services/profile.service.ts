@@ -10,6 +10,7 @@ export interface IProfile {
     dive_count: number;
     buddy_count: number;
     tag_count: number;
+    computer_count: number;
 }
 
 export interface IEquipment {
@@ -24,21 +25,29 @@ export interface IEquipment {
     }>;
 }
 
+export interface ISession {
+    token: string;
+    user_id: number;
+    last_used: Date;
+    inserted: Date;
+    last_ip: string;
+    insert_ip: string;
+    description: string;
+}
+
 @Injectable()
 export class ProfileService {
-    private _equipment?: IEquipment;
-
-    constructor(protected http: HttpClient, protected auth: AuthService) {}
+    constructor(protected http: HttpClient) {}
 
     public async get(): Promise<IProfile> {
         return await this.http
-            .get<IProfile>(`${serviceUrl}/user/profile/`)
+            .get<IProfile>(`${serviceUrl}/user/profile`)
             .toPromise();
     }
 
     public async save(o: { name: string }): Promise<void> {
         await this.http
-            .put<void>(`${serviceUrl}/user/profile/`, {
+            .put<void>(`${serviceUrl}/user/profile`, {
                 name: o.name,
             })
             .toPromise();
@@ -57,10 +66,6 @@ export class ProfileService {
     }
 
     public async equipment(): Promise<IEquipment> {
-        if (this._equipment) {
-            return this._equipment;
-        }
-
         return await this.http
             .get<IEquipment>(`${serviceUrl}/user/profile/equipment`)
             .toPromise();
@@ -72,9 +77,9 @@ export class ProfileService {
             .toPromise();
     }
 
-    public async getSessions(): Promise<any[]> {
+    public async getSessions(): Promise<ISession[]> {
         return await this.http
-            .get<any[]>(`${serviceUrl}/auth/refresh-token`)
+            .get<ISession[]>(`${serviceUrl}/auth/refresh-token`)
             .toPromise();
     }
 

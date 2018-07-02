@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 
 export interface ITag {
-    id?: number;
+    tag_id?: number;
     text: string;
     color: string;
 }

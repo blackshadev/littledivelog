@@ -29,6 +29,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     @Input() source: (keyword: string) => Promise<ITag[]>;
     @Input() tags: ITag[];
     @Input() placeholder = '';
+    @Input() keyField;
 
     @Output() change = new EventEmitter<ITag[]>();
     @Output() touched = new EventEmitter<ITag[]>();
@@ -60,15 +61,17 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
         return { color: TagsControlComponent.randomColor(), text: value };
     }
 
-    public async getData(keyword: string): Promise<ITag[]> {
+    public async getData(keyword: string): Promise<any[]> {
         const map = {};
         for (const tag of this.tags) {
-            map[tag.id] = true;
+            map[tag[this.keyField]] = true;
         }
+
         let res = await this.source(keyword);
         res = res.filter(v => {
-            return !v.id || !map[v.id];
+            return !v[this.keyField] || !map[v[this.keyField]];
         });
+
         return res;
     }
 

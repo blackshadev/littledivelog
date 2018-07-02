@@ -158,14 +158,14 @@
         <div class="form-group row">
             <label class="col-sm-2 control-label">Buddies</label>
             <div class="col-sm-10">
-                <app-tags-control formControlName="buddies" placeholder="Myke" [source]="getBuddies.bind(this)"></app-tags-control>
+                <app-tags-control keyField="buddy_id" formControlName="buddies" placeholder="Myke" [source]="getBuddies.bind(this)"></app-tags-control>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label">Tags</label>
             <div class="col-sm-10">
-                <app-tags-control formControlName="tags" placeholder="Deco" [source]="getTags.bind(this)"></app-tags-control>
+                <app-tags-control keyField="tag_id" formControlName="tags" placeholder="Deco" [source]="getTags.bind(this)"></app-tags-control>
             </div>
         </div>
 

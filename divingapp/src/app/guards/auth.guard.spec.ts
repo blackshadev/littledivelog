@@ -3,7 +3,7 @@ import { Router, GuardsCheckEnd, RouterStateSnapshot } from '@angular/router';
 import { AuthGuard } from './auth.guard';
 import { AuthService } from '../services/auth.service';
 
-fdescribe('AuthGuard', () => {
+describe('AuthGuard', () => {
     let authGuard: AuthGuard;
     let authService = {
         isLoggedIn: false,

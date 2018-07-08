@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { serviceUrl } from '../shared/config';
 import { ITag } from '../components/controls/tags/tags.component';
 
-fdescribe('TagService', () => {
+describe('TagService', () => {
     let service: TagService;
     let httpMock: HttpTestingController;
 

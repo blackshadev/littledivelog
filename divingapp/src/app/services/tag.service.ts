@@ -31,9 +31,10 @@ export class TagService {
     public async list(): Promise<ITag[]> {
         if (!this.__cache) {
             this.__cache = await this.http
-                .get<ITag[]>(`${serviceUrl}/tag/`)
+                .get<ITag[]>(`${serviceUrl}/tag`)
                 .toPromise();
         }
+
         return this.__cache;
     }
 
@@ -47,7 +48,7 @@ export class TagService {
         let tag: ITag;
         if (data.tag_id === undefined) {
             tag = await this.http
-                .post<ITag>(`${serviceUrl}/tag/`, data)
+                .post<ITag>(`${serviceUrl}/tag`, data)
                 .toPromise();
         } else {
             tag = await this.http

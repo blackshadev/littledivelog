@@ -41,7 +41,7 @@ fdescribe('TagService', () => {
             })
             .catch(done.fail);
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag/`,
+            url: `${serviceUrl}/tag`,
             method: 'GET',
         });
         req.flush(sampleData);
@@ -68,13 +68,13 @@ fdescribe('TagService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag/`,
+            url: `${serviceUrl}/tag`,
             method: 'GET',
         });
         req.flush(sampleData);
 
         httpMock.expectNone({
-            url: `${serviceUrl}/tag/`,
+            url: `${serviceUrl}/tag`,
             method: 'GET',
         });
     });
@@ -103,8 +103,113 @@ fdescribe('TagService', () => {
         req.flush(sampleData);
     });
 
-    it('Clear cache should clear cache and request new data');
-    it('Update should update tag and clear cache');
-    it('Insert should post tag and clear cache');
-    it('Delete should delete tag and clear cache');
+    it('Clear cache should clear cache and request new data', done => {
+        const sampleData: ITag[] = [
+            { tag_id: 1, text: 'Test', color: '#9914ff' },
+            { tag_id: 2, text: 'Test2', color: '#687bd5' },
+        ];
+
+        const sampleData_2: ITag[] = JSON.parse(JSON.stringify(sampleData));
+        sampleData_2[0].text = 'new tag';
+
+        let _d: ITag[];
+        service
+            .list()
+            .then(d => {
+                _d = d;
+                return service.list();
+            })
+            .then(d => {
+                expect(d).toBe(_d);
+                expect(d).toBe(sampleData);
+                service.clearCache();
+                const prom = service.list();
+
+                const req2 = httpMock.expectOne({
+                    url: `${serviceUrl}/tag`,
+                    method: 'GET',
+                });
+                req2.flush(sampleData_2);
+
+                return prom;
+            })
+            .then(d => {
+                expect(d).toBe(sampleData_2);
+                expect(d).not.toBe(sampleData);
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/tag`,
+            method: 'GET',
+        });
+        req.flush(sampleData);
+    });
+
+    it('Update should update tag and clear cache', done => {
+        const sampleData: ITag = {
+            tag_id: 1,
+            color: '#fff',
+            text: 'tester',
+        };
+
+        spyOn(service, 'clearCache');
+        service
+            .update(sampleData)
+            .then(d => {
+                expect(d).toBe(sampleData);
+                expect(service.clearCache).toHaveBeenCalled();
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/tag/${sampleData.tag_id}`,
+            method: 'PUT',
+        });
+        req.flush(sampleData);
+    });
+
+    it('Insert should post tag and clear cache', done => {
+        const sampleData: ITag = {
+            tag_id: undefined,
+            color: '#fff',
+            text: 'tester',
+        };
+
+        spyOn(service, 'clearCache');
+        service
+            .update(sampleData)
+            .then(d => {
+                expect(d).toBe(sampleData);
+                expect(service.clearCache).toHaveBeenCalled();
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/tag`,
+            method: 'POST',
+        });
+        const res = Object.assign({}, sampleData, { tag_id: 10 });
+        req.flush(sampleData);
+    });
+    it('Delete should delete tag and clear cache', done => {
+        spyOn(service, 'clearCache');
+        service
+            .delete(1)
+            .then(d => {
+                expect(d as any).toBe('TRUE');
+                expect(service.clearCache).toHaveBeenCalled();
+                done();
+            })
+            .catch(done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/tag/${1}`,
+            method: 'DELETE',
+        });
+        req.flush('TRUE');
+    });
 });

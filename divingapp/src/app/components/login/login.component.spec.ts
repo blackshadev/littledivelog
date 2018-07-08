@@ -1,25 +1,49 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { Router, ActivatedRoute } from '@angular/router';
 import { LoginComponent } from './login.component';
+import { AuthService } from '../../services/auth.service';
+import { RouterTestingModule } from '@angular/router/testing';
+import { Observable, of } from 'rxjs';
+import { FormsModule } from '@angular/forms';
+import { Http } from '@angular/http';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-describe('LoginComponent', () => {
-  let component: LoginComponent;
-  let fixture: ComponentFixture<LoginComponent>;
+fdescribe('LoginComponent', () => {
+    let component: LoginComponent;
+    let fixture: ComponentFixture<LoginComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ LoginComponent ]
-    })
-    .compileComponents();
-  }));
+    const mockRouter = {
+        navigate: jasmine.createSpy('navigate'),
+    };
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(LoginComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [FormsModule, HttpClientTestingModule],
+            declarations: [LoginComponent],
+            providers: [
+                Http,
+                AuthService,
+                {
+                    provide: Router,
+                    useValue: mockRouter,
+                },
+                {
+                    provide: ActivatedRoute,
+                    useValue: {
+                        queryParams: of({ returnUrl: 'protected/url' }),
+                    },
+                },
+            ],
+        }).compileComponents();
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    beforeEach(() => {
+        fixture = TestBed.createComponent(LoginComponent);
+        component = fixture.componentInstance;
+        fixture.detectChanges();
+    });
+
+    it('Should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

@@ -85,6 +85,7 @@ export async function start(pmx?: any) {
             res: express.Response,
             next: express.NextFunction,
         ) => {
+            console.error("Error", err);
             if (err instanceof HttpError) {
                 res.status(err.code).json({ error: err.message });
             } else if (err.name === "UnauthorizedError") {

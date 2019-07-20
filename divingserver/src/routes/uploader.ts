@@ -56,6 +56,6 @@ router.get("/download", async (req, res) => {
         name: "DiveLogUploader.exe.config",
     });
 
-    archive.finalize();
+    await archive.finalize();
     res.end();
 });

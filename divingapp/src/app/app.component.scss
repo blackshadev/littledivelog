@@ -13,17 +13,17 @@ body {
     }
 }
 
-/deep/ ng2-auto-complete,
-/deep/ .ng2-auto-complete {
+::ng-deep ng2-auto-complete,
+::ng-deep .ng2-auto-complete {
     z-index: 5 !important;
 }
 
-/deep/ .input-group-addon.input-group-addon-color i {
+::ng-deep .input-group-addon.input-group-addon-color i {
     width: 16px;
     height: 16px;
 }
 
-/deep/ .collapsed-input-group {
+::ng-deep .collapsed-input-group {
     .form-control {
         &:not(:last-child) {
             border-bottom-left-radius: 0;
@@ -38,17 +38,17 @@ body {
     }
 }
 
-/deep/ .error-text.has-danger {
+::ng-deep .error-text.has-danger {
     display: none;
     color: #a94442;
     margin-left: 7px;
 }
 
-/deep/ .has-danger .error-text {
+::ng-deep .has-danger .error-text {
     display: block;
 }
 
-// /deep/ .detail-menu {
+// ::ng-deep .detail-menu {
 //     height: 55px;
 //     margin-left: -15px;
 //     margin-right: -15px;
@@ -75,7 +75,7 @@ body {
 //     }
 // }
 
-// /deep/ .list-menu {
+// ::ng-deep .list-menu {
 //     padding: 0.6em 0 0.4em 0.3em;
 
 //     .btn {
@@ -84,7 +84,7 @@ body {
 //     }
 // }
 
-// /deep/ .list-component {
+// ::ng-deep .list-component {
 //     position: relative;
 //     height: 100%;
 //     min-height: 100vh;
@@ -104,7 +104,7 @@ body {
 
 // }
 
-// /deep/ .detail-component {
+// ::ng-deep .detail-component {
 
 //     .form-content {
 //         position: absolute;
@@ -132,33 +132,33 @@ body {
 
 // }
 
-:host /deep/ .manual-radius {
-    & /deep/ .left-control {
+:host ::ng-deep .manual-radius {
+    & ::ng-deep .left-control {
         border-radius: 4px 0 0 4px !important;
     }
 
-    & /deep/ .right-control {
+    & ::ng-deep .right-control {
         border-radius: 0 4px 4px 0 !important;
     }
 
-    & /deep/ .middle-control {
+    & ::ng-deep .middle-control {
         border-radius: 0px !important;
     }
 }
 
-/deep/ .input-group app-autocomplete {
+::ng-deep .input-group app-autocomplete {
     flex: auto;
 
-    & /deep/ .ng2-auto-complete-wrapper {
+    & ::ng-deep .ng2-auto-complete-wrapper {
         display: flex;
     }
 }
 
-/deep/ .input-group .ng2-auto-complete-wrapper {
+::ng-deep .input-group .ng2-auto-complete-wrapper {
     display: flex;
 }
 
-/deep/ .input-group-group {
+::ng-deep .input-group-group {
     .input-group {
         .form-control,
         .input-group-text,
@@ -208,6 +208,6 @@ body {
     }
 }
 
-/deep/ .clear-fix {
+::ng-deep .clear-fix {
     clear: both;
 }

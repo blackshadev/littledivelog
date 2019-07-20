@@ -8,9 +8,9 @@ import {
     OnInit,
     ViewChild,
     ElementRef,
+    AfterViewInit,
 } from '@angular/core';
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 import { Location } from '@angular/common';
 import { ProfileService } from 'app/services/profile.service';
 import { IFilter } from 'app/components/dives/search/search.component';

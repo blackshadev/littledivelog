@@ -11,7 +11,13 @@
         "outDir": "../out-tsc/app",
         "module": "es2015",
         "baseUrl": "",
-        "types": []
+        "types": [],
+        "paths": {
+            "core-js/es7/reflect": [
+                "../node_modules/core-js/proposals/reflect-metadata"
+            ],
+            "core-js/es6/*": ["../node_modules/core-js/es/*"]
+        }
     },
     "exclude": ["test.ts", "**/*.spec.ts"]
 }

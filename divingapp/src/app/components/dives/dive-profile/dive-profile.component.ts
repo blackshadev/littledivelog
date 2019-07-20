@@ -601,7 +601,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             .enter()
             .append('circle')
             .attr('r', '5')
-            .merge(events)
+            .merge(events as any)
             .attr('cx', (s: ISample) => this._scale.x(s.Time))
             .attr('cy', (s: ISample) => this._scale.y(s.Depth));
     }

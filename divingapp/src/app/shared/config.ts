@@ -1,1 +1,3 @@
-export const serviceUrl = 'https://dive.littledev.nl/api';
+import { environment } from '../../environments/environment';
+
+export const serviceUrl = environment.apiURL;

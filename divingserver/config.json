@@ -1,0 +1,15 @@
+{
+  "http": {
+    "port": 3000
+  },
+  "jwt": {
+    "issuer": "dive.littledev.nl",
+    "secret": "88mgndXFxUPUnAU3HbYYfb2D"
+  },
+  "database": {
+    "host": "yildun.littledev.nl",
+    "username": "test.dive.littledev.nl",
+    "database": "divelog_test",
+    "password": "JBXcvzcMDOvlKXb"
+  }
+}

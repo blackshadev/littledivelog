@@ -6,7 +6,7 @@ import { Component, ViewChild, ElementRef, OnInit } from '@angular/core';
     styleUrls: ['./app.component.scss'],
 })
 export class AppComponent implements OnInit {
-    @ViewChild('appContainer') container: ElementRef;
+    @ViewChild('appContainer', { static: true }) container: ElementRef;
     isCollapsed = false;
 
     toggleMenuCollapsed(isCollapsed: boolean) {

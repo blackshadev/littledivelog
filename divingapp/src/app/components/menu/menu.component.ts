@@ -15,7 +15,7 @@ import { AuthService } from 'app/services/auth.service';
     styleUrls: ['./menu.component.scss'],
 })
 export class MenuComponent implements OnInit {
-    @ViewChild('menuContainer') menuContainer: ElementRef;
+    @ViewChild('menuContainer', { static: true }) menuContainer: ElementRef;
     @Output() ontoggle = new EventEmitter<boolean>();
     @Input('state')
     set state(v: boolean) {

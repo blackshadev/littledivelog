@@ -45,8 +45,9 @@ export class DiveDetailComponent implements OnInit {
     public form: FormGroup;
     public CurrentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
 
-    @ViewChild('diveProfile') public diveProfile: DiveProfileComponent;
-    @ViewChild('detailComponent')
+    @ViewChild('diveProfile', { static: true })
+    public diveProfile: DiveProfileComponent;
+    @ViewChild('detailComponent', { static: true })
     public detailComponent: DetailComponentComponent;
     private _dive: Dive;
 

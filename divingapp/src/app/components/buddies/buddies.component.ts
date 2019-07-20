@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, OnDestroy, ViewChild, AfterViewInit } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    ViewChild,
+    AfterViewInit,
+} from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
@@ -10,16 +17,16 @@ import { IDataChanged } from 'app/shared/datachanged.interface';
 @Component({
     selector: 'app-buddies',
     templateUrl: './buddies.component.html',
-    styleUrls: ['./buddies.component.scss']
+    styleUrls: ['./buddies.component.scss'],
 })
 export class BuddiesComponent implements OnInit, OnDestroy {
     @Input()
     public selected?: IBuddyStat;
     public buddies: IBuddyStat[] = [];
 
-    @ViewChild('detail') private detail: BuddyDetailComponent;
+    @ViewChild('detail', { static: true }) private detail: BuddyDetailComponent;
     private _id?: number;
-    private sub: Subscription
+    private sub: Subscription;
 
     constructor(
         private buddyService: BuddyService,
@@ -30,7 +37,7 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     }
 
     public rowClick(bud: IBuddyStat) {
-        this.router.navigateByUrl(`/buddy/${bud.buddy_id}`)
+        this.router.navigateByUrl(`/buddy/${bud.buddy_id}`);
     }
 
     ngOnInit() {
@@ -56,7 +63,7 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     }
 
     public async refresh() {
-        const c = await this.buddyService.fullList()
+        const c = await this.buddyService.fullList();
         this.buddies = c;
         if (this._id !== undefined) {
             this.selectById(this._id);
@@ -77,8 +84,7 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     protected selectById(id: number) {
         this._id = id;
         if (this.buddies) {
-            this.selected = this.buddies.find((b) => this._id === b.buddy_id);
+            this.selected = this.buddies.find(b => this._id === b.buddy_id);
         }
     }
-
 }

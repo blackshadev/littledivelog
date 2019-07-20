@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef, Output, EventEmitter, ViewChild } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    SimpleChanges,
+    OnChanges,
+    ElementRef,
+    Output,
+    EventEmitter,
+    ViewChild,
+} from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 import { TagService, ITagStat } from 'app/services/tag.service';
@@ -10,11 +20,12 @@ import { DetailComponentComponent } from 'app/components/controls/detail-compone
 @Component({
     selector: 'app-tag-detail',
     templateUrl: './tag-detail.component.html',
-    styleUrls: ['./tag-detail.component.scss']
+    styleUrls: ['./tag-detail.component.scss'],
 })
 export class TagDetailComponent implements OnInit {
-
-    @Output() onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<IDataChanged>();
+    @Output() onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<
+        IDataChanged
+    >();
 
     @Input()
     public tag: ITagStat;
@@ -23,8 +34,9 @@ export class TagDetailComponent implements OnInit {
         return this.tag.tag_id === undefined;
     }
 
-    public form: FormGroup
-    @ViewChild('detailComponent') private detailComponent: DetailComponentComponent;
+    public form: FormGroup;
+    @ViewChild('detailComponent', { static: true })
+    private detailComponent: DetailComponentComponent;
 
     constructor(
         private service: TagService,
@@ -36,11 +48,9 @@ export class TagDetailComponent implements OnInit {
             text: ['', [Validators.required]],
             color: ['', [Validators.required, CustomValidators.color]],
         });
-
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     public async onSubmit(e: Event) {
         e.preventDefault();
@@ -89,6 +99,4 @@ export class TagDetailComponent implements OnInit {
             this.back();
         }
     }
-
-
 }

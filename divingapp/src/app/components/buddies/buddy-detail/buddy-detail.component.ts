@@ -1,6 +1,13 @@
 import {
-    Component, OnInit, Input, SimpleChanges, OnChanges, ElementRef,
-    EventEmitter, Output, ViewChild
+    Component,
+    OnInit,
+    Input,
+    SimpleChanges,
+    OnChanges,
+    ElementRef,
+    EventEmitter,
+    Output,
+    ViewChild,
 } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
@@ -13,36 +20,37 @@ import { DetailComponentComponent } from 'app/components/controls/detail-compone
 @Component({
     selector: 'app-buddy-detail',
     templateUrl: './buddy-detail.component.html',
-    styleUrls: ['./buddy-detail.component.css']
+    styleUrls: ['./buddy-detail.component.css'],
 })
 export class BuddyDetailComponent implements OnInit {
-
-    @Output() public onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<IDataChanged>();
+    @Output() public onDataChanged: EventEmitter<
+        IDataChanged
+    > = new EventEmitter<IDataChanged>();
 
     @Input()
     public buddy: IBuddyStat;
 
-    public get isNew() { return this.buddy.buddy_id === undefined; }
-    public form: FormGroup
+    public get isNew() {
+        return this.buddy.buddy_id === undefined;
+    }
+    public form: FormGroup;
 
-    @ViewChild('detailComponent') private detailComp: DetailComponentComponent;
+    @ViewChild('detailComponent', { static: true })
+    private detailComp: DetailComponentComponent;
 
     constructor(
         private service: BuddyService,
         private _fb: FormBuilder,
         private router: Router,
     ) {
-
         this.form = this._fb.group({
             text: ['', [Validators.required]],
             color: ['', [Validators.required, CustomValidators.color]],
-            email: ['', [CustomValidators.optionalEmail]]
+            email: ['', [CustomValidators.optionalEmail]],
         });
-
     }
 
-    ngOnInit() {
-    }
+    ngOnInit() {}
 
     public async onSubmit(e: Event) {
         e.preventDefault();
@@ -95,5 +103,4 @@ export class BuddyDetailComponent implements OnInit {
             this.back();
         }
     }
-
 }

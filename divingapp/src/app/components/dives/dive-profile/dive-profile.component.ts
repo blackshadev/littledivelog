@@ -107,7 +107,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected bisect = d3.bisector<ISample, number>((d: ISample) => d.Time)
         .left;
     protected selectedIndex: number | undefined;
-    @ViewChild('container') protected container!: ElementRef;
+    @ViewChild('container', { static: true }) protected container!: ElementRef;
     protected isReady = false;
 
     constructor(

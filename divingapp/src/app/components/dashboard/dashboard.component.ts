@@ -1,7 +1,6 @@
 import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { ProfileService, IProfile } from 'app/services/profile.service';
 import { randomInt } from 'app/shared/common';
-import { AfterViewInit } from '@angular/core/src/metadata/lifecycle_hooks';
 
 const welcomeMessages = [
     'Ready to log some more?',
@@ -14,15 +13,13 @@ const welcomeMessages = [
 @Component({
     selector: 'app-dashboard',
     templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss']
+    styleUrls: ['./dashboard.component.scss'],
 })
 export class DashboardComponent implements OnInit {
     public profile: IProfile;
     public welcomeText: string;
 
-    constructor(
-        private profileService: ProfileService,
-    ) {
+    constructor(private profileService: ProfileService) {
         const int = randomInt(welcomeMessages.length - 1);
         this.welcomeText = welcomeMessages[int];
     }
@@ -32,6 +29,6 @@ export class DashboardComponent implements OnInit {
     }
 
     refresh() {
-        this.profileService.get().then((p) => this.profile = p );
+        this.profileService.get().then(p => (this.profile = p));
     }
 }

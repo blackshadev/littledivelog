@@ -1,22 +1,31 @@
 import {
-    Component, OnInit, Input, EventEmitter, Output, TemplateRef,
-    ElementRef, ViewChild, OnChanges, SimpleChanges
+    Component,
+    OnInit,
+    Input,
+    EventEmitter,
+    Output,
+    TemplateRef,
+    ElementRef,
+    ViewChild,
+    OnChanges,
+    SimpleChanges,
 } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 
 @Component({
     selector: 'app-detail-component',
     templateUrl: './detail-component.component.html',
-    styleUrls: ['./detail-component.component.scss']
+    styleUrls: ['./detail-component.component.scss'],
 })
 export class DetailComponentComponent implements OnInit {
-
     @Input() deleteTab = 'Delete';
     @Input() set data(v: any) {
         this._data = v;
         this.reset();
     }
-    get data() { return this._data; }
+    get data() {
+        return this._data;
+    }
 
     @Input() form: FormGroup;
     @Input() isNew: boolean;
@@ -26,19 +35,18 @@ export class DetailComponentComponent implements OnInit {
     // @Output() onReset: EventEmitter<any> = new EventEmitter();
 
     get pageKeys() {
-        return Object.keys(this.pages).filter((p) => !this.isNew || p !== this.deleteTab);
+        return Object.keys(this.pages).filter(
+            p => !this.isNew || p !== this.deleteTab,
+        );
     }
     @Input() pages: { [name: string]: TemplateRef<any> } = {};
     @Input() defaultPage;
     @Input() showDebug = true;
 
-
-    @ViewChild('content') private content;
+    @ViewChild('content', { static: true }) private content;
     private _data: any;
 
-    constructor(
-        private hostElement: ElementRef,
-    ) {}
+    constructor(private hostElement: ElementRef) {}
 
     ngOnInit() {
         this.reset();
@@ -51,7 +59,6 @@ export class DetailComponentComponent implements OnInit {
     }
 
     onEnter(e: KeyboardEvent) {
-
         // prevent submit
         e.preventDefault();
 
@@ -60,7 +67,9 @@ export class DetailComponentComponent implements OnInit {
         const currentTab = contentEl.querySelector('.tab-pane.active');
         if (currentTab && e.target instanceof HTMLInputElement) {
             e.target.blur();
-            const all = currentTab.querySelectorAll('input.form-control') as NodeListOf<HTMLInputElement> ;
+            const all = currentTab.querySelectorAll(
+                'input.form-control',
+            ) as NodeListOf<HTMLInputElement>;
             let iX: number;
             for (iX = 0; iX < all.length; iX++) {
                 if (all.item(iX) === e.target) {
@@ -71,41 +80,42 @@ export class DetailComponentComponent implements OnInit {
                 all.item(iX + 1).select();
             }
         }
-
     }
 
     get diagnostic() {
         function getDirtyValues(cg: FormGroup) {
-            const dirtyValues = {};  // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-
+            const dirtyValues = {}; // initialize empty object
+            Object.keys(cg.controls).forEach(c => {
                 const currentControl = cg.controls[c];
 
                 if (currentControl.dirty) {
-                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
-                        dirtyValues[c] = getDirtyValues(<FormGroup>currentControl);  // recursion for nested controlGroups
+                    if ((<FormGroup>currentControl).controls) {
+                        // check for nested controlGroups
+                        dirtyValues[c] = getDirtyValues(<FormGroup>(
+                            currentControl
+                        )); // recursion for nested controlGroups
                     } else {
-                        dirtyValues[c] = true;  // simple control
+                        dirtyValues[c] = true; // simple control
                     }
                 }
-
             });
             return dirtyValues;
         }
         function getInvalidValues(cg: FormGroup) {
-            const invalidValues = {};  // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-
+            const invalidValues = {}; // initialize empty object
+            Object.keys(cg.controls).forEach(c => {
                 const currentControl = cg.controls[c];
 
                 if (!currentControl.valid) {
-                    if ((<FormGroup>currentControl).controls) { // check for nested controlGroups
-                        invalidValues[c] = getInvalidValues(<FormGroup>currentControl);  // recursion for nested controlGroups
+                    if ((<FormGroup>currentControl).controls) {
+                        // check for nested controlGroups
+                        invalidValues[c] = getInvalidValues(<FormGroup>(
+                            currentControl
+                        )); // recursion for nested controlGroups
                     } else {
-                        invalidValues[c] = true;  // simple control
+                        invalidValues[c] = true; // simple control
                     }
                 }
-
             });
             return invalidValues;
         }
@@ -117,5 +127,4 @@ export class DetailComponentComponent implements OnInit {
             invalid: getInvalidValues(this.form),
         };
     }
-
 }

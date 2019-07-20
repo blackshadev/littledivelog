@@ -8,7 +8,7 @@ import {
     Output,
     HostListener,
     ElementRef,
-    ViewChild
+    ViewChild,
 } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
 import { Observable } from 'rxjs';
@@ -29,9 +29,9 @@ type SourceFunction = (keyword: string) => Promise<any[]>;
         {
             provide: NG_VALUE_ACCESSOR,
             useExisting: forwardRef(() => AutocompleteComponent),
-            multi: true
-        }
-    ]
+            multi: true,
+        },
+    ],
 })
 export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     @Output() changed = new EventEmitter<any>();
@@ -76,7 +76,9 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }
 
     get viewValue(): any {
-        const val = this._selectedValue ? this._selectedValue.value : this._value;
+        const val = this._selectedValue
+            ? this._selectedValue.value
+            : this._value;
         if (val && typeof val === 'object' && this._displayItem) {
             return val[this._displayItem];
         } else {
@@ -88,7 +90,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     @Input() disabled = false;
     @Input() placeholder = '';
     @Input() set forceSelection(v: any) {
-        if (typeof (v) === 'string') {
+        if (typeof v === 'string') {
             v = v === 'true' || v === '1';
         }
         this._forceSelection = v;
@@ -105,7 +107,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     private _keyItem: string;
     private _selectedValue: IItem;
     private _items: IItem[] = [];
-    @ViewChild('input') private inputElement: ElementRef;
+    @ViewChild('input', { static: true }) private inputElement: ElementRef;
 
     private ignoreAfterTab = false;
     private getItem: (isNew: boolean, v: any) => IItem;
@@ -114,11 +116,11 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
     constructor() {
         this.updateGetItem();
-        this.onChange = () => { };
-        this.onTouched = () => { };
+        this.onChange = () => {};
+        this.onTouched = () => {};
     }
 
-    ngOnInit() { }
+    ngOnInit() {}
 
     public valueSelected(v: IItem, e?) {
         if (!this.ignoreAfterTab) {
@@ -160,15 +162,21 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
             newItem = this.getItem(true, this.newItem(keyword));
         }
 
-        return new Observable((obs) => {
+        return new Observable(obs => {
             if (newItem) {
                 obs.next([newItem]);
             }
 
             const p = this._source(keyword);
             if (!(p instanceof Promise)) {
-                console.error('Expected source function to be async (must return a promise)');
-                obs.error(new Error('Expected source function to be async (must return a promise)'));
+                console.error(
+                    'Expected source function to be async (must return a promise)',
+                );
+                obs.error(
+                    new Error(
+                        'Expected source function to be async (must return a promise)',
+                    ),
+                );
                 obs.complete();
                 return;
             }
@@ -178,21 +186,24 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
                     return this.getItem(false, v);
                 });
 
-                if (newItem !== undefined && (!items.length || newItem.value.toLowerCase() !== items[0].value.toLowerCase())) {
+                if (
+                    newItem !== undefined &&
+                    (!items.length ||
+                        newItem.value.toLowerCase() !==
+                            items[0].value.toLowerCase())
+                ) {
                     items.unshift(newItem);
                 }
 
                 this._items = items;
                 obs.next(items);
                 obs.complete();
-            }).catch((err) => {
-
+            }).catch(err => {
                 console.error(err);
                 obs.error(err);
                 obs.complete();
             });
         });
-
     }
 
     public writeValue(obj: any): void {
@@ -210,13 +221,15 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     }
 
     public listFormatter(data) {
-        return data[this._displayItem]
+        return data[this._displayItem];
     }
 
     private updateGetItem() {
         const listItem = this._listItem || this._displayItem || this._keyItem;
 
-        const displayGetter = `v${this._displayItem ? '.' + this._displayItem : ''}`;
+        const displayGetter = `v${
+            this._displayItem ? '.' + this._displayItem : ''
+        }`;
         const listGetter = `v${listItem ? '.' + listItem : ''}`;
         this.getItem = new Function(
             'isNew',
@@ -226,9 +239,10 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
                 listValue: (isNew ? "(new) " : "") + ${listGetter},
                 value: ${displayGetter},
                 key: v${this._keyItem ? '.' + this._keyItem : ''}
-            }`
-        ) as (v: any, isNew: boolean) => { key: any, listValue: any, value: any, isNew: boolean };
-
+            }`,
+        ) as (
+            v: any,
+            isNew: boolean,
+        ) => { key: any; listValue: any; value: any; isNew: boolean };
     }
-
 }

@@ -37,14 +37,14 @@ router.get("/download", async (req, res) => {
     const archive = archiver("zip", {});
 
     archive.on("error", err => {
-        res.status(500).send({ error: (err.message || err.toString()) });
+        res.status(500).send({ error: err.message || err.toString() });
     });
 
     archive.pipe(res);
     archive.directory(uploaderDir, false);
 
     let token: string | null = null;
-    if (req.user.user_id) {
+    if (req.user && req.user.user_id) {
         token = await createRefreshToken(
             req.user.user_id,
             req.ip,

@@ -40,7 +40,6 @@ export async function start(pmx?: any) {
                     methods: ["POST", "DELETE", "OPTIONS"],
                 },
                 "/auth/access-token",
-                "/dive-uploader/download",
             ],
         }),
     );

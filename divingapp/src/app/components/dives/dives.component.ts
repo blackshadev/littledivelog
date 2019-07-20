@@ -28,7 +28,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     private subs: Subscription[] = [];
     private filters: IFilter[] = [];
 
-    @ViewChild('diveDetail', { static: true })
+    @ViewChild('diveDetail', { static: false })
     private diveDetail: DiveDetailComponent;
 
     constructor(

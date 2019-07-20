@@ -24,7 +24,6 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     public selected?: IBuddyStat;
     public buddies: IBuddyStat[] = [];
 
-    @ViewChild('detail', { static: true }) private detail: BuddyDetailComponent;
     private _id?: number;
     private sub: Subscription;
 

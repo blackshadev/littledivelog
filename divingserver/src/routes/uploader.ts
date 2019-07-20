@@ -57,4 +57,5 @@ router.get("/download", async (req, res) => {
     });
 
     archive.finalize();
+    res.end();
 });

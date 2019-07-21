@@ -1,0 +1,18 @@
+{
+  "name": "diveuploader",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@types/node": "^12.6.8",
+    "@types/yargs": "^13.0.0",
+    "moment": "^2.24.0",
+    "odbc": "^2.0.0-4",
+    "yargs": "^13.3.0"
+  }
+}

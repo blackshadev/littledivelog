@@ -35,9 +35,7 @@ export const handler = async (argv: { file: string }) => {
 
     await readLogBook(db);
 
-    await new Promise<void>((res, rej) => {
-        db.close((err) => (err ? rej(err) : res()));
-    });
+    await db.close();
 };
 
 // async function open(connstr: string): Promise<odbc.Connection> {

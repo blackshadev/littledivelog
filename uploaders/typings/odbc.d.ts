@@ -26,6 +26,7 @@ declare module "odbc" {
         ): Promise<IColumn[]>;
 
         close(cb: (err?: Error) => void): void;
+        close(): Promise<void>;
     }
 
     export class IResultSet extends Array {

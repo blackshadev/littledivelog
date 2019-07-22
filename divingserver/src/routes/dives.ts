@@ -3,8 +3,9 @@ import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { database } from "../pg";
-import { SqlBatch } from "../sql";
-import { tanksJSONtoType } from "../tansforms";
+import { SqlBatch, FunctionStatement } from "../sql";
+import { tanksJSONtoType, ITank } from "../tansforms";
+import { from as copyFrom } from "pg-copy-streams";
 
 export const router = Router();
 
@@ -414,14 +415,39 @@ router.get("/:id/samples", async (req, res) => {
     res.json(samples.rows.length ? samples.rows[0].samples || [] : []);
 });
 
-interface IComputerBatch {
-    computer_id: number;
-    dives: any[];
+interface IBatchDive {
+    max_depth: number;
+    dive_time: number;
+    date: Date;
+    tags: string[];
+    place: {
+        country_code: string;
+        country: string;
+        name: string;
+    };
+    buddies: string[];
+    tanks: ITank[];
 }
 
 router.post("/batch", async (req, res) => {
-    const dat = req.body as IComputerBatch;
-    console.log(req.body);
+    const dat = req.body as IBatchDive;
+    const batch = new SqlBatch();
+
+    batch.add(`create temp table ${req.user.id}_import as (
+            date            text        not null
+        ,   dive_time       int         not null
+        ,   tags            text[]      not null
+        ,   buddies         text[]      not null
+        ,   tanks           tank[]       not null
+        ,   country         text            null
+        ,   country_code    text            null
+        ,   place_name      text            null
+        ,   place_id        int             null
+    )`);
+
+    batch.add(cl => {
+        const strm = cl.query(copyFrom("COPY  FROM STDIN"));
+    });
 
     res.json({
         dive_id: -1,

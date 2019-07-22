@@ -34,6 +34,29 @@ export class SQLStatement implements IStatement {
 }
 
 export class SqlBatch {
+    public static async transaction(
+        fn: (cl: pg.Client) => Promise<pg.QueryResult | void>,
+    ): Promise<void | pg.QueryResult> {
+        const client = await database.getConnection();
+        let error: Error;
+        let result: pg.QueryResult | void;
+        const totalRecordsAffected: number = 0;
+        await client.query("begin");
+        try {
+            result = await fn(client);
+        } catch (err) {
+            error = err;
+            await client.query("rollback");
+        } finally {
+            client.release();
+        }
+        if (error !== undefined) {
+            throw error;
+        }
+
+        return result;
+    }
+
     protected statements: IStatement[] = [];
 
     public add(stmt: IStatement);
@@ -67,25 +90,13 @@ export class SqlBatch {
     }
 
     public async execute() {
-        const client = await database.getConnection();
-        let error: Error;
         let totalRecordsAffected: number = 0;
-        await client.query("begin");
-        try {
+        await SqlBatch.transaction(async (client: pg.Client) => {
             for (const stmt of this.statements) {
                 const res = await stmt.executeClient(client);
                 totalRecordsAffected += res.rowCount;
             }
-            await client.query("commit");
-        } catch (err) {
-            error = err;
-            await client.query("rollback");
-        } finally {
-            client.release();
-        }
-        if (error !== undefined) {
-            throw error;
-        }
+        });
 
         return totalRecordsAffected;
     }

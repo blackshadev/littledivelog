@@ -1,11 +1,11 @@
 import * as express from "express";
-import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
-import { isPrimitive } from "util";
-import { database } from "../pg";
-import { SqlBatch, FunctionStatement } from "../sql";
-import { tanksJSONtoType, ITank } from "../tansforms";
 import { from as copyFrom } from "pg-copy-streams";
+import { isPrimitive } from "util";
+import { Router } from "../express-promise-router";
+import { database } from "../pg";
+import { FunctionStatement, SqlBatch } from "../sql";
+import { ITank, tanksJSONtoType } from "../tansforms";
 
 export const router = Router();
 
@@ -431,23 +431,8 @@ interface IBatchDive {
 
 router.post("/batch", async (req, res) => {
     const dat = req.body as IBatchDive;
-    const batch = new SqlBatch();
 
-    batch.add(`create temp table ${req.user.id}_import as (
-            date            text        not null
-        ,   dive_time       int         not null
-        ,   tags            text[]      not null
-        ,   buddies         text[]      not null
-        ,   tanks           tank[]       not null
-        ,   country         text            null
-        ,   country_code    text            null
-        ,   place_name      text            null
-        ,   place_id        int             null
-    )`);
-
-    batch.add(cl => {
-        const strm = cl.query(copyFrom("COPY  FROM STDIN"));
-    });
+    await SqlBatch.transaction(async cl => {});
 
     res.json({
         dive_id: -1,

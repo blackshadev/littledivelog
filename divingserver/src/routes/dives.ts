@@ -430,9 +430,42 @@ interface IBatchDive {
 }
 
 router.post("/batch", async (req, res) => {
-    const dat = req.body as IBatchDive;
+    const data = req.body as IBatchDive[];
+    const table = `${req.user.id}_import_${Date.now()}`;
 
-    await SqlBatch.transaction(async cl => {});
+    await SqlBatch.transaction(async cl => {
+        await cl.query(`create temp table ${table} (
+             date           date
+           , max_depth      numeric(6, 3)
+           , dive_time      int
+           , tanks          tank
+           , country_code   text
+           , country_name   text
+        )`);
+        for (const row of data) {
+            await cl.query(
+                `
+                INSERT INTO dives (user_id, date, max_depth, dive_time, tanks)
+                SELECT d.*
+                  FROM (
+                        SELECT $1 as user_id
+                            , ($2::date) as date
+                            , $3 as max_depth
+                            , $4 as dive_time
+                            , $5 as tanks
+                    ) d
+
+            `,
+                [
+                    req.user.id,
+                    row.date,
+                    row.max_depth,
+                    row.dive_time,
+                    tanksJSONtoType(row.tanks),
+                ],
+            );
+        }
+    });
 
     res.json({
         dive_id: -1,

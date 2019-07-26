@@ -503,7 +503,7 @@ router.post("/batch", async (req, res) => {
                 RETURNING dive_id
             `,
                 [
-                    req.user.id,
+                    req.user.user_id,
                     row.date,
                     row.max_depth,
                     row.dive_time,
@@ -541,7 +541,7 @@ router.post("/batch", async (req, res) => {
                      select $3, buddy_id
                        from all_buddies
             `,
-                [row.buddies, req.user.id, diveId],
+                [row.buddies, req.user.user_id, diveId],
             );
 
             rs = await cl.query(
@@ -570,7 +570,7 @@ router.post("/batch", async (req, res) => {
                      select $3, tag_id
                        from all_tahs
             `,
-                [row.tags, req.user.id, diveId],
+                [row.tags, req.user.user_id, diveId],
             );
 
             diveIds.push(diveId);

@@ -10,9 +10,11 @@
   "license": "ISC",
   "dependencies": {
     "@types/node": "^12.6.8",
+    "@types/request": "^2.48.2",
     "@types/yargs": "^13.0.0",
     "moment": "^2.24.0",
     "odbc": "^2.0.0-4",
+    "request": "^2.88.0",
     "yargs": "^13.3.0"
   }
 }

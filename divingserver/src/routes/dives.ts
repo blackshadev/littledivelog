@@ -431,30 +431,70 @@ interface IBatchDive {
 
 router.post("/batch", async (req, res) => {
     const data = req.body as IBatchDive[];
-    const table = `${req.user.id}_import_${Date.now()}`;
 
     await SqlBatch.transaction(async cl => {
-        await cl.query(`create temp table ${table} (
-             date           date
-           , max_depth      numeric(6, 3)
-           , dive_time      int
-           , tanks          tank
-           , country_code   text
-           , country_name   text
-        )`);
         for (const row of data) {
-            await cl.query(
+            let c = await cl.query(
                 `
-                INSERT INTO dives (user_id, date, max_depth, dive_time, tanks)
-                SELECT d.*
+                SELECT coalesce(c1.iso2, c2.iso2) as iso2
+                  FROM (
+                      SELECT 
+                          $6 as country_code
+                        , $7 as country_name
+                    ) d
+                    left join countries c1 on c1.iso2 = upper(d.country_code)
+                    left join countries c2 on lower(c2.name) = lower(d.country_name)
+            `,
+                [row.place.country_code, row.place.country],
+            );
+
+            let country_iso2 = c.rows[0].iso2;
+            if (!country_iso2) {
+                throw new Error(
+                    `Unable to find ${
+                        row.place.country
+                            ? `a country named ${row.place.country}`
+                            : ``
+                    } ${
+                        row.place.country_code
+                            ? ` with iso2 code ${row.place.country_code}`
+                            : ""
+                    }. Try using an iso2 code in the country_code field as for example 'NL'`,
+                );
+            }
+
+            let place = await cl.query(`
+                with new_row as (
+                    INSERT INTO places (country_code, name)
+                      SELECT $1, $2
+                       WHERE not exists (SELECT * FROM places where country_code = $1 AND name = $2) 
+                    returning place_id
+                )
+                SELECT * FROM new_row
+                UNION
+                SELECT place_id FROM places WHERE country_code = $1 AND name = $2
+            `);
+
+            let rs = await cl.query(
+                `
+                INSERT INTO dives (user_id, date, max_depth, dive_time, tanks, country_code, place_id)
+                SELECT 
+                        d.user_id
+                      , d.date
+                      , d.max_depth
+                      , d.dive_time
+                      , d.tanks
+                      , d.country_code
+                      , place_id
                   FROM (
                         SELECT $1 as user_id
                             , ($2::date) as date
-                            , $3 as max_depth
-                            , $4 as dive_time
-                            , $5 as tanks
+                            , $3::numeric(6,3) as max_depth
+                            , $4::int as dive_time
+                            , $5::tanks as tanks
+                            , $6 as country_code
                     ) d
-
+                RETURNING dive_id
             `,
                 [
                     req.user.id,
@@ -462,8 +502,11 @@ router.post("/batch", async (req, res) => {
                     row.max_depth,
                     row.dive_time,
                     tanksJSONtoType(row.tanks),
+                    country_iso2,
                 ],
             );
+
+            const diveId = rs.rows[0].dive_id;
         }
     });
 

@@ -432,13 +432,14 @@ interface IBatchDive {
 router.post("/batch", async (req, res) => {
     const data = req.body as IBatchDive[];
 
+    const diveIds: number[] = [];
     await SqlBatch.transaction(async cl => {
         for (const row of data) {
-            let c = await cl.query(
+            let rs = await cl.query(
                 `
                 SELECT coalesce(c1.iso2, c2.iso2) as iso2
                   FROM (
-                      SELECT 
+                      SELECT
                           $6 as country_code
                         , $7 as country_name
                     ) d
@@ -448,8 +449,8 @@ router.post("/batch", async (req, res) => {
                 [row.place.country_code, row.place.country],
             );
 
-            let country_iso2 = c.rows[0].iso2;
-            if (!country_iso2) {
+            const countryISO2 = rs.rows[0].iso2;
+            if (!countryISO2) {
                 throw new Error(
                     `Unable to find ${
                         row.place.country
@@ -463,22 +464,26 @@ router.post("/batch", async (req, res) => {
                 );
             }
 
-            let place = await cl.query(`
+            rs = await cl.query(
+                `
                 with new_row as (
                     INSERT INTO places (country_code, name)
                       SELECT $1, $2
-                       WHERE not exists (SELECT * FROM places where country_code = $1 AND name = $2) 
+                       WHERE not exists (SELECT * FROM places where country_code = $1 AND name = $2)
                     returning place_id
                 )
                 SELECT * FROM new_row
                 UNION
-                SELECT place_id FROM places WHERE country_code = $1 AND name = $2
-            `);
+                SELECT place_id FROM places WHERE country_code = $1 AND lower(name) = lower($2)
+            `,
+                [countryISO2, row.place.name],
+            );
+            const placeId = rs.rows[0].place_id;
 
-            let rs = await cl.query(
+            rs = await cl.query(
                 `
                 INSERT INTO dives (user_id, date, max_depth, dive_time, tanks, country_code, place_id)
-                SELECT 
+                SELECT
                         d.user_id
                       , d.date
                       , d.max_depth
@@ -493,6 +498,7 @@ router.post("/batch", async (req, res) => {
                             , $4::int as dive_time
                             , $5::tanks as tanks
                             , $6 as country_code
+                            , $7 as place_id
                     ) d
                 RETURNING dive_id
             `,
@@ -502,15 +508,76 @@ router.post("/batch", async (req, res) => {
                     row.max_depth,
                     row.dive_time,
                     tanksJSONtoType(row.tanks),
-                    country_iso2,
+                    countryISO2,
+                    placeId,
                 ],
             );
 
             const diveId = rs.rows[0].dive_id;
+
+            rs = await cl.query(
+                `
+                with d as (
+                    select distint name from unnest($1) as b(name)
+                ), new_buddies as (
+                    insert into buddies (user_id, text, color)
+                    select $2, d.name, '#ffffff'  from d
+                    where not exists (select * from buddies b where lower(b.text) = lower(d.name) and b.user_id = $2 )
+                    returning buddy_id
+                ), all_buddies as (
+                    select buddy_id
+                      from new_buddies
+                    union
+                    select buddy_id
+                      from d
+                     where exists exists (
+                            select *
+                              from buddies
+                             where lower(text) = lower(d.name)
+                               and user_id = $2
+                            )
+                )
+                insert into dive_buddies (dive_id, buddy_id)
+                     select $3, buddy_id
+                       from all_buddies
+            `,
+                [row.buddies, req.user.id, diveId],
+            );
+
+            rs = await cl.query(
+                `
+                with d as (
+                    select distint name from unnest($1) as b(name)
+                ), new_tags as (
+                    insert into tags (user_id, text, color)
+                    select $2, d.name, '#ffffff'  from d
+                    where not exists (select * from tags t where lower(t.text) = lower(d.name) and t.user_id = $2 )
+                    returning tag_id
+                ), all_tags as (
+                    select tag_id
+                      from new_tags
+                    union
+                    select tag_id
+                      from d
+                     where exists exists (
+                            select *
+                              from tags t
+                             where lower(t.text) = lower(d.name)
+                               and t.user_id = $2
+                            )
+                )
+                insert into dive_tags (dive_id, tag_id)
+                     select $3, tag_id
+                       from all_tahs
+            `,
+                [row.tags, req.user.id, diveId],
+            );
+
+            diveIds.push(diveId);
         }
     });
 
     res.json({
-        dive_id: -1,
+        dives: diveIds,
     });
 });

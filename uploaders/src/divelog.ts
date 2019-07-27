@@ -1,5 +1,5 @@
 import request = require("request");
-const URL = "https://dive.littledev.nl/";
+const URL = "https://dive.littledev.nl/api/";
 const authfile = ".divelog";
 import { access, constants, readFile, writeFile } from "fs";
 import { IncomingMessage } from "http";
@@ -44,6 +44,7 @@ export async function signin(
                 if (err) {
                     rej(err);
                 } else if (resp.statusCode !== 200) {
+                    console.log(resp);
                     rej(new Error(body.error));
                 } else {
                     res({ jwt: body.jwt });

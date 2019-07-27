@@ -1,5 +1,5 @@
 import request = require("request");
-const URL = "http://localhost:3000/";
+const URL = "https://dive.littledev.nl/";
 const authfile = ".divelog";
 import { access, constants, readFile, writeFile } from "fs";
 import { IncomingMessage } from "http";

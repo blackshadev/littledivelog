@@ -1,7 +1,8 @@
 import request = require("request");
-const URL = "https://dive.littledev.nl/";
+const URL = "http://localhost:3000/";
 const authfile = ".divelog";
 import { access, constants, readFile, writeFile } from "fs";
+import { IncomingMessage } from "http";
 export async function signin(
     email?: string,
     password?: string,
@@ -35,7 +36,7 @@ export async function signin(
 
     const cred = await new Promise<{ jwt: string }>((res, rej) => {
         request.post(
-            URL + "auth/",
+            URL + "auth/refresh-token",
             {
                 json: { email, password },
             },
@@ -61,12 +62,13 @@ export async function signin(
 }
 export async function getAccessToken(jwt: string): Promise<{ token: string }> {
     return new Promise<{ token: string }>((res, rej) => {
-        request.post(
+        request.get(
             URL + "auth/access-token",
             {
                 auth: {
                     bearer: jwt,
                 },
+                json: true,
             },
             (err, resp, body) => {
                 if (err) {
@@ -83,6 +85,26 @@ export async function getAccessToken(jwt: string): Promise<{ token: string }> {
 export async function dlRequest(oPar: {
     path: string;
     token: string;
-    method: string;
+    method: "POST" | "GET" | "PUT" | "DELETE" | "PATCH";
     json: any;
-}) {}
+}) {
+    return new Promise<{ response: IncomingMessage; body: any }>((res, rej) => {
+        request(
+            URL + oPar.path,
+            {
+                method: oPar.method,
+                json: oPar.json,
+                auth: {
+                    bearer: oPar.token,
+                },
+            },
+            (err, resp, body) => {
+                if (err) {
+                    rej(err);
+                } else {
+                    res({ response: resp, body });
+                }
+            },
+        );
+    });
+}

@@ -61,7 +61,7 @@ class DbAdapter {
         return this.pool.query(sql, params);
     }
 
-    public async getConnection(): Promise<pg.Client> {
+    public async getConnection(): Promise<pg.PoolClient> {
         return this.pool.connect();
     }
 

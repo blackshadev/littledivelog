@@ -1,10 +1,8 @@
 import { existsSync } from "fs";
-import * as moment from "moment";
 import * as odbc from "odbc";
 import { resolve } from "path";
 import { CommandBuilder } from "yargs";
-import { getAccessToken, signin } from "../divelog";
-import request = require("request");
+import { getAccessToken, signin, dlRequest } from "../divelog";
 
 export const command = "divinglog [file]";
 export const desc = "Upload a divinglog mdb file";
@@ -14,36 +12,116 @@ export const builder: CommandBuilder = (yargs) => {
         .alias("f", "file")
         .nargs("f", 1)
         .describe("f", "File to upload")
-        .demandOption("f");
+        .demandOption("f")
+        .string("email")
+        .describe("email", "Email adres to log into the divelog server")
+        .demandOption("email")
+        .string("password")
+        .describe("password", "Password of the diving log")
+        .demandOption("password")
+        .string("country-map");
 };
 
 const TABLES = {
-    Logbook: "Logbook"
+    Logbook: "Logbook",
 };
+
+interface ITank {
+    volume: number;
+    oxygen: number;
+    pressure: {
+        begin: number;
+        end: number;
+        type: "bar" | "psi";
+    };
+}
+
+interface IBatchDive {
+    max_depth: number;
+    dive_time: number;
+    date: string;
+    tags: string[];
+    place: {
+        country_code?: string;
+        country?: string;
+        name: string;
+    };
+    buddies: string[];
+    tanks: ITank[];
+}
 
 export const handler = async (argv: {
     file: string;
     email: string;
     password: string;
+    countryMap: string;
 }) => {
-    const { jwt } = await signin(argv.email, argv.password);
+    try {
+        const { jwt } = await signin(argv.email, argv.password);
 
-    const abs: string = resolve(argv.file);
-    const exists: boolean = existsSync(argv.file);
-    if (!exists) {
-        throw new Error("Unable to find file");
+        let countryMap: { [name: string]: string } = {};
+        if (argv.countryMap) {
+            countryMap = require(resolve(argv.countryMap));
+        }
+
+        const abs: string = resolve(argv.file);
+        const exists: boolean = existsSync(argv.file);
+        if (!exists) {
+            throw new Error("Unable to find file");
+        }
+
+        const connStr: string = `Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=${abs}; `;
+
+        console.log("opening", connStr);
+
+        const db = await odbc.connect(connStr);
+
+        const srcRows = await readLogBook(db);
+
+        await db.close();
+
+        const { token } = await getAccessToken(jwt);
+
+        const newRows = srcRows.map((r) => {
+            const countryCode = countryMap[r.Country.toLocaleLowerCase()];
+            return {
+                date: r.Divedate,
+                buddies: [r.Buddy],
+                dive_time: r.Divetime,
+                place: {
+                    country: r.Country,
+                    country_code: countryCode,
+                    name: r.Place,
+                },
+                max_depth: r.Depth,
+                tags: [],
+                tanks: [
+                    {
+                        oxygen: r.O2,
+                        volume: r.Tanksize,
+                        pressure: {
+                            begin: r.PresS,
+                            end: r.PresE,
+                            type: "bar",
+                        },
+                    },
+                ],
+            } as IBatchDive;
+        });
+
+        const { response, body } = await dlRequest({
+            path: "dive/batch",
+            json: newRows,
+            method: "POST",
+            token: token,
+        });
+
+        if (response.statusCode !== 200) {
+            throw new Error(body.error);
+        }
+    } catch (err) {
+        console.error("Something went wrong\n" + err.toString());
     }
-
-    const connStr: string = `Driver={Microsoft Access Driver (*.mdb, *.accdb)};Dbq=${abs}; `;
-
-    console.log("opening", connStr);
-
-    const db = await odbc.connect(connStr);
-
-    await readLogBook(db);
-    const { token } = await getAccessToken(jwt);
-
-    await db.close();
 };
 
 // async function open(connstr: string): Promise<odbc.Connection> {
@@ -75,32 +153,6 @@ async function readLogBook(db: odbc.Connection): Promise<ILogRow[]> {
     return ((await db.query(
         `select PresS, PresE, Divedate, Entrytime, Country, City, Place, Buddy, Depth, Divetime, Tanksize, O2 from ${
             TABLES.Logbook
-        }`
+        }`,
     )) as any) as ILogRow[];
-
-    const dlRows = rows.map((r) => {
-        const d = r.Divedate.substr(0, 10) + "T" + r.Entrytime.substr(11);
-        return {
-            date: d,
-            dive_time: r.Divetime,
-            max_depth: r.Depth,
-            tags: [],
-            place: {
-                country_name: r.Country,
-                name: r.Place
-            },
-            buddies: [r.Buddy],
-            tanks: [
-                {
-                    oxygen: r.O2,
-                    volume: r.Tanksize,
-                    pressure: {
-                        begin: r.PresS,
-                        end: r.PresE,
-                        type: "bar"
-                    }
-                }
-            ]
-        };
-    });
 }

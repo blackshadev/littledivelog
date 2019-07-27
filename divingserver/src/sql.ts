@@ -35,7 +35,7 @@ export class SQLStatement implements IStatement {
 
 export class SqlBatch {
     public static async transaction(
-        fn: (cl: pg.Client) => Promise<pg.QueryResult | void>,
+        fn: (cl: pg.ClientBase) => Promise<pg.QueryResult | void>,
     ): Promise<void | pg.QueryResult> {
         const client = await database.getConnection();
         let error: Error;
@@ -44,6 +44,7 @@ export class SqlBatch {
         await client.query("begin");
         try {
             result = await fn(client);
+            await client.query("commit");
         } catch (err) {
             error = err;
             await client.query("rollback");
@@ -60,7 +61,7 @@ export class SqlBatch {
     protected statements: IStatement[] = [];
 
     public add(stmt: IStatement);
-    public add(fn: (cl: pg.Client) => pg.QueryResult);
+    public add(fn: (cl: pg.Client) => Promise<pg.QueryResult>);
     public add(
         sql: string,
         params?: any[],

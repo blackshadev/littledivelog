@@ -1,10 +1,7 @@
-import * as express from "express";
 import { QueryResult } from "pg";
-import { from as copyFrom } from "pg-copy-streams";
-import { isPrimitive } from "util";
 import { Router } from "../express-promise-router";
 import { database } from "../pg";
-import { FunctionStatement, SqlBatch } from "../sql";
+import { SqlBatch } from "../sql";
 import { ITank, tanksJSONtoType } from "../tansforms";
 
 export const router = Router();
@@ -440,8 +437,8 @@ router.post("/batch", async (req, res) => {
                 SELECT coalesce(c1.iso2, c2.iso2) as iso2
                   FROM (
                       SELECT
-                          $6 as country_code
-                        , $7 as country_name
+                          $1::text as country_code
+                        , $2::text as country_name
                     ) d
                     left join countries c1 on c1.iso2 = upper(d.country_code)
                     left join countries c2 on lower(c2.name) = lower(d.country_name)
@@ -468,7 +465,7 @@ router.post("/batch", async (req, res) => {
                 `
                 with new_row as (
                     INSERT INTO places (country_code, name)
-                      SELECT $1, $2
+                      SELECT $1::text, $2::text
                        WHERE not exists (SELECT * FROM places where country_code = $1 AND name = $2)
                     returning place_id
                 )
@@ -482,7 +479,7 @@ router.post("/batch", async (req, res) => {
 
             rs = await cl.query(
                 `
-                INSERT INTO dives (user_id, date, max_depth, dive_time, tanks, country_code, place_id)
+                INSERT INTO dives (user_id, date, max_depth, divetime, tanks, country_code, place_id)
                 SELECT
                         d.user_id
                       , d.date
@@ -492,13 +489,13 @@ router.post("/batch", async (req, res) => {
                       , d.country_code
                       , place_id
                   FROM (
-                        SELECT $1 as user_id
+                        SELECT $1::int as user_id
                             , ($2::date) as date
                             , $3::numeric(6,3) as max_depth
                             , $4::int as dive_time
-                            , $5::tanks as tanks
-                            , $6 as country_code
-                            , $7 as place_id
+                            , $5::tank[] as tanks
+                            , $6::text as country_code
+                            , $7::int as place_id
                     ) d
                 RETURNING dive_id
             `,
@@ -518,27 +515,22 @@ router.post("/batch", async (req, res) => {
             rs = await cl.query(
                 `
                 with d as (
-                    select distint name from unnest($1) as b(name)
+                    select distinct name from unnest($1::text[]) as b(name)
                 ), new_buddies as (
                     insert into buddies (user_id, text, color)
-                    select $2, d.name, '#ffffff'  from d
-                    where not exists (select * from buddies b where lower(b.text) = lower(d.name) and b.user_id = $2 )
+                    select $2::int, d.name, '#ffffff'  from d
+                    where not exists (select * from buddies b where lower(b.text) = lower(d.name) and b.user_id = $2::int )
                     returning buddy_id
                 ), all_buddies as (
                     select buddy_id
                       from new_buddies
                     union
-                    select buddy_id
-                      from d
-                     where exists exists (
-                            select *
-                              from buddies
-                             where lower(text) = lower(d.name)
-                               and user_id = $2
-                            )
+                    select b.buddy_id
+                      from d d
+                      join buddies b on d.name = b.text and b.user_id = $2::int
                 )
                 insert into dive_buddies (dive_id, buddy_id)
-                     select $3, buddy_id
+                     select $3::int, buddy_id
                        from all_buddies
             `,
                 [row.buddies, req.user.user_id, diveId],
@@ -547,28 +539,23 @@ router.post("/batch", async (req, res) => {
             rs = await cl.query(
                 `
                 with d as (
-                    select distint name from unnest($1) as b(name)
+                    select distinct name from unnest($1::text[]) as b(name)
                 ), new_tags as (
                     insert into tags (user_id, text, color)
-                    select $2, d.name, '#ffffff'  from d
-                    where not exists (select * from tags t where lower(t.text) = lower(d.name) and t.user_id = $2 )
+                    select $2::int, d.name, '#ffffff'  from d
+                    where not exists (select * from tags t where lower(t.text) = lower(d.name) and t.user_id = $2::int )
                     returning tag_id
                 ), all_tags as (
                     select tag_id
                       from new_tags
                     union
                     select tag_id
-                      from d
-                     where exists exists (
-                            select *
-                              from tags t
-                             where lower(t.text) = lower(d.name)
-                               and t.user_id = $2
-                            )
+                      from d d
+                      join tags t on lower(t.text) = lower(d.name) and t.user_id = $2::int
                 )
                 insert into dive_tags (dive_id, tag_id)
-                     select $3, tag_id
-                       from all_tahs
+                     select $3::int, tag_id
+                       from all_tags
             `,
                 [row.tags, req.user.user_id, diveId],
             );

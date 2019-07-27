@@ -1,18 +1,16 @@
 {
-    "compileOnSave": true,
-    "compilerOptions": {
-        "watch": false,
-        "module": "commonjs",
-        "target": "es6",
-        "sourceMap": true,
-        "alwaysStrict": true,
-        "experimentalDecorators": true,
-        "outDir": "build/",
-        "rootDir": "src/",
-        "mapRoot": "src/"
-    },
-    "include": [
-        "./node_modules/@types/**/*.d.ts",
-        "./src/**/*.ts"
-    ]
+  "compileOnSave": true,
+  "compilerOptions": {
+    "watch": false,
+    "module": "commonjs",
+    "target": "es6",
+    "sourceMap": true,
+    "alwaysStrict": true,
+    "experimentalDecorators": true,
+    "outDir": "build/",
+    "rootDir": "src/",
+    "mapRoot": "src/",
+    "typeRoots": ["./node_modules/@types/"]
+  },
+  "include": ["./src/**/*.ts"]
 }

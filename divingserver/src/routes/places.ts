@@ -1,12 +1,13 @@
 import * as express from "express";
-import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
+import { Router } from "../express-promise-router";
+import { IGetUserAuthInfoRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 
 export const router = Router();
 
-router.get("/:country_code", async (req, res) => {
+router.get("/:country_code", async (req: IGetUserAuthInfoRequest, res) => {
     const places: QueryResult = await database.call(
         `select plc.*
            from places plc
@@ -25,7 +26,7 @@ router.get("/:country_code", async (req, res) => {
     res.json(places.rows);
 });
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
     const places: QueryResult = await database.call(
         `select plc.*
            from places plc
@@ -42,7 +43,7 @@ router.get("/", async (req, res) => {
     res.json(places.rows);
 });
 
-router.get("/full", async (req, res) => {
+router.get("/full", async (req: IGetUserAuthInfoRequest, res) => {
     const stats = await database.call(
         `
             select p.*
@@ -69,7 +70,7 @@ router.get("/full", async (req, res) => {
     res.json(stats.rows);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     const batch = new SqlBatch();
     batch.add(
         `update dives

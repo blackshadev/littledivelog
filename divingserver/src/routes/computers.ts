@@ -1,7 +1,8 @@
 import * as express from "express";
-import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
+import { Router } from "../express-promise-router";
+import { IGetUserAuthInfoRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { bodyValidator } from "../validator";
@@ -67,7 +68,7 @@ interface IImportRequestBody {
     options: IImportOptions;
 }
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
     const computers: QueryResult = await database.call(
         `select
             comp.*,
@@ -98,9 +99,12 @@ const computerPostSchema = {
     required: ["serial"],
 };
 
-router.post("/", bodyValidator(computerPostSchema), async (req, res) => {
-    const computer = await database.call(
-        `insert into computers (user_id, serial, vendor, model, type, name)
+router.post(
+    "/",
+    bodyValidator(computerPostSchema),
+    async (req: IGetUserAuthInfoRequest, res) => {
+        const computer = await database.call(
+            `insert into computers (user_id, serial, vendor, model, type, name)
                         values ($1     , $2    , $3    , $4   , $5  , $6  )
                    on conflict (user_id, serial)
                      do update set
@@ -110,15 +114,16 @@ router.post("/", bodyValidator(computerPostSchema), async (req, res) => {
                             , name   = coalesce($6, EXCLUDED.name)
             returning *
         `,
-        [
-            req.user.user_id,
-            req.body.serial,
-            req.body.vendor,
-            req.body.model,
-            req.body.type,
-            req.body.name,
-        ],
-    );
+            [
+                req.user.user_id,
+                req.body.serial,
+                req.body.vendor,
+                req.body.model,
+                req.body.type,
+                req.body.name,
+            ],
+        );
 
-    res.json(computer.rows[0]);
-});
+        res.json(computer.rows[0]);
+    },
+);

@@ -1,5 +1,6 @@
 import { QueryResult } from "pg";
 import { Router } from "../express-promise-router";
+import { IGetUserAuthInfoRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { ITank, tanksJSONtoType } from "../tansforms";
@@ -139,10 +140,10 @@ function diveQuery(flds: string[] | "*", where: string = "") {
     `;
 }
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
     let filterSql = "1=1";
 
-    const pars = [req.user.user_id];
+    const pars: string[] = [req.user.user_id + ""];
 
     if (req.query.buddies) {
         pars.push(`{${req.query.buddies}}`);
@@ -193,7 +194,7 @@ router.get("/", async (req, res) => {
     res.json(dives.rows);
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     const dives: QueryResult = await database.call(
         diveQuery("*", "d.dive_id = $2"),
         [req.user.user_id, req.params.id],
@@ -202,7 +203,7 @@ router.get("/:id", async (req, res) => {
     res.json(dives.rows[0]);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     const batch = new SqlBatch();
 
     batch.add(
@@ -238,7 +239,7 @@ router.delete("/:id", async (req, res) => {
     res.json(c > 0);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     const userid = req.user.user_id;
 
     const body = req.body;
@@ -309,7 +310,7 @@ router.put("/:id", async (req, res) => {
     }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: IGetUserAuthInfoRequest, res) => {
     const userid = req.user.user_id;
 
     const body = req.body;
@@ -403,7 +404,7 @@ router.post("/", async (req, res) => {
     });
 });
 
-router.get("/:id/samples", async (req, res) => {
+router.get("/:id/samples", async (req: IGetUserAuthInfoRequest, res) => {
     const samples: QueryResult = await database.call(
         "select samples from dives d where d.user_id = $1 and dive_id=$2",
         [req.user.user_id, req.params.id],
@@ -426,7 +427,7 @@ interface IBatchDive {
     tanks: ITank[];
 }
 
-router.post("/batch", async (req, res) => {
+router.post("/batch", async (req: IGetUserAuthInfoRequest, res) => {
     const data = req.body as IBatchDive[];
 
     const diveIds: number[] = [];

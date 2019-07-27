@@ -1,15 +1,16 @@
 import { hash, verify } from "argon2";
 import * as express from "express";
-import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
+import { Router } from "../express-promise-router";
+import { IGetUserAuthInfoRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { tanksJSONtoType } from "../tansforms";
 
 export const router = Router();
 
-router.get("/profile", async (req, res) => {
+router.get("/profile", async (req: IGetUserAuthInfoRequest, res) => {
     const dat = await database.call(
         `select
                   user_id
@@ -29,7 +30,7 @@ router.get("/profile", async (req, res) => {
     res.json(dat.rows[0]);
 });
 
-router.put("/profile", async (req, res) => {
+router.put("/profile", async (req: IGetUserAuthInfoRequest, res) => {
     const dat = await database.call(
         `
             update users
@@ -42,7 +43,7 @@ router.put("/profile", async (req, res) => {
     res.json(dat.rowCount > 0);
 });
 
-router.put("/profile/password", async (req, res) => {
+router.put("/profile/password", async (req: IGetUserAuthInfoRequest, res) => {
     const old = await database.call(
         `
             select password
@@ -52,7 +53,7 @@ router.put("/profile/password", async (req, res) => {
         [req.user.user_id],
     );
 
-    if (!await verify(old.rows[0].password, req.body.old)) {
+    if (!(await verify(old.rows[0].password, req.body.old))) {
         res.status(401);
         res.json({ msg: "Invalid old password" });
         return;
@@ -84,7 +85,7 @@ router.put("/profile/password", async (req, res) => {
     res.json(dat.rowCount > 0);
 });
 
-router.put("/profile/equipment", async (req, res) => {
+router.put("/profile/equipment", async (req: IGetUserAuthInfoRequest, res) => {
     const tank = tanksJSONtoType(req.body.tanks);
 
     const dat = await database.call(
@@ -101,7 +102,7 @@ router.put("/profile/equipment", async (req, res) => {
     res.json(dat.rowCount > 0);
 });
 
-router.get("/profile/equipment", async (req, res) => {
+router.get("/profile/equipment", async (req: IGetUserAuthInfoRequest, res) => {
     const dat = await database.call(
         `select
                 to_json(tanks) as tanks

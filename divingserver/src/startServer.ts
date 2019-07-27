@@ -1,4 +1,5 @@
 import * as bodyParser from "body-parser";
+import * as cors from "cors";
 import * as express from "express";
 import * as jwt from "express-jwt";
 import * as expressLogging from "express-logging";
@@ -7,7 +8,6 @@ import { QueryResult } from "pg";
 import { config, readConfig } from "./config";
 import { HttpError } from "./errors";
 import { database } from "./pg";
-import * as cors from "cors";
 
 export async function start(pmx?: any) {
     const path = process.env.CONFIG || process.cwd() + "/config.json";
@@ -107,12 +107,8 @@ export async function start(pmx?: any) {
     );
 
     await new Promise((resolve, reject) => {
-        app.listen(config.http.port, err => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
+        app.listen(config.http.port, () => {
+            resolve();
         });
     });
     console.log("DiveServer listening on 3000");

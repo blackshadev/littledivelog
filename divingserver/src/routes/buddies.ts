@@ -1,12 +1,13 @@
 import * as express from "express";
-import { Router } from "../express-promise-router";
 import { QueryResult } from "pg";
+import { Router } from "../express-promise-router";
+import { IGetUserAuthInfoRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 
 export const router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
     const buds: QueryResult = await database.call(
         `select bud.*
            from buddies bud
@@ -19,7 +20,7 @@ router.get("/", async (req, res) => {
     res.json(buds.rows);
 });
 
-router.get("/full", async (req, res) => {
+router.get("/full", async (req: IGetUserAuthInfoRequest, res) => {
     const stats = await database.call(
         `
         select
@@ -44,7 +45,7 @@ router.get("/full", async (req, res) => {
     res.json(stats.rows);
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req: IGetUserAuthInfoRequest, res) => {
     const body = req.body;
     const buds: QueryResult = await database.call(
         `
@@ -59,7 +60,7 @@ router.post("/", async (req, res) => {
     res.json(buds.rows[0]);
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     const batch = new SqlBatch();
     batch.add(
         `
@@ -89,7 +90,7 @@ router.delete("/:id", async (req, res) => {
     res.json(c > 0);
 });
 
-router.put("/:id", async (req, res) => {
+router.put("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     const body = req.body;
     const buds: QueryResult = await database.call(
         `

@@ -1,8 +1,8 @@
 {
-    "computer": "",
+    "computer": "Suunto Eon",
     "path": "",
     "portname": "",
-    "refreshToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJyZWZyZXNoX3Rva2VuIjoiNmUyY2JkYWItZWQ0Yi00Nzc1LTgwMmMtNjgyZTllMzcxMzBiIiwidXNlcl9pZCI6MSwiaWF0IjoxNTMxNTU1Mjk1LCJpc3MiOiJkaXZlLmxpdHRsZWRldi5ubCIsInN1YiI6InJlZnJlc2gtdG9rZW4ifQ.fZ4HwBmiroJhK7IlgKlmnDmfGfOkqpsloIZegS3R8QaD0zWMhXOmHtAIK0Nuvbo3hln2RO2UKhi-RVy9h2isfw",
+    "refreshToken": "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJyZWZyZXNoX3Rva2VuIjoiODMzNGZjZWUtZDA4Ni00M2IzLTk0YTEtZjMzM2E3Mzg3NTBlIiwidXNlcl9pZCI6MSwiaWF0IjoxNTY0MjM5Mjc2LCJpc3MiOiJkaXZlLmxpdHRsZWRldi5ubCIsInN1YiI6InJlZnJlc2gtdG9rZW4ifQ.EXMYW_KbbqihROmjMsgbpntMoc01EgOtGfho_sq4FtDyAiufLfg52HQF-gG-0ao6VTO50KGh8CeOOvL0pVqxSQ",
     "selectDives": true,
-    "writeType": ""
+    "writeType": "LittleLog"
 }

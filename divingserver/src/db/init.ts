@@ -10,7 +10,7 @@ const cnf = {
     user: "divelog",
 };
 
-const readDir = bluebird.promisify(fs.readdir);
+const readDir = bluebird.promisify<string[], string>(fs.readdir);
 const readFile = bluebird.promisify(fs.readFile);
 const stat = bluebird.promisify(fs.stat);
 
@@ -31,13 +31,17 @@ async function recreateDb() {
     try {
         console.log("Recreating db");
         await conn.query(`drop database if exists ${cnf.database}`);
-        await conn.query(`create database ${cnf.database} with owner ${cnf.user}`);
+        await conn.query(
+            `create database ${cnf.database} with owner ${cnf.user}`,
+        );
     } finally {
         await conn.end();
     }
 }
 
-async function listQueries(baseDir: string = __dirname + "/../../db/"): Promise<string[]> {
+async function listQueries(
+    baseDir: string = __dirname + "/../../db/",
+): Promise<string[]> {
     async function recReadDir(dirPath: string): Promise<string[]> {
         const entries = await readDir(dirPath);
         entries.sort();
@@ -48,7 +52,7 @@ async function listQueries(baseDir: string = __dirname + "/../../db/"): Promise<
             if (fStat.isFile() && /^\d+\_.*\.sql$/i.test(entry)) {
                 all.push(fPath);
             } else if (fStat.isDirectory()) {
-                all.push(... await recReadDir(fPath));
+                all.push(...(await recReadDir(fPath)));
             }
         }
 

@@ -5,6 +5,7 @@ import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
 import { Router } from "../express-promise-router";
+import { IGetUserAuthInfoRequest } from "../express.interface";
 import { createToken } from "../jwt";
 import { database } from "../pg";
 
@@ -84,7 +85,7 @@ export async function login(
         throw new HttpError(401, "Invalid credentials");
     }
 
-    if (!await argon2.verify(user.rows[0].password, password)) {
+    if (!(await argon2.verify(user.rows[0].password, password))) {
         throw new HttpError(401, "Invalid credentials");
     }
 
@@ -128,7 +129,7 @@ router.post("/refresh-token", async (req, res) => {
     });
 });
 
-router.get("/refresh-token", async (req, res) => {
+router.get("/refresh-token", async (req: IGetUserAuthInfoRequest, res) => {
     const q = await database.call(
         `
              select *
@@ -140,18 +141,21 @@ router.get("/refresh-token", async (req, res) => {
     res.json(q.rows);
 });
 
-router.delete("/refresh-token/:token", async (req, res) => {
-    const q = await database.call(
-        `
+router.delete(
+    "/refresh-token/:token",
+    async (req: IGetUserAuthInfoRequest, res) => {
+        const q = await database.call(
+            `
              delete
                from session_tokens
               where user_id = $1
                 and token = $2
             `,
-        [req.user.user_id, req.params.token],
-    );
-    res.json({ deleted: q.rowCount });
-});
+            [req.user.user_id, req.params.token],
+        );
+        res.json({ deleted: q.rowCount });
+    },
+);
 
 router.delete(
     "/refresh-token",
@@ -161,7 +165,7 @@ router.delete(
         subject: "refresh-token",
         algorithms: ["HS512"],
     }),
-    async (req, res) => {
+    async (req: IGetUserAuthInfoRequest, res) => {
         const clearAll = req.query.all ? true : false;
 
         const params = [req.user.user_id];
@@ -190,7 +194,7 @@ router.get(
         subject: "refresh-token",
         algorithms: ["HS512"],
     }),
-    async (req, res) => {
+    async (req: IGetUserAuthInfoRequest, res) => {
         const dat = req.user;
 
         const q = await database.call(

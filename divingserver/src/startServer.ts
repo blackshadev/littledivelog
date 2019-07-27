@@ -7,6 +7,7 @@ import { QueryResult } from "pg";
 import { config, readConfig } from "./config";
 import { HttpError } from "./errors";
 import { database } from "./pg";
+import * as cors from "cors";
 
 export async function start(pmx?: any) {
     const path = process.env.CONFIG || process.cwd() + "/config.json";
@@ -24,6 +25,10 @@ export async function start(pmx?: any) {
         console.log("Use with proxy: ", config.http.proxy);
         app.set("trust proxy", config.http.proxy);
     }
+    if (config.cors) {
+        app.use(cors());
+    }
+
     app.use(expressLogging(console));
     app.use(bodyParser.json({ limit: "500mb" }));
 

@@ -2,6 +2,7 @@ import * as Ajv from "ajv";
 import * as fs from "fs";
 
 interface IConfig {
+    cors?: boolean;
     http: {
         port: number | string;
         proxy: boolean | string[] | string | undefined;
@@ -25,6 +26,9 @@ const ajv = Ajv();
 const validator = ajv.compile({
     type: "object",
     properties: {
+        cors: {
+            type: "boolean",
+        },
         jwt: {
             issuer: { type: "string" },
             secret: { type: "string" },

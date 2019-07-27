@@ -84,10 +84,13 @@ export const handler = async (argv: {
 
         const newRows = srcRows.map((r) => {
             const countryCode = countryMap[r.Country.toLocaleLowerCase()];
+
+            const d = r.Divedate.substr(0, 10) + " " + r.Entrytime.substr(11);
+
             return {
-                date: r.Divedate,
+                date: d,
                 buddies: [r.Buddy],
-                dive_time: r.Divetime,
+                dive_time: r.Divetime * 60, // Divinglog registers divetime in minutes
                 place: {
                     country: r.Country,
                     country_code: countryCode,
@@ -119,6 +122,7 @@ export const handler = async (argv: {
         if (response.statusCode !== 200) {
             throw new Error(body.error);
         }
+        console.log("Imported " + body.dives.length + " dives");
     } catch (err) {
         console.error("Something went wrong\n" + err.toString());
     }
@@ -146,10 +150,6 @@ interface ILogRow {
 }
 
 async function readLogBook(db: odbc.Connection): Promise<ILogRow[]> {
-    // console.log("readLogBook");
-    // const cols = await db.columns(null, null, TABLES.Logbook, null);
-    // console.log(cols.map((c) => c.COLUMN_NAME));
-
     return ((await db.query(
         `select PresS, PresE, Divedate, Entrytime, Country, City, Place, Buddy, Depth, Divetime, Tanksize, O2 from ${
             TABLES.Logbook

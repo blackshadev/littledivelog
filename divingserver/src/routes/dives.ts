@@ -490,7 +490,7 @@ router.post("/batch", async (req, res) => {
                       , place_id
                   FROM (
                         SELECT $1::int as user_id
-                            , ($2::date) as date
+                            , ($2::timestamp) as date
                             , $3::numeric(6,3) as max_depth
                             , $4::int as dive_time
                             , $5::tank[] as tanks

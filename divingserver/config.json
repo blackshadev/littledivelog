@@ -1,4 +1,5 @@
 {
+  "cors": true,
   "http": {
     "port": 3000
   },

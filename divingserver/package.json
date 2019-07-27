@@ -13,6 +13,7 @@
     "@types/node": "10.11.0"
   },
   "dependencies": {
+    "@pm2/io": "^4.2.5",
     "@types/ajv": "^1.0.0",
     "@types/archiver": "^3.0.0",
     "@types/argon2": "^0.15.0",
@@ -25,6 +26,7 @@
     "@types/pg": "^7.4.14",
     "@types/pg-copy-streams": "^1.2.0",
     "@types/request": "^2.48.2",
+    "add": "^2.0.6",
     "ajv": "^6.10.2",
     "archiver": "^3.0.3",
     "argon2": "^0.24.0",
@@ -38,8 +40,8 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^7.12.0",
     "pg-copy-streams": "^2.2.2",
-    "pmx": "^1.6.7",
     "typescript": "^3.5.3",
-    "xml-escape": "^1.1.0"
+    "xml-escape": "^1.1.0",
+    "yarn": "^1.17.3"
   }
 }

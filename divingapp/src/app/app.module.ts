@@ -50,6 +50,7 @@ import {
     HttpClientModule,
 } from '@angular/common/http';
 import { TokenInterceptor } from './services/interceptors/token.interceptor';
+import { ModalComponent } from './components/controls/modal/modal.component';
 
 @NgModule({
     declarations: [
@@ -81,6 +82,7 @@ import { TokenInterceptor } from './services/interceptors/token.interceptor';
         DetailComponentComponent,
         SearchComponent,
         ValidateFunctionDirective,
+        ModalComponent,
     ],
     imports: [
         BrowserModule,

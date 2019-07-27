@@ -15,6 +15,7 @@ import { Location } from '@angular/common';
 import { ProfileService } from 'app/services/profile.service';
 import { IFilter } from 'app/components/dives/search/search.component';
 import { flatMap } from 'rxjs/operators';
+import { ModalService } from '../../services/modal.service';
 
 @Component({
     selector: 'app-dives',
@@ -36,6 +37,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         private route: ActivatedRoute,
         private profile: ProfileService,
         private location: Location,
+        private modal: ModalService,
     ) {
         this.refresh();
     }
@@ -77,6 +79,8 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async selectDive(d?: Dive) {
+        this.modal.open('sure');
+
         if (d === undefined) {
             this.dive = undefined;
             this.location.go('/dive');

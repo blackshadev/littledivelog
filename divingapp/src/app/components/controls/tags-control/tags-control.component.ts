@@ -34,9 +34,9 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     @Output() change = new EventEmitter<ITag[]>();
     @Output() touched = new EventEmitter<ITag[]>();
 
-    @ViewChild('tagInput', { static: true }) private tagInput: ElementRef;
+    @ViewChild('tagInput', { static: false }) private tagInput: ElementRef;
 
-    @ViewChild('tagAutocomplete', { static: true })
+    @ViewChild('tagAutocomplete', { static: false })
     private tagAutocomplete: AutocompleteComponent;
 
     private onChange: (v: ITag[]) => void;
@@ -91,6 +91,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
 
     public writeValue(obj: any): void {
         this.tags = obj;
+        this.clearInput();
     }
 
     public registerOnChange(fn: any): void {

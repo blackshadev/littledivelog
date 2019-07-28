@@ -38,6 +38,7 @@
     "express-logging": "^1.1.1",
     "express-promise-router": "^3.0.3",
     "jsonwebtoken": "^8.5.1",
+    "max-listeners-exceeded-warning": "^0.0.1",
     "pg": "^7.12.0",
     "pg-copy-streams": "^2.2.2",
     "typescript": "^3.5.3",

@@ -1,4 +1,7 @@
 import * as pmx from "@pm2/io";
+const maxListenersExceededWarning = require("max-listeners-exceeded-warning");
+
+maxListenersExceededWarning();
 
 try {
     pmx.init({

@@ -276,11 +276,15 @@ export class DiveDetailComponent implements OnInit {
         });
     }
 
-    async onSubmit(e: Event) {
+    public async onSubmit(e: Event) {
         e.preventDefault();
+        await this.save();
+    }
+
+    public async save(): Promise<boolean> {
         markFormGroupTouched(this.form);
         if (!this.form.valid) {
-            return;
+            return false;
         }
 
         const dat = this.form.value;
@@ -334,7 +338,9 @@ export class DiveDetailComponent implements OnInit {
 
         const resp = await this.diveService.save(d.toJSON(), d.id);
         this.dive = await this.diveService.get(resp.dive_id);
+
         this.onDiveChanged.emit(this.dive);
+        return true;
     }
 
     public back() {

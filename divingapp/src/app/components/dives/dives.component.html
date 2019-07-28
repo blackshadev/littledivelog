@@ -51,6 +51,11 @@
     [selected]="dive"
 ></app-list-detail>
 
-<app-modal id="sure">
-Test
+<app-modal id="sure" confirmText="Discard changed" cancelText="Keep changes">
+    <p>
+        Some changes cannot be saved because they are invalid.
+    </p>
+    <p>
+        Are you sure you want to leave this page and cancel all changes?
+    </p>
 </app-modal>

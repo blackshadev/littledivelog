@@ -1,4 +1,14 @@
-import { Component, OnInit, Input, ElementRef, OnDestroy } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    ElementRef,
+    OnDestroy,
+    ViewChild,
+    Output,
+    EventEmitter,
+    AfterViewInit,
+} from '@angular/core';
 import { ModalService } from '../../../services/modal.service';
 
 @Component({
@@ -7,8 +17,19 @@ import { ModalService } from '../../../services/modal.service';
     styleUrls: ['./modal.component.css'],
 })
 export class ModalComponent implements OnInit, OnDestroy {
+    @Input() titleText = 'Are you sure?';
+    @Input() confirmText = 'Yes';
+    @Input() cancelText = 'No';
     @Input() id: string;
+    @Output() onClose = new EventEmitter<boolean>();
+    public onCloseHandle?: (b: boolean) => void;
+
     private element: HTMLElement;
+
+    @ViewChild('confirmButton', { static: false })
+    private confirmButton: ElementRef;
+    @ViewChild('cancelButton', { static: false })
+    private cancelButton: ElementRef;
 
     constructor(private modalService: ModalService, private el: ElementRef) {
         this.element = el.nativeElement;
@@ -34,13 +55,20 @@ export class ModalComponent implements OnInit, OnDestroy {
         this.element.remove();
     }
 
-    // open modal
+    public onClick(event: Event, isConfirm: boolean) {
+        if (this.onCloseHandle) {
+            this.onCloseHandle(isConfirm);
+        }
+        this.onClose.emit(isConfirm);
+        this.close();
+    }
+
     open(): void {
         $('.modal', this.element).modal('show');
     }
 
-    // close modal
     close(): void {
         $('.modal', this.element).modal('hide');
+        this.onCloseHandle = undefined;
     }
 }

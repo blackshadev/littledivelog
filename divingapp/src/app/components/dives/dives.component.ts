@@ -78,8 +78,19 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dive = d;
     }
 
-    async selectDive(d?: Dive) {
-        this.modal.open('sure');
+    async selectDive(d?: Dive, forced: boolean = false) {
+        // this.modal.open('sure');
+
+        if (this.diveDetail.form.dirty) {
+            if (!(await this.diveDetail.save()) && !forced) {
+                this.modal.open('sure', accepted => {
+                    if (accepted) {
+                        this.selectDive(d, true);
+                    }
+                });
+                return;
+            }
+        }
 
         if (d === undefined) {
             this.dive = undefined;

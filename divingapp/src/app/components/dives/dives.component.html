@@ -41,6 +41,7 @@
     </div> -->
     <app-dive-search
         (filterChanged)="filters = $event; this.refresh()"
+        (onNewDive)="gotoNewDive()"
     ></app-dive-search>
 </ng-template>
 

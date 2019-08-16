@@ -41,6 +41,8 @@ export class SearchComponent implements OnInit {
     public filterChanged: EventEmitter<IFilter[]> = new EventEmitter<
         IFilter[]
     >();
+    @Output()
+    public onNewDive: EventEmitter<void> = new EventEmitter<void>();
 
     public searchValue: any = '';
     public currentTopic: ITopic;

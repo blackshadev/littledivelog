@@ -460,13 +460,13 @@ function getComputerPrefered<
 router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
     await SqlBatch.transaction(async cl => {
         let res = await cl.query(
-            "select * from dives where dive_id = $1 and user_id = $2 ",
-            [req.param("id1"), req.user.user_id],
+            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code from dives where dive_id = $1 and user_id = $2 ",
+            [req.params.id1, req.user.user_id],
         );
         const dive1 = res.rows[0] as IDive;
         res = await cl.query(
-            "select * from dives where dive_id = $1 and user_id = $2 ",
-            [req.param("id2"), req.user.user_id],
+            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code from dives where dive_id = $1 and user_id = $2 ",
+            [req.params.id2, req.user.user_id],
         );
         const dive2 = res.rows[0] as IDive;
 
@@ -494,7 +494,17 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
             throw new Error("Unable to merge 2 dives from different places");
         }
 
-        let dive: Omit<IDive, "dive_id">;
+        let dive: Omit<IDive, "dive_id"> = {
+            computer_id: 1,
+            country_code: "",
+            date: "",
+            divetime: 0,
+            max_depth: 0,
+            place_id: 0,
+            samples: [],
+            tanks: [],
+            user_id: req.user.user_id,
+        };
         dive.computer_id = dive1.computer_id || dive2.computer_id;
         dive.country_code = dive1.country_code || dive2.country_code;
         dive.place_id = dive1.place_id || dive2.place_id;
@@ -642,6 +652,8 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
         ]);
         await cl.query("DELETE FROM dives WHERE dive_id = $1", [dive2.dive_id]);
     });
+
+    res.json({});
 });
 
 router.get("/:id/samples", async (req: IAuthenticatedRequest, res) => {

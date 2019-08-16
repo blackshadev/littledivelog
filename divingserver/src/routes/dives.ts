@@ -421,7 +421,7 @@ function max<T extends number | string>(...args: Array<T>): T {
     let t = args[0];
 
     for (let iX = 1; iX < args.length; iX++) {
-        if (t < args[iX]) {
+        if (t === null || t < args[iX]) {
             t = args[iX];
         }
     }
@@ -433,7 +433,7 @@ function min<T extends number | string>(...args: Array<T>): T {
     let t = args[0];
 
     for (let iX = 1; iX < args.length; iX++) {
-        if (t > args[iX]) {
+        if (t === null || t > args[iX]) {
             t = args[iX];
         }
     }
@@ -555,8 +555,8 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
         dive.user_id = req.user.user_id;
         dive.tanks = [
             {
-                oxygen: dive1.tanks[0].oxygen,
-                volume: dive1.tanks[0].volume,
+                oxygen: dive1.tanks[0].oxygen || dive2.tanks[0].oxygen,
+                volume: dive1.tanks[0].volume || dive2.tanks[0].volume,
                 pressure: {
                     begin: getComputerPrefered(
                         [
@@ -586,7 +586,9 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
                         "pres",
                         min,
                     ),
-                    type: dive1.tanks[0].pressure.type,
+                    type:
+                        dive1.tanks[0].pressure.type ||
+                        dive2.tanks[0].pressure.type,
                 },
             },
         ];
@@ -610,7 +612,7 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
                 dive.place_id,
                 dive.max_depth,
                 tanksJSONtoType(dive.tanks),
-                dive.samples,
+                JSON.stringify(dive.samples),
             ],
         );
 

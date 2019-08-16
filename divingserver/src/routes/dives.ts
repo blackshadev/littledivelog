@@ -460,12 +460,12 @@ function getComputerPrefered<
 router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
     await SqlBatch.transaction(async cl => {
         let res = await cl.query(
-            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code from dives where dive_id = $1 and user_id = $2 ",
+            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code, computer_id from dives where dive_id = $1 and user_id = $2 ",
             [req.params.id1, req.user.user_id],
         );
         const dive1 = res.rows[0] as IDive;
         res = await cl.query(
-            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code from dives where dive_id = $1 and user_id = $2 ",
+            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code, computer_id from dives where dive_id = $1 and user_id = $2 ",
             [req.params.id2, req.user.user_id],
         );
         const dive2 = res.rows[0] as IDive;
@@ -511,8 +511,10 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
         dive.date = getComputerPrefered([dive1, dive2], "date", min);
         dive.max_depth = getComputerPrefered([dive1, dive2], "max_depth", max);
         dive.divetime =
-            (dive1.computer_id ? dive1.divetime : 0) +
-            (dive2.computer_id ? dive2.divetime : 0);
+            dive1.computer_id || dive2.computer_id
+                ? (dive1.computer_id ? dive1.divetime : 0) +
+                  (dive2.computer_id ? dive2.divetime : 0)
+                : dive1.divetime + dive2.divetime;
 
         if (dive1.computer_id && dive2.computer_id) {
             throw new Error("Merging of samples not yet supported");

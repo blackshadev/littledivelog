@@ -1,13 +1,13 @@
 import * as express from "express";
 import { QueryResult } from "pg";
 import { Router } from "../express-promise-router";
-import { IGetUserAuthInfoRequest } from "../express.interface";
+import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 
 export const router = Router();
 
-router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/", async (req: IAuthenticatedRequest, res) => {
     const buds: QueryResult = await database.call(
         `select bud.*
            from buddies bud
@@ -20,7 +20,7 @@ router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(buds.rows);
 });
 
-router.get("/full", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/full", async (req: IAuthenticatedRequest, res) => {
     const stats = await database.call(
         `
         select
@@ -45,7 +45,7 @@ router.get("/full", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(stats.rows);
 });
 
-router.post("/", async (req: IGetUserAuthInfoRequest, res) => {
+router.post("/", async (req: IAuthenticatedRequest, res) => {
     const body = req.body;
     const buds: QueryResult = await database.call(
         `
@@ -60,7 +60,7 @@ router.post("/", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(buds.rows[0]);
 });
 
-router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
+router.delete("/:id", async (req: IAuthenticatedRequest, res) => {
     const batch = new SqlBatch();
     batch.add(
         `
@@ -90,7 +90,7 @@ router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(c > 0);
 });
 
-router.put("/:id", async (req: IGetUserAuthInfoRequest, res) => {
+router.put("/:id", async (req: IAuthenticatedRequest, res) => {
     const body = req.body;
     const buds: QueryResult = await database.call(
         `

@@ -5,7 +5,7 @@ import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
 import { Router } from "../express-promise-router";
-import { IGetUserAuthInfoRequest } from "../express.interface";
+import { IAuthenticatedRequest } from "../express.interface";
 import { createToken } from "../jwt";
 import { database } from "../pg";
 
@@ -129,7 +129,7 @@ router.post("/refresh-token", async (req, res) => {
     });
 });
 
-router.get("/refresh-token", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/refresh-token", async (req: IAuthenticatedRequest, res) => {
     const q = await database.call(
         `
              select *
@@ -143,7 +143,7 @@ router.get("/refresh-token", async (req: IGetUserAuthInfoRequest, res) => {
 
 router.delete(
     "/refresh-token/:token",
-    async (req: IGetUserAuthInfoRequest, res) => {
+    async (req: IAuthenticatedRequest, res) => {
         const q = await database.call(
             `
              delete
@@ -165,7 +165,7 @@ router.delete(
         subject: "refresh-token",
         algorithms: ["HS512"],
     }),
-    async (req: IGetUserAuthInfoRequest, res) => {
+    async (req: IAuthenticatedRequest, res) => {
         const clearAll = req.query.all ? true : false;
 
         const params = [req.user.user_id];
@@ -194,7 +194,7 @@ router.get(
         subject: "refresh-token",
         algorithms: ["HS512"],
     }),
-    async (req: IGetUserAuthInfoRequest, res) => {
+    async (req: IAuthenticatedRequest, res) => {
         const dat = req.user;
 
         const q = await database.call(

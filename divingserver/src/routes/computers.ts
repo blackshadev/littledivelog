@@ -2,7 +2,7 @@ import * as express from "express";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { Router } from "../express-promise-router";
-import { IGetUserAuthInfoRequest } from "../express.interface";
+import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { bodyValidator } from "../validator";
@@ -68,7 +68,7 @@ interface IImportRequestBody {
     options: IImportOptions;
 }
 
-router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/", async (req: IAuthenticatedRequest, res) => {
     const computers: QueryResult = await database.call(
         `select
             comp.*,
@@ -102,7 +102,7 @@ const computerPostSchema = {
 router.post(
     "/",
     bodyValidator(computerPostSchema),
-    async (req: IGetUserAuthInfoRequest, res) => {
+    async (req: IAuthenticatedRequest, res) => {
         const computer = await database.call(
             `insert into computers (user_id, serial, vendor, model, type, name)
                         values ($1     , $2    , $3    , $4   , $5  , $6  )

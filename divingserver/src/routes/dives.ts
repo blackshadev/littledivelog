@@ -1,11 +1,24 @@
 import { QueryResult } from "pg";
 import { Router } from "../express-promise-router";
-import { IGetUserAuthInfoRequest } from "../express.interface";
+import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { ITank, tanksJSONtoType } from "../tansforms";
 
 export const router = Router();
+
+interface IDive {
+    dive_id: number;
+    user_id: number;
+    date: string;
+    divetime: number;
+    max_depth: number;
+    samples: any[];
+    country_code: string;
+    place_id: number;
+    tanks: ITank[];
+    computer_id: number;
+}
 
 interface IBuddy {
     buddy_id?: number;
@@ -140,7 +153,7 @@ function diveQuery(flds: string[] | "*", where: string = "") {
     `;
 }
 
-router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/", async (req: IAuthenticatedRequest, res) => {
     let filterSql = "1=1";
 
     const pars: string[] = [req.user.user_id + ""];
@@ -194,7 +207,7 @@ router.get("/", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(dives.rows);
 });
 
-router.get("/:id", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/:id", async (req: IAuthenticatedRequest, res) => {
     const dives: QueryResult = await database.call(
         diveQuery("*", "d.dive_id = $2"),
         [req.user.user_id, req.params.id],
@@ -203,7 +216,7 @@ router.get("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(dives.rows[0]);
 });
 
-router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
+router.delete("/:id", async (req: IAuthenticatedRequest, res) => {
     const batch = new SqlBatch();
 
     batch.add(
@@ -239,7 +252,7 @@ router.delete("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(c > 0);
 });
 
-router.put("/:id", async (req: IGetUserAuthInfoRequest, res) => {
+router.put("/:id", async (req: IAuthenticatedRequest, res) => {
     const userid = req.user.user_id;
 
     const body = req.body;
@@ -310,7 +323,7 @@ router.put("/:id", async (req: IGetUserAuthInfoRequest, res) => {
     }
 });
 
-router.post("/", async (req: IGetUserAuthInfoRequest, res) => {
+router.post("/", async (req: IAuthenticatedRequest, res) => {
     const userid = req.user.user_id;
 
     const body = req.body;
@@ -404,7 +417,234 @@ router.post("/", async (req: IGetUserAuthInfoRequest, res) => {
     });
 });
 
-router.get("/:id/samples", async (req: IGetUserAuthInfoRequest, res) => {
+function max<T extends number | string>(...args: Array<T>): T {
+    let t = args[0];
+
+    for (let iX = 1; iX < args.length; iX++) {
+        if (t < args[iX]) {
+            t = args[iX];
+        }
+    }
+
+    return t;
+}
+
+function min<T extends number | string>(...args: Array<T>): T {
+    let t = args[0];
+
+    for (let iX = 1; iX < args.length; iX++) {
+        if (t > args[iX]) {
+            t = args[iX];
+        }
+    }
+
+    return t;
+}
+
+function getComputerPrefered<
+    K extends { computer_id?: number },
+    S extends keyof K
+>(obj: K[], key: S, fn: (...args: K[S][]) => K[S]): K[S] {
+    if (obj.length < 1) {
+        throw new Error("Expected atleast one argument");
+    }
+
+    const computerMax = fn(...obj.filter(k => k.computer_id).map(o => o[key]));
+    const userMax = fn(...obj.filter(k => !k.computer_id).map(o => o[key]));
+
+    return computerMax !== undefined && computerMax !== null
+        ? computerMax
+        : userMax;
+}
+
+router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
+    await SqlBatch.transaction(async cl => {
+        let res = await cl.query(
+            "select * from dives where dive_id = $1 and user_id = $2 ",
+            [req.param("id1"), req.user.user_id],
+        );
+        const dive1 = res.rows[0] as IDive;
+        res = await cl.query(
+            "select * from dives where dive_id = $1 and user_id = $2 ",
+            [req.param("id2"), req.user.user_id],
+        );
+        const dive2 = res.rows[0] as IDive;
+
+        if (!dive1) {
+            throw new Error("Dive1 does not exist");
+        }
+
+        if (!dive2) {
+            throw new Error("Dive2 does not exist");
+        }
+
+        if (
+            dive1.computer_id &&
+            dive2.computer_id &&
+            dive1.computer_id !== dive2.computer_id
+        ) {
+            throw new Error("Unable to merge 2 dives from different computers");
+        }
+
+        if (
+            dive1.place_id &&
+            dive2.place_id &&
+            dive1.place_id !== dive2.place_id
+        ) {
+            throw new Error("Unable to merge 2 dives from different places");
+        }
+
+        let dive: Omit<IDive, "dive_id">;
+        dive.computer_id = dive1.computer_id || dive2.computer_id;
+        dive.country_code = dive1.country_code || dive2.country_code;
+        dive.place_id = dive1.place_id || dive2.place_id;
+        dive.date = getComputerPrefered([dive1, dive2], "date", min);
+        dive.max_depth = getComputerPrefered([dive1, dive2], "max_depth", max);
+        dive.divetime =
+            (dive1.computer_id ? dive1.divetime : 0) +
+            (dive2.computer_id ? dive2.divetime : 0);
+
+        if (dive1.computer_id && dive2.computer_id) {
+            throw new Error("Merging of samples not yet supported");
+        }
+
+        dive.samples = dive1.computer_id ? dive1.samples : dive2.samples;
+
+        if (
+            dive1.tanks[0] &&
+            dive2.tanks[0] &&
+            dive1.tanks[0].pressure.type !== dive2.tanks[0].pressure.type
+        ) {
+            throw new Error(
+                "Unable to merge dives with 2 different tank pressure types",
+            );
+        }
+
+        if (
+            dive1.tanks[0] &&
+            dive2.tanks[0] &&
+            dive1.tanks[0].volume !== dive2.tanks[0].volume
+        ) {
+            throw new Error(
+                "Unable to merge dives with 2 different tank volumes",
+            );
+        }
+
+        if (
+            dive1.tanks[0] &&
+            dive2.tanks[0] &&
+            dive1.tanks[0].oxygen !== dive2.tanks[0].oxygen
+        ) {
+            throw new Error(
+                "Unable to merge dives with 2 different oxygen levels",
+            );
+        }
+
+        dive.user_id = req.user.user_id;
+        dive.tanks = [
+            {
+                oxygen: dive1.tanks[0].oxygen,
+                volume: dive1.tanks[0].volume,
+                pressure: {
+                    begin: getComputerPrefered(
+                        [
+                            {
+                                computer_id: dive1.computer_id,
+                                pres: dive1.tanks[0].pressure.begin,
+                            },
+                            {
+                                computer_id: dive2.computer_id,
+                                pres: dive2.tanks[0].pressure.begin,
+                            },
+                        ],
+                        "pres",
+                        max,
+                    ),
+                    end: getComputerPrefered(
+                        [
+                            {
+                                computer_id: dive1.computer_id,
+                                pres: dive1.tanks[0].pressure.end,
+                            },
+                            {
+                                computer_id: dive2.computer_id,
+                                pres: dive2.tanks[0].pressure.end,
+                            },
+                        ],
+                        "pres",
+                        min,
+                    ),
+                    type: dive1.tanks[0].pressure.type,
+                },
+            },
+        ];
+
+        await cl.query(
+            `
+            UPDATE dives
+               SET divetime = $2::int
+                 , date = $3::timestamp
+                 , country_code = $4
+                 , place_id = $5::int
+                 , max_depth = $6::numeric(6,3)
+                 , tanks = $7::tank[]
+                 , samples = $8 
+               WHERE dive_id = $1`,
+            [
+                dive1.dive_id,
+                dive.divetime,
+                dive.date,
+                dive.country_code,
+                dive.place_id,
+                dive.max_depth,
+                tanksJSONtoType(dive.tanks),
+                dive.samples,
+            ],
+        );
+
+        await cl.query(
+            `
+            INSERT INTO dive_tags (dive_id, tag_id)
+                 SELECT $1, tag_id
+                   FROM dive_tags dt1
+                  WHERE dive_id = $2
+                    AND NOT EXISTS (
+                        SELECT * 
+                          FROM dive_tags dt2
+                         WHERE dt1.tag_id = dt2.tag_id
+                           AND dt2.dive_id = $1  
+                    ) 
+        `,
+            [dive1.dive_id, dive2.dive_id],
+        );
+
+        await cl.query(
+            `
+            INSERT INTO dive_buddies (dive_id, buddy_id)
+                 SELECT $1, buddy_id
+                   FROM dive_buddies db1
+                  WHERE dive_id = $2
+                    AND NOT EXISTS (
+                        SELECT * 
+                          FROM dive_buddies db2
+                         WHERE db1.buddy_id = db2.buddy_id
+                           AND db2.dive_id = $1  
+                    ) 
+        `,
+            [dive1.dive_id, dive2.dive_id],
+        );
+
+        await cl.query("DELETE FROM dive_buddies WHERE dive_id = $1", [
+            dive2.dive_id,
+        ]);
+        await cl.query("DELETE FROM dive_tags WHERE dive_id = $1", [
+            dive2.dive_id,
+        ]);
+        await cl.query("DELETE FROM dives WHERE dive_id = $1", [dive2.dive_id]);
+    });
+});
+
+router.get("/:id/samples", async (req: IAuthenticatedRequest, res) => {
     const samples: QueryResult = await database.call(
         "select samples from dives d where d.user_id = $1 and dive_id=$2",
         [req.user.user_id, req.params.id],
@@ -427,7 +667,7 @@ interface IBatchDive {
     tanks: ITank[];
 }
 
-router.post("/batch", async (req: IGetUserAuthInfoRequest, res) => {
+router.post("/batch", async (req: IAuthenticatedRequest, res) => {
     const data = req.body as IBatchDive[];
 
     const diveIds: number[] = [];

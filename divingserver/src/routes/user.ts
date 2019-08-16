@@ -3,14 +3,14 @@ import * as express from "express";
 import { QueryResult } from "pg";
 import { isPrimitive } from "util";
 import { Router } from "../express-promise-router";
-import { IGetUserAuthInfoRequest } from "../express.interface";
+import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
 import { tanksJSONtoType } from "../tansforms";
 
 export const router = Router();
 
-router.get("/profile", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/profile", async (req: IAuthenticatedRequest, res) => {
     const dat = await database.call(
         `select
                   user_id
@@ -30,7 +30,7 @@ router.get("/profile", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(dat.rows[0]);
 });
 
-router.put("/profile", async (req: IGetUserAuthInfoRequest, res) => {
+router.put("/profile", async (req: IAuthenticatedRequest, res) => {
     const dat = await database.call(
         `
             update users
@@ -43,7 +43,7 @@ router.put("/profile", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(dat.rowCount > 0);
 });
 
-router.put("/profile/password", async (req: IGetUserAuthInfoRequest, res) => {
+router.put("/profile/password", async (req: IAuthenticatedRequest, res) => {
     const old = await database.call(
         `
             select password
@@ -85,7 +85,7 @@ router.put("/profile/password", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(dat.rowCount > 0);
 });
 
-router.put("/profile/equipment", async (req: IGetUserAuthInfoRequest, res) => {
+router.put("/profile/equipment", async (req: IAuthenticatedRequest, res) => {
     const tank = tanksJSONtoType(req.body.tanks);
 
     const dat = await database.call(
@@ -102,7 +102,7 @@ router.put("/profile/equipment", async (req: IGetUserAuthInfoRequest, res) => {
     res.json(dat.rowCount > 0);
 });
 
-router.get("/profile/equipment", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/profile/equipment", async (req: IAuthenticatedRequest, res) => {
     const dat = await database.call(
         `select
                 to_json(tanks) as tanks

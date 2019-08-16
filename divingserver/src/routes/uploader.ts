@@ -3,7 +3,7 @@ import * as express from "express";
 import * as path from "path";
 import * as xmlEscape from "xml-escape";
 import { Router } from "../express-promise-router";
-import { IGetUserAuthInfoRequest } from "../express.interface";
+import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { createRefreshToken } from "./auth";
 
@@ -31,7 +31,7 @@ function generateUploaderConfig(token: string | null): string {
 </configuration>`;
 }
 
-router.get("/download", async (req: IGetUserAuthInfoRequest, res) => {
+router.get("/download", async (req: IAuthenticatedRequest, res) => {
     res.attachment("dive-uploader.zip");
     res.setHeader("Content-Type", "application/zip");
 

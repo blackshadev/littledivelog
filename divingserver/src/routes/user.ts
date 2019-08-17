@@ -6,7 +6,7 @@ import { Router } from "../express-promise-router";
 import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
-import { tanksJSONtoType } from "../tansforms";
+import { tanksJSONtoType } from "../db/helpers";
 
 export const router = Router();
 

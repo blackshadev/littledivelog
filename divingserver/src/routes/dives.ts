@@ -3,108 +3,16 @@ import { Router } from "../express-promise-router";
 import { IAuthenticatedRequest } from "../express.interface";
 import { database } from "../pg";
 import { SqlBatch } from "../sql";
-import { ITank, tanksJSONtoType } from "../tansforms";
+import { IBatchDive, IBuddy, ITag, IPlace, IDive } from "../interfaces";
+import {
+    injectPlaceSql,
+    injectBuddySql,
+    injectTagSql,
+    tanksJSONtoType,
+} from "../db/helpers";
+import { getComputerPrefered, min, max } from "../diveFunctions";
 
 export const router = Router();
-
-interface IDive {
-    dive_id: number;
-    user_id: number;
-    date: string;
-    divetime: number;
-    max_depth: number;
-    samples: any[];
-    country_code: string;
-    place_id: number;
-    tanks: ITank[];
-    computer_id: number;
-}
-
-interface IBuddy {
-    buddy_id?: number;
-    text: string;
-    color: string;
-}
-
-interface ITag {
-    tag_id?: number;
-    text: string;
-    color: string;
-}
-
-interface IPlace {
-    place_id?: number;
-    name: string;
-    country_code: string;
-}
-
-function injectPlaceSql(oPar: { batch: SqlBatch; place: IPlace }): void {
-    if (!oPar.place.place_id) {
-        oPar.batch.add(
-            "insert into places (name, country_code) values ($1, $2) returning *",
-            [oPar.place.name, oPar.place.country_code],
-            res => {
-                oPar.place.place_id = res.rows[0].place_id;
-            },
-        );
-    }
-}
-
-function injectBuddySql(oPar: {
-    userId: number;
-    diveId: number | (() => number);
-    batch: SqlBatch;
-    buddies: IBuddy[];
-}): void {
-    oPar.buddies.forEach(buddy => {
-        if (buddy.buddy_id !== undefined) {
-            return;
-        }
-
-        oPar.batch.add(
-            "insert into buddies (text, color, user_id) values ($1, $2, $3) returning *",
-            [buddy.text, buddy.color, oPar.userId],
-            ds => {
-                buddy.buddy_id = ds.rows[0].buddy_id;
-            },
-        );
-    });
-
-    oPar.buddies.forEach(buddy => {
-        oPar.batch.add(
-            "insert into dive_buddies (dive_id, buddy_id) values ($1, $2)",
-            [oPar.diveId, () => buddy.buddy_id],
-        );
-    });
-}
-
-function injectTagSql(oPar: {
-    userId: number;
-    diveId: number | (() => number);
-    batch: SqlBatch;
-    tags: ITag[];
-}): void {
-    oPar.tags.forEach(tag => {
-        if (tag.tag_id !== undefined) {
-            return;
-        }
-
-        oPar.batch.add(
-            "insert into tags (text, color, user_id) values ($1, $2, $3) returning *",
-            [tag.text, tag.color, oPar.userId],
-            ds => {
-                tag.tag_id = ds.rows[0].tag_id;
-            },
-        );
-    });
-
-    oPar.tags.forEach(tag => {
-        oPar.batch.add(
-            "insert into dive_tags (dive_id, tag_id) values ($1, $2)",
-            [oPar.diveId, () => tag.tag_id],
-        );
-    });
-}
 
 const fld_map = {
     dive_id: "dive_id",
@@ -417,46 +325,6 @@ router.post("/", async (req: IAuthenticatedRequest, res) => {
     });
 });
 
-function max<T extends number | string>(...args: Array<T>): T {
-    let t = args[0];
-
-    for (let iX = 1; iX < args.length; iX++) {
-        if (t === null || t < args[iX]) {
-            t = args[iX];
-        }
-    }
-
-    return t;
-}
-
-function min<T extends number | string>(...args: Array<T>): T {
-    let t = args[0];
-
-    for (let iX = 1; iX < args.length; iX++) {
-        if (t === null || t > args[iX]) {
-            t = args[iX];
-        }
-    }
-
-    return t;
-}
-
-function getComputerPrefered<
-    K extends { computer_id?: number },
-    S extends keyof K
->(obj: K[], key: S, fn: (...args: K[S][]) => K[S]): K[S] {
-    if (obj.length < 1) {
-        throw new Error("Expected atleast one argument");
-    }
-
-    const computerMax = fn(...obj.filter(k => k.computer_id).map(o => o[key]));
-    const userMax = fn(...obj.filter(k => !k.computer_id).map(o => o[key]));
-
-    return computerMax !== undefined && computerMax !== null
-        ? computerMax
-        : userMax;
-}
-
 router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
     await SqlBatch.transaction(async cl => {
         let res = await cl.query(
@@ -668,20 +536,6 @@ router.get("/:id/samples", async (req: IAuthenticatedRequest, res) => {
 
     res.json(samples.rows.length ? samples.rows[0].samples || [] : []);
 });
-
-interface IBatchDive {
-    max_depth: number;
-    dive_time: number;
-    date: Date;
-    tags: string[];
-    place: {
-        country_code: string;
-        country: string;
-        name: string;
-    };
-    buddies: string[];
-    tanks: ITank[];
-}
 
 router.post("/batch", async (req: IAuthenticatedRequest, res) => {
     const data = req.body as IBatchDive[];

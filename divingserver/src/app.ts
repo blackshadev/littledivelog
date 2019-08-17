@@ -17,6 +17,5 @@ try {
     /** Ignore */
 }
 
-import { triggerAsyncId } from "async_hooks";
 import * as server from "./startServer";
 server.start();

@@ -1,16 +1,16 @@
 import { QueryResult } from "pg";
-import { Router } from "../express-promise-router";
-import { IAuthenticatedRequest } from "../express.interface";
-import { database } from "../pg";
-import { SqlBatch } from "../sql";
-import { IBatchDive, IBuddy, ITag, IPlace, IDive } from "../interfaces";
 import {
-    injectPlaceSql,
     injectBuddySql,
+    injectPlaceSql,
     injectTagSql,
     tanksJSONtoType,
 } from "../db/helpers";
-import { getComputerPrefered, min, max } from "../diveFunctions";
+import { getComputerPrefered, max, mergeSamples, min } from "../diveFunctions";
+import { Router } from "../express-promise-router";
+import { IAuthenticatedRequest } from "../express.interface";
+import { IBatchDive, IBuddy, IDive, IPlace, ITag } from "../interfaces";
+import { database } from "../pg";
+import { SqlBatch } from "../sql";
 
 export const router = Router();
 
@@ -362,7 +362,7 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
             throw new Error("Unable to merge 2 dives from different places");
         }
 
-        let dive: Omit<IDive, "dive_id"> = {
+        const dive: Omit<IDive, "dive_id"> = {
             computer_id: 1,
             country_code: "",
             date: "",
@@ -388,7 +388,13 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
             throw new Error("Merging of samples not yet supported");
         }
 
-        dive.samples = dive1.computer_id ? dive1.samples : dive2.samples;
+        if (dive1.computer_id && dive2.computer_id) {
+            const merged = mergeSamples(dive1, dive2);
+            dive.samples = merged.samples;
+            dive.divetime = merged.divetime;
+        } else {
+            dive.samples = dive1.computer_id ? dive1.samples : dive2.samples;
+        }
 
         if (
             dive1.tanks[0] &&
@@ -470,7 +476,7 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
                  , place_id = $5::int
                  , max_depth = $6::numeric(6,3)
                  , tanks = $7::tank[]
-                 , samples = $8 
+                 , samples = $8
                WHERE dive_id = $1`,
             [
                 dive1.dive_id,
@@ -491,11 +497,11 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
                    FROM dive_tags dt1
                   WHERE dive_id = $2
                     AND NOT EXISTS (
-                        SELECT * 
+                        SELECT *
                           FROM dive_tags dt2
                          WHERE dt1.tag_id = dt2.tag_id
-                           AND dt2.dive_id = $1  
-                    ) 
+                           AND dt2.dive_id = $1
+                    )
         `,
             [dive1.dive_id, dive2.dive_id],
         );
@@ -507,11 +513,11 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
                    FROM dive_buddies db1
                   WHERE dive_id = $2
                     AND NOT EXISTS (
-                        SELECT * 
+                        SELECT *
                           FROM dive_buddies db2
                          WHERE db1.buddy_id = db2.buddy_id
-                           AND db2.dive_id = $1  
-                    ) 
+                           AND db2.dive_id = $1
+                    )
         `,
             [dive1.dive_id, dive2.dive_id],
         );

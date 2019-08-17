@@ -25,7 +25,6 @@ export interface IBatchDive {
 export interface IDiveSample {
     Time: number;
     Depth: number;
-    Temperature: number;
 }
 
 export interface IDive {

@@ -34,7 +34,7 @@ interface IDbConfig {
     port?: number;
 }
 
-class DbAdapter {
+export class DbAdapter {
     private pool: pg.Pool;
     private cnf: IDbConfig;
 

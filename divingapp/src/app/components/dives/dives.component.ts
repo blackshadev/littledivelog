@@ -9,6 +9,7 @@ import {
     ViewChild,
     ElementRef,
     AfterViewInit,
+    Input,
 } from '@angular/core';
 import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
 import { Location } from '@angular/common';
@@ -23,6 +24,9 @@ import { ModalService } from '../../services/modal.service';
     styleUrls: ['./dives.component.scss'],
 })
 export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
+    @Input()
+    public selectionMode = false;
+
     public dive: Dive;
     public dives: Dive[];
 

@@ -94,32 +94,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     public toggleDive(d: Dive) {
-        if (this.isSelected(d)) {
-            this.deselectDive(d);
-        } else {
-            this.selectDive(d);
-        }
-    }
-
-    public selectDive(d: Dive) {
-        if (d.id === undefined) {
-            return;
-        }
-        this._selected.add(d.id);
-    }
-
-    public deselectDive(d: Dive) {
-        if (d.id === undefined) {
-            return;
-        }
-        this._selected.delete(d.id);
-    }
-
-    public isSelected(d: Dive): boolean {
-        if (d.id === undefined) {
-            return false;
-        }
-        return this._selected.has(d.id);
+        d.selected = !d.selected;
     }
 
     async activateDive(d?: Dive, forced: boolean = false) {
@@ -145,9 +120,12 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     toggleMerge() {
         if (this.mode === 'normal') {
+            this.dives.forEach(d => (d.selected = false));
             this.mode = 'merge';
         } else if (this.mode === 'merge') {
-            console.log();
+            this.mode = 'normal';
+            const selected = this.dives.filter(d => d.selected);
+            console.log(selected);
         }
     }
 

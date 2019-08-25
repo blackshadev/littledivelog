@@ -125,6 +125,7 @@ export class Duration {
 
 export class Dive {
     id?: number;
+    selected = false;
     date: Date;
     divetime?: Duration;
     maxDepth: number;

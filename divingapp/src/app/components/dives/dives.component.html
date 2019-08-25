@@ -11,7 +11,7 @@
         </thead>
         <tbody>
             <tr *ngFor="let d of dives" (click)="clickDive(d)" [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
-                <td *ngIf="selectionMode"><input type="checkbox" ng-disabled="d.id !== undefined" ng-selected="isSelected(d)" /></td>
+                <td *ngIf="selectionMode"><input type="checkbox" ng-disabled="d.id !== undefined" [(ngModel)]="d.selected" /></td>
                 <td>{{ d.date | date: "y-MM-dd HH:mm:ss"}}</td>
                 <td class="d-none d-xl-table-cell">{{ d.divetime }}</td>
                 <td>

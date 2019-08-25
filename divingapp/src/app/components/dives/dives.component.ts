@@ -24,8 +24,11 @@ import { ModalService } from '../../services/modal.service';
     styleUrls: ['./dives.component.scss'],
 })
 export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
+    public get selectionMode(): boolean {
+        return this.mode === 'merge';
+    }
     @Input()
-    public selectionMode = false;
+    public mode: 'normal' | 'merge' = 'normal';
 
     public dive: Dive;
     public dives: Dive[];
@@ -35,6 +38,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('diveDetail', { static: false })
     private diveDetail: DiveDetailComponent;
+    private _selected: Set<number> = new Set<number>();
 
     constructor(
         private service: DiveService,
@@ -73,6 +77,13 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         );
     }
 
+    clickDive(d: Dive) {
+        if (this.mode === 'merge') {
+            this.toggleDive(d);
+        }
+        this.activateDive(d);
+    }
+
     ngOnDestroy(): void {
         this.subs.forEach(s => s.unsubscribe());
     }
@@ -82,14 +93,41 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         this.dive = d;
     }
 
-    async selectDive(d?: Dive, forced: boolean = false) {
-        // this.modal.open('sure');
+    public toggleDive(d: Dive) {
+        if (this.isSelected(d)) {
+            this.deselectDive(d);
+        } else {
+            this.selectDive(d);
+        }
+    }
 
+    public selectDive(d: Dive) {
+        if (d.id === undefined) {
+            return;
+        }
+        this._selected.add(d.id);
+    }
+
+    public deselectDive(d: Dive) {
+        if (d.id === undefined) {
+            return;
+        }
+        this._selected.delete(d.id);
+    }
+
+    public isSelected(d: Dive): boolean {
+        if (d.id === undefined) {
+            return false;
+        }
+        return this._selected.has(d.id);
+    }
+
+    async activateDive(d?: Dive, forced: boolean = false) {
         if (this.diveDetail.form.dirty) {
             if (!(await this.diveDetail.save()) && !forced) {
                 this.modal.open('sure', accepted => {
                     if (accepted) {
-                        this.selectDive(d, true);
+                        this.activateDive(d, true);
                     }
                 });
                 return;
@@ -102,6 +140,14 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         } else {
             this.dive = await this.service.get(d.id);
             this.location.go('/dive/' + d.id);
+        }
+    }
+
+    toggleMerge() {
+        if (this.mode === 'normal') {
+            this.mode = 'merge';
+        } else if (this.mode === 'merge') {
+            console.log();
         }
     }
 

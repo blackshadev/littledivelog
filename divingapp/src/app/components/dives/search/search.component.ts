@@ -4,6 +4,8 @@ import {
     ViewChild,
     EventEmitter,
     Output,
+    TemplateRef,
+    Input,
 } from '@angular/core';
 import { Observable } from 'rxjs';
 import { BehaviorSubject } from 'rxjs';
@@ -37,12 +39,12 @@ export interface IFilter {
     styleUrls: ['./search.component.scss'],
 })
 export class SearchComponent implements OnInit {
+    @Input() extraButtons: TemplateRef<any>;
+
     @Output()
     public filterChanged: EventEmitter<IFilter[]> = new EventEmitter<
         IFilter[]
     >();
-    @Output()
-    public onNewDive: EventEmitter<void> = new EventEmitter<void>();
 
     public searchValue: any = '';
     public currentTopic: ITopic;

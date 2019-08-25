@@ -10,8 +10,8 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let d of dives" (click)="selectDive(d)" [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
-                <td *ngIf="selectionMode"><input type="checkbox" /></td>
+            <tr *ngFor="let d of dives" (click)="clickDive(d)" [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
+                <td *ngIf="selectionMode"><input type="checkbox" ng-disabled="d.id !== undefined" ng-selected="isSelected(d)" /></td>
                 <td>{{ d.date | date: "y-MM-dd HH:mm:ss"}}</td>
                 <td class="d-none d-xl-table-cell">{{ d.divetime }}</td>
                 <td>
@@ -27,12 +27,23 @@
     <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)"></app-dive-detail>
 </ng-template>
 
+
+<ng-template #menuButtonsTemplate>
+    <button type="button" class="btn" [ngClass]="{ 'btn-outline-secondary': this.mode !== 'merge', 'btn-success': this.mode === 'merge'  }" (click)="toggleMerge()">
+        <i class="fa fa-link"></i>
+    </button>
+    <button type="button" class="btn btn-outline-primary" (click)="gotoNewDive()()">
+        <i class="fa fa-plus"></i>
+    </button>
+</ng-template>
+
 <ng-template #menuTemplate>
     <app-dive-search
         (filterChanged)="filters = $event; this.refresh()"
-        (onNewDive)="gotoNewDive()"
+        [extraButtons]="menuButtonsTemplate"
     ></app-dive-search>
 </ng-template>
+
 
 <app-list-detail
     [listTemplate]="listTemplate"
@@ -40,6 +51,7 @@
     [menuTemplate]="menuTemplate"
     [selected]="dive"
 ></app-list-detail>
+
 
 <app-modal id="sure" confirmText="Discard changed" cancelText="Keep changes">
     <p>

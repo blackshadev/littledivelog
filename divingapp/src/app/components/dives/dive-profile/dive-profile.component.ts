@@ -129,7 +129,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         };
         this._line = d3
             .line<ISample>()
-            .curve(d3.curveCardinal)
+            .curve(d3.curveMonotoneX)
             .x(d => this._scale.x(d.Time))
             .y(d => this._scale.y(d.Depth));
     }

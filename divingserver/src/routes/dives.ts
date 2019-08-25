@@ -385,10 +385,6 @@ router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
                 : dive1.divetime + dive2.divetime;
 
         if (dive1.computer_id && dive2.computer_id) {
-            throw new Error("Merging of samples not yet supported");
-        }
-
-        if (dive1.computer_id && dive2.computer_id) {
             const merged = mergeSamples(dive1, dive2);
             dive.samples = merged.samples;
             dive.divetime = merged.divetime;

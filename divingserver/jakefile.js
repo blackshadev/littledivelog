@@ -33,6 +33,7 @@ task("clear-db", { async: true }, async function() {
 
     await targetDb.call(`
         truncate table dives cascade;
+        truncate table computers cascade;
         truncate table buddies cascade;
         truncate table tags cascade;
         truncate table places cascade;

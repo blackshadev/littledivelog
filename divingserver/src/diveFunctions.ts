@@ -1,4 +1,4 @@
-import { IDiveSample } from "./interfaces";
+import { IDiveSample, IDive } from "./interfaces";
 
 export function max<T extends number | string>(...args: T[]): T {
     let t = args[0];
@@ -38,6 +38,20 @@ export function getComputerPrefered<
     return computerMax !== undefined && computerMax !== null
         ? computerMax
         : userMax;
+}
+
+export function combineSample(dst: IDiveSample, ...samples: IDiveSample[]) {
+    for (let sample of samples) {
+        for (let key of Object.keys(sample)) {
+            dst[key] =
+                dst[key] === null || dst[key] === undefined
+                    ? sample[key]
+                    : sample[key];
+            if (Array.isArray(dst[key]) && Array.isArray(sample[key])) {
+                dst[key].push(...sample[key]);
+            }
+        }
+    }
 }
 
 export function mergeSamples(
@@ -85,6 +99,15 @@ export function mergeSamples(
                 Time: timeOffset - 2,
                 Depth: 0,
             });
+        }
+
+        // Combines samples which are on the same time at the start of the dive, to make sure no wonky depth lines occur
+
+        while (
+            normDives[iX].samples[0].Time === normDives[iX].samples[1].Time
+        ) {
+            combineSample(normDives[iX].samples[1], normDives[iX].samples[0]);
+            normDives[iX].samples.shift();
         }
 
         normDives[iX].samples.forEach(s => (s.Time += timeOffset));

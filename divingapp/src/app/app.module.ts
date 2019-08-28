@@ -6,7 +6,7 @@ import { DashboardComponent } from './components/dashboard/dashboard.component';
 import { DiveDetailComponent } from './components/dives/dive-detail/dive-detail.component';
 import { DivesComponent } from './components/dives/dives.component';
 import { DiveService } from './services/dive.service';
-import { NgModule } from '@angular/core';
+import { NgModule, ErrorHandler } from '@angular/core';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 import { BrowserModule } from '@angular/platform-browser';
@@ -51,6 +51,8 @@ import {
 } from '@angular/common/http';
 import { TokenInterceptor } from './services/interceptors/token.interceptor';
 import { BaseModalComponent } from './components/modals/base/base-modal.component';
+import { GlobalErrorHandler } from './providers/GlobalErrorHandler.provider';
+import { ErrorModalComponent } from './components/modals/error/error-modal.component';
 
 @NgModule({
     declarations: [
@@ -83,6 +85,7 @@ import { BaseModalComponent } from './components/modals/base/base-modal.componen
         SearchComponent,
         ValidateFunctionDirective,
         BaseModalComponent,
+        ErrorModalComponent,
     ],
     imports: [
         BrowserModule,
@@ -95,6 +98,10 @@ import { BaseModalComponent } from './components/modals/base/base-modal.componen
         HttpClientModule,
     ],
     providers: [
+        {
+            provide: ErrorHandler,
+            useClass: GlobalErrorHandler,
+        },
         DiveService,
         BuddyService,
         MiscService,

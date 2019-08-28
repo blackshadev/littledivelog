@@ -5,7 +5,8 @@
         <h5 class="modal-title">{{titleText}}</h5>
       </div>
       <div class="modal-body">
-        <ng-content></ng-content>
+        <p>{{error?.message}}</p>
+        <pre>{{error?.stack}}</pre>
       </div>
       <div class="modal-footer">
         <button *ngIf="confirmText" type="button" #confirmButton class="btn btn-primary" (click)="onClick($event, true)">{{confirmText}}</button>

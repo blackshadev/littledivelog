@@ -8,6 +8,7 @@ import {
     Output,
     EventEmitter,
     AfterViewInit,
+    ApplicationRef,
 } from '@angular/core';
 import { ModalService } from '../../../services/modal.service';
 
@@ -17,14 +18,12 @@ import { ModalService } from '../../../services/modal.service';
     styleUrls: ['./base-modal.component.css'],
 })
 export class BaseModalComponent implements OnInit, OnDestroy {
-    @Input() titleText = 'Are you sure?';
-    @Input() confirmText = 'Yes';
-    @Input() cancelText = 'No';
-
-    @Input() showConfirm = true;
-    @Input() showCancel = true;
+    @Input() titleText;
+    @Input() confirmText;
+    @Input() cancelText;
 
     @Input() id: string;
+    @Input() extra: any;
     @Output() onClose = new EventEmitter<boolean>();
     public onCloseHandle?: (b: boolean) => void;
 
@@ -35,7 +34,7 @@ export class BaseModalComponent implements OnInit, OnDestroy {
     @ViewChild('cancelButton', { static: false })
     private cancelButton: ElementRef;
 
-    constructor(private modalService: ModalService, private el: ElementRef) {
+    constructor(private modalService: ModalService, private el: ElementRef, private appRef: ApplicationRef) {
         this.element = el.nativeElement;
     }
 
@@ -67,7 +66,8 @@ export class BaseModalComponent implements OnInit, OnDestroy {
         this.close();
     }
 
-    open(): void {
+    open(extra?: any): void {
+        this.appRef.tick();
         $('.modal', this.element).modal('show');
     }
 

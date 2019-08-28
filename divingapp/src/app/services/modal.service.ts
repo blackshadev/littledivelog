@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BaseModalComponent } from '../components/modals/base/base-modal.component';
 
 interface IModalOptions {
-    text?: string;
+    extra?: any;
 }
 
 @Injectable({
@@ -32,8 +32,11 @@ export class ModalService {
         optionsOrCb: IModalOptions | ((b: boolean) => void),
         cb?: (b: boolean) => void,
     ) {
+        let options: IModalOptions = {};
         if (typeof optionsOrCb === 'function') {
             cb = optionsOrCb;
+        } else {
+            options = optionsOrCb;
         }
         if (!cb) {
             throw new Error('expected callback');
@@ -42,7 +45,7 @@ export class ModalService {
         // open modal specified by id
         const modal = this.modals.filter(x => x.id === id)[0];
         modal.onCloseHandle = cb;
-        modal.open();
+        modal.open(options.extra);
     }
 
     public close(id: string) {

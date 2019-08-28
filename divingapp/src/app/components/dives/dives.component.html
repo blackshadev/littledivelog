@@ -53,11 +53,19 @@
 ></app-list-detail>
 
 
-<app-modal id="sure" confirmText="Discard changed" cancelText="Keep changes">
+<app-base-modal id="sure" confirmText="Discard changed" cancelText="Keep changes">
     <p>
         Some changes cannot be saved because they are invalid.
     </p>
     <p>
         Are you sure you want to leave this page and cancel all changes?
     </p>
-</app-modal>
+</app-base-modal>
+
+
+<app-base-modal id="merge" confirmText="Yes, merge dives" cancelText="Cancel">
+    <p>
+        Are you sure you want to merge these dives? This is irriversable.
+    </p>
+</app-base-modal>
+

@@ -50,6 +50,14 @@ export class DiveService {
         return Dive.ParseAll(dives);
     }
 
+    public async merge(dives: { dive_id: number }[]): Promise<any> {
+        await this.http
+            .post<IDbDive[]>(`${serviceUrl}/dive/merge`, {
+                dives: dives.map(k => k.dive_id),
+            })
+            .toPromise();
+    }
+
     public async save(dive: IDbDive, dive_id?: number): Promise<any> {
         if (arrayContains(dive.buddies, b => b.buddy_id === undefined)) {
             this.buddyService.clearCache();

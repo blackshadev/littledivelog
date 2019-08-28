@@ -1,13 +1,17 @@
 import { Injectable } from '@angular/core';
-import { ModalComponent } from '../components/controls/modal/modal.component';
+import { BaseModalComponent } from '../components/modals/base/base-modal.component';
+
+interface IModalOptions {
+    text?: string;
+}
 
 @Injectable({
     providedIn: 'root',
 })
 export class ModalService {
-    private modals: ModalComponent[] = [];
+    private modals: BaseModalComponent[] = [];
 
-    public add(modal: ModalComponent) {
+    public add(modal: BaseModalComponent) {
         // add modal to array of active modals
         this.modals.push(modal);
     }
@@ -17,7 +21,24 @@ export class ModalService {
         this.modals = this.modals.filter(x => x.id !== id);
     }
 
-    public open(id: string, cb: (b: boolean) => void) {
+    public open(
+        id: string,
+        options: IModalOptions,
+        cb: (b: boolean) => void,
+    ): void;
+    public open(id: string, cb: (b: boolean) => void): void;
+    public open(
+        id: string,
+        optionsOrCb: IModalOptions | ((b: boolean) => void),
+        cb?: (b: boolean) => void,
+    ) {
+        if (typeof optionsOrCb === 'function') {
+            cb = optionsOrCb;
+        }
+        if (!cb) {
+            throw new Error('expected callback');
+        }
+
         // open modal specified by id
         const modal = this.modals.filter(x => x.id === id)[0];
         modal.onCloseHandle = cb;

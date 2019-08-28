@@ -12,14 +12,18 @@ import {
 import { ModalService } from '../../../services/modal.service';
 
 @Component({
-    selector: 'app-modal',
-    templateUrl: './modal.component.html',
-    styleUrls: ['./modal.component.css'],
+    selector: 'app-base-modal',
+    templateUrl: './base-modal.component.html',
+    styleUrls: ['./base-modal.component.css'],
 })
-export class ModalComponent implements OnInit, OnDestroy {
+export class BaseModalComponent implements OnInit, OnDestroy {
     @Input() titleText = 'Are you sure?';
     @Input() confirmText = 'Yes';
     @Input() cancelText = 'No';
+
+    @Input() showConfirm = true;
+    @Input() showCancel = true;
+
     @Input() id: string;
     @Output() onClose = new EventEmitter<boolean>();
     public onCloseHandle?: (b: boolean) => void;

@@ -123,9 +123,24 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
             this.dives.forEach(d => (d.selected = false));
             this.mode = 'merge';
         } else if (this.mode === 'merge') {
-            this.mode = 'normal';
-            const selected = this.dives.filter(d => d.selected);
-            console.log(selected);
+            const selected = this.dives.filter(d => d.selected && d.id);
+
+            this.modal.open('merge', (b: boolean) => {
+                if (!b) {
+                    this.mode = 'normal';
+                    return;
+                }
+
+                this.service
+                    .merge(selected.map(d => ({ dive_id: d.id! })))
+                    .then(() => {
+                        this.mode = 'normal';
+                        this.refresh();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                    });
+            });
         }
     }
 

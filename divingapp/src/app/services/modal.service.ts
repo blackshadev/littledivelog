@@ -24,7 +24,7 @@ export class ModalService {
     public open(
         id: string,
         options: IModalOptions,
-        cb: (b: boolean) => void,
+        cb?: (b: boolean) => void,
     ): void;
     public open(id: string, cb: (b: boolean) => void): void;
     public open(
@@ -37,9 +37,6 @@ export class ModalService {
             cb = optionsOrCb;
         } else {
             options = optionsOrCb;
-        }
-        if (!cb) {
-            throw new Error('expected callback');
         }
 
         // open modal specified by id

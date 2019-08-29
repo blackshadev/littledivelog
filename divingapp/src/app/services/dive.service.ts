@@ -51,10 +51,10 @@ export class DiveService {
     }
 
     public async merge(dives: { dive_id: number }[]): Promise<any> {
+        const ids = dives.map(k => 'ids[]=' + k.dive_id).join('&');
+
         await this.http
-            .post<IDbDive[]>(`${serviceUrl}/dive/merge`, {
-                dives: dives.map(k => k.dive_id),
-            })
+            .post<IDbDive[]>(`${serviceUrl}/dive/merge?${ids}`, {})
             .toPromise();
     }
 

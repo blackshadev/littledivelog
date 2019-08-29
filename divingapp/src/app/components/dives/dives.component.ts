@@ -125,6 +125,11 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         } else if (this.mode === 'merge') {
             const selected = this.dives.filter(d => d.selected && d.id);
 
+            if (selected.length === 0) {
+                this.mode = 'normal';
+                return;
+            }
+
             this.modal.open('merge', (b: boolean) => {
                 if (!b) {
                     this.mode = 'normal';
@@ -138,7 +143,13 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
                         this.refresh();
                     })
                     .catch(err => {
-                        console.error(err);
+                        const msg =
+                            (err.error && err.error.error) || err.message;
+                        this.modal.open('error', {
+                            extra: {
+                                message: msg,
+                            },
+                        });
                     });
             });
         }

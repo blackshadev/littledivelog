@@ -6,6 +6,7 @@ import {
     tanksJSONtoType,
 } from "../db/helpers";
 import { getComputerPrefered, max, mergeSamples, min } from "../diveFunctions";
+import { HttpError } from "../errors";
 import { Router } from "../express-promise-router";
 import { IAuthenticatedRequest } from "../express.interface";
 import { IBatchDive, IBuddy, IDive, IPlace, ITag } from "../interfaces";
@@ -325,206 +326,242 @@ router.post("/", async (req: IAuthenticatedRequest, res) => {
     });
 });
 
-router.put("/:id1/merge/:id2", async (req: IAuthenticatedRequest, res) => {
+router.post("/merge", async (req: IAuthenticatedRequest, res) => {
     await SqlBatch.transaction(async cl => {
-        let res = await cl.query(
-            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code, computer_id from dives where dive_id = $1 and user_id = $2 ",
-            [req.params.id1, req.user.user_id],
+        if (
+            !req.query.ids ||
+            !Array.isArray(req.query.ids) ||
+            req.query.ids.length === 0 ||
+            req.query.ids.filter(a => isNaN(parseInt(a, 10))).length !== 0
+        ) {
+            throw new HttpError(
+                400,
+                "Expected query parameters ids to be an array of numbers",
+            );
+        }
+
+        let dives: IDive[];
+        const ids: number[] = req.query.ids.map(n => Number(n));
+
+        const res = await cl.query(
+            `select
+                    dive_id
+                  , divetime
+                  , date
+                  , to_json(tanks) as tanks
+                  , samples::json
+                  , max_depth::float
+                  , place_id
+                  , country_code
+                  , computer_id
+                  from dives
+                where dive_id = any($1::int[])
+                  and user_id = $2
+                order by date asc
+                `,
+            [ids, req.user.user_id],
         );
-        const dive1 = res.rows[0] as IDive;
-        res = await cl.query(
-            "select dive_id, divetime, date, to_json(tanks) as tanks, samples::json, max_depth, place_id, country_code, computer_id from dives where dive_id = $1 and user_id = $2 ",
-            [req.params.id2, req.user.user_id],
-        );
-        const dive2 = res.rows[0] as IDive;
-
-        if (!dive1) {
-            throw new Error("Dive1 does not exist");
-        }
-
-        if (!dive2) {
-            throw new Error("Dive2 does not exist");
-        }
-
-        if (
-            dive1.computer_id &&
-            dive2.computer_id &&
-            dive1.computer_id !== dive2.computer_id
-        ) {
-            throw new Error("Unable to merge 2 dives from different computers");
-        }
-
-        if (
-            dive1.place_id &&
-            dive2.place_id &&
-            dive1.place_id !== dive2.place_id
-        ) {
-            throw new Error("Unable to merge 2 dives from different places");
-        }
-
-        const dive: Omit<IDive, "dive_id"> = {
-            computer_id: 1,
-            country_code: "",
-            date: "",
-            divetime: 0,
-            max_depth: 0,
-            place_id: 0,
-            samples: [],
-            tanks: [],
-            user_id: req.user.user_id,
-        };
-        dive.computer_id = dive1.computer_id || dive2.computer_id;
-        dive.country_code = dive1.country_code || dive2.country_code;
-        dive.place_id = dive1.place_id || dive2.place_id;
-        dive.date = getComputerPrefered([dive1, dive2], "date", min);
-        dive.max_depth = getComputerPrefered([dive1, dive2], "max_depth", max);
-        dive.divetime =
-            dive1.computer_id || dive2.computer_id
-                ? (dive1.computer_id ? dive1.divetime : 0) +
-                  (dive2.computer_id ? dive2.divetime : 0)
-                : dive1.divetime + dive2.divetime;
-
-        if (dive1.computer_id && dive2.computer_id) {
-            const merged = mergeSamples(dive1, dive2);
-            dive.samples = merged.samples;
-            dive.divetime = merged.divetime;
-        } else {
-            dive.samples = dive1.computer_id ? dive1.samples : dive2.samples;
-        }
-
-        if (
-            dive1.tanks[0] &&
-            dive2.tanks[0] &&
-            dive1.tanks[0].pressure.type !== dive2.tanks[0].pressure.type
-        ) {
+        dives = res.rows as IDive[];
+        if (req.query.ids.length !== dives.length) {
+            const _ids = new Set(dives.map(d => d.dive_id));
+            const nonExistent = ids.filter(id => !_ids.has(id));
             throw new Error(
-                "Unable to merge dives with 2 different tank pressure types",
+                "The following dives did not exist: " + nonExistent.join(", "),
             );
         }
 
-        if (
-            dive1.tanks[0] &&
-            dive2.tanks[0] &&
-            dive1.tanks[0].volume !== dive2.tanks[0].volume
-        ) {
-            throw new Error(
-                "Unable to merge dives with 2 different tank volumes",
-            );
-        }
+        // TODO
+        let dive: Omit<IDive, "dive_id"> = dives[0];
+        for (let iX = 1; iX < dives.length; iX++) {
+            const dive1 = dive;
+            const dive2: IDive = dives[iX];
+            if (
+                dive1.computer_id &&
+                dive2.computer_id &&
+                dive1.computer_id !== dive2.computer_id
+            ) {
+                throw new Error(
+                    "Unable to merge dives from different computers",
+                );
+            }
 
-        if (
-            dive1.tanks[0] &&
-            dive2.tanks[0] &&
-            dive1.tanks[0].oxygen !== dive2.tanks[0].oxygen
-        ) {
-            throw new Error(
-                "Unable to merge dives with 2 different oxygen levels",
-            );
-        }
+            if (
+                dive1.place_id &&
+                dive2.place_id &&
+                dive1.place_id !== dive2.place_id
+            ) {
+                throw new Error("Unable to merge dives from different places");
+            }
 
-        dive.user_id = req.user.user_id;
-        dive.tanks = [
-            {
-                oxygen: dive1.tanks[0].oxygen || dive2.tanks[0].oxygen,
-                volume: dive1.tanks[0].volume || dive2.tanks[0].volume,
-                pressure: {
-                    begin: getComputerPrefered(
-                        [
-                            {
-                                computer_id: dive1.computer_id,
-                                pres: dive1.tanks[0].pressure.begin,
-                            },
-                            {
-                                computer_id: dive2.computer_id,
-                                pres: dive2.tanks[0].pressure.begin,
-                            },
-                        ],
-                        "pres",
-                        max,
-                    ),
-                    end: getComputerPrefered(
-                        [
-                            {
-                                computer_id: dive1.computer_id,
-                                pres: dive1.tanks[0].pressure.end,
-                            },
-                            {
-                                computer_id: dive2.computer_id,
-                                pres: dive2.tanks[0].pressure.end,
-                            },
-                        ],
-                        "pres",
-                        min,
-                    ),
-                    type:
-                        dive1.tanks[0].pressure.type ||
-                        dive2.tanks[0].pressure.type,
+            const timeDiff = Math.abs(
+                new Date(dive1.date).valueOf() - new Date(dive2.date).valueOf(),
+            );
+            const HOUR_IN_MS = 1000 * 60 * 60;
+            if (timeDiff > HOUR_IN_MS) {
+                throw new Error(
+                    "Unable to merge dives which are more than 1 hour apart",
+                );
+            }
+
+            dive = {
+                computer_id: 1,
+                country_code: "",
+                date: "",
+                divetime: 0,
+                max_depth: 0,
+                place_id: 0,
+                samples: [],
+                tanks: [],
+                user_id: req.user.user_id,
+            };
+            dive.computer_id = dive1.computer_id || dive2.computer_id;
+            dive.country_code = dive1.country_code || dive2.country_code;
+            dive.place_id = dive1.place_id || dive2.place_id;
+            dive.date = getComputerPrefered([dive1, dive2], "date", min);
+            dive.max_depth = getComputerPrefered(
+                [dive1, dive2],
+                "max_depth",
+                max,
+            );
+
+            dive.divetime =
+                dive1.computer_id || dive2.computer_id
+                    ? (dive1.computer_id ? dive1.divetime : 0) +
+                      (dive2.computer_id ? dive2.divetime : 0)
+                    : dive1.divetime + dive2.divetime;
+
+            if (dive1.computer_id && dive2.computer_id) {
+                const merged = mergeSamples(dive1, dive2);
+                dive.samples = merged.samples;
+                dive.divetime = merged.divetime;
+            } else {
+                dive.samples = dive1.computer_id
+                    ? dive1.samples
+                    : dive2.samples;
+            }
+
+            if (
+                dive1.tanks[0] &&
+                dive2.tanks[0] &&
+                dive1.tanks[0].pressure.type !== dive2.tanks[0].pressure.type
+            ) {
+                throw new Error(
+                    "Unable to merge dives with different tank pressure types",
+                );
+            }
+
+            if (
+                dive1.tanks[0] &&
+                dive2.tanks[0] &&
+                dive1.tanks[0].volume !== dive2.tanks[0].volume
+            ) {
+                throw new Error(
+                    "Unable to merge dives with different tank volumes",
+                );
+            }
+
+            if (
+                dive1.tanks[0] &&
+                dive2.tanks[0] &&
+                dive1.tanks[0].oxygen !== dive2.tanks[0].oxygen
+            ) {
+                throw new Error(
+                    "Unable to merge dives with different oxygen levels",
+                );
+            }
+
+            dive.user_id = req.user.user_id;
+            dive.tanks = [
+                {
+                    oxygen: dive1.tanks[0].oxygen || dive2.tanks[0].oxygen,
+                    volume: dive1.tanks[0].volume || dive2.tanks[0].volume,
+                    pressure: {
+                        begin: getComputerPrefered(
+                            [
+                                {
+                                    computer_id: dive1.computer_id,
+                                    pres: dive1.tanks[0].pressure.begin,
+                                },
+                                {
+                                    computer_id: dive2.computer_id,
+                                    pres: dive2.tanks[0].pressure.begin,
+                                },
+                            ],
+                            "pres",
+                            max,
+                        ),
+                        end: getComputerPrefered(
+                            [
+                                {
+                                    computer_id: dive1.computer_id,
+                                    pres: dive1.tanks[0].pressure.end,
+                                },
+                                {
+                                    computer_id: dive2.computer_id,
+                                    pres: dive2.tanks[0].pressure.end,
+                                },
+                            ],
+                            "pres",
+                            min,
+                        ),
+                        type:
+                            dive1.tanks[0].pressure.type ||
+                            dive2.tanks[0].pressure.type,
+                    },
                 },
-            },
-        ];
+            ];
+        }
 
-        await cl.query(
+        const insRes = await cl.query(
             `
-            UPDATE dives
-               SET divetime = $2::int
-                 , date = $3::timestamp
-                 , country_code = $4
-                 , place_id = $5::int
-                 , max_depth = $6::numeric(6,3)
-                 , tanks = $7::tank[]
-                 , samples = $8
-               WHERE dive_id = $1`,
+            INSERT INTO dives (user_id, date, divetime, max_depth, samples, tanks, place_id, country_code, computer_id)
+                 VALUES ($1, $2::timestamp, $3::int, $4::numeric(6,3), $5, $6::tank[], $7::int, $8, $9::int)
+              RETURNING dive_id`,
             [
-                dive1.dive_id,
-                dive.divetime,
+                req.user.user_id,
                 dive.date,
-                dive.country_code,
-                dive.place_id,
+                dive.divetime,
                 dive.max_depth,
-                tanksJSONtoType(dive.tanks),
                 JSON.stringify(dive.samples),
+                tanksJSONtoType(dive.tanks),
+                dive.place_id,
+                dive.country_code,
+                dive.computer_id,
             ],
         );
+        const newDiveId = insRes.rows[0].dive_id as number;
 
+        // TODO: insert and merge all tags and buddies
         await cl.query(
             `
             INSERT INTO dive_tags (dive_id, tag_id)
-                 SELECT $1, tag_id
+                 SELECT distinct $1::int, tag_id
                    FROM dive_tags dt1
-                  WHERE dive_id = $2
-                    AND NOT EXISTS (
-                        SELECT *
-                          FROM dive_tags dt2
-                         WHERE dt1.tag_id = dt2.tag_id
-                           AND dt2.dive_id = $1
-                    )
+                  WHERE dive_id = any($2::int[])
         `,
-            [dive1.dive_id, dive2.dive_id],
+            [newDiveId, ids],
         );
 
         await cl.query(
             `
             INSERT INTO dive_buddies (dive_id, buddy_id)
-                 SELECT $1, buddy_id
+                 SELECT distinct $1::int, buddy_id
                    FROM dive_buddies db1
-                  WHERE dive_id = $2
-                    AND NOT EXISTS (
-                        SELECT *
-                          FROM dive_buddies db2
-                         WHERE db1.buddy_id = db2.buddy_id
-                           AND db2.dive_id = $1
-                    )
+                  WHERE dive_id = any($2::int[])
         `,
-            [dive1.dive_id, dive2.dive_id],
+            [newDiveId, ids],
         );
 
-        await cl.query("DELETE FROM dive_buddies WHERE dive_id = $1", [
-            dive2.dive_id,
+        await cl.query(
+            "DELETE FROM dive_buddies WHERE dive_id = any($1::int[])",
+            [ids],
+        );
+        await cl.query("DELETE FROM dive_tags WHERE dive_id = any($1::int[])", [
+            ids,
         ]);
-        await cl.query("DELETE FROM dive_tags WHERE dive_id = $1", [
-            dive2.dive_id,
+        await cl.query("DELETE FROM dives WHERE dive_id = any($1::int[])", [
+            ids,
         ]);
-        await cl.query("DELETE FROM dives WHERE dive_id = $1", [dive2.dive_id]);
     });
 
     res.json({});

@@ -1,7 +1,16 @@
-@import "../../shared/global.scss";
+@import '../../shared/global.scss';
+
+@media screen and (max-width: $min-width-menu-collapsable) {
+    .menu-container {
+        width: $width-menu-collapsed !important;
+        .toggle-container {
+            display: none;
+        }
+    }
+}
 
 .menu-container {
-    position:fixed;
+    position: fixed;
     left: 0;
     top: 0;
     width: $width-menu-expanded;
@@ -26,7 +35,6 @@
     }
 
     .toggle-container {
-
         a {
             width: 100%;
             text-align: center;
@@ -38,7 +46,6 @@
 
     li {
         margin-top: 0;
-
     }
 
     a {
@@ -78,4 +85,3 @@
         }
     }
 }
-

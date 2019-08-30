@@ -4,6 +4,12 @@ body {
     background: $color-primary;
 }
 
+@media screen and (max-width: $min-width-menu-collapsable) {
+    .content {
+        padding-left: $width-menu-collapsed !important;
+    }
+}
+
 .content {
     transition: padding 1s;
     padding-left: $width-menu-expanded;

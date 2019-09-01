@@ -5,7 +5,10 @@
 .input-group {
     .autocomplete,
     .plain {
-        flex-grow: 1;
+        position: relative;
+        flex: 1 1 auto;
+        width: 1%;
+        margin-bottom: 0;
 
         .form-control {
             border-radius: 0;

@@ -73,9 +73,11 @@ export class ProfileComponent implements OnInit {
         });
 
         this.equipment = await this.profileService.equipment();
-        this.equipmentForm.setValue({
-            tank: this.equipment.tanks[0],
-        });
+        if (this.equipment) {
+            this.equipmentForm.setValue({
+                tank: this.equipment.tanks[0],
+            });
+        }
     }
 
     public async refreshSessions() {

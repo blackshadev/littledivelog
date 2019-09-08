@@ -172,7 +172,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         const equipment = await this.profile.equipment();
         const dive = Dive.New();
 
-        if (equipment.tanks) {
+        if (equipment && equipment.tanks) {
             dive.tanks = equipment.tanks;
         }
 

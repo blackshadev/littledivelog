@@ -65,7 +65,7 @@ export class ProfileService {
             .toPromise();
     }
 
-    public async equipment(): Promise<IEquipment> {
+    public async equipment(): Promise<IEquipment | null> {
         return await this.http
             .get<IEquipment>(`${serviceUrl}/user/profile/equipment`)
             .toPromise();

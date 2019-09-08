@@ -1,7 +1,6 @@
 import * as argon2 from "argon2";
 import * as express from "express";
 import * as jwt from "express-jwt";
-import { QueryResult } from "pg";
 import { config } from "../config";
 import { HttpError } from "../errors";
 import { Router } from "../express-promise-router";

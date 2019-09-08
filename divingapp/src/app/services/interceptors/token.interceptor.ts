@@ -44,10 +44,12 @@ export class TokenInterceptor implements HttpInterceptor {
         // return next.handle(request);
     }
 
-    public shouldIntercept(request): boolean {
+    public shouldIntercept(request: HttpRequest<any>): boolean {
         return (
             request.url.indexOf(serviceUrl) > -1 &&
-            request.url.indexOf('/auth/') === -1
+            (request.url.indexOf('/auth/') === -1 ||
+                (request.url.indexOf('/auth/refresh-token') &&
+                    request.method === 'GET'))
         );
     }
 

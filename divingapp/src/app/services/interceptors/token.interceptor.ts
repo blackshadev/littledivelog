@@ -48,7 +48,7 @@ export class TokenInterceptor implements HttpInterceptor {
         return (
             request.url.indexOf(serviceUrl) > -1 &&
             (request.url.indexOf('/auth/') === -1 ||
-                (request.url.indexOf('/auth/refresh-token') &&
+                (request.url.indexOf('/auth/refresh-token') !== -1 &&
                     request.method === 'GET'))
         );
     }

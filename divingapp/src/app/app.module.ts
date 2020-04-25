@@ -15,7 +15,7 @@ import {
     HideWhenMobileDirective,
     HideWhenDesktopDirective,
 } from './directives/hide-when/hide-when.directive';
-import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
+import { NguiAutoCompleteModule } from '@ngui/auto-complete';
 import { MyAutoCompletionDirective } from './directives/auto-complete/my-auto-completion.directive';
 import { AutocompleteComponent } from './components/controls/autocomplete/autocomplete.component';
 import { TagsComponent } from './components/controls/tags/tags.component';
@@ -93,7 +93,7 @@ import { ErrorModalComponent } from './components/modals/error/error-modal.compo
         ReactiveFormsModule,
         HttpModule,
         AppRoutingModule,
-        Ng2AutoCompleteModule,
+        NguiAutoCompleteModule,
         ColorPickerModule,
         HttpClientModule,
     ],

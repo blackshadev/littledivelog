@@ -1,7 +1,7 @@
 <div class="input-group">
     <div class="input-group-prepend">
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split" data-toggle="dropdown" aria-haspopup="true"
-            aria-expanded="false" aria-label="Search topic">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle dropdown-toggle-split"
+            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" aria-label="Search topic">
             {{ currentTopic ? currentTopic.caption : 'Topic' }}
         </button>
         <div class="dropdown-menu">
@@ -19,11 +19,12 @@
             <a class="dropdown-item">On place</a> -->
         </div>
     </div>
-    <div [ngClass]="{ 'autocomplete': currentTopic && currentTopic.source, 'plain': !(currentTopic && currentTopic.source) }">
-        <input auto-complete type="text" class="form-control" (keydown.enter)="addSearch()" [source]="getSearchItems.bind(this)"
-            [(ngModel)]="searchValue" list-formatter="text" />
-        <input #inpModel="ngModel" type="text" class="form-control" [ngClass]="{'is-invalid': inpModel.invalid }" (keydown.enter)="addSearch()"
-            [(ngModel)]="searchValue" [validateFunction]="validate.bind(this)" />
+    <div
+        [ngClass]="{ 'autocomplete': currentTopic && currentTopic.source, 'plain': !(currentTopic && currentTopic.source) }">
+        <input auto-complete type="text" class="form-control" (keydown.enter)="addSearch()"
+            [source]="getSearchItems.bind(this)" [(ngModel)]="searchValue" list-formatter="text" />
+        <input #inpModel="ngModel" type="text" class="form-control" [ngClass]="{'is-invalid': inpModel.invalid }"
+            (keydown.enter)="addSearch()" [(ngModel)]="searchValue" [validateFunction]="validate.bind(this)" />
     </div>
 
     <span class="input-group-append">
@@ -36,7 +37,7 @@
 
 <div class="search-tags">
     <div class="badge badge-secondary" *ngFor="let item of currentFilters">
-        {{item.caption}} '{{item.displayValue || item.value}}'
+        {{ item.caption }} '{{ item.displayValue || item.value }}'
         <a (click)="removeItem(item)">
             <i class="fa fa-times" aria-label="Delete"></i>
         </a>

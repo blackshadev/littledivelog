@@ -34,9 +34,9 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     @Output() change = new EventEmitter<ITag[]>();
     @Output() touched = new EventEmitter<ITag[]>();
 
-    @ViewChild('tagInput', { static: false }) private tagInput: ElementRef;
+    @ViewChild('tagInput') private tagInput: ElementRef;
 
-    @ViewChild('tagAutocomplete', { static: false })
+    @ViewChild('tagAutocomplete')
     private tagAutocomplete: AutocompleteComponent;
 
     private onChange: (v: ITag[]) => void;

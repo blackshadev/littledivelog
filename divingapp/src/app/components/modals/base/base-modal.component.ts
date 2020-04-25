@@ -29,9 +29,9 @@ export class BaseModalComponent implements OnInit, OnDestroy {
 
     private element: HTMLElement;
 
-    @ViewChild('confirmButton', { static: false })
+    @ViewChild('confirmButton')
     private confirmButton: ElementRef;
-    @ViewChild('cancelButton', { static: false })
+    @ViewChild('cancelButton')
     private cancelButton: ElementRef;
 
     constructor(private modalService: ModalService, private el: ElementRef, private appRef: ApplicationRef) {

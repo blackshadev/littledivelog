@@ -36,7 +36,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     private subs: Subscription[] = [];
     private filters: IFilter[] = [];
 
-    @ViewChild('diveDetail', { static: false })
+    @ViewChild('diveDetail')
     private diveDetail: DiveDetailComponent;
     private _selected: Set<number> = new Set<number>();
 

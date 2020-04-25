@@ -1,8 +1,15 @@
-import { Directive, Input, EventEmitter, Output, HostBinding, HostListener, ElementRef } from '@angular/core';
-import { Ng2AutoCompleteModule } from 'ng2-auto-complete';
+import {
+    Directive,
+    Input,
+    EventEmitter,
+    Output,
+    HostBinding,
+    HostListener,
+    ElementRef,
+} from '@angular/core';
 
 @Directive({
-    selector: '[appAutoCompletion]'
+    selector: '[appAutoCompletion]',
 })
 export class MyAutoCompletionDirective {
     @Output() valueChanged: EventEmitter<string> = new EventEmitter<string>();

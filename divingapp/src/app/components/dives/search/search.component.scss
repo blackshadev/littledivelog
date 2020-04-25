@@ -3,6 +3,7 @@
 }
 
 .input-group {
+
     .autocomplete,
     .plain {
         position: relative;
@@ -15,10 +16,12 @@
             width: 100%;
         }
     }
-    .plain > ::ng-deep.ng2-auto-complete-wrapper {
+
+    .plain> ::ng-deep.ngui-auto-complete-wrapper {
         display: none;
     }
-    .autocomplete > .form-control {
+
+    .autocomplete>.form-control {
         display: none;
     }
 }

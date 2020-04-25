@@ -5,6 +5,7 @@
         "preserveWhiteSpace": false
     },
     "compilerOptions": {
+    "module": "esnext",
         "outDir": "./dist/out-tsc",
         "baseUrl": "src",
         "sourceMap": true,

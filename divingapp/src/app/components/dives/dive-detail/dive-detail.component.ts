@@ -34,6 +34,7 @@ export class DiveDetailComponent implements OnInit {
     public diveFormData: any;
 
     @Output() onDiveChanged = new EventEmitter<Dive>();
+    @Output() onBack = new EventEmitter<void>();
 
     public form: FormGroup;
     public CurrentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
@@ -349,13 +350,14 @@ export class DiveDetailComponent implements OnInit {
     public goBack(forced: boolean = false) {
         // Check if the form has changes, if so ask for confirmation
         if (!forced && this.detailComponent.form.dirty) {
-            this.modalService.open('unsaved-changes', (b) => {
+            this.modalService.open('dive-detail-unsaved-changes', (b) => {
                 if (b) {
                     this.goBack(true);
                 }
             });
         } else {
-            this.route.navigate(['dive']);
+            this.form.reset();
+            this.onBack.emit();
         }
     }
 

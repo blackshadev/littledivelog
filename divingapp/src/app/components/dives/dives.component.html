@@ -27,7 +27,8 @@
 </ng-template>
 
 <ng-template #detailTemplate>
-    <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)"></app-dive-detail>
+    <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)" (onBack)="goBack()">
+    </app-dive-detail>
 </ng-template>
 
 
@@ -49,8 +50,15 @@
     [selected]="dive">
 </app-list-detail>
 
+<app-base-modal id="dives-unsaved-changes" titleText="Are you sure?" confirmText="Save changes"
+    cancelText="Discard changes">
+    <p>
+        You have unsaved changes, what do you want to do.
+    </p>
+</app-base-modal>
 
-<app-base-modal id="sure" titleText="Are you sure?" confirmText="Discard changed" cancelText="Keep changes">
+<app-base-modal id="dives-unsaved-changes-invalid" titleText="Are you sure?" confirmText="Discard changed"
+    cancelText="Cancel">
     <p>
         Some changes cannot be saved because they are invalid.
     </p>

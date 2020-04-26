@@ -7,11 +7,12 @@
         <button class="btn btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save">
             <i class="fa fa-floppy-o"></i>
         </button>
-        <button class="btn btn-primary" (click)="reset()" [disabled]="!form.dirty || isNew"
+        <button class="btn btn-primary" (click)="reset()" type="button" [disabled]="!form.dirty || isNew"
             title="Undo unsaved changes">
             <i class="fa fa-undo"></i>
         </button>
-        <button class="btn btn-primary" (click)="onBack.emit()" [appHideWhenDesktop]="true" title="Go back">
+        <button class="btn btn-primary" (click)="onBack.emit()" type="button" [appHideWhenDesktop]="true"
+            title="Go back">
             <i class="fa fa-arrow-left"></i>
         </button>
     </div>

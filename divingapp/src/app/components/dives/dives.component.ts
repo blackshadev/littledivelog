@@ -51,7 +51,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngAfterViewInit() {
-        // replace default back behaviour to prevent a reload
+        // replace default back behavior to prevent a reload
         // this.diveDetail.goBack = () => {
         //     this.dive = undefined;
         //     this.location.go('/dive');
@@ -73,7 +73,9 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
                         }
                     }),
                 )
-                .subscribe((dive) => (this.dive = dive)),
+                .subscribe((dive) => {
+                    this.dive = dive;
+                }),
         );
     }
 
@@ -90,7 +92,13 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     diveChanged(d: Dive) {
         this.refresh();
-        this.dive = d;
+        if (this.dive.isNew || this.dive.id === d.id) {
+            this.dive = d;
+        }
+    }
+
+    goBack() {
+        this.dive = undefined;
     }
 
     public toggleDive(d: Dive) {
@@ -98,15 +106,34 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async activateDive(d?: Dive, forced: boolean = false) {
-        if (this.diveDetail.form.dirty) {
-            if (!(await this.diveDetail.save()) && !forced) {
-                this.modal.open('sure', (accepted) => {
-                    if (accepted) {
+        if (this.dive.id === d?.id) {
+            return;
+        }
+
+        if (this.diveDetail.form.dirty && !forced) {
+            // ask to save
+            this.modal.open('dives-unsaved-changes', (shouldSave) => {
+                if (shouldSave) {
+                    const saved = this.diveDetail.save();
+                    if (saved) {
                         this.activateDive(d, true);
+                    } else {
+                        // Save failed, ask to discard
+                        this.modal.open(
+                            'dives-unsaved-changes-invalid',
+                            (shouldDiscard) => {
+                                if (shouldDiscard) {
+                                    this.activateDive(d, true);
+                                }
+                            },
+                        );
                     }
-                });
-                return;
-            }
+                } else {
+                    this.activateDive(d, true);
+                }
+            });
+
+            return;
         }
 
         if (d === undefined) {

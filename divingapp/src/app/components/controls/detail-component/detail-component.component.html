@@ -8,7 +8,7 @@
             <i class="fa fa-floppy-o"></i>
         </button>
         <button class="btn btn-primary" (click)="reset()" type="button" [disabled]="!form.dirty || isNew"
-            title="Undo unsaved changes">
+            title="Undo unsaved changes" [appHideWhenMobile]="true">
             <i class="fa fa-undo"></i>
         </button>
         <button class="btn btn-primary" (click)="onBack.emit()" type="button" [appHideWhenDesktop]="true"

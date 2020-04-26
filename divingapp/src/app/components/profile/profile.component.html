@@ -8,7 +8,8 @@
             <a class="nav-link" href="#equipment" aria-controls="equipment" role="tab" data-toggle="tab">Equipment</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#password" aria-controls="password" role="tab" data-toggle="tab">Change Password</a>
+            <a class="nav-link" href="#password" aria-controls="password" role="tab" data-toggle="tab">Change
+                Password</a>
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#sessions" aria-controls="sessions" role="tab" data-toggle="tab">Sessions</a>
@@ -32,11 +33,13 @@
                         </div>
                         <div class="form-group">
                             <label>Registerd since</label>
-                            <p class="form-control-static">{{ user.inserted | date: "y-MM-dd HH:mm:ss" }}</p>
+                            <p class="form-control-static">
+                                {{ user.inserted | date: "y-MM-dd HH:mm:ss" }}</p>
                         </div>
 
-                        <div *ngIf="alertMessage && alertMessage.for === 'profile'" class="alert" [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
-                            {{alertMessage.text}}
+                        <div *ngIf="alertMessage && alertMessage.for === 'profile'" class="alert"
+                            [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
+                            {{ alertMessage.text }}
                         </div>
                         <button class="btn btn-primary" type="submit">Update Profile</button>
                     </form>
@@ -65,7 +68,8 @@
 
         <div role="tabpanel" class="tab-pane p-4" id="equipment">
             <form [formGroup]="equipmentForm" (ngSubmit)="changeEquipment()">
-                <div class="form-group row" [ngClass]="{ 'has-danger': !equipmentForm.controls.tank.valid && equipmentForm.controls.tank.touched }">
+                <div class="form-group row"
+                    [ngClass]="{ 'has-danger': !equipmentForm.controls.tank.valid && equipmentForm.controls.tank.touched }">
                     <label class="hidden-xs col-sm-2 control-label">Tank</label>
                     <div class="col-sm-10">
 
@@ -83,25 +87,32 @@
                         </div>
                         <div class="input-group-group" formGroupName="tank">
                             <div class="input-group">
-                                <input type="text" class="form-control" formControlName="volume" placeholder="10" required />
+                                <input type="text" class="form-control" formControlName="volume" placeholder="10"
+                                    required />
                                 <div class="input-group-append">
                                     <span class="input-group-text">L</span>
                                 </div>
-                                <input type="text" class="form-control" formControlName="oxygen" placeholder="21" required />
+                                <input type="text" class="form-control" formControlName="oxygen" placeholder="21"
+                                    required />
                                 <div class="input-group-append">
                                     <span class="input-group-text">%</span>
                                 </div>
                             </div>
                             <div class="input-group" formGroupName="pressure">
-                                <input type="text" class="form-control" formControlName="begin" placeholder="200" required />
-                                <input type="text" class="form-control" formControlName="end" placeholder="50" required />
+                                <input type="text" class="form-control" formControlName="begin" placeholder="200"
+                                    required />
+                                <input type="text" class="form-control" formControlName="end" placeholder="50"
+                                    required />
                                 <div class="input-group-append">
-                                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        {{equipmentForm.controls.tank.controls.pressure.controls.type.value}}
+                                    <button type="button" class="btn btn-outline-formcontrol dropdown-toggle"
+                                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        {{ equipmentForm.controls.tank.controls.pressure.controls.type.value }}
                                     </button>
                                     <div class="dropdown-menu dropdown-menu-right">
-                                        <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('bar')">bar</a>
-                                        <a class="dropdown-item" (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('psi')">psi</a>
+                                        <a class="dropdown-item"
+                                            (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('bar')">bar</a>
+                                        <a class="dropdown-item"
+                                            (click)="equipmentForm.controls.tank.controls.pressure.controls.type.setValue('psi')">psi</a>
 
                                     </div>
                                 </div>
@@ -120,26 +131,31 @@
                             </div>
                         </div>
 
-                        <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.volume.errors?.invalid && equipmentForm.controls.tank.controls.volume.touched">
+                        <small class="has-danger error-text"
+                            *ngIf="equipmentForm.controls.tank.controls.volume.errors?.invalid && equipmentForm.controls.tank.controls.volume.touched">
                             Tank volume must be a valid integer; eg 10
                         </small>
 
-                        <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.oxygen.errors?.invalid && equipmentForm.controls.tank.controls.oxygen.touched">
+                        <small class="has-danger error-text"
+                            *ngIf="equipmentForm.controls.tank.controls.oxygen.errors?.invalid && equipmentForm.controls.tank.controls.oxygen.touched">
                             Oxygen percentage must be an integer number; eg 21
                         </small>
 
-                        <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.pressure.controls.begin.errors?.invalid && equipmentForm.controls.tank.controls.pressure.controls.begin.touched">
+                        <small class="has-danger error-text"
+                            *ngIf="equipmentForm.controls.tank.controls.pressure.controls.begin.errors?.invalid && equipmentForm.controls.tank.controls.pressure.controls.begin.touched">
                             Start pressure must be a valid number; eg 10.05
                         </small>
 
-                        <small class="has-danger error-text" *ngIf="equipmentForm.controls.tank.controls.pressure.controls.end.errors?.invalid && equipmentForm.controls.tank.controls.pressure.controls.end.touched">
+                        <small class="has-danger error-text"
+                            *ngIf="equipmentForm.controls.tank.controls.pressure.controls.end.errors?.invalid && equipmentForm.controls.tank.controls.pressure.controls.end.touched">
                             End pressure must be a valid number; eg 10.05
                         </small>
 
                     </div>
                 </div>
-                <div *ngIf="alertMessage && alertMessage.for === 'equipment'" class="alert" [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
-                    {{alertMessage.text}}
+                <div *ngIf="alertMessage && alertMessage.for === 'equipment'" class="alert"
+                    [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
+                    {{ alertMessage.text }}
                 </div>
                 <button class="btn btn-primary" type="submit">Change Equipment</button>
             </form>
@@ -148,32 +164,41 @@
 
         <div role="tabpanel" class="tab-pane p-4" id="password">
             <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
-                <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.currentPassword.touched && !passwordForm.controls.currentPassword.valid }">
+                <div class="form-group"
+                    [ngClass]="{ 'has-danger': passwordForm.controls.currentPassword.touched && !passwordForm.controls.currentPassword.valid }">
                     <label>Current password</label>
-                    <input class="form-control" formControlName="currentPassword" type="password" placeholder="Old password" />
-                    <small class="error-text has-danger" *ngIf="passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.errors?.required">
+                    <input class="form-control" formControlName="currentPassword" type="password"
+                        placeholder="Old password" />
+                    <small class="error-text has-danger"
+                        *ngIf="passwordForm.controls.currentPassword.touched && passwordForm.controls.currentPassword.errors?.required">
                         Current password is required.
                     </small>
                 </div>
-                <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.newPassword.touched && !passwordForm.controls.newPassword.valid }">
+                <div class="form-group"
+                    [ngClass]="{ 'has-danger': passwordForm.controls.newPassword.touched && !passwordForm.controls.newPassword.valid }">
                     <label>New password</label>
-                    <input class="form-control" formControlName="newPassword" type="password" placeholder="New password" />
+                    <input class="form-control" formControlName="newPassword" type="password"
+                        placeholder="New password" />
                     <small class="error-text has-danger" *ngIf="passwordForm.controls.newPassword.errors?.required">
                         New password is required.
                     </small>
                 </div>
-                <div class="form-group" [ngClass]="{ 'has-danger': passwordForm.controls.confirmNewPassword.touched && !passwordForm.controls.confirmNewPassword.valid }">
+                <div class="form-group"
+                    [ngClass]="{ 'has-danger': passwordForm.controls.confirmNewPassword.touched && !passwordForm.controls.confirmNewPassword.valid }">
                     <label>Confirm new password</label>
-                    <input class="form-control" formControlName="confirmNewPassword" type="password" placeholder="New password" />
-                    <small class="error-text has-danger" *ngIf="passwordForm.controls.confirmNewPassword.errors?.required">
+                    <input class="form-control" formControlName="confirmNewPassword" type="password"
+                        placeholder="New password" />
+                    <small class="error-text has-danger"
+                        *ngIf="passwordForm.controls.confirmNewPassword.errors?.required">
                         Please re-enter your new password for confirmation
                     </small>
                     <small class="error-text has-danger" *ngIf="passwordForm.controls.confirmNewPassword.errors?.same">
                         New password and confirmation password are not the same
                     </small>
                 </div>
-                <div *ngIf="alertMessage && alertMessage.for === 'password'" class="alert" [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
-                    {{alertMessage.text}}
+                <div *ngIf="alertMessage && alertMessage.for === 'password'" class="alert"
+                    [ngClass]="{ 'alert-danger': alertMessage.type === 'error', 'alert-success': alertMessage.type === 'success' }">
+                    {{ alertMessage.text }}
                 </div>
                 <button class="btn btn-primary" type="submit">Change password</button>
             </form>
@@ -204,11 +229,11 @@
                     </thead>
                     <tbody>
                         <tr *ngFor="let sess of sessions">
-                            <td>{{sess.description}}</td>
-                            <td>{{sess.last_used | date: "y-MM-dd HH:mm:ss"}}</td>
-                            <td>{{sess.last_ip}}</td>
-                            <td>{{sess.inserted | date: "y-MM-dd HH:mm:ss"}}</td>
-                            <td>{{sess.insert_ip}}</td>
+                            <td>{{ sess.description }}</td>
+                            <td>{{ sess.last_used | date: "y-MM-dd HH:mm:ss" }}</td>
+                            <td>{{ sess.last_ip }}</td>
+                            <td>{{ sess.inserted | date: "y-MM-dd HH:mm:ss" }}</td>
+                            <td>{{ sess.insert_ip }}</td>
                             <td>
                                 <button type="button" class="btn btn-sm btn-danger" (click)="deleteSession(sess.token)">
                                     <i class="fa fa-trash"></i>

@@ -21,6 +21,7 @@ import { PlaceService } from 'app/services/place.service';
 import { TagService } from 'app/services/tag.service';
 import { ProfileService } from 'app/services/profile.service';
 import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
+import { ModalService } from 'app/services/modal.service';
 
 declare function $(...args: any[]): any;
 
@@ -30,14 +31,6 @@ declare function $(...args: any[]): any;
     styleUrls: ['./dive-detail.component.scss'],
 })
 export class DiveDetailComponent implements OnInit {
-    @Input()
-    public set dive(d: Dive) {
-        this._dive = d;
-        this.updDiveFormData();
-    }
-    public get dive(): Dive {
-        return this._dive;
-    }
     public diveFormData: any;
 
     @Output() onDiveChanged = new EventEmitter<Dive>();
@@ -51,12 +44,22 @@ export class DiveDetailComponent implements OnInit {
     public detailComponent: DetailComponentComponent;
     private _dive: Dive;
 
+    @Input()
+    public set dive(d: Dive) {
+        this._dive = d;
+        this.updDiveFormData();
+    }
+    public get dive(): Dive {
+        return this._dive;
+    }
+
     constructor(
         private diveService: DiveService,
         private placeService: PlaceService,
         private buddyService: BuddyService,
         private tagService: TagService,
         private profileService: ProfileService,
+        private modalService: ModalService,
         private _fb: FormBuilder,
         private hostElement: ElementRef,
         private route: Router,
@@ -155,10 +158,10 @@ export class DiveDetailComponent implements OnInit {
                     ? this.dive.tanks[0].pressure.type
                     : 'bar',
             },
-            buddies: this.dive.buddies.map(b => {
+            buddies: this.dive.buddies.map((b) => {
                 return { buddy_id: b.buddy_id, text: b.text, color: b.color };
             }),
-            tags: this.dive.tags.map(b => {
+            tags: this.dive.tags.map((b) => {
                 return { tag_id: b.tag_id, text: b.text, color: b.color };
             }),
         };
@@ -244,7 +247,7 @@ export class DiveDetailComponent implements OnInit {
         const list = keyword
             ? fuse.search(keyword).slice(0, 10)
             : buds.slice(0, 10);
-        return list.map(b => {
+        return list.map((b) => {
             return {
                 buddy_id: b.buddy_id,
                 text: b.text,
@@ -267,7 +270,7 @@ export class DiveDetailComponent implements OnInit {
         const list = keyword
             ? fuse.search(keyword).slice(0, 10)
             : tags.slice(0, 10);
-        return list.map(b => {
+        return list.map((b) => {
             return {
                 tag_id: b.tag_id,
                 text: b.text,
@@ -321,14 +324,14 @@ export class DiveDetailComponent implements OnInit {
         ];
 
         d.samples = this.dive.samples;
-        d.tags = (dat.tags as ITag[]).map(t => {
+        d.tags = (dat.tags as ITag[]).map((t) => {
             return {
                 tag_id: t.tag_id,
                 text: t.text,
                 color: t.color,
             };
         });
-        d.buddies = (dat.buddies as IBuddy[]).map(t => {
+        d.buddies = (dat.buddies as IBuddy[]).map((t) => {
             return {
                 buddy_id: t.buddy_id,
                 text: t.text,
@@ -343,17 +346,26 @@ export class DiveDetailComponent implements OnInit {
         return true;
     }
 
-    public back() {
-        this.route.navigate(['dive']);
+    public goBack(forced: boolean = false) {
+        // Check if the form has changes, if so ask for confirmation
+        if (!forced && this.detailComponent.form.dirty) {
+            this.modalService.open('unsaved-changes', (b) => {
+                if (b) {
+                    this.goBack(true);
+                }
+            });
+        } else {
+            this.route.navigate(['dive']);
+        }
     }
 
     public async delete() {
         if (this.dive.isNew) {
-            this.back();
+            this.goBack(true);
         } else {
             await this.diveService.delete(this.dive.id);
             this.onDiveChanged.emit(undefined);
-            this.back();
+            this.goBack(true);
         }
     }
 }

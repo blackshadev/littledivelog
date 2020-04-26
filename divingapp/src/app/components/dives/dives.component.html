@@ -10,9 +10,11 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let d of dives" (click)="clickDive(d)" [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
-                <td *ngIf="selectionMode"><input type="checkbox" ng-disabled="d.id !== undefined" [(ngModel)]="d.selected" /></td>
-                <td>{{ d.date | date: "y-MM-dd HH:mm:ss"}}</td>
+            <tr *ngFor="let d of dives" (click)="clickDive(d)"
+                [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
+                <td *ngIf="selectionMode"><input type="checkbox" ng-disabled="d.id !== undefined"
+                        [(ngModel)]="d.selected" /></td>
+                <td>{{ d.date | date: "y-MM-dd HH:mm:ss" }}</td>
                 <td class="d-none d-xl-table-cell">{{ d.divetime }}</td>
                 <td>
                     <app-tags [tags]="d.tags"></app-tags>
@@ -21,6 +23,7 @@
             </tr>
         </tbody>
     </table>
+    <button class="fab btn btn-primary" (click)="gotoNewDive()"><i class="fa fa-plus"></i></button>
 </ng-template>
 
 <ng-template #detailTemplate>
@@ -29,28 +32,22 @@
 
 
 <ng-template #menuButtonsTemplate>
-    <button type="button" class="btn" [ngClass]="{ 'btn-outline-secondary': this.mode !== 'merge', 'btn-success': this.mode === 'merge'  }" (click)="toggleMerge()">
+    <button type="button" class="btn"
+        [ngClass]="{ 'btn-outline-secondary': this.mode !== 'merge', 'btn-success': this.mode === 'merge'  }"
+        (click)="toggleMerge()">
         <i class="fa fa-link"></i>
-    </button>
-    <button type="button" class="btn btn-outline-primary" (click)="gotoNewDive()">
-        <i class="fa fa-plus"></i>
     </button>
 </ng-template>
 
 <ng-template #menuTemplate>
-    <app-dive-search
-        (filterChanged)="filters = $event; this.refresh()"
-        [extraButtons]="menuButtonsTemplate"
-    ></app-dive-search>
+    <app-dive-search (filterChanged)="filters = $event; this.refresh()" [extraButtons]="menuButtonsTemplate">
+    </app-dive-search>
 </ng-template>
 
 
-<app-list-detail
-    [listTemplate]="listTemplate"
-    [detailTemplate]="detailTemplate"
-    [menuTemplate]="menuTemplate"
-    [selected]="dive"
-></app-list-detail>
+<app-list-detail [listTemplate]="listTemplate" [detailTemplate]="detailTemplate" [menuTemplate]="menuTemplate"
+    [selected]="dive">
+</app-list-detail>
 
 
 <app-base-modal id="sure" titleText="Are you sure?" confirmText="Discard changed" cancelText="Keep changes">
@@ -68,4 +65,3 @@
         Are you sure you want to merge these dives? This operation is irreversible.
     </p>
 </app-base-modal>
-

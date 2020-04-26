@@ -24,9 +24,6 @@ import { ModalService } from '../../services/modal.service';
     styleUrls: ['./dives.component.scss'],
 })
 export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
-    public get selectionMode(): boolean {
-        return this.mode === 'merge';
-    }
     @Input()
     public mode: 'normal' | 'merge' = 'normal';
 
@@ -39,6 +36,9 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     @ViewChild('diveDetail')
     private diveDetail: DiveDetailComponent;
     private _selected: Set<number> = new Set<number>();
+    public get selectionMode(): boolean {
+        return this.mode === 'merge';
+    }
 
     constructor(
         private service: DiveService,
@@ -52,10 +52,10 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     ngAfterViewInit() {
         // replace default back behaviour to prevent a reload
-        this.diveDetail.back = () => {
-            this.dive = undefined;
-            this.location.go('/dive');
-        };
+        // this.diveDetail.goBack = () => {
+        //     this.dive = undefined;
+        //     this.location.go('/dive');
+        // };
     }
 
     ngOnInit(): void {
@@ -73,7 +73,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
                         }
                     }),
                 )
-                .subscribe(dive => (this.dive = dive)),
+                .subscribe((dive) => (this.dive = dive)),
         );
     }
 
@@ -85,7 +85,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     ngOnDestroy(): void {
-        this.subs.forEach(s => s.unsubscribe());
+        this.subs.forEach((s) => s.unsubscribe());
     }
 
     diveChanged(d: Dive) {
@@ -100,7 +100,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     async activateDive(d?: Dive, forced: boolean = false) {
         if (this.diveDetail.form.dirty) {
             if (!(await this.diveDetail.save()) && !forced) {
-                this.modal.open('sure', accepted => {
+                this.modal.open('sure', (accepted) => {
                     if (accepted) {
                         this.activateDive(d, true);
                     }
@@ -120,10 +120,10 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     toggleMerge() {
         if (this.mode === 'normal') {
-            this.dives.forEach(d => (d.selected = false));
+            this.dives.forEach((d) => (d.selected = false));
             this.mode = 'merge';
         } else if (this.mode === 'merge') {
-            const selected = this.dives.filter(d => d.selected && d.id);
+            const selected = this.dives.filter((d) => d.selected && d.id);
 
             if (selected.length === 0) {
                 this.mode = 'normal';
@@ -137,12 +137,12 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
                 }
 
                 this.service
-                    .merge(selected.map(d => ({ dive_id: d.id! })))
+                    .merge(selected.map((d) => ({ dive_id: d.id! })))
                     .then(() => {
                         this.mode = 'normal';
                         this.refresh();
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         const msg =
                             (err.error && err.error.error) || err.message;
                         this.modal.open('error', {
@@ -158,7 +158,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     refresh() {
         const o = this.extractListFilter(this.filters);
 
-        this.service.list(o).then(d => {
+        this.service.list(o).then((d) => {
             this.dives = d;
         });
     }

@@ -44,6 +44,6 @@
     "pg-copy-streams": "^2.2.2",
     "typescript": "^3.5.3",
     "xml-escape": "^1.1.0",
-    "yarn": "^1.17.3"
+    "yarn": "^1.22.0"
   }
 }

@@ -1,0 +1,41 @@
+sudo: false
+
+language: node_js
+node_js:
+  - "latest"
+
+addons:
+  ssh_known_hosts: mira.littledev.nl
+
+before_script:
+  - npm install -g @angular/cli
+  - npm install -g pm2
+
+jobs:
+  include:
+    - stage: build
+      if: branch = master
+      script:
+        - ng build --prod --base-href https://dive.littledev.nl/
+
+before_deploy:
+  - openssl aes-256-cbc -K $encrypted_7e0ade2cd31e_key -iv $encrypted_7e0ade2cd31e_iv -in mira_rsa.enc -out ~/.ssh/deploy_rsa -d
+  - eval "$(ssh-agent -s)"
+  - chmod 600 ~/.ssh/deploy_rsa
+  - ssh-add ~/.ssh/deploy_rsa
+  - chmod a+x deploy_prod.sh
+
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ./deploy_prod.sh
+  on:
+    branch: master
+
+cache:
+  directories:
+    - node_modules
+
+notifications:
+  email:
+    - aas@anderwijs.nl

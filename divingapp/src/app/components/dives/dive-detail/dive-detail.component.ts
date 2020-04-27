@@ -59,11 +59,9 @@ export class DiveDetailComponent implements OnInit {
         private placeService: PlaceService,
         private buddyService: BuddyService,
         private tagService: TagService,
-        private profileService: ProfileService,
         private modalService: ModalService,
         private _fb: FormBuilder,
         private hostElement: ElementRef,
-        private route: Router,
     ) {
         this.form = this._fb.group({
             date: ['', [Validators.required, CustomValidators.datetime]],

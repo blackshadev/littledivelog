@@ -1,6 +1,11 @@
 import { Subscription } from 'rxjs';
 import { Dive } from '../../shared/dive';
-import { ActivatedRoute, Params, Router } from '@angular/router';
+import {
+    ActivatedRoute,
+    Params,
+    Router,
+    RoutesRecognized,
+} from '@angular/router';
 import { DiveService, TFilterKeys } from '../../services/dive.service';
 import {
     Component,
@@ -17,17 +22,18 @@ import { ProfileService } from 'app/services/profile.service';
 import { IFilter } from 'app/components/dives/search/search.component';
 import { flatMap } from 'rxjs/operators';
 import { ModalService } from '../../services/modal.service';
+import { filter, pairwise } from 'rxjs/operators';
 
 @Component({
     selector: 'app-dives',
     templateUrl: './dives.component.html',
     styleUrls: ['./dives.component.scss'],
 })
-export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
+export class DivesComponent implements OnInit, OnDestroy {
     @Input()
     public mode: 'normal' | 'merge' = 'normal';
 
-    public dive: Dive;
+    public dive?: Dive;
     public dives: Dive[];
 
     private subs: Subscription[] = [];
@@ -35,7 +41,8 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
 
     @ViewChild('diveDetail')
     private diveDetail: DiveDetailComponent;
-    private _selected: Set<number> = new Set<number>();
+    private _lastWasDive = false;
+
     public get selectionMode(): boolean {
         return this.mode === 'merge';
     }
@@ -48,14 +55,6 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
         private modal: ModalService,
     ) {
         this.refresh();
-    }
-
-    ngAfterViewInit() {
-        // replace default back behavior to prevent a reload
-        // this.diveDetail.goBack = () => {
-        //     this.dive = undefined;
-        //     this.location.go('/dive');
-        // };
     }
 
     ngOnInit(): void {
@@ -98,7 +97,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     goBack() {
-        this.dive = undefined;
+        this.activateDive(undefined);
     }
 
     public toggleDive(d: Dive) {
@@ -106,7 +105,7 @@ export class DivesComponent implements OnInit, OnDestroy, AfterViewInit {
     }
 
     async activateDive(d?: Dive, forced: boolean = false) {
-        if (this.dive.id === d?.id) {
+        if (this.dive?.id === d?.id) {
             return;
         }
 

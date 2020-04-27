@@ -1,77 +1,48 @@
 import { Directive, ElementRef, HostListener, Input } from '@angular/core';
 
-type TSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
+const operators = ['<', '>', '<=', '>=', '='] as const;
+type TSize = typeof sizes[number];
+type TOperator = typeof operators[number];
+
+const sizesInPixels = {
+    xs: 576,
+    sm: 768,
+    md: 992,
+    lg: 1200,
+};
+
+const hideWhenRegExp = new RegExp(
+    `^(${operators.map((c) => `\\${c}`).join('|')})(${sizes.join('|')})$`,
+    'i',
+);
 
 @Directive({
-    selector: '[appHideWhenMobile]',
+    selector: '[appHideWhen]',
 })
-export class HideWhenMobileDirective {
-    private _condition: boolean;
-    private _size: TSize = 'md';
-
-    @Input('appHideWhenMobile') set condition(v: boolean) {
-        this._condition = v;
-        this.apply();
-    }
-
-    @Input('isMobileWhen') set screenSize(s: TSize) {
-        this._size = s;
-        this.apply();
-    }
-
-    get isActive(): boolean {
-        return this._condition && this.checkSize();
-    }
-
-    constructor(private el: ElementRef) {}
-
-    @HostListener('window:resize', ['$event'])
-    public onResize(event) {
-        this.apply();
-    }
-
-    private checkSize(): boolean {
-        const w = window.innerWidth;
-        switch (this._size) {
-            case 'xs':
-                return w < 576;
-            case 'sm':
-                return w < 768;
-            case 'md':
-                return w < 992;
-            case 'lg':
-                return w < 1200;
-            case 'xl':
-                return true;
-        }
-    }
-
-    private apply() {
-        (<HTMLElement>this.el.nativeElement).style.display = this.isActive
-            ? 'none'
-            : '';
-    }
-}
-
-@Directive({
-    selector: '[appHideWhenDesktop]',
-})
-export class HideWhenDesktopDirective {
-    private _condition: boolean;
+export class HideWhenDirective {
     private _size: TSize = 'sm';
+    private _operator: TOperator = '<';
+    private _expression: (w: number) => boolean;
+    private _isEnabled = true;
 
-    @Input('appHideWhenDesktop') set condition(v: boolean) {
-        this._condition = v;
+    @Input('appHideWhen') set condition(condition: string) {
+        const [_, operator, size] = hideWhenRegExp.exec(condition);
+
+        this._size = size as TSize;
+        this._operator = operator as TOperator;
+
+        this.createExpression();
         this.apply();
     }
 
-    @Input('isMobileWhen') set screenSize(s: TSize) {
-        this._size = s;
+    @Input('appHideWhen-enabled') set enabled(b: boolean) {
+        this._isEnabled = b;
         this.apply();
     }
 
-    get isActive(): boolean {
-        return this._condition && this.checkSize();
+    public get isActive(): boolean {
+        return this._isEnabled && this._expression(window.innerWidth);
     }
 
     constructor(private el: ElementRef) {}
@@ -81,18 +52,11 @@ export class HideWhenDesktopDirective {
         this.apply();
     }
 
-    private checkSize(): boolean {
-        const w = window.innerWidth;
-        switch (this._size) {
-            case 'xs':
-                return w >= 768;
-            case 'sm':
-                return w >= 992;
-            case 'md':
-                return w >= 1200;
-            case 'lg':
-                return true;
-        }
+    private createExpression() {
+        this._expression = new Function(
+            'w',
+            `return w ${this._operator} ${sizesInPixels[this._size]}`,
+        ) as (w: number) => boolean;
     }
 
     private apply() {

@@ -24,8 +24,9 @@
                 <span class="input-group-addon input-group-addon-color">
                     <i [style.background-color]="form.controls.color.value"></i>
                 </span>
-                <input class="form-control" [(colorPicker)]="form.controls.color.value" [cpPosition]="'bottom'" (colorPickerChange)="controlChanged('color')"
-                    formControlName="color" placeholder="#cccccc" aria-describedby="color" required />
+                <input class="form-control" [(colorPicker)]="form.controls.color.value" [cpPosition]="'bottom'"
+                    (colorPickerChange)="controlChanged('color')" formControlName="color" placeholder="#cccccc"
+                    aria-describedby="color" required />
             </div>
             <small class="error-text has-danger" *ngIf="form.controls.color.errors?.invalid">
                 Please enter a valid color; eg #ff00ee.
@@ -36,7 +37,8 @@
         </div>
         <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.email.valid && form.controls.color.touched }">
             <label>Email</label>
-            <input class="form-control" formControlName="email" placeholder="myke@domain.tld" aria-describedby="email" />
+            <input class="form-control" formControlName="email" placeholder="myke@domain.tld"
+                aria-describedby="email" />
             <small class="error-text has-danger" *ngIf="form.controls.email.errors?.email">
                 Please enter a valid email; eg myke@domain.tld.
             </small>
@@ -47,115 +49,15 @@
         </div>
         <div class="form-group">
             <label>Last dive</label>
-            <input class="form-control-plaintext" [value]="buddy.last_dive | date:'y-MM-dd HH:mm:ss'" aria-describedby="LastDive" readonly
-            />
+            <input class="form-control-plaintext" [value]="buddy.last_dive | date:'y-MM-dd HH:mm:ss'"
+                aria-describedby="LastDive" readonly />
         </div>
     </form>
 </ng-template>
 
-<app-detail-component
-    #detailComponent
-    [pages]="{
+<app-detail-component #detailComponent [pages]="{
         'Detail': detailTemplate,
         'Delete': deleteTemplate
-    }"
-    [form]="form"
-    defaultPage="Detail"
-    [data]="buddy"
-    [isNew]="isNew"
-    *ngIf="buddy !== undefined"
-    (onSubmit)="onSubmit($event)"
-    (onBack)="back()"
->
+    }" [form]="form" defaultPage="Detail" [data]="buddy" [isNew]="isNew" *ngIf="buddy !== undefined"
+    (onSubmit)="onSubmit($event)" (onBack)="back()">
 </app-detail-component>
-<!-- <form [formGroup]="form" *ngIf="buddy !== undefined" (ngSubmit)="onSubmit($event)" (keydown.enter)="onEnter($event)">
-    <div class="detail-menu">
-        <button class="btn btn-lg btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save buddy">
-            <i class="fa fa-floppy-o"></i>
-        </button>
-        <button class="btn btn-lg btn-primary" type="button" (click)="reset()" [disabled]="isNew || !form.dirty" title="Undo unsaved changes">
-            <i class="fa fa-undo"></i>
-        </button>
-        <button class="btn btn-lg btn-primary" type="button" (click)="back()" [appHideWhenDesktop]="true" title="Go back">
-            <i class="fa fa-arrow-left"></i>
-        </button>
-    </div>
-
-    <div class="form-content">
-        <ul class="nav nav-tabs" role="tablist">
-            <li class="nav-item">
-                <a class="nav-link active" href="#buddy" aria-controls="buddy" role="tab" data-toggle="tab">Buddy</a>
-            </li>
-            <li class="nav-item">
-                <a *ngIf="!isNew" class="nav-link" href="#delete" aria-controls="delete" role="tab" data-toggle="tab">Delete</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#debug" aria-controls="debug" role="tab" data-toggle="tab">Debug</a>
-            </li>
-        </ul>
-
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="buddy">
-
-                <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.text.valid && form.controls.text.touched }">
-                    <label>Name</label>
-                    <input class="form-control" formControlName="text" placeholder="Myke" aria-describedby="name" required />
-                    <small class="error-text has-danger" *ngIf="form.controls.text.errors?.required">
-                        Name is required.
-                    </small>
-                </div>
-                <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.color.valid && form.controls.color.touched }">
-                    <label>Color</label>
-                    <div class="input-group">
-                        <span class="input-group-addon input-group-addon-color">
-                            <i [style.background-color]="form.controls.color.value"></i>
-                        </span>
-                        <input class="form-control" [(colorPicker)]="form.controls.color.value" [cpPosition]="'bottom'" (colorPickerChange)="controlChanged('color')"
-                            formControlName="color" placeholder="#cccccc" aria-describedby="color" required />
-                    </div>
-                    <small class="error-text has-danger" *ngIf="form.controls.color.errors?.invalid">
-                        Please enter a valid color; eg #ff00ee.
-                    </small>
-                    <small class="error-text has-danger" *ngIf="form.controls.color.errors?.required">
-                        Color is required.
-                    </small>
-                </div>
-                <div class="form-group" [ngClass]="{ 'has-danger': !form.controls.email.valid && form.controls.color.touched }">
-                    <label>Email</label>
-                    <input class="form-control" formControlName="email" placeholder="myke@domain.tld" aria-describedby="email" />
-                    <small class="error-text has-danger" *ngIf="form.controls.email.errors?.email">
-                        Please enter a valid email; eg myke@domain.tld.
-                    </small>
-                </div>
-                <div class="form-group">
-                    <label>Dive count</label>
-                    <input class="form-control-plaintext" [value]="buddy.dive_count" aria-describedby="DiveCount" readonly />
-                </div>
-                <div class="form-group">
-                    <label>Last dive</label>
-                    <input class="form-control-plaintext" [value]="buddy.last_dive | date:'y-MM-dd HH:mm:ss'" aria-describedby="LastDive" readonly
-                    />
-                </div>
-            </div>
-
-            <div *ngIf="!isNew" role="tabpanel" class="tab-pane" id="delete">
-                <div class="alert alert-warning">
-                    <h3>Delete this buddy?</h3>
-                    <p>Are your sure you want to permanently delete this buddy?</p>
-                    <p>All dives linked to this buddy will be unlinked; the dive itself will not be deleted.</p>
-                    <button type="button" class="btn btn-danger" (click)="delete()">
-                        Yes, delete this buddy.
-                    </button>
-                </div>
-
-            </div>
-            <div role="tabpanel" class="tab-pane" id="debug">
-                <div class="card">
-                    <div class="card-body">
-                        <pre><code>{{diagnostic | json}}</code></pre>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</form> -->

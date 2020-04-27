@@ -16,6 +16,7 @@ jobs:
     - stage: build
       if: branch = master
       script:
+        - cd diveapp
         - ng build --prod --base-href https://dive.littledev.nl/
 
 before_deploy:

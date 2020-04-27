@@ -1,4 +1,4 @@
-import { Subscription } from 'rxjs';
+import { Subscription, SubscriptionLike } from 'rxjs';
 import { Dive } from '../../shared/dive';
 import {
     ActivatedRoute,
@@ -36,7 +36,7 @@ export class DivesComponent implements OnInit, OnDestroy {
     public dive?: Dive;
     public dives: Dive[];
 
-    private subs: Subscription[] = [];
+    private subs: SubscriptionLike[] = [];
     private filters: IFilter[] = [];
 
     @ViewChild('diveDetail')
@@ -53,6 +53,7 @@ export class DivesComponent implements OnInit, OnDestroy {
         private profile: ProfileService,
         private location: Location,
         private modal: ModalService,
+        private router: Router,
     ) {
         this.refresh();
     }
@@ -75,6 +76,12 @@ export class DivesComponent implements OnInit, OnDestroy {
                 .subscribe((dive) => {
                     this.dive = dive;
                 }),
+            this.location.subscribe((e) => {
+                // TODO: use the router or something else
+                if (e.url === '/dive') {
+                    this.activateDive(undefined);
+                }
+            }),
         );
     }
 

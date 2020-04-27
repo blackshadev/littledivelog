@@ -23,7 +23,11 @@
             </tr>
         </tbody>
     </table>
-    <button class="fab btn btn-primary" (click)="gotoNewDive()"><i class="fa fa-plus"></i></button>
+    <button class="fab fab-secondary btn btn-secondary" (click)="toggleMerge()" appHideWhen=">=md"><i
+            class="fa fa-link"></i></button>
+
+    <button class="fab btn btn-primary" (click)="gotoNewDive()" appHideWhen=">=md"><i class="fa fa-plus"></i></button>
+
 </ng-template>
 
 <ng-template #detailTemplate>
@@ -35,9 +39,13 @@
 <ng-template #menuButtonsTemplate>
     <button type="button" class="btn"
         [ngClass]="{ 'btn-outline-secondary': this.mode !== 'merge', 'btn-success': this.mode === 'merge'  }"
-        (click)="toggleMerge()">
+        appHideWhen="<md" (click)="toggleMerge()">
         <i class="fa fa-link"></i>
     </button>
+    <button type="button" class="btn" class="btn btn-outline-secondary" (click)="gotoNewDive()" appHideWhen="<md">
+        <i class="fa fa-plus"></i>
+    </button>
+
 </ng-template>
 
 <ng-template #menuTemplate>

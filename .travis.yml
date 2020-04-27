@@ -14,13 +14,9 @@ before_script:
   - npm install -g @angular/cli
   - npm install -g pm2
 
-jobs:
-  include:
-    - stage: build
-      if: branch = master
-      script:
-        - cd  $TRAVIS_BUILD_DIR/diveapp
-        - ng build --prod --base-href https://dive.littledev.nl/
+script:
+  - cd  $TRAVIS_BUILD_DIR/diveapp
+  - ng build --prod --base-href https://dive.littledev.nl/
 
 before_deploy:
   - openssl aes-256-cbc -K $encrypted_7e0ade2cd31e_key -iv $encrypted_7e0ade2cd31e_iv

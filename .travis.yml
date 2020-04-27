@@ -2,7 +2,7 @@ sudo: false
 
 language: node_js
 node_js:
-  - "latest"
+  - "13"
 
 addons:
   ssh_known_hosts: mira.littledev.nl

@@ -15,7 +15,7 @@ before_script:
   - npm install -g pm2
 
 script:
-  - cd diveapp
+  - cd divingapp
   - ng build --prod --base-href https://dive.littledev.nl/
 
 before_deploy:

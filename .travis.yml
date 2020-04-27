@@ -13,9 +13,10 @@ env:
 before_script:
   - npm install -g @angular/cli
   - npm install -g pm2
+  - cd divingapp
+  - yarn
 
 script:
-  - cd divingapp
   - ng build --prod --base-href https://dive.littledev.nl/
 
 before_deploy:
@@ -31,7 +32,7 @@ before_deploy:
 
 cache:
   directories:
-    - node_modules
+    - divingapp/node_modules
 
 notifications:
   email:

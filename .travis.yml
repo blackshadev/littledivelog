@@ -1,42 +1,39 @@
 sudo: false
-
 language: node_js
 node_js:
   - "13"
-
 addons:
   ssh_known_hosts: mira.littledev.nl
+
+env:
+  global:
+    - secure: DtTY1fw6yIdOn0GmcUsNAwisNgMWeaISixZakbOtUHQykqQHsyf4Z9vsFp6pNT7dlBjqDb30/gmWqQhz0Dajs0w3oO/Ada7Ic8TXQGM6wj4ftVplESuvULC34Ws6ZSsTqjNucq/JRlETZR9f5oVnsO94GbqAf7os40qFUjwq23mH3dt5iAJWx2STwjUeH+CQdoSKuwv4ooc8qkNWJFy2sEQAgE9LIDN5YyXhB0y3bfej+eTBwZSQVAMyDXDTT1fmSC6+Hyt8c51J+xNcCECcng8RbEFdAtdsm+Yuz/o2pys0avHJEXxUz+iCLiw94TEcu3WHrk27M701ucMqKgygB3fF0DiQySrVoCyEuUhLzcgyKaQwdki1c8HsvG5ICnFZjnoUJBzszP7qyZ/TGaIs2oJpUsk12bYRAJZnpdQzhq3BnYuO3qs6A/E+xbqPI12gEOpBun/JLa50GZ/lz2LYd8Vjl0P8aBt4hpVUXYpW6rpe/vRtCaLAs2N7pQ9v2pe2FecOQEAHlnANayVgsmXEw1yOzRs8A1ubB5/yPg3ZU0k9UsvU5Ubom0SnLCb+Ws3mZemya+NIHi84Mo7ja3hX4cYNoPDXjPgMUsogbNNQlqupQsIUwIob5oKlM1jRGIlBmx55CJC0ZZzthCpw41laRpOZF+emZykwsl5UHtUy5cE=
+    - secure: kYEqpYVIeMMdQeb5ip5DGBlZqCuDXyTEUtu7hOFNNpz/7ef0AIp+hmAAjxxneslywPGzRv+YbwbfSH4Z8ws7ejjzcwd+jUBs8Fz9fCiaLAqUoLU3/mdvfREqz/E0eE7L31KjRkhdi1l3jNJ1BBuPCwSKS8Cr40swCmC93jhfDleGrPl2S/z/3g1p9huPMZDgVWf3y57AqPug7Fkf12Ht0pdg3D6LO66yGXIqrXqcFWiaTMiw2/8B5AYGj6qCkdvHtKnlzP4kO6nJ5aaql6JDHff8XSoyQz/csQQOuZj2ez1yWa3vy5w4dau1mPtSao/ChFwOj+fnOodVc/HnI5Z5mIIPbpMn3/zTXNY95C3zpWIM7GdD10dVESe66FMpoW3KFX3zoGyNNM2ERfsWQw2a9MPKBmzTNpPBMJ1m5FnISBuxy4WxiRmxTYSTVPxchFLdOVdG0BfqNXZ987B2e+C0blugi1zxIvYmNclN7VwT4WL+MbD85ze8r5O027dVAcGpgpeamstDXXZns0x1LlgzdSJWKVBgH72wggBvreFhMq+5Ajxz5IZQT5JiWHKktA+AZwHtx4QVDypnQ1whf+AhHIf11O1FSOX1QmRxSkPUgy6iBBeiXKkxyqv1GMMN4zzhw2tf49bP7Wq6hGi0j5dhjvKR+qeLBFEhYQKN75pDaKc=
 
 before_script:
   - npm install -g @angular/cli
   - npm install -g pm2
+  - cd divingapp
+  - yarn
 
-jobs:
-  include:
-    - stage: build
-      if: branch = master
-      script:
-        - cd diveapp
-        - ng build --prod --base-href https://dive.littledev.nl/
+script:
+  - ng build --prod --base-href https://dive.littledev.nl/
 
 before_deploy:
-  - openssl aes-256-cbc -K $encrypted_7e0ade2cd31e_key -iv $encrypted_7e0ade2cd31e_iv -in mira_rsa.enc -out ~/.ssh/deploy_rsa -d
+  - openssl aes-256-cbc -K $encrypted_7e0ade2cd31e_key -iv $encrypted_7e0ade2cd31e_iv
+    -in mira_rsa.enc -out ~/.ssh/deploy_rsa -d
   - eval "$(ssh-agent -s)"
   - chmod 600 ~/.ssh/deploy_rsa
   - ssh-add ~/.ssh/deploy_rsa
   - chmod a+x deploy_prod.sh
 
-deploy:
-  provider: script
-  skip_cleanup: true
-  script: ./deploy_prod.sh
-  on:
-    branch: master
+# after_success:
+# - find . -type d \( -path "./.*" -o -path "./node_modules" \) -prune -o -name "*" -print -exec curl --ftp-create-dirs -T {} ftp://your.server.com/dir/ --user ${SFTP_USER}:${SFTP_PASSWORD} \;
 
 cache:
   directories:
-    - node_modules
+    - divingapp/node_modules
 
 notifications:
   email:
-    - aas@anderwijs.nl
+    - vinnie@script4web.nl

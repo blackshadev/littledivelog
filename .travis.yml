@@ -27,8 +27,12 @@ before_deploy:
   - ssh-add ~/.ssh/deploy_rsa
   - chmod a+x deploy_prod.sh
 
-# after_success:
-# - find . -type d \( -path "./.*" -o -path "./node_modules" \) -prune -o -name "*" -print -exec curl --ftp-create-dirs -T {} ftp://your.server.com/dir/ --user ${SFTP_USER}:${SFTP_PASSWORD} \;
+deploy:
+  provider: script
+  skip_cleanup: true
+  script: ./deploy_prod.sh
+  on:
+    branch: master
 
 cache:
   directories:

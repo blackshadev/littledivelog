@@ -1,3 +1,3 @@
 #!/bin/bash
 
-find divingapp/dist -type f -exec curl --ftp-create-dirs -T {} -u $FTP_USER:$FTP_PASS ftp://littledev.nl/{} \;
+(cd ./travis-ftp && exec gulp deploy --user $FTP_USER --password $FTP_PASSWORD --host $FTP_HOST)

@@ -26,8 +26,11 @@ before_deploy:
   - eval "$(ssh-agent -s)"
   - chmod 600 /tmp/deploy_rsa
   - ssh-add /tmp/deploy_rsa
-  - chmod a+x deploy_prod.sh
   - npm install -g gulp-cli
+  - cd travis-ftp
+  - yarn
+  - cd $TRAVIS_BUILD_DIR
+  - chmod a+x deploy_prod.sh
 
 deploy:
   provider: script

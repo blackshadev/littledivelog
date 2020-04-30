@@ -11,6 +11,9 @@ gulp.task("deploy", function () {
     log: gutil.log,
   });
 
+  console.log(process.env["FTP_HOST"]);
+  console.log(process.env["FTP_USER"]);
+
   return gulp
     .src([`${process.env["FTP_DIR"]}/**/*.*`])
     .pipe(conn.newer(remotePath))

@@ -1,20 +1,18 @@
 var ftp = require("vinyl-ftp");
 var gutil = require("gulp-util");
-var minimist = require("minimist");
-var args = minimist(process.argv.slice(2));
 var gulp = require("gulp");
 
 gulp.task("deploy", function () {
   var remotePath = "/";
   var conn = ftp.create({
-    host: args.host,
-    user: args.user,
-    password: args.password,
+    host: process.env["FTP_HOST"],
+    user: process.env["FTP_USER"],
+    password: process.env["FTP_PASS"],
     log: gutil.log,
   });
 
   return gulp
-    .src([`${args.dir}/**/*.*`])
+    .src([`${process.env["FTP_DIR"]}/**/*.*`])
     .pipe(conn.newer(remotePath))
     .pipe(conn.dest(remotePath));
 });

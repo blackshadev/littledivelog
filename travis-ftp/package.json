@@ -6,7 +6,6 @@
   "dependencies": {
     "gulp": "^4.0.2",
     "gulp-util": "^3.0.8",
-    "minimist": "^1.2.5",
     "vinyl-ftp": "^0.6.1"
   }
 }

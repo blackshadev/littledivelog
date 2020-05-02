@@ -3,7 +3,9 @@ node_js:
   - "13"
 
 addons:
-  ssh_known_hosts: mira.littledev.nl
+  ssh_known_hosts:
+    - mira.littledev.nl
+    - littledev.nl
 
 before_script:
   - npm install -g @angular/cli

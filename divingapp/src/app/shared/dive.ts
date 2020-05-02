@@ -79,7 +79,7 @@ export class Duration {
 
     static Parse(str: Duration | string | number): Duration {
         if (typeof str === 'string') {
-            const parts = str.split(':').map(s => parseInt(s, 10));
+            const parts = str.split(':').map((s) => parseInt(s, 10));
             const d = new Duration(...parts);
             return d;
         } else if (typeof str === 'number') {
@@ -134,16 +134,6 @@ export class Dive {
     tanks: ITank[];
     tags: IDiveTag[];
     buddies: IBuddy[];
-    get isNew(): boolean {
-        return this.id === undefined;
-    }
-
-    get placeStr() {
-        return (
-            (this.place.name || '') +
-            (this.place.country_code ? ', ' + this.place.country_code : '')
-        );
-    }
 
     static New() {
         const dive = new Dive();
@@ -195,11 +185,21 @@ export class Dive {
 
     static ParseAllDC(arr: IDiveRecordDC[]): Dive[] {
         let iX = 0;
-        return arr.map(d => Dive.ParseDC(d, iX++));
+        return arr.map((d) => Dive.ParseDC(d, iX++));
     }
 
     static ParseAll(arr: IDbDive[]): Dive[] {
-        return arr.map(d => Dive.Parse(d));
+        return arr.map((d) => Dive.Parse(d));
+    }
+    get isNew(): boolean {
+        return this.id === undefined;
+    }
+
+    get placeStr() {
+        return (
+            (this.place.name || '') +
+            (this.place.country_code ? ', ' + this.place.country_code : '')
+        );
     }
 
     toJSON(): IDbDive {

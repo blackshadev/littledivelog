@@ -5,14 +5,6 @@ node_js:
 addons:
   ssh_known_hosts: mira.littledev.nl
 
-env:
-  global:
-    - FTP_HOST: littledev.nl
-    # FTP_USER
-    - secure: GmIn5htvYgcq+XBVVOuhdbLvuK2Q1+ec2rjENHv+D5vxbSo16X5NE2+2j7P8YBSSh+g/pefQfrpELh8T7u6Eo9apUw6Ud6Hp9JMNem5yOKfb/mVGdTKJ3h99Oz2FeVWBZa0LuhezdDLExzv5iCrE8H1PBDp3xkmCBs94UhoJOlKgw99XGqEnk4PmNDw+woO0CyAoz1odKxAE/kai/TxO1y6VIlP7TzZ0RT7ww/CxuULzFB/hG352hmBMMDyR7X27MtBWpZXdrqDG2RdWwLMB7ya57EwugcfJcUrA8ZZhMSFU9RRlS+h2tRHXuXFfCUAcEzR89do6ug7w0Gkd/B4jumC2kxuRLsdFsfmvxMnVFGhD1qpALz4qKF8EZdXGrjL3/Qu10CzUAsbBneX83vscufVsp8JyubkFKJpVfySKOMkI34TpcRM5MgdCWWykHMr4T0ne/tGHKp1xvFKOxrg+J3OeDhBnOVVx8iHfyrqHSbSP/4bkxTkFdrxbyBujpcpj3nXvMJsNZbf1vxIYP3WeBGnEc+SGMPEVaBpv2pZ3+DT9LooT/8fDjowa3MP7sJ+IOeuy5v0OY+5flnDFP/oUOrXBlIg5HCWZ+0QWRFKbvKLKj26Xp4c25plwiI3YItWwA+oEqeZ0pAis/Bfa804mKMgR426XHAT5HyiyIaVReLY=
-    # FTP_PASS
-    - secure: STrpAJrObCcZPrwpnqEMl4xB2ccz8ejRfKa0hebCPN53OMOkawOQi0Qxx0GW0MP45JY845h5lLPRk3UIApbQSurcut36Jih7fuk9vHuVDtjwRWZze4Iif7/k9ZYtZFS+hn+IZyNpyGlsa11XPvwgJM4l71wgWvHmSGZN4C1nQ/ZIn3xsNjYe8qROrC59a2zT+onYp2OYTdNaLEVu+C12TGknPc19cODbeXsoCs5WbBfMDgfN585whK2jG9/2Pgf2vLCI59+q1s0TC8X0lWDxFCSo0oN/RmHqZ3rogw/cQvOu/40PHK7dd7KWWIefcv5eYcU7qXNi+1kcemqM/S/+h03/Em8LXBzlXxrYroP8NkpMaJ+R7clRNx0Ze+II+jkpQRUGM6yEydiGdJNc05vUXVgPSlX9mCUKQRjZgOPLsHVjoAGim7FtLkV6adrH9apbdNcNMHRzTeKbobXfdGWF733WkryG3pq3ZzXiePmRjSu5MZZymTQgPgb+c7CZLpzVIEdlmnvy/2imssfrImph/LHng8nNz1dwjoBkEYaB3Vu9GvM00RNlk/PNrhymyqqabj9aO1glL7H7dUoCBznQyhTj//0iRdgZDoRAVkNWAl1wrd6845XelDtEvcjs10NEWOjBTu2inbB+uLSR8D11E2QqraqsnDBM+/qqIli9acU=
-
 before_script:
   - npm install -g @angular/cli
   - npm install -g pm2
@@ -34,8 +26,6 @@ before_deploy:
   - ssh-add /tmp/deploy_rsa
   - ssh-add /tmp/ftp_rsa
   - npm install -g gulp-cli
-  - cd travis-ftp
-  - yarn
   - cd $TRAVIS_BUILD_DIR
   - chmod a+x deploy_prod.sh
 

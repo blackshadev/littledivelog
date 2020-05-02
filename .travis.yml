@@ -9,7 +9,6 @@ addons:
 
 before_script:
   - npm install -g @angular/cli
-  - npm install -g pm2
   - cd divingapp
   - yarn
 
@@ -27,7 +26,6 @@ before_deploy:
   - chmod 600 /tmp/ftp_rsa
   - ssh-add /tmp/deploy_rsa
   - ssh-add /tmp/ftp_rsa
-  - npm install -g gulp-cli
   - cd $TRAVIS_BUILD_DIR
   - chmod a+x deploy_prod.sh
 

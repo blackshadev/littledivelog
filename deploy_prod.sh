@@ -1,3 +1,3 @@
 #!/bin/bash
 
-(cd ./travis-ftp && exec gulp deploy)
+scp -Pav -r ./divingapp/dist 'ftp@dive.littledev.nl'@littledev.nl:.

@@ -16,7 +16,7 @@ addons:
 
 before_install:
   - npm install -g @angular/cli
-  - npm install -g jakejs
+  - npm install -g jake
 
 install:
   - cd $TRAVIS_BUILD_DIR/divingapp

@@ -2,18 +2,34 @@ language: node_js
 node_js:
   - "13"
 
+services:
+  - docker
+
+env:
+  global:
+    - DOCKER_REPO=littledivelogserver
+
 addons:
   ssh_known_hosts:
     - mira.littledev.nl
     - littledev.nl
 
-before_script:
+before_install:
   - npm install -g @angular/cli
-  - cd divingapp
+  - npm install -g jakejs
+
+install:
+  - cd $TRAVIS_BUILD_DIR/divingapp
+  - yarn
+  - cd $TRAVIS_BUILD_DIR/divingserver
   - yarn
 
 script:
+  - cd $TRAVIS_BUILD_DIR/divingapp
   - ng build --prod --base-href https://dive.littledev.nl/
+  - cd $TRAVIS_BUILD_DIR/divingserver
+  - jake build
+  - docker build -t $DOCKER_USERNAME/$DOCKER_REPO .
 
 before_deploy:
   - cd $TRAVIS_BUILD_DIR
@@ -28,6 +44,7 @@ before_deploy:
   - ssh-add /tmp/ftp_rsa
   - cd $TRAVIS_BUILD_DIR
   - chmod a+x deploy_prod.sh
+  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 deploy:
   provider: script

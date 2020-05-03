@@ -85,3 +85,42 @@ export async function readConfig(path: string): Promise<IConfig> {
         });
     });
 }
+
+function asInt(val: string | undefined): number | undefined {
+    return val !== undefined ? parseInt(val, 10) : undefined;
+}
+function asArray(val: string): string[] | undefined {
+    return val !== undefined ? val.split(",") : undefined;
+}
+function asBoolean(val: string): boolean | undefined {
+    return val !== undefined ? /^1|true$/i.test(val) : undefined;
+}
+
+export async function envVariableConfig(): Promise<IConfig> {
+    const obj: IConfig = {
+        database: {
+            host: process.env["DB-HOST"],
+            database: process.env["DB-DATABASE"],
+            password: process.env["DB-PASSWORD"],
+            username: process.env["DB-USERNAME"],
+            port: asInt(process.env["DB-PORT"]),
+        },
+        http: {
+            port: asInt(process.env["HTTP-PORT"]) || 80,
+            proxy: asArray(process.env["HTTP-PROXY"]),
+        },
+        jwt: {
+            issuer: process.env["JWT-ISSUER"],
+            secret: process.env["JWT-SECRET"],
+        },
+        cors: asBoolean(process.env["HTTP-CORS"]),
+    };
+
+    if (!validator(config)) {
+        throw new Error(ajv.errorsText(validator.errors));
+    }
+
+    config = obj;
+
+    return obj;
+}

@@ -1,8 +1,18 @@
-const $pg = require("./build/pg.js");
-const $pgStrm = require("pg-copy-streams");
+desc("Builds the application");
+task("build", {
+        async: true
+    },
+    async function () {
+        await exec("tsc");
+    });
 
 desc("Clear all tables");
-task("clear-db", { async: true }, async function() {
+task("clear-db", {
+    async: true
+}, async function () {
+    const $pg = require("./build/pg.js");
+    const $pgStrm = require("pg-copy-streams");
+
     const targetDb = new $pg.DbAdapter();
     targetDb.setConfig(require("./config.json").database);
     await targetDb.start();
@@ -61,3 +71,17 @@ task("clear-db", { async: true }, async function() {
 
     this.complete();
 });
+
+async function exec(cmd) {
+    return new Promise((res, rej) => {
+        jake.exec(
+            cmd,
+            () => {
+                res();
+            }, {
+                printStdout: true,
+                printStderr: true
+            },
+        );
+    });
+}

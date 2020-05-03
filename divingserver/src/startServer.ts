@@ -3,22 +3,25 @@ import * as cors from "cors";
 import * as express from "express";
 import * as jwt from "express-jwt";
 import * as expressLogging from "express-logging";
-import * as unless from "express-unless";
 import { QueryResult } from "pg";
-import { config, readConfig } from "./config";
+import { config, readConfig, envVariableConfig } from "./config";
 import { HttpError } from "./errors";
 import { database } from "./pg";
 
-export async function start(pmx?: any) {
-    const path = process.env.CONFIG || process.cwd() + "/config.json";
-    console.log("Reading config: " + path);
-    await readConfig(path);
+export async function start() {
+    const path = process.env.CONFIG;
+    if (path) {
+        console.log("Reading config: " + path);
+        await readConfig(path);
+    } else {
+        await envVariableConfig();
+    }
 
     console.log("Starting database on " + config.database.host);
     database.setConfig(config.database);
     await database.start();
 
-    console.log("Setting up expres");
+    console.log("Setting up express");
     const app = express();
 
     if (config.http.proxy) {

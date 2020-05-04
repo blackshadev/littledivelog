@@ -116,7 +116,7 @@ export async function envVariableConfig(): Promise<IConfig> {
         cors: asBoolean(process.env["HTTP-CORS"]),
     };
 
-    if (!validator(config)) {
+    if (!validator(obj)) {
         throw new Error(ajv.errorsText(validator.errors));
     }
 

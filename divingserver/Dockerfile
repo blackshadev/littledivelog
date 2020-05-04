@@ -16,4 +16,4 @@ COPY node_modules /app/
 COPY build /app/
 
 EXPOSE 80
-CMD ["node" "build/app.js"]
+CMD [ "node", "build/app.js" ]

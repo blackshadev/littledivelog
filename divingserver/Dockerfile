@@ -12,8 +12,8 @@ FROM node:lts-alpine
 # ENV JWT-ISSUER
 
 WORKDIR /app
-COPY node_modules /app/
+COPY node_modules /app/node_modules/
 COPY build /app/
 
 EXPOSE 80
-CMD [ "node", "build/app.js" ]
+CMD [ "node", "app.js" ]

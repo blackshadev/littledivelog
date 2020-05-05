@@ -50,6 +50,7 @@ import { TokenInterceptor } from './services/interceptors/token.interceptor';
 import { BaseModalComponent } from './components/modals/base/base-modal.component';
 import { GlobalErrorHandler } from './providers/GlobalErrorHandler.provider';
 import { ErrorModalComponent } from './components/modals/error/error-modal.component';
+import { LocaldatetimePipe } from './pipes/localdatetime.pipe';
 
 @NgModule({
     declarations: [
@@ -82,6 +83,7 @@ import { ErrorModalComponent } from './components/modals/error/error-modal.compo
         ValidateFunctionDirective,
         BaseModalComponent,
         ErrorModalComponent,
+        LocaldatetimePipe,
     ],
     imports: [
         BrowserModule,

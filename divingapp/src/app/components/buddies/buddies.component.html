@@ -14,19 +14,24 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let bud of buddies" [ngClass]="{ 'table-active': selected !== undefined && bud.buddy_id === selected.buddy_id  }"
+            <tr *ngFor="let bud of buddies"
+                [ngClass]="{ 'table-active': selected !== undefined && bud.buddy_id === selected.buddy_id  }"
                 (click)="rowClick(bud)">
                 <td>
                     <app-tag class="badge" [color]="bud.color" fontSize="100%">
-                        {{bud.text}}
+                        {{ bud.text }}
                     </app-tag>
                 </td>
-                <td>{{bud.dive_count}}</td>
-                <td>{{bud.last_dive | date:'y-MM-dd HH:mm:ss'}}</td>
+                <td>{{ bud.dive_count }}</td>
+                <td>{{ bud.last_dive | date:'y-MM-dd HH:mm:ss' }}</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
+
+    <button class="fab btn btn-primary" [routerLink]="['/buddy/new/']" appHideWhen=">=md"><i
+            class="fa fa-plus"></i></button>
+
 </ng-template>
 
 <ng-template #detailTemplate>
@@ -34,14 +39,10 @@
 </ng-template>
 
 <ng-template #menuTemplate>
-    <button class="btn btn-primary" [routerLink]="['/buddy/new/']">
+    <button class="btn btn-primary" [routerLink]="['/buddy/new/']" appHideWhen="<md">
         <i class="fa fa-plus"></i>
     </button>
 </ng-template>
 
-<app-list-detail
-    [listTemplate]="listTemplate"
-    [detailTemplate]="detailTemplate"
-    [menuTemplate]="menuTemplate"
-    [selected]="selected"
-></app-list-detail>
+<app-list-detail [listTemplate]="listTemplate" [detailTemplate]="detailTemplate" [menuTemplate]="menuTemplate"
+    [selected]="selected"></app-list-detail>

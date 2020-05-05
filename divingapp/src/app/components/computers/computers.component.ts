@@ -8,9 +8,9 @@ import { DiveService, IComputer } from 'app/services/dive.service';
 })
 export class ComputersComponent implements OnInit {
 
-    computers: IComputer[] = [];
+    public computers: IComputer[] = [];
 
-    constructor(private diveService: DiveService) {
+    public constructor(diveService: DiveService) {
         diveService.listComputers().then((c) => {
             this.computers = c;
         });

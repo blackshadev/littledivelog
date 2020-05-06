@@ -1,6 +1,11 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DiveProfileComponent } from './dive-profile.component';
+import { DiveService } from 'app/services/dive.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { TagService } from 'app/services/tag.service';
+import { BuddyService } from 'app/services/buddy.service';
+import { DivetimePipe } from 'app/pipes/divetime.pipe';
 
 describe('DiveProfileComponent', () => {
     let component: DiveProfileComponent;
@@ -8,7 +13,10 @@ describe('DiveProfileComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [DiveProfileComponent]
+            imports: [HttpClientTestingModule],
+            declarations: [DiveProfileComponent, DivetimePipe],
+            providers: [DiveService, BuddyService, TagService],
+            
         }).compileComponents();
     }));
 

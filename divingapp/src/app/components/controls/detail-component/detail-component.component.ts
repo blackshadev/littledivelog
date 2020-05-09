@@ -71,11 +71,13 @@ export class DetailComponentComponent implements OnInit {
         // tab on enter
         const contentEl = this.content.nativeElement as HTMLElement;
         const currentTab = contentEl.querySelector('.tab-pane.active');
+
         if (currentTab && e.target instanceof HTMLInputElement) {
             e.target.blur();
             const all = currentTab.querySelectorAll(
                 'input.form-control',
             ) as NodeListOf<HTMLInputElement>;
+
             let iX: number;
             for (iX = 0; iX < all.length; iX++) {
                 if (all.item(iX) === e.target) {

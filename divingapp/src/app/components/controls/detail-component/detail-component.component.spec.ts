@@ -8,10 +8,22 @@ import {
     FormsModule,
 } from '@angular/forms';
 import { By } from '@angular/platform-browser';
+import { Component, TemplateRef, ViewChild } from '@angular/core';
 
 const formBuilder: FormBuilder = new FormBuilder();
 
-fdescribe('DetailComponentComponent', () => {
+@Component({
+    template: `<ng-template #templ>
+        <input class="form-control" name="firstName" />
+        <input class="form-control" name="lastName" />
+        <input class="form-control" name="age" />
+    </ng-template>`,
+})
+class WrapperComponent {
+    @ViewChild('templ') public templateref: TemplateRef<any>;
+}
+
+describe('DetailComponentComponent', () => {
     let component: DetailComponentComponent;
     let fixture: ComponentFixture<DetailComponentComponent>;
 
@@ -19,7 +31,7 @@ fdescribe('DetailComponentComponent', () => {
         TestBed.configureTestingModule({
             imports: [ReactiveFormsModule, FormsModule],
             providers: [FormBuilder],
-            declarations: [DetailComponentComponent],
+            declarations: [DetailComponentComponent, WrapperComponent],
         }).compileComponents();
     }));
 
@@ -33,13 +45,35 @@ fdescribe('DetailComponentComponent', () => {
         expect(component).toBeTruthy();
     });
 
-    const data = {
-        firstName: 'Testy',
-        lastName: 'Test',
-        age: '48',
-    };
+    it('should emit back', () => {
+        const backSpy = spyOn(component.onBack, 'emit');
+        const but = fixture.debugElement
+            .query(By.css('button[name="back"]'))
+            .nativeElement.dispatchEvent(new Event('click'));
 
-    describe('with form', () => {
+        fixture.detectChanges();
+
+        expect(backSpy).toHaveBeenCalled();
+    });
+
+    it('should emit reset', () => {
+        const resetSpy = spyOn(component, 'reset');
+        const but = fixture.debugElement
+            .query(By.css('button[name="reset"]'))
+            .nativeElement.dispatchEvent(new Event('click'));
+
+        fixture.detectChanges();
+
+        expect(resetSpy).toHaveBeenCalled();
+    });
+
+    describe('Form Control', () => {
+        const data = {
+            firstName: 'Testy',
+            lastName: 'Test',
+            age: '48',
+        };
+
         beforeEach(() => {
             const form = formBuilder.group({
                 firstName: ['', [Validators.required]],
@@ -51,11 +85,6 @@ fdescribe('DetailComponentComponent', () => {
         });
 
         it('save button should be disabled', () => {
-            console.log(
-                !component.isNew,
-                !component.formDirty,
-                component.formValid,
-            );
             const but = fixture.debugElement.query(
                 By.css('button[name=submit]'),
             );
@@ -142,7 +171,6 @@ fdescribe('DetailComponentComponent', () => {
             });
 
             it('should disabled save on invalid form', () => {
-                console.log(component.form.controls.age.valid);
                 expect(component.form.controls.age.valid).toBeFalse();
                 const but = fixture.debugElement.query(
                     By.css('button[name=submit]'),
@@ -167,6 +195,59 @@ fdescribe('DetailComponentComponent', () => {
                 component.reset();
                 expect(component.form.value.age).toEqual(data.age);
             });
+        });
+    });
+
+    describe('Template', () => {
+        let templateFixture: ComponentFixture<WrapperComponent>;
+        beforeEach(() => {
+            templateFixture = TestBed.createComponent(WrapperComponent);
+            templateFixture.detectChanges();
+            component.pages = {
+                Test: templateFixture.componentInstance.templateref,
+            };
+            component.defaultPage = 'Test';
+            fixture.detectChanges();
+        });
+
+        it('Should have inputs from template', () => {
+            expect(
+                fixture.debugElement.query(By.css('input[name=age]')),
+            ).toBeTruthy();
+        });
+
+        it('Should have tab-panel from template', () => {
+            expect(
+                fixture.debugElement.query(
+                    By.css('.tab-pane[id="Test"].active'),
+                ),
+            ).toBeTruthy();
+        });
+
+        it('Should focus next input on enter', () => {
+            const onEnterSpy = spyOn(component, 'onEnter').and.callThrough();
+            const selectSpy = spyOn(
+                fixture.debugElement.query(By.css('input[name="lastName"]'))
+                    .nativeElement,
+                'select',
+            );
+
+            fixture.debugElement
+                .query(By.css('input[name="firstName"]'))
+                .nativeElement.focus();
+
+            fixture.debugElement
+                .query(By.css('form'))
+                .triggerEventHandler('keydown.enter', {
+                    preventDefault() {},
+                    target: fixture.debugElement.query(
+                        By.css('input[name="firstName"]'),
+                    ).nativeElement,
+                });
+            fixture.detectChanges();
+
+            expect(onEnterSpy).toHaveBeenCalled();
+            expect(selectSpy).toHaveBeenCalled();
         });
     });
 });

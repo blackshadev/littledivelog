@@ -21,7 +21,7 @@ export class DetailComponentComponent implements OnInit {
     @Input() deleteTab = 'Delete';
 
     @Input() form: FormGroup;
-    @Input() isNew: boolean;
+    @Input() isNew = false;
     @Output() onSubmit: EventEmitter<any> = new EventEmitter();
     @Output() onBack: EventEmitter<any> = new EventEmitter();
     @Input() pages: { [name: string]: TemplateRef<any> } = {};
@@ -37,8 +37,14 @@ export class DetailComponentComponent implements OnInit {
     get data() {
         return this._data;
     }
-    // @Output() onReset: EventEmitter<any> = new EventEmitter();
-    // @Output() onReset: EventEmitter<any> = new EventEmitter();
+
+    get formDirty(): boolean | undefined {
+        return this.form?.dirty;
+    }
+
+    get formValid(): boolean | undefined {
+        return this.form?.valid;
+    }
 
     get pageKeys() {
         return Object.keys(this.pages).filter(
@@ -85,44 +91,52 @@ export class DetailComponentComponent implements OnInit {
     get diagnostic() {
         function getDirtyValues(cg: FormGroup) {
             const dirtyValues = {}; // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-                const currentControl = cg.controls[c];
+            if (cg) {
+                Object.keys(cg.controls).forEach((c) => {
+                    const currentControl = cg.controls[c];
 
-                if (currentControl.dirty) {
-                    if ((<FormGroup>currentControl).controls) {
-                        // check for nested controlGroups
-                        dirtyValues[c] = getDirtyValues(
-                            <FormGroup>currentControl,
-                        ); // recursion for nested controlGroups
-                    } else {
-                        dirtyValues[c] = true; // simple control
+                    if (currentControl.dirty) {
+                        if ((<FormGroup>currentControl).controls) {
+                            // check for nested controlGroups
+                            dirtyValues[c] = getDirtyValues(
+                                <FormGroup>currentControl,
+                            ); // recursion for nested controlGroups
+                        } else {
+                            dirtyValues[c] = true; // simple control
+                        }
                     }
-                }
-            });
+                });
+            }
             return dirtyValues;
         }
         function getInvalidValues(cg: FormGroup) {
             const invalidValues = {}; // initialize empty object
-            Object.keys(cg.controls).forEach((c) => {
-                const currentControl = cg.controls[c];
+            if (cg) {
+                Object.keys(cg.controls).forEach((c) => {
+                    const currentControl = cg.controls[c];
 
-                if (!currentControl.valid) {
-                    if ((<FormGroup>currentControl).controls) {
-                        // check for nested controlGroups
-                        invalidValues[c] = getInvalidValues(
-                            <FormGroup>currentControl,
-                        ); // recursion for nested controlGroups
-                    } else {
-                        invalidValues[c] = true; // simple control
+                    if (!currentControl.valid) {
+                        if ((<FormGroup>currentControl).controls) {
+                            // check for nested controlGroups
+                            invalidValues[c] = getInvalidValues(
+                                <FormGroup>currentControl,
+                            ); // recursion for nested controlGroups
+                        } else {
+                            invalidValues[c] = true; // simple control
+                        }
                     }
-                }
-            });
+                });
+            }
             return invalidValues;
         }
 
+        if (!this.form) {
+            return;
+        }
+
         return {
-            value: this.form.value,
-            formDirty: this.form.dirty,
+            value: this.form?.value,
+            formDirty: this.formDirty,
             dirty: getDirtyValues(this.form),
             invalid: getInvalidValues(this.form),
         };

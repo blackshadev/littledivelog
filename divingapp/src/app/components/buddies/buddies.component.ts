@@ -35,12 +35,20 @@ export class BuddiesComponent implements OnInit, OnDestroy {
         this.refresh();
     }
 
-    public rowClick(bud: IBuddyStat) {
-        this.router.navigateByUrl(`/buddy/${bud.buddy_id}`);
+    select(id?: number) {
+        this.router.navigateByUrl(`/buddy/${id || ''}`);
+        this._id = id;
+
+        if (id === undefined) {
+            this.selected = undefined;
+        } else if (this.buddies) {
+            this.selected = this.buddies.find((b) => this._id === b.buddy_id);
+        }
     }
 
     ngOnInit() {
-        this.sub = this.route.params.subscribe(params => {
+        this.sub = this.route.params.subscribe((params) => {
+            const id = params['id'] !== undefined ? +params['id'] : undefined;
             if (params['id'] === 'new') {
                 this.selected = {
                     buddy_id: undefined,
@@ -51,8 +59,8 @@ export class BuddiesComponent implements OnInit, OnDestroy {
                     last_dive: null,
                     buddy_user_id: null,
                 };
-            } else {
-                this.selectById(+params['id']);
+            } else if (id !== this._id) {
+                this.select(id);
             }
         });
     }
@@ -61,15 +69,15 @@ export class BuddiesComponent implements OnInit, OnDestroy {
         this.sub.unsubscribe();
     }
 
-    public async refresh() {
+    async refresh() {
         const c = await this.buddyService.fullList();
         this.buddies = c;
         if (this._id !== undefined) {
-            this.selectById(this._id);
+            this.select(this._id);
         }
     }
 
-    public async dataChanged(ev: IDataChanged) {
+    async dataChanged(ev: IDataChanged) {
         if (ev.type === 'delete') {
             this._id = undefined;
             this.selected = undefined;
@@ -78,12 +86,5 @@ export class BuddiesComponent implements OnInit, OnDestroy {
         }
         await this.refresh();
         this.router.navigateByUrl(`/buddy/${ev.key}`);
-    }
-
-    protected selectById(id: number) {
-        this._id = id;
-        if (this.buddies) {
-            this.selected = this.buddies.find(b => this._id === b.buddy_id);
-        }
     }
 }

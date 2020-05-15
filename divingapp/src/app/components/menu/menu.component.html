@@ -44,7 +44,7 @@
         <div class="bottom-menu">
             <ul class="nav nav-pills nav-stacked">
                 <ng-container *ngIf="!isLoggedIn">
-                    <li>
+                    <li data-test-name="login">
                         <a [routerLink]="['login']">
                             <i class="fa fa-fw fa-sign-in"></i>
                             <span>Sign in</span>
@@ -52,13 +52,13 @@
                     </li>
                 </ng-container>
                 <ng-container *ngIf="isLoggedIn">
-                    <li>
-                        <a  [routerLink]="['profile']">
+                    <li data-test-name="profile">
+                        <a [routerLink]="['profile']">
                             <i class="fa fa-fw fa-user"></i>
                             <span>Profile</span>
                         </a>
                     </li>
-                    <li>
+                    <li data-test-name="logout">
                         <a (click)="logout()">
                             <i class="fa fa-fw fa-sign-out"></i>
                             <span>Sign out</span>

@@ -22,21 +22,21 @@ import { DetailComponentComponent } from 'app/components/controls/detail-compone
     templateUrl: './buddy-detail.component.html',
     styleUrls: ['./buddy-detail.component.css'],
 })
-export class BuddyDetailComponent implements OnInit {
+export class BuddyDetailComponent {
     @Output() public onDataChanged: EventEmitter<
         IDataChanged
     > = new EventEmitter<IDataChanged>();
 
     @Input()
     public buddy: IBuddyStat;
+    public form: FormGroup;
+
+    @ViewChild('detailComponent', { static: true })
+    public detailComponent: DetailComponentComponent;
 
     public get isNew() {
         return this.buddy.buddy_id === undefined;
     }
-    public form: FormGroup;
-
-    @ViewChild('detailComponent', { static: true })
-    private detailComp: DetailComponentComponent;
 
     constructor(
         private service: BuddyService,
@@ -50,10 +50,8 @@ export class BuddyDetailComponent implements OnInit {
         });
     }
 
-    ngOnInit() {}
-
-    public async onSubmit(e: Event) {
-        e.preventDefault();
+    public async submit(e?: Event) {
+        e?.preventDefault();
         markFormGroupTouched(this.form);
         if (!this.form.valid) {
             return;
@@ -75,7 +73,7 @@ export class BuddyDetailComponent implements OnInit {
         this.buddy.buddy_id = bud.buddy_id;
 
         this.applyData();
-        this.detailComp.reset();
+        this.detailComponent.reset();
     }
 
     protected applyData() {

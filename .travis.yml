@@ -10,6 +10,7 @@ env:
     - DOCKER_REPO=littledivelogserver
 
 addons:
+  chrome: stable
   ssh_known_hosts:
     - mira.littledev.nl
     - littledev.nl
@@ -20,8 +21,8 @@ stages:
     if: branch = master
 
 before_install:
-  - npm install -g @angular/cli
-  - npm install -g jake
+  - yarn global add @angular/cli
+  - yarn global add jake
 
 install:
   - cd $TRAVIS_BUILD_DIR/divingapp
@@ -34,7 +35,7 @@ jobs:
     - stage: test
       script:
         - cd $TRAVIS_BUILD_DIR/divingapp
-        - ng test
+        - yarn run test-headless
     - stage: deploy
       script:
         - cd $TRAVIS_BUILD_DIR/divingapp
@@ -64,6 +65,7 @@ jobs:
         script: "./deploy_prod.sh"
 
 cache:
+  yarn: true
   directories:
     - divingapp/node_modules
 

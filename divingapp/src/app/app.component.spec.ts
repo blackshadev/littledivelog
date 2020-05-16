@@ -1,31 +1,35 @@
-import { TestBed, async } from '@angular/core/testing';
+import { TestBed, async, ComponentFixture } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { ElementRef } from '@angular/core';
 import { MenuComponent } from './components/menu/menu.component';
-import { AppRoutingModule } from './app.routing';
+import { BaseModalComponent } from './components/modals/base/base-modal.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { ErrorModalComponent } from './components/modals/error/error-modal.component';
+import { AuthService } from './services/auth.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Title } from '@angular/platform-browser';
 
 describe('AppComponent', () => {
+    let app: AppComponent;
+    let fixture: ComponentFixture<AppComponent>;
     beforeEach(async(() => {
         TestBed.configureTestingModule({
-            declarations: [AppComponent, MenuComponent],
-            providers: [
-                {
-                    provide: ElementRef,
-                },
+            declarations: [
+                AppComponent,
+                MenuComponent,
+                BaseModalComponent,
+                ErrorModalComponent,
             ],
-            imports: [AppRoutingModule],
+            providers: [AuthService, Title],
+            imports: [RouterTestingModule, HttpClientTestingModule],
         }).compileComponents();
     }));
 
-    it('should create the app', async(() => {
-        const fixture = TestBed.createComponent(AppComponent);
-        const app = fixture.debugElement.componentInstance;
-        expect(app).toBeTruthy();
-    }));
+    beforeEach(() => {
+        fixture = TestBed.createComponent(AppComponent);
+        app = fixture.debugElement.componentInstance;
+    });
 
-    // it(`should have as title 'app works!'`, async(() => {
-    //     const fixture = TestBed.createComponent(AppComponent);
-    //     const app = fixture.debugElement.componentInstance;
-    //     expect(app.title).toEqual('app works!');
-    // }));
+    it('should create the app', () => {
+        expect(app).toBeTruthy();
+    });
 });

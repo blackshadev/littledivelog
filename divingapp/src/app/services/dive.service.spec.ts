@@ -36,10 +36,10 @@ describe('DiveService', () => {
     }));
 
     describe('List', () => {
-        it('Should parse dives', done => {
+        it('Should parse dives', (done) => {
             service
                 .list()
-                .then(res => {
+                .then((res) => {
                     expect(res).toEqual(Dive.ParseAll(sampleDives));
 
                     done();
@@ -52,19 +52,19 @@ describe('DiveService', () => {
             req.flush(sampleDives);
         });
 
-        it('Should apply filters in query string', done => {
+        it('Should apply filters in query string', (done) => {
             service
                 .list({
                     buddies: '1,5',
                     country: 'NL',
                 })
-                .then(res => {
+                .then((res) => {
                     expect(res).toEqual(Dive.ParseAll(sampleDives));
 
                     done();
                 })
                 .catch(done.fail);
-            const req = httpMock.expectOne(r => {
+            const req = httpMock.expectOne((r) => {
                 expect(r.method).toEqual('GET');
 
                 expect(r.url).toContain(`${serviceUrl}/dive/`);
@@ -77,10 +77,10 @@ describe('DiveService', () => {
         });
     });
 
-    it('Get dive should parse dive', done => {
+    it('Get dive should parse dive', (done) => {
         service
             .get(2)
-            .then(d => {
+            .then((d) => {
                 expect(d).toEqual(Dive.Parse(sampleDives[2]));
                 done();
             })
@@ -93,13 +93,11 @@ describe('DiveService', () => {
         req.flush(sampleDives[2]);
     });
 
-    it('Get dive on error', done => {
-        service
-            .get(2)
-            .then(d => {
-                done.fail('Expected error');
-            })
-            .catch(done);
+    it('Get dive on error', (done) => {
+        service.get(2).catch((err) => {
+            expect(err.status).toEqual(400);
+            done();
+        });
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/dive/2`,
@@ -110,12 +108,12 @@ describe('DiveService', () => {
         });
     });
 
-    it('Get samples', done => {
+    it('Get samples', (done) => {
         const samples = require('./divesamples.json');
 
         service
             .samples(2)
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(samples);
                 done();
             })
@@ -128,10 +126,10 @@ describe('DiveService', () => {
         req.flush(samples);
     });
 
-    it('Get samples', done => {
+    it('Get samples', (done) => {
         service
             .samples()
-            .then(d => {
+            .then((d) => {
                 expect(d).toEqual([]);
                 done();
             })
@@ -143,7 +141,7 @@ describe('DiveService', () => {
         });
     });
 
-    it('listComputers', done => {
+    it('listComputers', (done) => {
         const comp: IComputer[] = [
             {
                 computer_id: 1,
@@ -155,7 +153,7 @@ describe('DiveService', () => {
         ];
         service
             .listComputers()
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(comp);
                 done();
             })
@@ -168,11 +166,11 @@ describe('DiveService', () => {
         req.flush(comp);
     });
 
-    it('Delete', done => {
+    it('Delete', (done) => {
         const value = true;
         service
             .delete(3)
-            .then(d => {
+            .then((d) => {
                 expect(d as any).toEqual(JSON.stringify(value));
                 done();
             })
@@ -212,10 +210,10 @@ describe('DiveService', () => {
                 },
             ],
         };
-        it('Insert', done => {
+        it('Insert', (done) => {
             service
                 .save(saveSample)
-                .then(d => {
+                .then((d) => {
                     expect(d).toBe(saveSample);
                     done();
                 })
@@ -227,10 +225,10 @@ describe('DiveService', () => {
             req.flush(saveSample);
         });
 
-        it('Update', done => {
+        it('Update', (done) => {
             service
                 .save(saveSample, 2)
-                .then(d => {
+                .then((d) => {
                     expect(d).toBe(saveSample);
                     done();
                 })
@@ -242,7 +240,7 @@ describe('DiveService', () => {
             req.flush(saveSample);
         });
 
-        it('Should clear buddy cache with new buddies', done => {
+        it('Should clear buddy cache with new buddies', (done) => {
             const sample = Object.assign({}, saveSample, {
                 dive_id: undefined,
             });
@@ -258,7 +256,7 @@ describe('DiveService', () => {
             const tagSpy = spyOn(tagService, 'clearCache');
             service
                 .save(sample)
-                .then(d => {
+                .then((d) => {
                     expect(d).toBe(sample);
                     expect(budSpy).toHaveBeenCalled();
                     expect(tagSpy).not.toHaveBeenCalled();
@@ -274,7 +272,7 @@ describe('DiveService', () => {
             req.flush(sample);
         });
 
-        it('Should clear tags cache with new tags', done => {
+        it('Should clear tags cache with new tags', (done) => {
             const sample = Object.assign({}, saveSample, {
                 dive_id: undefined,
             });
@@ -289,7 +287,7 @@ describe('DiveService', () => {
             const tagSpy = spyOn(tagService, 'clearCache');
             service
                 .save(sample)
-                .then(d => {
+                .then((d) => {
                     expect(d).toBe(sample);
                     expect(tagSpy).toHaveBeenCalled();
                     expect(budSpy).not.toHaveBeenCalled();

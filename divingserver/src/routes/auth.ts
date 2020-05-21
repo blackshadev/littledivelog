@@ -167,7 +167,7 @@ router.delete(
     async (req: IAuthenticatedRequest, res) => {
         const clearAll = req.query.all ? true : false;
 
-        const params = [req.user.user_id];
+        const params: any[] = [req.user.user_id];
         if (clearAll) {
             params.push(req.params.token);
         }

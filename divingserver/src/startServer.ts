@@ -114,5 +114,5 @@ export async function start() {
             resolve();
         });
     });
-    console.log("DiveServer listening on 3000");
+    console.log("DiveServer listening on " + config.http.port);
 }

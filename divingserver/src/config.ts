@@ -1,5 +1,6 @@
 import * as Ajv from "ajv";
 import * as fs from "fs";
+import * as dotenv from "dotenv";
 
 interface IConfig {
     cors?: boolean;
@@ -97,6 +98,8 @@ function asBoolean(val: string): boolean | undefined {
 }
 
 export async function envVariableConfig(): Promise<IConfig> {
+    dotenv.config();
+
     const obj: IConfig = {
         database: {
             host: process.env["DB-HOST"],

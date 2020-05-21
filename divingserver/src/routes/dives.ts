@@ -53,7 +53,7 @@ function diveQuery(flds: string[] | "*", where: string = "") {
     }
 
     return `
-        select ${flds.map(f => fld_map[f]).join(",")}
+        select ${flds.map((f) => fld_map[f]).join(",")}
           from dives d
           left join places p on p.place_id = d.place_id
          where d.user_id = $1
@@ -87,23 +87,23 @@ router.get("/", async (req: IAuthenticatedRequest, res) => {
             ) @> $${pars.length}::integer[]
         `;
     }
-    if (req.query.till) {
+    if (typeof req.query.till === "string") {
         pars.push(req.query.till);
         filterSql += ` and d.date < $${pars.length}::date`;
     }
-    if (req.query.from) {
+    if (typeof req.query.from === "string") {
         pars.push(req.query.from);
         filterSql += ` and d.date > $${pars.length}::date`;
     }
-    if (req.query.date) {
+    if (typeof req.query.date === "string") {
         pars.push(req.query.date);
         filterSql += ` and d.date::date = $${pars.length}::date`;
     }
-    if (req.query.place) {
+    if (typeof req.query.place === "string") {
         pars.push(`${req.query.place}`);
         filterSql += ` and d.place_id = $${pars.length}::integer`;
     }
-    if (req.query.country) {
+    if (typeof req.query.country === "string") {
         pars.push(req.query.country);
         filterSql += ` and p.country_code = upper($${pars.length})`;
     }
@@ -191,17 +191,19 @@ router.put("/:id", async (req: IAuthenticatedRequest, res) => {
         req.params.id,
     )} and user_id = $${params.push(userid)}`;
 
-    batch.add(sql, params, ds => {
+    batch.add(sql, params, (ds) => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
     });
 
+    const diveId = parseInt(req.params.id, 10);
+
     if (body.buddies) {
         batch.add("delete from dive_buddies where dive_id=$1", [req.params.id]);
         injectBuddySql({
             buddies: body.buddies,
-            diveId: req.params.id,
+            diveId,
             userId: userid,
             batch,
         });
@@ -209,7 +211,7 @@ router.put("/:id", async (req: IAuthenticatedRequest, res) => {
     if (body.tags) {
         batch.add("delete from dive_tags where dive_id=$1", [req.params.id]);
         injectTagSql({
-            diveId: req.params.id,
+            diveId,
             tags: body.tags,
             userId: userid,
             batch,
@@ -255,7 +257,7 @@ router.post("/", async (req: IAuthenticatedRequest, res) => {
         "fingerprint",
         "samples",
     ];
-    const params = flds.map(fld => body[fld]);
+    const params = flds.map((fld) => body[fld]);
 
     if (body.place) {
         injectPlaceSql({
@@ -279,7 +281,7 @@ router.post("/", async (req: IAuthenticatedRequest, res) => {
     let diveId: number;
     let skipped: boolean = false;
 
-    batch.add(sql, params, ds => {
+    batch.add(sql, params, (ds) => {
         if (ds.rowCount !== 1) {
             throw new Error("Unable to update given dive");
         }
@@ -327,12 +329,13 @@ router.post("/", async (req: IAuthenticatedRequest, res) => {
 });
 
 router.post("/merge", async (req: IAuthenticatedRequest, res) => {
-    await SqlBatch.transaction(async cl => {
+    await SqlBatch.transaction(async (cl) => {
+        let qsIds = req.query.ids as string[];
         if (
-            !req.query.ids ||
-            !Array.isArray(req.query.ids) ||
-            req.query.ids.length === 0 ||
-            req.query.ids.filter(a => isNaN(parseInt(a, 10))).length !== 0
+            !qsIds ||
+            !Array.isArray(qsIds) ||
+            qsIds.length === 0 ||
+            qsIds.filter((a) => isNaN(parseInt(a, 10))).length !== 0
         ) {
             throw new HttpError(
                 400,
@@ -341,7 +344,7 @@ router.post("/merge", async (req: IAuthenticatedRequest, res) => {
         }
 
         let dives: IDive[];
-        const ids: number[] = req.query.ids.map(n => Number(n));
+        const ids: number[] = qsIds.map((n) => Number(n));
 
         const res = await cl.query(
             `select
@@ -363,8 +366,8 @@ router.post("/merge", async (req: IAuthenticatedRequest, res) => {
         );
         dives = res.rows as IDive[];
         if (req.query.ids.length !== dives.length) {
-            const _ids = new Set(dives.map(d => d.dive_id));
-            const nonExistent = ids.filter(id => !_ids.has(id));
+            const _ids = new Set(dives.map((d) => d.dive_id));
+            const nonExistent = ids.filter((id) => !_ids.has(id));
             throw new Error(
                 "The following dives did not exist: " + nonExistent.join(", "),
             );
@@ -539,7 +542,7 @@ router.post("/merge", async (req: IAuthenticatedRequest, res) => {
                    FROM dive_tags dt1
                   WHERE dive_id = any($2::int[])
         `,
-            [newDiveId, ids],
+            [newDiveId, qsIds],
         );
 
         await cl.query(
@@ -549,18 +552,18 @@ router.post("/merge", async (req: IAuthenticatedRequest, res) => {
                    FROM dive_buddies db1
                   WHERE dive_id = any($2::int[])
         `,
-            [newDiveId, ids],
+            [newDiveId, qsIds],
         );
 
         await cl.query(
             "DELETE FROM dive_buddies WHERE dive_id = any($1::int[])",
-            [ids],
+            [qsIds],
         );
         await cl.query("DELETE FROM dive_tags WHERE dive_id = any($1::int[])", [
-            ids,
+            qsIds,
         ]);
         await cl.query("DELETE FROM dives WHERE dive_id = any($1::int[])", [
-            ids,
+            qsIds,
         ]);
     });
 
@@ -580,7 +583,7 @@ router.post("/batch", async (req: IAuthenticatedRequest, res) => {
     const data = req.body as IBatchDive[];
 
     const diveIds: number[] = [];
-    await SqlBatch.transaction(async cl => {
+    await SqlBatch.transaction(async (cl) => {
         for (const row of data) {
             let rs = await cl.query(
                 `

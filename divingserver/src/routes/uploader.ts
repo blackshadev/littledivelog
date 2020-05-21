@@ -118,24 +118,15 @@ interface IUploaderVersion {
     version: string;
     availableOS: Array<"unix" | "win32">;
 }
-function readdir(fpath: string): Promise<string[]> {
-    return new Promise((res, rej) => {
-        fs.readdir(fpath, (err, files) => {
-            if (err) {
-                rej(err);
-            } else {
-                res(files);
-            }
-        });
-    });
-}
 
 async function getAvailableVersions(): Promise<IUploaderVersion[]> {
     let allVersions: IUploaderVersion[] = [];
-    const versions = await readdir(qtUploaderFolder);
+    const versions = await fs.promises.readdir(qtUploaderFolder);
 
     for (let ver of versions) {
-        const files = await readdir(path.resolve(qtUploaderFolder, ver));
+        const files = await fs.promises.readdir(
+            path.resolve(qtUploaderFolder, ver),
+        );
         const oses = files
             .map((f) => {
                 if (f.endsWith("win32.exe")) {

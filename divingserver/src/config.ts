@@ -20,6 +20,7 @@ interface IConfig {
         secret: string;
         issuer: string;
     };
+    diveUploaderBaseDir: string;
 }
 
 export let config: IConfig;
@@ -120,6 +121,7 @@ export async function envVariableConfig(): Promise<IConfig> {
             secret: process.env["JWT-SECRET"],
         },
         cors: asBoolean(process.env["HTTP-CORS"]),
+        diveUploaderBaseDir: process.env["DIVE-UPLOADER-BASEDIR"],
     };
 
     if (!validator(obj)) {

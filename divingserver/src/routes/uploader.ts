@@ -63,7 +63,10 @@ router.get("/download/old", async (req: IAuthenticatedRequest, res) => {
     res.end();
 });
 
-const qtUploaderFolder = __dirname + "/../../qt-dive-uploader";
+const qtUploaderFolder = path.resolve(
+    process.cwd(),
+    config.diveUploaderBaseDir,
+);
 function getFilePath(version: string, os: string): string {
     let fpath = path.resolve(
         qtUploaderFolder,

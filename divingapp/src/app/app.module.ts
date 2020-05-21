@@ -51,6 +51,7 @@ import { BaseModalComponent } from './components/modals/base/base-modal.componen
 import { GlobalErrorHandler } from './providers/GlobalErrorHandler.provider';
 import { ErrorModalComponent } from './components/modals/error/error-modal.component';
 import { LocaldatetimePipe } from './pipes/localdatetime.pipe';
+import { ExternalLinkDirective } from './directives/external-link/external-link.directive';
 
 @NgModule({
     declarations: [
@@ -84,6 +85,7 @@ import { LocaldatetimePipe } from './pipes/localdatetime.pipe';
         BaseModalComponent,
         ErrorModalComponent,
         LocaldatetimePipe,
+        ExternalLinkDirective,
     ],
     imports: [
         BrowserModule,

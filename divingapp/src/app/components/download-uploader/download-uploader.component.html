@@ -10,13 +10,19 @@
                 This tool can download dives from various dive computers and upload them to your dive log account.
             </p>
             <p>
-                The tool uses an external library called <a href="http://www.libdivecomputer.org/" target="_blank">libdivecomputer</a> to download dives from various dive computers.
+                The tool uses an external library called <a href="http://www.libdivecomputer.org/"
+                    target="_blank">libdivecomputer</a> to download dives from various dive computers.
                 If you like this functionality please concider donating to his project.
                 If your dive computer is not (yet) supported, please contact me and I will try my best to
             </p>
             <hr class="my-4">
-            <button class="btn btn-primary btn-lg" type="button" (click)="download()">
-                <i class="fa fa-download"></i>
+            <button class="btn btn-primary btn-lg" type="button" (click)="download('windows')">
+                <i class="fa fa-windows"></i>
+                Download
+            </button>
+            <br />
+            <button class="btn btn-primary btn-lg" type="button" (click)="download('linux')">
+                <i class="fa fa-linux"></i>
                 Download
             </button>
         </div>
@@ -24,16 +30,20 @@
     <div class="col">
         <div class="row screenshots">
             <div class="col-lg-6 col-md-12">
-                <img src="assets/DiveLogUploader-1.png" title="Dive Log Uploader Main Screen" alt="Dive Log Uploader Main Screen" class="img-thumbnail" />
+                <img src="assets/DiveLogUploader-1.png" title="Dive Log Uploader Main Screen"
+                    alt="Dive Log Uploader Main Screen" class="img-thumbnail" />
             </div>
             <div class="col-lg-6 col-md-12">
-                <img src="assets/DiveLogUploader-2.png" title="Dive Log Uploader Uploading screen" alt="Dive Log Uploader Uploading screen" class="img-thumbnail" />
+                <img src="assets/DiveLogUploader-2.png" title="Dive Log Uploader Uploading screen"
+                    alt="Dive Log Uploader Uploading screen" class="img-thumbnail" />
             </div>
             <div class="col-lg-6 col-md-12">
-                <img src="assets/DiveLogUploader-3.png" title="Dive Log Uploader Account Screen" alt="Dive Log Uploader Account Screen" class="img-thumbnail" />
+                <img src="assets/DiveLogUploader-3.png" title="Dive Log Uploader Account Screen"
+                    alt="Dive Log Uploader Account Screen" class="img-thumbnail" />
             </div>
             <div class="col-lg-6 col-md-12">
-                <img src="assets/DiveLogUploader-4.png" title="Dive Log Uploader Select Screen" alt="Dive Log Uploader Select Screen" class="img-thumbnail" />
+                <img src="assets/DiveLogUploader-4.png" title="Dive Log Uploader Select Screen"
+                    alt="Dive Log Uploader Select Screen" class="img-thumbnail" />
             </div>
         </div>
     </div>

@@ -9,18 +9,18 @@ import { HttpClient } from '@angular/common/http';
 export class MiscService {
     constructor(protected http: HttpClient) {}
 
-    public async getUploader() {
+    public async getUploader(os: string) {
         const res = await this.http
-            .get(`${serviceUrl}/dive-uploader/download`, {
+            .get(`${serviceUrl}/dive-uploader/download/latest/${os}`, {
                 responseType: 'blob',
             })
             .toPromise();
+        console.log(res);
 
         this.downloadFile(res);
     }
 
     protected downloadFile(blob: Blob) {
-        // const blob = new Blob([res.blob()], { type: 'application/zip' });
         FileSaver.saveAs(blob, 'dive-uploader.zip');
     }
 }

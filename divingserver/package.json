@@ -27,6 +27,7 @@
     "@types/pg": "^7.14.3",
     "@types/pg-copy-streams": "^1.2.1",
     "@types/request": "^2.48.5",
+    "@types/semver": "^7.2.0",
     "add": "^2.0.6",
     "ajv": "^6.12.2",
     "archiver": "^4.0.1",
@@ -43,6 +44,7 @@
     "max-listeners-exceeded-warning": "^0.0.1",
     "pg": "^8.2.1",
     "pg-copy-streams": "^5.0.0",
+    "semver": "^7.3.2",
     "typescript": "^3.9.3",
     "xml-escape": "^1.1.0"
   }

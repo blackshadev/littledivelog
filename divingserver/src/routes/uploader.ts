@@ -1,13 +1,13 @@
 import * as archiver from "archiver";
-import * as express from "express";
 import * as path from "path";
 import * as xmlEscape from "xml-escape";
 import { Router } from "../express-promise-router";
 import { IAuthenticatedRequest } from "../express.interface";
-import { database } from "../pg";
 import { createRefreshToken } from "./auth";
 import * as fs from "fs";
-import { filter } from "bluebird";
+import * as url from "url";
+import { config } from "../config";
+import * as semver from "semver";
 
 export const router = Router();
 
@@ -63,13 +63,17 @@ router.get("/download/old", async (req: IAuthenticatedRequest, res) => {
     res.end();
 });
 
-const qtUploaderFolder = __dirname + "../../../qt-dive-uploader";
+const qtUploaderFolder = __dirname + "/../../qt-dive-uploader";
 function getFilePath(version: string, os: string): string {
-    return path.resolve(
+    let fpath = path.resolve(
         qtUploaderFolder,
         version,
         "dive-uploader-installer-" + os,
     );
+    if (os === "win32") {
+        fpath = fpath + ".exe";
+    }
+    return fpath;
 }
 function checkVersion(ver: string): Promise<boolean> {
     return new Promise<boolean>((res, rej) => {
@@ -83,76 +87,126 @@ function checkVersion(ver: string): Promise<boolean> {
     });
 }
 
-function checkFile(version: string, os: string): Promise<boolean> {
+function checkFile(version: string, os: Platform): Promise<boolean> {
     return new Promise<boolean>((res, rej) => {
         const fpath = getFilePath(version, os);
+
         fs.access(fpath, fs.constants.O_RDONLY, (err) => res(!err));
     });
 }
 
+function checkOS(os: string): os is Platform {
+    return os === "unix" || os === "win32";
+}
 router.get(
-    "download/{version}/{os}",
+    "/download/:version/:os",
     async (req: IAuthenticatedRequest, res) => {
         const os = req.param("os");
-        const ver = req.param("version");
+        let ver = req.param("version");
+
+        if (!checkOS(os)) {
+            res.status(404).send({
+                error:
+                    "Unsupported OS. use GET /dive-uploader to get a list of available versions",
+            });
+            return;
+        }
+
+        if (ver === "latest") {
+            ver = (await getAvailableVersions())[0].version;
+        }
 
         if (!(await checkVersion(ver))) {
             res.status(404).send({
                 error:
-                    "No such version. use GET /uploader to get a list of available versions",
+                    "No such version. use GET /dive-uploader to get a list of available versions",
             });
+            return;
         }
 
         if (!(await checkFile(ver, os))) {
             res.status(404).send({
                 error:
-                    "No such OS for this version. use GET /uploader to get a list of available versions",
+                    "No such OS for this version. use GET /dive-uploader to get a list of available versions",
             });
+            return;
         }
 
         res.download(getFilePath(ver, os));
     },
 );
 
+type Platform = "unix" | "win32";
+
+interface IDownloadLink {
+    fileName: string;
+    platform: Platform;
+    downloadLink: string;
+}
+type DownloadLinks = {
+    [platform in Platform]?: IDownloadLink;
+};
 interface IUploaderVersion {
     version: string;
-    availableOS: Array<"unix" | "win32">;
+    platforms: Platform[];
+    downloads: DownloadLinks;
 }
 
+function getFilePlatform(f: string): Platform | undefined {
+    if (f.endsWith("win32.exe")) {
+        return "win32";
+    }
+    if (f.endsWith("unix")) {
+        return "unix";
+    }
+    return undefined;
+}
+
+let cachedVersions: IUploaderVersion[] | undefined;
 async function getAvailableVersions(): Promise<IUploaderVersion[]> {
+    if (cachedVersions) {
+        return cachedVersions;
+    }
     let allVersions: IUploaderVersion[] = [];
     const versions = await fs.promises.readdir(qtUploaderFolder);
 
     for (let ver of versions) {
+        let downloads: DownloadLinks = {};
+        let platforms: Platform[] = [];
         const files = await fs.promises.readdir(
             path.resolve(qtUploaderFolder, ver),
         );
-        const oses = files
-            .map((f) => {
-                if (f.endsWith("win32.exe")) {
-                    return "win32";
-                }
-                if (f.endsWith("unix")) {
-                    return "unix";
-                }
-                return undefined;
-            })
-            .filter((v) => !v);
-
+        for (let f of files) {
+            let p = getFilePlatform(f);
+            if (downloads[p] || !p) {
+                console.warn(`skipping ${f} for platform ${p} `);
+                continue;
+            }
+            let download: IDownloadLink = {
+                fileName: f,
+                platform: p,
+                downloadLink: url.resolve(
+                    config.http.base || "/",
+                    path.join("/dive-uploader/download/", ver, p),
+                ),
+            };
+            downloads[p] = download;
+            platforms.push(p);
+        }
         allVersions.push({
+            downloads,
+            platforms,
             version: ver,
-            availableOS: oses,
         });
     }
+
+    allVersions.sort((a, b) =>
+        semver.rcompare(semver.parse(a.version), semver.parse(b.version)),
+    );
 
     return allVersions;
 }
 
-let cached: IUploaderVersion[] | undefined;
-
 router.get("/", async (req: IAuthenticatedRequest, res) => {
-    if (!cached) {
-        cached = await getAvailableVersions();
-    }
-    res.json(cached);
+    res.json(await getAvailableVersions());
 });

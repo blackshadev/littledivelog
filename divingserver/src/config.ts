@@ -5,6 +5,7 @@ import * as dotenv from "dotenv";
 interface IConfig {
     cors?: boolean;
     http: {
+        base: string | undefined;
         port: number | string;
         proxy: boolean | string[] | string | undefined;
     };
@@ -37,6 +38,7 @@ const validator = ajv.compile({
         http: {
             type: "object",
             properties: {
+                base: { type: "string", format: "uri" },
                 port: { type: "number" },
                 proxy: {
                     anyOf: [
@@ -111,6 +113,7 @@ export async function envVariableConfig(): Promise<IConfig> {
         http: {
             port: asInt(process.env["HTTP-PORT"]) || 80,
             proxy: asArray(process.env["HTTP-PROXY"]),
+            base: process.env["HTTP-BASE"],
         },
         jwt: {
             issuer: process.env["JWT-ISSUER"],

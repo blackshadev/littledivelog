@@ -8,7 +8,7 @@ import { FormsModule } from '@angular/forms';
 import { Http } from '@angular/http';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
 
-fdescribe('LoginComponent', () => {
+describe('LoginComponent', () => {
     let component: LoginComponent;
     let fixture: ComponentFixture<LoginComponent>;
 

@@ -1,23 +1,21 @@
 import {
     Component,
     OnInit,
-    ViewChild,
     EventEmitter,
     Output,
     TemplateRef,
     Input,
 } from '@angular/core';
 import { Observable } from 'rxjs';
-import { BehaviorSubject } from 'rxjs';
 import { BuddyService } from 'app/services/buddy.service';
 import { TagService } from 'app/services/tag.service';
 import { PlaceService } from 'app/services/place.service';
-import { Validators, ValidatorFn, AbstractControl } from '@angular/forms';
+import { ValidatorFn, AbstractControl } from '@angular/forms';
 import { CustomValidators } from 'app/shared/validators';
 
 interface ISearchItem {
     text: string;
-    key: string;
+    key: any;
 }
 
 interface ITopic {
@@ -51,7 +49,6 @@ export class SearchComponent implements OnInit {
     public currentFilters: IFilter[] = [];
 
     public topics: ITopic[] = [];
-    private topicMap: { [name: string]: ITopic };
 
     constructor(
         private buddyService: BuddyService,
@@ -79,7 +76,7 @@ export class SearchComponent implements OnInit {
                 name: 'buddy',
                 source: async () => {
                     const buds = await this.buddyService.list();
-                    return buds.map(b => ({ text: b.text, key: b.buddy_id }));
+                    return buds.map((b) => ({ text: b.text, key: b.buddy_id }));
                 },
             },
             {
@@ -87,7 +84,7 @@ export class SearchComponent implements OnInit {
                 name: 'tag',
                 source: async () => {
                     const tags = await this.tagService.list();
-                    return tags.map(t => ({ text: t.text, key: t.tag_id }));
+                    return tags.map((t) => ({ text: t.text, key: t.tag_id }));
                 },
             },
             {
@@ -95,16 +92,10 @@ export class SearchComponent implements OnInit {
                 name: 'place',
                 source: async () => {
                     const plc = await this.placeService.list();
-                    return plc.map(p => ({ text: p.name, key: p.place_id }));
+                    return plc.map((p) => ({ text: p.name, key: p.place_id }));
                 },
             },
         ];
-
-        const o: { [name: string]: ITopic } = {};
-        for (const t of this.topics) {
-            o[t.name] = t;
-        }
-        this.topicMap = o;
     }
 
     ngOnInit() {}
@@ -139,17 +130,16 @@ export class SearchComponent implements OnInit {
     }
 
     public getSearchItems(v: string): Observable<ISearchItem[]> {
-        return new Observable(obs => {
+        return new Observable((obs) => {
             if (!(this.currentTopic && this.currentTopic.source)) {
                 obs.next([]);
                 obs.complete();
             } else {
                 const prom = this.currentTopic.source();
-                prom.then(items => {
-                    console.log(items);
+                prom.then((items) => {
                     obs.next(items);
                     obs.complete();
-                }).catch(err => obs.error(err));
+                }).catch((err) => obs.error(err));
             }
         });
     }

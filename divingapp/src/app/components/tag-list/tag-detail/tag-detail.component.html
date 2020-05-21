@@ -25,8 +25,9 @@
                 <span class="input-group-addon input-group-addon-color">
                     <i [style.background-color]="form.controls.color.value"></i>
                 </span>
-                <input class="form-control" [(colorPicker)]="form.controls.color.value" [cpPosition]="'bottom'" (colorPickerChange)="controlChanged('color')"
-                    formControlName="color" placeholder="#cccccc" aria-describedby="color" required />
+                <input class="form-control" [(colorPicker)]="form.controls.color.value" [cpPosition]="'bottom'"
+                    (colorPickerChange)="controlChanged('color')" formControlName="color" placeholder="#cccccc"
+                    aria-describedby="color" required />
             </div>
             <small class="error-text has-danger" *ngIf="form.controls.color.errors?.invalid">
                 Please enter a valid color; eg #ff00ee.
@@ -41,24 +42,15 @@
         </div>
         <div class="form-group" *ngIf="tag.last_dive !== null">
             <label>Last dive</label>
-            <input class="form-control-plaintext" [value]="tag.last_dive | date:'y-MM-dd HH:mm:ss'" aria-describedby="LastDive" readonly
-            />
+            <input class="form-control-plaintext" [value]="tag.last_dive | date:'y-MM-dd HH:mm:ss'"
+                aria-describedby="LastDive" readonly />
         </div>
     </form>
 </ng-template>
 
-<app-detail-component
-    #detailComponent
-    [pages]="{
+<app-detail-component #detailComponent [pages]="{
         'Detail': detailTemplate,
         'Delete': deleteTemplate
-    }"
-    [form]="form"
-    defaultPage="Detail"
-    [data]="tag"
-    [isNew]="isNew"
-    *ngIf="tag !== undefined"
-    (onSubmit)="onSubmit($event)"
-    (onBack)="back()"
->
+    }" [form]="form" defaultPage="Detail" [data]="tag" [isNew]="isNew" *ngIf="tag !== undefined"
+    (onSubmit)="submit($event)" (onBack)="back()">
 </app-detail-component>

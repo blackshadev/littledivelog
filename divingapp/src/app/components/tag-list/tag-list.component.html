@@ -16,9 +16,9 @@
         <tbody>
             <tr *ngFor="let tag of tags"
                 [ngClass]="{ 'table-active': selected !== undefined && tag.tag_id === selected.tag_id  }"
-                (click)="rowClick(tag)">
+                [attr.data-tag_id]="tag.tag_id" (click)="select(tag.tag_id)">
                 <td>
-                    <app-tag class="badge" [color]="tag.color" fontSize="100%">
+                    <app-tag [color]="tag.color" fontSize="100%">
                         {{ tag.text }}
                     </app-tag>
                 </td>

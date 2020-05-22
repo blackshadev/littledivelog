@@ -1,6 +1,6 @@
 <div class="container mt-4" *ngIf="profile">
     <div class="jumbotron">
-        <h1 class="display-4" *ngIf="profile.name">Welcome, {{profile.name}}!</h1>
+        <h1 class="display-4" *ngIf="profile.name">Welcome, {{ profile.name }}!</h1>
         <h1 class="display-4" *ngIf="!profile.name">Welcome!</h1>
         <p class="lead" [innerHTML]="welcomeText"></p>
 
@@ -10,30 +10,30 @@
                 <div class="col">
                     <button routerLink="/dive" alt="Dives" class="mx-auto btn btn-large btn-primary">
                         <i class="fa fa-tint"></i>
-                        <span>{{profile.dive_count}}</span>
+                        <span data-test-name="dive-count">{{ profile.dive_count }}</span>
                     </button>
                 </div>
 
                 <div class="col">
-                    <button routerLink="/computer"  alt="Computers" class="mx-auto btn btn-large btn-primary">
+                    <button routerLink="/computer" alt="Computers" class="mx-auto btn btn-large btn-primary">
                         <i class="fa fa-desktop"></i>
-                        <span>{{profile.computer_count}}</span>
+                        <span data-test-name="computer-count">{{ profile.computer_count }}</span>
                     </button>
                 </div>
             </div>
 
             <div class="row">
                 <div class="col">
-                    <div  routerLink="/buddy" alt="Buddies" class="mx-auto btn btn-large btn-primary">
+                    <div routerLink="/buddy" alt="Buddies" class="mx-auto btn btn-large btn-primary">
                         <i class="fa fa-users"></i>
-                        <span>{{profile.buddy_count}}</span>
+                        <span data-test-name="buddy-count">{{ profile.buddy_count }}</span>
                     </div>
                 </div>
 
                 <div class="col">
-                    <div  routerLink="/tag" alt="Tags" class="mx-auto btn btn-large btn-primary">
+                    <div routerLink="/tag" alt="Tags" class="mx-auto btn btn-large btn-primary">
                         <i class="fa fa-tag"></i>
-                        <span>{{profile.tag_count}}</span>
+                        <span data-test-name="tag-count">{{ profile.tag_count }}</span>
                     </div>
                 </div>
             </div>

@@ -8,18 +8,9 @@
             <a *ngFor="let t of topics" class="dropdown-item" (click)="currentTopic = t; inpModel.control.reset();">
                 {{ t.caption }}
             </a>
-            <!-- <a class="dropdown-item">Date on</a>
-            <a class="dropdown-item">Date before</a>
-            <a class="dropdown-item">Date after</a>
-            <div role="separator" class="dropdown-divider"></div>
-            <a class="dropdown-item">With buddy</a>
-            <div role="separator" class="dropdown-divider"></div>
-            <a class="dropdown-item">With tag</a>
-            <div role="separator" class="dropdown-divider"></div>
-            <a class="dropdown-item">On place</a> -->
         </div>
     </div>
-    <div
+    <div data-test-name="search-input"
         [ngClass]="{ 'autocomplete': currentTopic && currentTopic.source, 'plain': !(currentTopic && currentTopic.source) }">
         <input auto-complete type="text" class="form-control" (keydown.enter)="addSearch()"
             [source]="getSearchItems.bind(this)" [(ngModel)]="searchValue" list-formatter="text" />

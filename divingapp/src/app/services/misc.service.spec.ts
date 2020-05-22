@@ -31,7 +31,7 @@ describe('MiscService', () => {
 
     it('Get Uploader for linux', (done) => {
         const spy = spyOn(FileSaver, 'saveAs');
-        service.getUploader(OS.Window).subscribe((d) => {
+        service.getUploader(OS.Linux).subscribe((d) => {
             expect(spy).toHaveBeenCalled();
             done();
         }, done.fail);
@@ -40,10 +40,15 @@ describe('MiscService', () => {
             url: `${serviceUrl}/dive-uploader/download/latest/unix`,
             method: 'GET',
         });
-        req.flush('');
+        const data = new ArrayBuffer(4);
+        data[0] = 't';
+        data[1] = 'e';
+        data[2] = 's';
+        data[3] = 'T';
+        req.flush(data);
     });
 
-    it('Get Uploader for windows', (done) => {
+    fit('Get Uploader for windows', (done) => {
         const spy = spyOn(FileSaver, 'saveAs');
         service.getUploader(OS.Window).subscribe((d) => {
             expect(spy).toHaveBeenCalled();
@@ -54,6 +59,12 @@ describe('MiscService', () => {
             url: `${serviceUrl}/dive-uploader/download/latest/win32`,
             method: 'GET',
         });
-        req.flush('');
+        const data = new ArrayBuffer(4);
+        data[0] = 't';
+        data[1] = 'e';
+        data[2] = 's';
+        data[3] = 'T';
+
+        req.flush(data);
     });
 });

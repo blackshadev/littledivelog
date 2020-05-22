@@ -1,4 +1,11 @@
-import { Component, OnInit, Input, OnDestroy, AfterViewInit, ViewChild } from '@angular/core';
+import {
+    Component,
+    OnInit,
+    Input,
+    OnDestroy,
+    AfterViewInit,
+    ViewChild,
+} from '@angular/core';
 import { Location } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription } from 'rxjs';
@@ -10,16 +17,15 @@ import { TagsControlComponent } from 'app/components/controls/tags-control/tags-
 @Component({
     selector: 'app-tag-list',
     templateUrl: './tag-list.component.html',
-    styleUrls: ['./tag-list.component.scss']
+    styleUrls: ['./tag-list.component.scss'],
 })
 export class TagListComponent implements OnInit, OnDestroy {
-
     @Input()
     public selected?: ITagStat;
     public tags: ITagStat[] = [];
 
     private _id?: number;
-    private sub: Subscription
+    private sub: Subscription;
 
     constructor(
         private service: TagService,
@@ -29,12 +35,9 @@ export class TagListComponent implements OnInit, OnDestroy {
         this.refresh();
     }
 
-    public rowClick(bud: ITagStat) {
-        this.router.navigateByUrl(`/tag/${bud.tag_id}`)
-    }
-
     ngOnInit() {
-        this.sub = this.route.params.subscribe(params => {
+        this.sub = this.route.params.subscribe((params) => {
+            const id = params['id'] !== undefined ? +params['id'] : undefined;
             if (params['id'] === 'new') {
                 this.selected = {
                     tag_id: undefined,
@@ -42,9 +45,9 @@ export class TagListComponent implements OnInit, OnDestroy {
                     color: TagsControlComponent.randomColor(),
                     last_dive: null,
                     dive_count: null,
-                }
-            } else {
-                this.selectById(+params['id']);
+                };
+            } else if (id !== this._id) {
+                this.select(id);
             }
         });
     }
@@ -64,19 +67,22 @@ export class TagListComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(`/tag/${ev.key}`);
     }
 
-    public async refresh() {
+    async refresh() {
         const c = await this.service.fullList();
         this.tags = c;
         if (this._id !== undefined) {
-            this.selectById(this._id);
+            this.select(this._id);
         }
     }
 
-    protected selectById(id: number) {
+    select(id?: number) {
+        this.router.navigateByUrl(`/tag/${id || ''}`);
         this._id = id;
-        if (this.tags) {
+
+        if (id === undefined) {
+            this.selected = undefined;
+        } else if (this.tags) {
             this.selected = this.tags.find((b) => this._id === b.tag_id);
         }
     }
-
 }

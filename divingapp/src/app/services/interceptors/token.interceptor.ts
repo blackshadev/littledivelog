@@ -7,7 +7,7 @@ import {
     HttpErrorResponse,
 } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, from } from 'rxjs';
+import { Observable, from, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/switchMap';
 import { switchMap } from 'rxjs/operators/switchMap';
@@ -37,7 +37,7 @@ export class TokenInterceptor implements HttpInterceptor {
             if (err instanceof HttpErrorResponse && err.status === 401) {
                 return this.fetchAccessToken(request.clone(), next);
             } else {
-                return Observable.throw(err);
+                return throwError(err);
             }
         });
 

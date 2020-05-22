@@ -42,7 +42,7 @@ export class MiscService {
                         res.headers.get('Content-Disposition'),
                     );
                     this.downloadFile(res.body, fileName);
-                    return fileName;
+                    return 'piep'me;
                 }),
             );
     }

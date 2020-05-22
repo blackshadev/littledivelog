@@ -135,6 +135,11 @@ router.get(
             return;
         }
 
+        res.setHeader(
+            "Access-Control-Expose-Headers",
+            "Content-Disposition, Content-Length, Content-Type",
+        );
+
         res.download(getFilePath(ver, os));
     },
 );

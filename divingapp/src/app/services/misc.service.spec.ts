@@ -8,6 +8,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { serviceUrl } from '../shared/config';
 import * as FileSaver from 'file-saver';
+import { OS } from './browser-detector.service';
 
 describe('MiscService', () => {
     let service: MiscService;
@@ -28,26 +29,31 @@ describe('MiscService', () => {
         expect(ser).toBe(service);
     }));
 
-    it('Get Uploader', done => {
+    it('Get Uploader for linux', (done) => {
         const spy = spyOn(FileSaver, 'saveAs');
-        service
-            .getUploader()
-            .then(d => {
-                expect(spy).toHaveBeenCalled();
-                done();
-            })
-            .catch(done.fail);
+        service.getUploader(OS.Window).subscribe((d) => {
+            expect(spy).toHaveBeenCalled();
+            done();
+        }, done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/dive-uploader/download`,
+            url: `${serviceUrl}/dive-uploader/download/latest/unix`,
             method: 'GET',
         });
-        const data = new ArrayBuffer(4);
-        data[0] = 't';
-        data[1] = 'e';
-        data[2] = 's';
-        data[3] = 'T';
+        req.flush('');
+    });
 
-        req.flush(data);
+    it('Get Uploader for windows', (done) => {
+        const spy = spyOn(FileSaver, 'saveAs');
+        service.getUploader(OS.Window).subscribe((d) => {
+            expect(spy).toHaveBeenCalled();
+            done();
+        }, done.fail);
+
+        const req = httpMock.expectOne({
+            url: `${serviceUrl}/dive-uploader/download/latest/win32`,
+            method: 'GET',
+        });
+        req.flush('');
     });
 });

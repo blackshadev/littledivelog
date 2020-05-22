@@ -41,17 +41,14 @@ import { ListDetailComponent } from './components/controls/list-detail/list-deta
 import { DetailComponentComponent } from './components/controls/detail-component/detail-component.component';
 import { SearchComponent } from './components/dives/search/search.component';
 import { ValidateFunctionDirective } from './directives/validate-function/validate-function.directive';
-import {
-    HTTP_INTERCEPTORS,
-    HttpClient,
-    HttpClientModule,
-} from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClientModule } from '@angular/common/http';
 import { TokenInterceptor } from './services/interceptors/token.interceptor';
 import { BaseModalComponent } from './components/modals/base/base-modal.component';
 import { GlobalErrorHandler } from './providers/GlobalErrorHandler.provider';
 import { ErrorModalComponent } from './components/modals/error/error-modal.component';
 import { LocaldatetimePipe } from './pipes/localdatetime.pipe';
 import { ExternalLinkDirective } from './directives/external-link/external-link.directive';
+import { BrowserDetectorService } from './services/browser-detector.service';
 
 @NgModule({
     declarations: [
@@ -111,6 +108,7 @@ import { ExternalLinkDirective } from './directives/external-link/external-link.
         PlaceService,
         ProfileService,
         AuthService,
+        BrowserDetectorService,
         {
             provide: HTTP_INTERCEPTORS,
             useClass: TokenInterceptor,

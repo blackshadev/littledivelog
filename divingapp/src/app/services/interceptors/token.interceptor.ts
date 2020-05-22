@@ -33,11 +33,11 @@ export class TokenInterceptor implements HttpInterceptor {
             },
         });
 
-        return next.handle(request).catch(err => {
+        return next.handle(request).catch((err) => {
             if (err instanceof HttpErrorResponse && err.status === 401) {
                 return this.fetchAccessToken(request.clone(), next);
             } else {
-                return Observable.throw(err.message);
+                return Observable.throw(err);
             }
         });
 

@@ -12,19 +12,19 @@
             <p>
                 The tool uses an external library called <a href="http://www.libdivecomputer.org/"
                     target="_blank">libdivecomputer</a> to download dives from various dive computers.
-                If you like this functionality please concider donating to his project.
+                If you like this functionality please conciser donating to his project.
                 If your dive computer is not (yet) supported, please contact me and I will try my best to
             </p>
             <hr class="my-4">
-            <button class="btn btn-primary btn-lg" type="button" (click)="download('windows')">
-                <i class="fa fa-windows"></i>
-                Download
-            </button>
-            <br />
-            <button class="btn btn-primary btn-lg" type="button" (click)="download('linux')">
-                <i class="fa fa-linux"></i>
-                Download
-            </button>
+
+            <p *ngFor="let platform of platforms">
+                <button class="btn btn-lg" [class.btn-primary]="platform.isActive"
+                    [class.btn-outline-secondary]="!platform.isActive" type="button" (click)="download(platform.OS)">
+                    <i [ngClass]="platform.icon"></i>
+                    Download
+                </button>
+            </p>
+
         </div>
     </div>
     <div class="col">

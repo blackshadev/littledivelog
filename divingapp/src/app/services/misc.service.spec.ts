@@ -8,7 +8,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { serviceUrl } from '../shared/config';
 import * as FileSaver from 'file-saver';
-import { OS } from './browser-detector.service';
+import { OS } from './browser-detector.constants';
 
 describe('MiscService', () => {
     let service: MiscService;
@@ -24,10 +24,9 @@ describe('MiscService', () => {
         httpMock = TestBed.get(HttpTestingController);
     });
 
-    it('Should be created', inject([MiscService], (ser: MiscService) => {
+    it('Should be created', () => {
         expect(service).toBeTruthy();
-        expect(ser).toBe(service);
-    }));
+    });
 
     it('Get Uploader for linux', (done) => {
         const spy = spyOn(FileSaver, 'saveAs');
@@ -40,15 +39,20 @@ describe('MiscService', () => {
             url: `${serviceUrl}/dive-uploader/download/latest/unix`,
             method: 'GET',
         });
+
         const data = new ArrayBuffer(4);
         data[0] = 't';
         data[1] = 'e';
         data[2] = 's';
         data[3] = 'T';
-        req.flush(data);
+        req.flush(data, {
+            headers: {
+                'Content-Disposition': 'attachment; filename="test.exe"',
+            },
+        });
     });
 
-    fit('Get Uploader for windows', (done) => {
+    it('Get Uploader for windows', (done) => {
         const spy = spyOn(FileSaver, 'saveAs');
         service.getUploader(OS.Window).subscribe((d) => {
             expect(spy).toHaveBeenCalled();
@@ -65,6 +69,10 @@ describe('MiscService', () => {
         data[2] = 's';
         data[3] = 'T';
 
-        req.flush(data);
+        req.flush(data, {
+            headers: {
+                'Content-Disposition': 'attachment; filename="test.exe"',
+            },
+        });
     });
 });

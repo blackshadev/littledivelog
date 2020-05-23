@@ -1,18 +1,24 @@
 import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
+import { isPlatformBrowser } from '@angular/common';
+import { OS, OS_Rules, detectOS } from './browser-detector.constants';
 
-export enum OS {
-    Window = 'windows',
-    Linux = 'linux',
-    Unix = 'unix',
-    MacOS = 'macos',
+export interface DeviceInfo {
+    os: OS;
 }
 
 @Injectable({
     providedIn: 'root',
 })
 export class BrowserDetectorService {
-    public readonly userAgent: string;
-    public readonly os: OS;
+    private _userAgent: string;
+
+    private _deviceInfo: DeviceInfo;
+    public get userAgent(): string {
+        return this._userAgent;
+    }
+    public get os(): OS {
+        return this._deviceInfo.os;
+    }
 
     public get isWindows() {
         return this.os === OS.Window;
@@ -23,22 +29,19 @@ export class BrowserDetectorService {
     }
 
     constructor(@Inject(PLATFORM_ID) private platformId) {
-        this.userAgent = window.navigator.userAgent;
-        this.os = this.detectOS();
+        if (isPlatformBrowser(platformId)) {
+            this.setUserAgent(window.navigator.userAgent);
+        }
     }
 
-    protected detectOS(): OS {
-        if (navigator.appVersion.indexOf('Win') !== -1) {
-            return OS.Window;
-        }
-        if (navigator.appVersion.indexOf('Mac') !== -1) {
-            return OS.MacOS;
-        }
-        if (navigator.appVersion.indexOf('Linux') !== -1) {
-            return OS.Linux;
-        }
-        if (navigator.appVersion.indexOf('X11') !== -1) {
-            return OS.Unix;
-        }
+    public setUserAgent(ua) {
+        this._userAgent = ua;
+        this._deviceInfo = this.detectDeviceInfo(ua);
+    }
+
+    protected detectDeviceInfo(ua: string): DeviceInfo {
+        return {
+            os: detectOS(ua),
+        } as DeviceInfo;
     }
 }

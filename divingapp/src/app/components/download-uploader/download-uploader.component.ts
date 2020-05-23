@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MiscService } from 'app/services/misc.service';
-import {
-    BrowserDetectorService,
-    OS,
-} from 'app/services/browser-detector.service';
+import { BrowserDetectorService } from 'app/services/browser-detector.service';
+import { OS } from 'app/services/browser-detector.constants';
 
 interface Platform {
     OS: OS;

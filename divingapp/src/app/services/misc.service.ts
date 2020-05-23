@@ -2,9 +2,9 @@ import { Injectable } from '@angular/core';
 import { serviceUrl } from 'app/shared/config';
 import * as FileSaver from 'file-saver';
 import { HttpClient } from '@angular/common/http';
-import { OS } from './browser-detector.service';
 import { Observable } from 'rxjs';
 import { flatMap } from 'rxjs/operators';
+import { OS } from './browser-detector.constants';
 
 function urlExtension(os: OS) {
     switch (os) {
@@ -42,7 +42,7 @@ export class MiscService {
                         res.headers.get('Content-Disposition'),
                     );
                     this.downloadFile(res.body, fileName);
-                    return 'piep'me;
+                    return fileName;
                 }),
             );
     }

@@ -38,6 +38,7 @@ export class MiscService {
             )
             .pipe(
                 flatMap((res) => {
+                    console.log(res);
                     const fileName = MiscService.getFilename(
                         res.headers.get('Content-Disposition'),
                     );

@@ -43,6 +43,6 @@ export class DownloadUploaderComponent {
     }
 
     public async download(os: OS) {
-        this.miscService.getUploader(os);
+        this.miscService.getUploader(os).subscribe(() => {});
     }
 }

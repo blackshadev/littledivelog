@@ -3,6 +3,7 @@ import { DownloadUploaderComponent } from './download-uploader.component';
 import { MiscService } from 'app/services/misc.service';
 import { By } from '@angular/platform-browser';
 import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { Observable, of } from 'rxjs';
 
 describe('DownloadUploaderComponent', () => {
     let component: DownloadUploaderComponent;
@@ -29,6 +30,7 @@ describe('DownloadUploaderComponent', () => {
     });
 
     it('Should call download on button click', () => {
+        service.getUploader.and.returnValue(of('test'));
         const element = fixture.debugElement.query(By.css('button'));
         element.triggerEventHandler('click', {});
         expect(service.getUploader).toHaveBeenCalled();

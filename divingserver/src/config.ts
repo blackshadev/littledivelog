@@ -1,9 +1,11 @@
 import * as Ajv from "ajv";
 import * as fs from "fs";
+import * as dotenv from "dotenv";
 
 interface IConfig {
     cors?: boolean;
     http: {
+        base: string | undefined;
         port: number | string;
         proxy: boolean | string[] | string | undefined;
     };
@@ -18,6 +20,7 @@ interface IConfig {
         secret: string;
         issuer: string;
     };
+    diveUploaderBaseDir: string;
 }
 
 export let config: IConfig;
@@ -36,6 +39,7 @@ const validator = ajv.compile({
         http: {
             type: "object",
             properties: {
+                base: { type: "string", format: "uri" },
                 port: { type: "number" },
                 proxy: {
                     anyOf: [
@@ -97,6 +101,8 @@ function asBoolean(val: string): boolean | undefined {
 }
 
 export async function envVariableConfig(): Promise<IConfig> {
+    dotenv.config();
+
     const obj: IConfig = {
         database: {
             host: process.env["DB-HOST"],
@@ -108,12 +114,14 @@ export async function envVariableConfig(): Promise<IConfig> {
         http: {
             port: asInt(process.env["HTTP-PORT"]) || 80,
             proxy: asArray(process.env["HTTP-PROXY"]),
+            base: process.env["HTTP-BASE"],
         },
         jwt: {
             issuer: process.env["JWT-ISSUER"],
             secret: process.env["JWT-SECRET"],
         },
         cors: asBoolean(process.env["HTTP-CORS"]),
+        diveUploaderBaseDir: process.env["DIVE-UPLOADER-BASEDIR"],
     };
 
     if (!validator(obj)) {

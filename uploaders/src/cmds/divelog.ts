@@ -128,12 +128,6 @@ export const handler = async (argv: {
     }
 };
 
-// async function open(connstr: string): Promise<odbc.Connection> {
-//     return new Promise<odbc.Connection>((res, rej) => {
-//         odbc.connect(connstr, (err, db) => (err ? rej(err) : res(db)));
-//     });
-// }
-
 interface ILogRow {
     PresS: number;
     PresE: number;
@@ -151,8 +145,6 @@ interface ILogRow {
 
 async function readLogBook(db: odbc.Connection): Promise<ILogRow[]> {
     return ((await db.query(
-        `select PresS, PresE, Divedate, Entrytime, Country, City, Place, Buddy, Depth, Divetime, Tanksize, O2 from ${
-            TABLES.Logbook
-        }`,
+        `select PresS, PresE, Divedate, Entrytime, Country, City, Place, Buddy, Depth, Divetime, Tanksize, O2 from ${TABLES.Logbook}`,
     )) as any) as ILogRow[];
 }

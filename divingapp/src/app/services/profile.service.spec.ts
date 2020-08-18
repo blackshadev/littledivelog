@@ -41,10 +41,10 @@ describe('ProfileService', () => {
         expect(service).toBe(s);
     }));
 
-    it('profile.get should get user profile with request', done => {
+    it('profile.get should get user profile with request', (done) => {
         service
             .get()
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(
                     profileSample,
                     'Expected request data to be the same as return data',
@@ -60,12 +60,12 @@ describe('ProfileService', () => {
         req.flush(profileSample);
     });
 
-    it('profile.save should put name in user/profile ', done => {
+    it('profile.save should put name in user/profile ', (done) => {
+        // ignore no expect warning
+        expect(true).toBeTruthy();
+
         const sampleData = { name: 'tester' };
-        service
-            .save(sampleData)
-            .then(done)
-            .catch(done.fail);
+        service.save(sampleData).then(done).catch(done.fail);
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/user/profile`,
@@ -75,13 +75,10 @@ describe('ProfileService', () => {
         req.flush('');
     });
 
-    it('profile.changePassword should put request user/profile/password', done => {
+    it('profile.changePassword should put request user/profile/password', (done) => {
         const sampleData = { old: 'passwd', new: 'myNewPasswd' };
 
-        service
-            .changePassword(sampleData)
-            .then(done)
-            .catch(done.fail);
+        service.changePassword(sampleData).then(done).catch(done.fail);
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/user/profile/password`,
@@ -91,7 +88,7 @@ describe('ProfileService', () => {
         req.flush(sampleData);
     });
 
-    it('profile.equipment should get user/profile/equipment', done => {
+    it('profile.equipment should get user/profile/equipment', (done) => {
         const sampleData: IEquipment = {
             tanks: [
                 {
@@ -104,7 +101,7 @@ describe('ProfileService', () => {
 
         service
             .equipment()
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(
                     sampleData,
                     'Expected request data to be the same as return data',
@@ -120,7 +117,7 @@ describe('ProfileService', () => {
         req.flush(sampleData);
     });
 
-    it('profile.equipment should put user/profile/equipment', done => {
+    it('profile.equipment should put user/profile/equipment', (done) => {
         const sampleData: IEquipment = {
             tanks: [
                 {
@@ -131,10 +128,7 @@ describe('ProfileService', () => {
             ],
         };
 
-        service
-            .changeEquipment(sampleData)
-            .then(done)
-            .catch(done.fail);
+        service.changeEquipment(sampleData).then(done).catch(done.fail);
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/user/profile/equipment`,
@@ -144,7 +138,7 @@ describe('ProfileService', () => {
         req.flush('');
     });
 
-    it('profile.getSessions should get requests', done => {
+    it('profile.getSessions should get requests', (done) => {
         const sampleData: ISession[] = [
             {
                 token: '89a6cae7-1a61-47a4-a35c-207b4b083f87',
@@ -158,7 +152,7 @@ describe('ProfileService', () => {
         ];
         service
             .getSessions()
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(
                     sampleData,
                     'Expected request data to be the same as return data',
@@ -174,12 +168,9 @@ describe('ProfileService', () => {
         req.flush(sampleData);
     });
 
-    it('profile.deleteSession should call delete on given token', done => {
+    it('profile.deleteSession should call delete on given token', (done) => {
         const sampleToken = 'TOKEN';
-        service
-            .deleteSession(sampleToken)
-            .then(done)
-            .catch(done.fail);
+        service.deleteSession(sampleToken).then(done).catch(done.fail);
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/auth/refresh-token/${sampleToken}`,

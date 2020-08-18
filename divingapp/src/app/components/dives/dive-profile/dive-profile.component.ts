@@ -1,5 +1,4 @@
-import { divetime, temperature } from '../../../shared/formatters';
-import { debounce } from '../../../shared/common';
+import { divetime } from '../../../shared/formatters';
 import {
     Dive,
     ISample,
@@ -20,7 +19,6 @@ import {
     Output,
 } from '@angular/core';
 import * as d3 from 'd3';
-import { RGBColor } from 'd3';
 
 @Component({
     selector: 'app-dive-profile',

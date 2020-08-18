@@ -22,7 +22,7 @@ import { DetailComponentComponent } from 'app/components/controls/detail-compone
     templateUrl: './tag-detail.component.html',
     styleUrls: ['./tag-detail.component.scss'],
 })
-export class TagDetailComponent implements OnInit {
+export class TagDetailComponent {
     @Output() onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<
         IDataChanged
     >();
@@ -30,18 +30,17 @@ export class TagDetailComponent implements OnInit {
     @Input()
     public tag: ITagStat;
 
+    public form: FormGroup;
+    @ViewChild('detailComponent', { static: true })
+    public detailComponent: DetailComponentComponent;
+
     public get isNew() {
         return this.tag.tag_id === undefined;
     }
 
-    public form: FormGroup;
-    @ViewChild('detailComponent', { static: true })
-    private detailComponent: DetailComponentComponent;
-
     constructor(
         private service: TagService,
         private _fb: FormBuilder,
-        private hostElement: ElementRef,
         private router: Router,
     ) {
         this.form = this._fb.group({
@@ -50,10 +49,8 @@ export class TagDetailComponent implements OnInit {
         });
     }
 
-    ngOnInit() {}
-
-    public async onSubmit(e: Event) {
-        e.preventDefault();
+    public async submit(e?: Event) {
+        e?.preventDefault();
         markFormGroupTouched(this.form);
         if (!this.form.valid) {
             return;
@@ -82,11 +79,11 @@ export class TagDetailComponent implements OnInit {
         this.tag.color = d.color;
     }
 
-    back() {
+    public back() {
         this.router.navigate(['/tag']);
     }
 
-    async delete() {
+    public async delete() {
         if (!this.tag.tag_id) {
             this.tag = undefined;
             this.back();

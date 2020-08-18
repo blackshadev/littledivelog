@@ -9,6 +9,4 @@ describe('LocaldatetimePipe', () => {
     it('create an instance', () => {
         expect(pipe).toBeTruthy();
     });
-
-    it('Should translate from utc to timezone', () => {});
 });

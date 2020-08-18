@@ -14,7 +14,7 @@ import { AuthService } from 'app/services/auth.service';
     templateUrl: './menu.component.html',
     styleUrls: ['./menu.component.scss'],
 })
-export class MenuComponent implements OnInit {
+export class MenuComponent {
     @ViewChild('menuContainer', { static: true }) menuContainer: ElementRef;
     @Output() ontoggle = new EventEmitter<boolean>();
     @Input('state')
@@ -27,8 +27,6 @@ export class MenuComponent implements OnInit {
     }
 
     constructor(private auth: AuthService) {}
-
-    ngOnInit() {}
 
     toggle(state?: boolean) {
         const hElm = <HTMLElement>this.menuContainer.nativeElement;

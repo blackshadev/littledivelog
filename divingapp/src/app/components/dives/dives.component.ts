@@ -53,7 +53,6 @@ export class DivesComponent implements OnInit, OnDestroy {
         private profile: ProfileService,
         private location: Location,
         private modal: ModalService,
-        private router: Router,
     ) {
         this.refresh();
     }

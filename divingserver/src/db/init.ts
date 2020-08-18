@@ -10,10 +10,6 @@ const cnf = {
     user: "divelog",
 };
 
-const readDir = bluebird.promisify<string[], string>(fs.readdir);
-const readFile = bluebird.promisify(fs.readFile);
-const stat = bluebird.promisify(fs.stat);
-
 async function runQuery(conn: pg.Client, sql: string): Promise<void> {
     await conn.query(sql);
 }
@@ -43,12 +39,12 @@ async function listQueries(
     baseDir: string = __dirname + "/../../db/",
 ): Promise<string[]> {
     async function recReadDir(dirPath: string): Promise<string[]> {
-        const entries = await readDir(dirPath);
+        const entries = await fs.promises.readdir(dirPath);
         entries.sort();
         const all = [];
         for (const entry of entries) {
             const fPath = path.join(dirPath, entry);
-            const fStat = await stat(fPath);
+            const fStat = await fs.promises.stat(fPath);
             if (fStat.isFile() && /^\d+\_.*\.sql$/i.test(entry)) {
                 all.push(fPath);
             } else if (fStat.isDirectory()) {
@@ -76,7 +72,7 @@ async function executeAll(filenames: string[]): Promise<void> {
         const fpath = filenames[iX];
         const fname = path.basename(fpath);
         console.log(`Execute ${fname} (${iX}/${filenames.length})`);
-        const sql = (await readFile(fpath)).toString("utf8");
+        const sql = (await fs.promises.readFile(fpath)).toString("utf8");
         await client.query(sql);
     }
 

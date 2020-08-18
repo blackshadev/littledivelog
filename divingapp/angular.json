@@ -49,6 +49,12 @@
                                 "replace": "src/environments/environment.ts",
                                 "with": "src/environments/environment.prod.ts"
                             }]
+                        },
+                        "local": {
+                            "fileReplacements": [{
+                                "replace": "src/environments/environment.ts",
+                                "with": "src/environments/environment.local.ts"
+                            }]
                         }
                     }
                 },
@@ -60,6 +66,10 @@
                     "configurations": {
                         "production": {
                             "browserTarget": "divingapp:build:production"
+                        },
+                        "local": {
+                            "browserTarget": "divingapp:build:local"
+
                         }
                     }
                 },

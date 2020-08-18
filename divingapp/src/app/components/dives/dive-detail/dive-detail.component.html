@@ -52,8 +52,8 @@
                 <small class="has-danger error-text" *ngIf="form.controls.maxDepth.errors?.required">
                     Max depth is required
                 </small>
-                <small class="has-danger error-text" *ngIf="form.controls.maxDepth.errors?.pattern">
-                    Max depth must be a valid numer; Accepted values are: 10.05
+                <small class="has-danger error-text" *ngIf="form.controls.maxDepth.errors?.invalid">
+                    Max depth must be a valid number; Accepted values are: 10.05
                 </small>
             </div>
         </div>

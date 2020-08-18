@@ -40,14 +40,14 @@ export class RegisterComponent implements OnInit {
     ngOnInit() {
     }
 
-    onSubmit() {
+    async onSubmit() {
         if (!this.form.valid) {
             return;
         }
 
         this.errorMsg = undefined;
 
-        this.authService.register(
+        await this.authService.register(
             this.form.value,
         ).then(
             () => this.router.navigate(['/login'], { queryParams: { msg: 'registered' } } ),

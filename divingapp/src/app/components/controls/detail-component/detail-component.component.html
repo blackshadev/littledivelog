@@ -4,14 +4,16 @@
 
 <form (ngSubmit)="onSubmit.emit($event)" (keydown.enter)="onEnter($event)">
     <div class="detail-menu">
-        <button class="btn btn-primary" type="submit" [disabled]="!isNew && !form.dirty" title="Save">
+        <button class="btn btn-primary" type="submit" name="submit" [disabled]="!isNew && !formDirty || !formValid"
+            title="Save">
             <i class="fa fa-floppy-o"></i>
         </button>
-        <button class="btn btn-primary" (click)="reset()" type="button" [disabled]="!form.dirty || isNew"
+        <button class="btn btn-primary" (click)="reset()" name="reset" type="button" [disabled]="!formDirty || isNew"
             title="Undo unsaved changes" appHideWhen="<md">
             <i class="fa fa-undo"></i>
         </button>
-        <button class="btn btn-primary" (click)="onBack.emit()" type="button" appHideWhen=">=md" title="Go back">
+        <button class="btn btn-primary" (click)="onBack.emit()" name="back" type="button" appHideWhen=">=md"
+            title="Go back">
             <i class="fa fa-arrow-left"></i>
         </button>
     </div>

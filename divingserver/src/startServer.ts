@@ -39,6 +39,7 @@ export async function start() {
         jwt({
             issuer: config.jwt.issuer,
             secret: config.jwt.secret,
+            algorithms: ['HS512'],
         }).unless({
             path: [
                 "/auth/",

@@ -128,8 +128,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this._line = d3
             .line<ISample>()
             .curve(d3.curveMonotoneX)
-            .x(d => this._scale.x(d.Time))
-            .y(d => this._scale.y(d.Depth));
+            .x((d) => this._scale.x(d.Time))
+            .y((d) => this._scale.y(d.Depth));
     }
 
     ngAfterViewInit(): void {
@@ -220,7 +220,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             .attr('text-anchor', 'end')
             .attr('alignment-baseline', 'middle')
             .attr('x', -10)
-            .text(_v => _v.toFixed(1))
+            .text((_v) => _v.toFixed(1))
             .duration(500)
             .attr('y', this._scale.temperatureRev);
     }
@@ -237,18 +237,18 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this.fixData();
 
         const [minTime, maxTime] = [
-            d3.min(this.data, d => d.Time),
-            d3.max(this.data, d => d.Time),
+            d3.min(this.data, (d) => d.Time),
+            d3.max(this.data, (d) => d.Time),
         ] as [number, number];
 
         const [minTemp, maxTemp, medianTemp] = [
-            d3.min(this.data, d => d.Temperature),
-            d3.max(this.data, d => d.Temperature),
-            d3.median(this.data, d => d.Temperature),
+            d3.min(this.data, (d) => d.Temperature),
+            d3.max(this.data, (d) => d.Temperature),
+            d3.median(this.data, (d) => d.Temperature),
         ] as [number, number, number];
         const [minDepth, maxDepth] = [
-            d3.min(data, d => d.Depth),
-            d3.max(data, d => d.Depth),
+            d3.min(data, (d) => d.Depth),
+            d3.max(data, (d) => d.Depth),
         ] as [number, number];
 
         this._scale.x.domain([minTime, maxTime]);
@@ -329,14 +329,16 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
         this.groups.labels.y.attr(
             'transform',
-            `translate(20, ${this._boundingbox.height / 2 +
-                this._margin.top})rotate(-90)`,
+            `translate(20, ${
+                this._boundingbox.height / 2 + this._margin.top
+            })rotate(-90)`,
         );
 
         this.groups.labels.temperature.attr(
             'transform',
-            `translate(${width - 20}, ${this._boundingbox.height / 2 +
-                this._margin.top})rotate(90)`,
+            `translate(${width - 20}, ${
+                this._boundingbox.height / 2 + this._margin.top
+            })rotate(90)`,
         );
 
         this._scale.x.range([0, this._boundingbox.width]);
@@ -503,26 +505,36 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             });
         }
 
+        function isNullOrUndefined(d: any): d is null | undefined {
+            return d === null || d === undefined;
+        }
+
         const fixData = (prop: 'Temperature' | 'Depth') => {
             let iNextSample = 0;
             let iPrevSample = 0;
 
             while (iPrevSample + 1 < this.data.length) {
                 // find gap start
-                if (this.data[iPrevSample + 1][prop] !== null) {
+                if (!isNullOrUndefined(this.data[iPrevSample + 1][prop])) {
                     iPrevSample++;
                     continue;
                 }
 
                 // find gap end
                 iNextSample = iPrevSample + 1;
-                while (this.data[iNextSample][prop] === null) {
+                while (
+                    iNextSample < this.data.length &&
+                    isNullOrUndefined(this.data[iNextSample][prop])
+                ) {
                     iNextSample++;
                 }
 
                 // interpolate
                 const start = this.data[iPrevSample];
-                const end = this.data[iNextSample];
+                const end =
+                    iNextSample < this.data.length
+                        ? this.data[iNextSample]
+                        : this.data[iPrevSample];
                 const slope =
                     (end[prop] - start[prop]) / (end.Time - start.Time);
 
@@ -550,13 +562,9 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected repaintLine() {
         const line = this.groups.line.selectAll('path').data([this.data]);
 
-        line.enter()
-            .append('path')
-            .attr('d', this._line(this.data));
+        line.enter().append('path').attr('d', this._line(this.data));
 
-        line.transition()
-            .duration(500)
-            .attr('d', this._line(this.data));
+        line.transition().duration(500).attr('d', this._line(this.data));
 
         line.exit().remove();
     }

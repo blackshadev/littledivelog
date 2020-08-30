@@ -161,10 +161,10 @@ interface IUploaderVersion {
 }
 
 function getFilePlatform(f: string): Platform | undefined {
-    if (f.endsWith("win32.exe")) {
+    if (/-win32/.test(f)) {
         return "win32";
     }
-    if (f.endsWith("unix")) {
+    if (/-unix/.test(f)) {
         return "unix";
     }
     return undefined;
@@ -207,7 +207,8 @@ async function getAvailableVersions(): Promise<IUploaderVersion[]> {
             version: ver,
         });
     }
-
+    
+    console.log(allVersions);
     allVersions.sort((a, b) =>
         semver.rcompare(semver.parse(a.version), semver.parse(b.version)),
     );

@@ -191,7 +191,7 @@ export class DiveDetailComponent implements OnInit {
     async getCountries(keyword: string) {
         const cntries = await this.placeService.countries();
         const fuse = new Fuse(cntries, {
-            threshold: 0.6,
+            threshold: 0.2,
             distance: 100,
             location: 0,
             tokenize: true,
@@ -202,7 +202,8 @@ export class DiveDetailComponent implements OnInit {
                 { name: 'description', weight: 0.3 },
             ],
         });
-        return fuse.search(keyword);
+        const result = fuse.search(keyword).map(item => item.item);
+        return result;
     }
 
     async getDivespots(keyword: string) {
@@ -236,7 +237,7 @@ export class DiveDetailComponent implements OnInit {
         const buds = await this.buddyService.list();
 
         const fuse = new Fuse(buds, {
-            threshold: 0.6,
+            threshold: 0.2,
             distance: 100,
             location: 0,
             shouldSort: true,
@@ -244,7 +245,7 @@ export class DiveDetailComponent implements OnInit {
             keys: ['text'],
         });
         const list = keyword
-            ? fuse.search(keyword).slice(0, 10)
+            ? fuse.search(keyword).slice(0, 10).map(i => i.item)
             : buds.slice(0, 10);
         return list.map((b) => {
             return {
@@ -267,7 +268,7 @@ export class DiveDetailComponent implements OnInit {
             keys: ['text'],
         });
         const list = keyword
-            ? fuse.search(keyword).slice(0, 10)
+            ? fuse.search(keyword).slice(0, 10).map(i => i.item)
             : tags.slice(0, 10);
         return list.map((b) => {
             return {

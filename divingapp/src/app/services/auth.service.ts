@@ -56,7 +56,7 @@ export class AuthService {
         this._refreshToken = localStorage.getItem('jwt_refresh');
         this._accessToken = localStorage.getItem('jwt_access');
 
-        window.addEventListener('unhandledRejection', e => {
+        window.addEventListener('unhandledRejection', (e: unknown) => {
             console.log('unhandledRejection', e);
             if (e instanceof Response && e.status === 401) {
                 this.logout();

@@ -9,7 +9,7 @@
         "lib": ["es2016", "dom"],
         // "strict": true,
         "outDir": "../out-tsc/app",
-        "module": "esnext",
+        "module": "es2020",
         "baseUrl": "",
         "types": ["jquery", "bootstrap"],
         "paths": {

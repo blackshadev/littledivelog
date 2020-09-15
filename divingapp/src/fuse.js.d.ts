@@ -71,7 +71,12 @@ interface IFuseOptions {
     keys: Array<string | { name: string, weight: number }>
 }
 
+interface IFuseResult<T> {
+    item: T;
+    refIndex: number;
+}
+
 declare class Fuse<T> {
     constructor(data: T[], opts: IFuseOptions);
-    public search(key: string): Array<T>;
+    public search(key: string): Array<IFuseResult<T>>;
 }

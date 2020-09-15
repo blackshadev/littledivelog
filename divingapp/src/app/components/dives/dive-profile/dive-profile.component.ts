@@ -632,7 +632,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 this.groups.hover.style('display', 'none');
             })
             .on('mousemove', () => {
-                const mouse = d3.mouse(this.svg.node());
+                const mouse = d3.pointer(this.svg.node());
                 if (mouse) {
                     const index = this.getClosestIndex(mouse[0]);
                     this.hover(index);
@@ -677,7 +677,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected createSelection() {
         this.groups.select.append('circle').attr('r', 5);
         this.svg.on('click', () => {
-            const mouse = d3.mouse(this.svg.node());
+            const mouse = d3.pointer(this.svg.node());
             if (mouse) {
                 const index = this.getClosestIndex(mouse[0]);
                 this.select(index);

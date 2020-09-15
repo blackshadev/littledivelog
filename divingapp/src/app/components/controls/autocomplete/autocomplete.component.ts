@@ -123,6 +123,10 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     ngOnInit() {}
 
     public valueSelected(v: IItem, e?) {
+        if (typeof v !== "object") {
+            return;
+        }
+        
         if (!this.ignoreAfterTab) {
             this._items = [v];
             this._selectedValue = v;

@@ -208,9 +208,11 @@ async function getAvailableVersions(): Promise<IUploaderVersion[]> {
         });
     }
     
-    console.log(allVersions);
     allVersions.sort((a, b) =>
-        semver.rcompare(semver.parse(a.version), semver.parse(b.version)),
+        semver.rcompare(
+            semver.parse(a.version),
+            semver.parse(b.version),
+        ),
     );
 
     return allVersions;

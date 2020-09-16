@@ -19,11 +19,8 @@ import { BuddyService } from 'app/services/buddy.service';
 import { markFormGroupTouched } from 'app/shared/common';
 import { PlaceService } from 'app/services/place.service';
 import { TagService } from 'app/services/tag.service';
-import { ProfileService } from 'app/services/profile.service';
 import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
 import { ModalService } from 'app/services/modal.service';
-
-declare function $(...args: any[]): any;
 
 @Component({
     selector: 'app-dive-detail',
@@ -202,7 +199,7 @@ export class DiveDetailComponent implements OnInit {
                 { name: 'description', weight: 0.3 },
             ],
         });
-        const result = fuse.search(keyword).map(item => item.item);
+        const result = fuse.search(keyword).map((item) => item.item);
         return result;
     }
 
@@ -245,7 +242,10 @@ export class DiveDetailComponent implements OnInit {
             keys: ['text'],
         });
         const list = keyword
-            ? fuse.search(keyword).slice(0, 10).map(i => i.item)
+            ? fuse
+                  .search(keyword)
+                  .slice(0, 10)
+                  .map((i) => i.item)
             : buds.slice(0, 10);
         return list.map((b) => {
             return {
@@ -268,7 +268,10 @@ export class DiveDetailComponent implements OnInit {
             keys: ['text'],
         });
         const list = keyword
-            ? fuse.search(keyword).slice(0, 10).map(i => i.item)
+            ? fuse
+                  .search(keyword)
+                  .slice(0, 10)
+                  .map((i) => i.item)
             : tags.slice(0, 10);
         return list.map((b) => {
             return {

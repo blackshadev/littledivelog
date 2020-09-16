@@ -107,7 +107,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     private _keyItem: string;
     private _selectedValue: IItem;
     private _items: IItem[] = [];
-    @ViewChild('input', { static: true }) private inputElement: ElementRef;
+    @ViewChild('input') private inputElement: ElementRef;
 
     private ignoreAfterTab = false;
     private getItem: (isNew: boolean, v: any) => IItem;
@@ -123,10 +123,10 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     ngOnInit() {}
 
     public valueSelected(v: IItem, e?) {
-        if (typeof v !== "object") {
+        if (typeof v !== 'object') {
             return;
         }
-        
+
         if (!this.ignoreAfterTab) {
             this._items = [v];
             this._selectedValue = v;
@@ -166,7 +166,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
             newItem = this.getItem(true, this.newItem(keyword));
         }
 
-        return new Observable(obs => {
+        return new Observable((obs) => {
             if (newItem) {
                 obs.next([newItem]);
             }
@@ -202,7 +202,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
                 this._items = items;
                 obs.next(items);
                 obs.complete();
-            }).catch(err => {
+            }).catch((err) => {
                 console.error(err);
                 obs.error(err);
                 obs.complete();

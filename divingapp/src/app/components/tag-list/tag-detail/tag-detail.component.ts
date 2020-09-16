@@ -31,8 +31,18 @@ export class TagDetailComponent {
     public tag: ITagStat;
 
     public form: FormGroup;
-    @ViewChild('detailComponent', { static: true })
+    @ViewChild('detailComponent')
     public detailComponent: DetailComponentComponent;
+
+    public get color(): string {
+        return this.form.controls.color.value;
+    }
+
+    public set color(v: string) {
+        this.form.controls.color.setValue(v);
+        this.form.controls.color.markAllAsTouched();
+        this.form.controls.color.markAsDirty();
+    }
 
     public get isNew() {
         return this.tag.tag_id === undefined;

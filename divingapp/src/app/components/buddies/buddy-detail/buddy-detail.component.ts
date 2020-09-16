@@ -31,11 +31,21 @@ export class BuddyDetailComponent {
     public buddy: IBuddyStat;
     public form: FormGroup;
 
-    @ViewChild('detailComponent', { static: true })
+    @ViewChild('detailComponent')
     public detailComponent: DetailComponentComponent;
 
     public get isNew() {
         return this.buddy.buddy_id === undefined;
+    }
+
+    public get color(): string {
+        return this.form.controls.color.value;
+    }
+
+    public set color(v: string) {
+        this.form.controls.color.setValue(v);
+        this.form.controls.color.markAllAsTouched();
+        this.form.controls.color.markAsDirty();
     }
 
     constructor(

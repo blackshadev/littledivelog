@@ -16,11 +16,6 @@ describe('TagDetailComponent', () => {
     let fixture: ComponentFixture<TagDetailComponent>;
     let service: jasmine.SpyObj<TagService>;
 
-    const fakeDetailComponent: jasmine.SpyObj<DetailComponentComponent> = jasmine.createSpyObj(
-        'DetailComponent',
-        ['reset'],
-    );
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -40,7 +35,6 @@ describe('TagDetailComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(TagDetailComponent);
         component = fixture.componentInstance;
-        component.detailComponent = fakeDetailComponent;
         spyOn(component.onDataChanged, 'emit');
         spyOn(component, 'back');
         fixture.detectChanges();
@@ -148,6 +142,7 @@ describe('TagDetailComponent', () => {
 
         describe('Update', () => {
             beforeEach(async () => {
+                spyOn(component.detailComponent, 'reset');
                 component.form.controls.color.setValue('#0000ff');
                 service.update.and.resolveTo(tag);
                 await component.submit();
@@ -158,7 +153,7 @@ describe('TagDetailComponent', () => {
             });
 
             it('Should call detailcomponent reset', () => {
-                expect(fakeDetailComponent.reset).toHaveBeenCalled();
+                expect(component.detailComponent.reset).toHaveBeenCalled();
             });
 
             it('Should hold new data', () => {

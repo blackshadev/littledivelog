@@ -12,11 +12,6 @@ describe('BuddyDetailComponent', () => {
     let fixture: ComponentFixture<BuddyDetailComponent>;
     let service: jasmine.SpyObj<BuddyService>;
 
-    const fakeDetailComponent: jasmine.SpyObj<DetailComponentComponent> = jasmine.createSpyObj(
-        'DetailComponent',
-        ['reset'],
-    );
-
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             imports: [
@@ -35,7 +30,6 @@ describe('BuddyDetailComponent', () => {
     beforeEach(() => {
         fixture = TestBed.createComponent(BuddyDetailComponent);
         component = fixture.componentInstance;
-        component.detailComponent = fakeDetailComponent;
         spyOn(component.onDataChanged, 'emit');
         spyOn(component, 'back');
         fixture.detectChanges();
@@ -151,6 +145,7 @@ describe('BuddyDetailComponent', () => {
 
         describe('Update', () => {
             beforeEach(async () => {
+                spyOn(component.detailComponent, 'reset');
                 component.form.controls.color.setValue('#0000ff');
                 service.update.and.resolveTo(buddy);
                 await component.submit();
@@ -161,7 +156,7 @@ describe('BuddyDetailComponent', () => {
             });
 
             it('Should call detailcomponent reset', () => {
-                expect(fakeDetailComponent.reset).toHaveBeenCalled();
+                expect(component.detailComponent.reset).toHaveBeenCalled();
             });
 
             it('Should hold new data', () => {

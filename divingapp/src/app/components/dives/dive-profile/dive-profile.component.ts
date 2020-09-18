@@ -141,12 +141,17 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     ngOnInit() {}
 
     public formatEvent(e: ISampleEvent) {
+        if (typeof e.Type === 'string') {
+            return e.Type;
+        }
+
         if (e.Type === SampleEventType.Heading) {
             return 'Heading set to ' + e.Value;
         }
         if (e.Flags !== SampleEventFlag.None) {
             return SampleEventFlag[e.Flags] + ' of ' + e.Name;
         }
+
         return e.Name;
     }
 

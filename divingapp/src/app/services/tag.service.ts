@@ -22,7 +22,7 @@ export interface ITag {
 export class TagService {
     private __cache?: ITag[];
 
-    constructor(protected http: HttpClient) {}
+    constructor(protected http: HttpClient) { }
 
     public clearCache() {
         this.__cache = undefined;
@@ -31,7 +31,7 @@ export class TagService {
     public async list(): Promise<ITag[]> {
         if (!this.__cache) {
             this.__cache = await this.http
-                .get<ITag[]>(`${serviceUrl}/tag`)
+                .get<ITag[]>(`${serviceUrl}/tags`)
                 .toPromise();
         }
 
@@ -40,7 +40,7 @@ export class TagService {
 
     public async fullList(): Promise<ITagStat[]> {
         return await this.http
-            .get<ITagStat[]>(`${serviceUrl}/tag/full`)
+            .get<ITagStat[]>(`${serviceUrl}/tags`)
             .toPromise();
     }
 
@@ -48,11 +48,11 @@ export class TagService {
         let tag: ITag;
         if (data.tag_id === undefined) {
             tag = await this.http
-                .post<ITag>(`${serviceUrl}/tag`, data)
+                .post<ITag>(`${serviceUrl}/tags`, data)
                 .toPromise();
         } else {
             tag = await this.http
-                .put<ITag>(`${serviceUrl}/tag/${data.tag_id}`, data)
+                .put<ITag>(`${serviceUrl}/tags/${data.tag_id}`, data)
                 .toPromise();
         }
 
@@ -62,7 +62,7 @@ export class TagService {
 
     public async delete(id: number): Promise<boolean> {
         const st = await this.http
-            .delete<boolean>(`${serviceUrl}/tag/${id}`)
+            .delete<boolean>(`${serviceUrl}/tags/${id}`)
             .toPromise();
 
         this.clearCache();

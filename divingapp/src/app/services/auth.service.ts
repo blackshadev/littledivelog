@@ -22,7 +22,7 @@ async function handleErrors(
                 // The response body may contain clues as to what went wrong,
                 console.error(
                     `Backend returned code ${error.status}, ` +
-                        `body was: ${error.error}`,
+                    `body was: ${error.error}`,
                 );
                 return errFn(error);
             }
@@ -67,11 +67,11 @@ export class AuthService {
     async logout(): Promise<void> {
         try {
             await this.http
-                .delete(`${serviceUrl}/auth/refresh-token`, {
+                .delete(`${serviceUrl}/auth/sessions`, {
                     headers: this.refreshHeader,
                 })
                 .toPromise();
-        } catch {}
+        } catch { }
         this.resetSessions();
     }
 
@@ -86,15 +86,18 @@ export class AuthService {
     public async login(email: string, password: string): Promise<void> {
         await handleErrors(async () => {
             const a = await this.http
-                .post<{ jwt: string }>(`${serviceUrl}/auth/refresh-token`, {
+                .post<{ refresh_token: string, access_token: string }>(`${serviceUrl}/auth/sessions`, {
                     email,
                     password,
                     description: 'dive.littledev.nl User Login',
                 })
                 .toPromise();
 
-            this._refreshToken = a.jwt;
+            this._refreshToken = a.refresh_token;
+            this._accessToken = a.access_token;
+
             localStorage.setItem('jwt_refresh', this._refreshToken);
+            localStorage.setItem('jwt_access', this._accessToken);
         });
     }
 
@@ -105,7 +108,7 @@ export class AuthService {
         await handleErrors(
             async () => {
                 const a = await this.http
-                    .get<{ jwt: string }>(`${serviceUrl}/auth/access-token`, {
+                    .get<{ jwt: string }>(`${serviceUrl}/auth/sessions/refresh`, {
                         headers: this.refreshHeader,
                     })
                     .toPromise();

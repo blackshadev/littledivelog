@@ -31,7 +31,7 @@ export class DiveService {
         protected http: HttpClient,
         protected buddyService: BuddyService,
         protected tagService: TagService,
-    ) {}
+    ) { }
 
     public async list(
         filter: { [k in TFilterKeys]?: string } = {},
@@ -44,7 +44,7 @@ export class DiveService {
             .join('&');
 
         const dives = await this.http
-            .get<IDbDive[]>(`${serviceUrl}/dive/?${qs}`)
+            .get<IDbDive[]>(`${serviceUrl}/dives/?${qs}`)
             .toPromise();
 
         return Dive.ParseAll(dives);
@@ -54,7 +54,7 @@ export class DiveService {
         const ids = dives.map(k => 'ids[]=' + k.dive_id).join('&');
 
         await this.http
-            .post<IDbDive[]>(`${serviceUrl}/dive/merge?${ids}`, {})
+            .post<IDbDive[]>(`${serviceUrl}/dives/merge?${ids}`, {})
             .toPromise();
     }
 
@@ -69,18 +69,18 @@ export class DiveService {
 
         if (dive_id !== undefined) {
             return await this.http
-                .put<IDbDive>(`${serviceUrl}/dive/${dive_id}`, dive)
+                .put<IDbDive>(`${serviceUrl}/dives/${dive_id}`, dive)
                 .toPromise();
         } else {
             return await this.http
-                .post<IDbDive>(`${serviceUrl}/dive`, dive)
+                .post<IDbDive>(`${serviceUrl}/dives`, dive)
                 .toPromise();
         }
     }
 
     public async get(dive_id: number): Promise<Dive | undefined> {
         const dive = await this.http
-            .get<IDbDive>(`${serviceUrl}/dive/${dive_id}`)
+            .get<IDbDive>(`${serviceUrl}/dives/${dive_id}`)
             .toPromise();
 
         return Dive.Parse(dive);
@@ -88,7 +88,7 @@ export class DiveService {
 
     public async delete(id: number): Promise<boolean> {
         const res = await this.http
-            .delete<boolean>(`${serviceUrl}/dive/${id}`)
+            .delete<boolean>(`${serviceUrl}/dives/${id}`)
             .toPromise();
         return res;
     }
@@ -99,13 +99,13 @@ export class DiveService {
         }
 
         return await this.http
-            .get<ISample[]>(`${serviceUrl}/dive/${dive_id}/samples`)
+            .get<ISample[]>(`${serviceUrl}/dives/${dive_id}/samples`)
             .toPromise();
     }
 
     public async listComputers(): Promise<IComputer[]> {
         return await this.http
-            .get<IComputer[]>(`${serviceUrl}/computer`)
+            .get<IComputer[]>(`${serviceUrl}/computers`)
             .toPromise();
     }
 }

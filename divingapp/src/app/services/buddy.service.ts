@@ -18,7 +18,7 @@ export interface IBuddyStat {
 @Injectable()
 export class BuddyService {
     private __cache?: IBuddy[];
-    constructor(protected http: HttpClient) {}
+    constructor(protected http: HttpClient) { }
 
     public clearCache() {
         this.__cache = undefined;
@@ -27,7 +27,7 @@ export class BuddyService {
     public async list(): Promise<IBuddy[]> {
         if (!this.__cache) {
             this.__cache = await this.http
-                .get<IBuddy[]>(`${serviceUrl}/buddy/`)
+                .get<IBuddy[]>(`${serviceUrl}/buddies/`)
                 .toPromise();
         }
 
@@ -36,7 +36,7 @@ export class BuddyService {
 
     public async fullList(): Promise<IBuddyStat[]> {
         return await this.http
-            .get<IBuddyStat[]>(`${serviceUrl}/buddy/full`)
+            .get<IBuddyStat[]>(`${serviceUrl}/buddies/`)
             .toPromise();
     }
 
@@ -44,11 +44,11 @@ export class BuddyService {
         let req: IBuddy;
         if (data.buddy_id === undefined) {
             req = await this.http
-                .post<IBuddy>(`${serviceUrl}/buddy/`, data)
+                .post<IBuddy>(`${serviceUrl}/buddies/`, data)
                 .toPromise();
         } else {
             req = await this.http
-                .put<IBuddy>(`${serviceUrl}/buddy/${data.buddy_id}`, data)
+                .put<IBuddy>(`${serviceUrl}/buddies/${data.buddy_id}`, data)
                 .toPromise();
         }
 
@@ -58,7 +58,7 @@ export class BuddyService {
 
     public async delete(id: number): Promise<boolean> {
         const res = await this.http
-            .delete<boolean>(`${serviceUrl}/buddy/${id}`)
+            .delete<boolean>(`${serviceUrl}/buddies/${id}`)
             .toPromise();
 
         this.clearCache();

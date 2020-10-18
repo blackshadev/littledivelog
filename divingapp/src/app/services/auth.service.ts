@@ -108,12 +108,12 @@ export class AuthService {
         await handleErrors(
             async () => {
                 const a = await this.http
-                    .get<{ jwt: string }>(`${serviceUrl}/auth/sessions/refresh`, {
+                    .get<{ access_token: string }>(`${serviceUrl}/auth/sessions/refresh`, {
                         headers: this.refreshHeader,
                     })
                     .toPromise();
 
-                this._accessToken = a.jwt;
+                this._accessToken = a.access_token;
                 localStorage.setItem('jwt_access', this._accessToken);
             },
             resp => {

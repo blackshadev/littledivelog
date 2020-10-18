@@ -105,8 +105,8 @@ export class Duration {
         this.hours =
             all.length > 2
                 ? (((all[all.length - 1] / 60) | (0 + all[all.length - 2])) /
-                      60) |
-                  (0 + all[all.length - 3])
+                    60) |
+                (0 + all[all.length - 3])
                 : 0;
 
         // tslint:enable:no-bitwise
@@ -203,7 +203,7 @@ export class Dive {
     }
 
     toJSON(): IDbDive {
-        const date = moment(this.date).format('YYYY-MM-DD HH:mm:ss');
+        const date = this.date.toISOString();
 
         return {
             dive_id: this.id,
@@ -213,10 +213,10 @@ export class Dive {
             samples: this.samples,
             place: this.place
                 ? {
-                      place_id: this.place.place_id,
-                      name: this.place.name,
-                      country_code: this.place.country_code,
-                  }
+                    place_id: this.place.place_id,
+                    name: this.place.name,
+                    country_code: this.place.country_code,
+                }
                 : undefined,
             tanks: this.tanks,
             tags: this.tags,

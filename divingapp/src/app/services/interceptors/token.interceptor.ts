@@ -11,13 +11,13 @@ import { Observable, from, throwError } from 'rxjs';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/switchMap';
 import { switchMap } from 'rxjs/operators/switchMap';
-import { catchError } from 'rxjs/operators/catchError';
 import { serviceUrl } from '../../shared/config';
 import 'rxjs/add/observable/throw';
 
+let iX = 0;
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
-    constructor(public auth: AuthService) {}
+    constructor(public auth: AuthService) { }
 
     public intercept(
         request: HttpRequest<any>,
@@ -41,16 +41,14 @@ export class TokenInterceptor implements HttpInterceptor {
             }
         });
 
-        // return next.handle(request);
     }
 
     public shouldIntercept(request: HttpRequest<any>): boolean {
-        return (
-            request.url.indexOf(serviceUrl) > -1 &&
-            (request.url.indexOf('/auth/') === -1 ||
-                (request.url.indexOf('/auth/refresh-token') !== -1 &&
-                    request.method === 'GET'))
-        );
+        let shouldIntercept = request.url.indexOf(serviceUrl) > -1 &&
+            request.url.indexOf('/auth/sessions') === -1 &&
+            request.url.indexOf('/auth/register') === -1;
+
+        return shouldIntercept;
     }
 
     public fetchAccessToken(request: HttpRequest<any>, next: HttpHandler) {

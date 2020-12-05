@@ -48,6 +48,14 @@ export class TokenInterceptor implements HttpInterceptor {
             request.url.indexOf('/auth/sessions') === -1 &&
             request.url.indexOf('/auth/register') === -1;
 
+            
+        if (
+            request.url.indexOf('/auth/sessions') !== -1 &&
+            (request.method === 'GET' || request.method === 'DELETE')
+        )  {
+            return true;
+        }
+
         return shouldIntercept;
     }
 

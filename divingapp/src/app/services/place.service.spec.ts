@@ -152,28 +152,4 @@ describe('PlaceService', () => {
             });
         });
     });
-
-    it('fullList; Should request places/full and return data', done => {
-        const sampleData: IPlaceStat[] = [
-            {
-                color: '#fff',
-                country_code: 'NL',
-                dive_count: 1,
-                last_dive: new Date('2018-01-01'),
-                name: 'De Beldert',
-                place_id: 1,
-            },
-        ];
-        service
-            .fullList()
-            .then(() => {
-                done();
-            })
-            .catch(done.fail);
-        const req = httpMock.expectOne({
-            url: `${serviceUrl}/place/full`,
-            method: 'GET',
-        });
-        req.flush(sampleData);
-    });
 });

@@ -42,18 +42,12 @@ export class PlaceService {
         }
 
         const all = await this.http
-            .get<IPlace[]>(`${serviceUrl}/place${c ? `/${c}` : ``}`)
+            .get<IPlace[]>(`${serviceUrl}/places${c ? `/${c}` : ``}`)
             .toPromise();
         if (!c) {
             this.__cache = all;
         }
         return all;
-    }
-
-    public async fullList(): Promise<IPlaceStat[]> {
-        return await this.http
-            .get<IPlaceStat[]>(`${serviceUrl}/place/full`)
-            .toPromise();
     }
 
     public async countries(): Promise<ICountry[]> {

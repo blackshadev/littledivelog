@@ -79,13 +79,13 @@ export class ProfileService {
 
     public async getSessions(): Promise<ISession[]> {
         return await this.http
-            .get<ISession[]>(`${serviceUrl}/auth/refresh-token`)
+            .get<ISession[]>(`${serviceUrl}/auth/sessions`)
             .toPromise();
     }
 
     public async deleteSession(token: string): Promise<void> {
         await this.http
-            .delete(`${serviceUrl}/auth/refresh-token/${token}`)
+            .delete(`${serviceUrl}/auth/sessions/${token}`)
             .toPromise();
     }
 }

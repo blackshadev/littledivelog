@@ -33,7 +33,16 @@ export class DiveService {
         protected tagService: TagService,
     ) { }
 
-    public async list(
+    public async list(): Promise<Dive[]> {
+
+        const dives = await this.http
+            .get<IDbDive[]>(`${serviceUrl}/dives/`)
+            .toPromise();
+
+        return Dive.ParseAll(dives);
+    }
+
+    public async search(
         filter: { [k in TFilterKeys]?: string } = {},
     ): Promise<Dive[]> {
         const qs = Object.keys(filter)
@@ -44,7 +53,7 @@ export class DiveService {
             .join('&');
 
         const dives = await this.http
-            .get<IDbDive[]>(`${serviceUrl}/dives/?${qs}`)
+            .get<IDbDive[]>(`${serviceUrl}/dives/_search?${qs}`)
             .toPromise();
 
         return Dive.ParseAll(dives);

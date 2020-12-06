@@ -190,9 +190,16 @@ export class DivesComponent implements OnInit, OnDestroy {
     refresh() {
         const o = this.extractListFilter(this.filters);
 
-        this.service.list(o).then((d) => {
-            this.dives = d;
-        });
+        let prom: Promise<Dive[]>;
+        if (Object.keys(o).length) {
+            prom = this.service.search(o);
+        } else {
+            prom = this.service.list();
+        }
+        
+        prom.then((dives) => {
+            this.dives = dives;
+        })
     }
 
     async gotoNewDive() {

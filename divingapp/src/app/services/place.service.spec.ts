@@ -53,7 +53,7 @@ describe('PlaceService', () => {
                 })
                 .catch(done.fail);
             const req = httpMock.expectOne({
-                url: `${serviceUrl}/place`,
+                url: `${serviceUrl}/places`,
                 method: 'GET',
             });
             req.flush(placeSamples);
@@ -70,7 +70,7 @@ describe('PlaceService', () => {
                 })
                 .catch(done.fail);
             const req = httpMock.expectOne({
-                url: `${serviceUrl}/place/NL`,
+                url: `${serviceUrl}/places/NL`,
                 method: 'GET',
             });
             req.flush(allNL);
@@ -94,12 +94,12 @@ describe('PlaceService', () => {
                 .catch(done.fail);
 
             const req = httpMock.expectOne({
-                url: `${serviceUrl}/place`,
+                url: `${serviceUrl}/places`,
                 method: 'GET',
             });
             req.flush(placeSamples);
             httpMock.expectNone({
-                url: `${serviceUrl}/place`,
+                url: `${serviceUrl}/places`,
                 method: 'GET',
             });
         });
@@ -122,7 +122,7 @@ describe('PlaceService', () => {
                 })
                 .catch(done.fail);
             const req = httpMock.expectOne({
-                url: `${serviceUrl}/country`,
+                url: `${serviceUrl}/countries`,
                 method: 'GET',
             });
             req.flush(countrySample);
@@ -142,12 +142,12 @@ describe('PlaceService', () => {
                 })
                 .catch(done.fail);
             const req = httpMock.expectOne({
-                url: `${serviceUrl}/country`,
+                url: `${serviceUrl}/countries`,
                 method: 'GET',
             });
             req.flush(countrySample);
             httpMock.expectNone({
-                url: `${serviceUrl}/country`,
+                url: `${serviceUrl}/countries`,
                 method: 'GET',
             });
         });

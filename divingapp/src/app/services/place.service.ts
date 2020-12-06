@@ -56,7 +56,7 @@ export class PlaceService {
         }
 
         const all: IDbCountry[] = await this.http
-            .get<IDbCountry[]>(`${serviceUrl}/country`)
+            .get<IDbCountry[]>(`${serviceUrl}/countries`)
             .toPromise();
 
         this.__countries = all.map(c => {

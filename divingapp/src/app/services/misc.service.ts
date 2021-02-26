@@ -25,12 +25,14 @@ export class MiscService {
 
     constructor(protected http: HttpClient) {}
 
+    public getUploaderUrl(os: OS): string {
+        return  `${serviceUrl}/uploader/latest/${urlExtension(os)}`;
+    }
+
     public getUploader(os: OS): Observable<string> {
         return this.http
             .get(
-                `${serviceUrl}/dive-uploader/download/latest/${urlExtension(
-                    os,
-                )}`,
+               this.getUploaderUrl(os),
                 {
                     observe: 'response',
                     responseType: 'blob',

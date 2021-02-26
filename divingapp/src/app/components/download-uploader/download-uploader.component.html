@@ -18,11 +18,14 @@
             <hr class="my-4">
 
             <p *ngFor="let platform of platforms">
-                <button class="btn btn-lg" [class.btn-primary]="platform.isActive"
-                    [class.btn-outline-secondary]="!platform.isActive" type="button" (click)="download(platform.OS)">
+                <a class="btn btn-lg" 
+                    [class.btn-primary]="platform.isActive"
+                    [class.btn-outline-secondary]="!platform.isActive" type="button"
+                    href="{{ platform.url }}" 
+                >
                     <i [ngClass]="platform.icon"></i>
                     Download
-                </button>
+                </a>
             </p>
 
         </div>

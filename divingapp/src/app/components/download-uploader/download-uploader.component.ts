@@ -8,6 +8,7 @@ interface Platform {
     OSName: string;
     icon: string;
     isActive: boolean;
+    url: string;
 }
 
 @Component({
@@ -28,12 +29,14 @@ export class DownloadUploaderComponent {
                 OSName: 'Linux',
                 icon: 'fa fa-linux',
                 isActive: browserService.isLinux,
+                url: this.miscService.getUploaderUrl(OS.Linux)
             },
             {
                 OS: OS.Window,
                 OSName: 'Windows',
                 icon: 'fa fa-windows',
                 isActive: browserService.isWindows,
+                url: this.miscService.getUploaderUrl(OS.Window)
             },
         ];
 

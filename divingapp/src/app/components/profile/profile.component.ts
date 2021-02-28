@@ -7,6 +7,17 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { markFormGroupTouched } from 'app/shared/common';
 import { CustomValidators } from 'app/shared/validators';
+import { ITank } from 'app/shared/dive';
+
+const DEFAULT_TANK: ITank = {
+    volume: null,
+    oxygen: 21,
+    pressure: {
+        begin: null,
+        end: null,
+        type: 'bar'
+    }
+};
 
 @Component({
     selector: 'app-profile',
@@ -75,7 +86,7 @@ export class ProfileComponent implements OnInit {
         this.equipment = await this.profileService.equipment();
         if (this.equipment) {
             this.equipmentForm.setValue({
-                tank: this.equipment.tanks[0],
+                tank: this.equipment.tanks[0] ?? DEFAULT_TANK,
             });
         }
     }

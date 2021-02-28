@@ -45,10 +45,10 @@ describe('AuthService', () => {
                 .login('dive@littledev.nl', 'superSecret')
                 .then(() => done());
             const req = httpMock.expectOne({
-                url: `${serviceUrl}/auth/refresh-token`,
+                url: `${serviceUrl}/auth/sessions`,
                 method: 'POST',
             });
-            req.flush({ jwt: refreshToken });
+            req.flush({ refresh_token: refreshToken });
         });
 
         it('Should be isLoggedIn', () => {
@@ -56,7 +56,7 @@ describe('AuthService', () => {
         });
 
         it('Empty access token', () => {
-            expect(service.accessToken).toBeNull();
+            expect(service.accessToken).toBeUndefined();
         });
 
         describe('Logout', () => {
@@ -66,7 +66,7 @@ describe('AuthService', () => {
                 service.logout().then(done);
 
                 req = httpMock.expectOne({
-                    url: `${serviceUrl}/auth/refresh-token`,
+                    url: `${serviceUrl}/auth/sessions`,
                     method: 'DELETE',
                 });
                 req.flush('true');
@@ -97,10 +97,10 @@ describe('AuthService', () => {
             beforeEach(done => {
                 service.fetchAccessToken().then(() => done());
                 accessReq = httpMock.expectOne({
-                    url: `${serviceUrl}/auth/access-token`,
+                    url: `${serviceUrl}/auth/sessions/refresh`,
                     method: 'GET',
                 });
-                accessReq.flush({ jwt: accessToken });
+                accessReq.flush({ access_token: accessToken });
             });
 
             it('Should set refresh token in request', () => {

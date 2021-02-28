@@ -55,7 +55,7 @@ describe('BuddyService', () => {
                 .catch(done);
 
             req = httpMock.expectOne({
-                url: `${serviceUrl}/buddy/`,
+                url: `${serviceUrl}/buddies/`,
                 method: 'GET',
             });
             req.flush(testData);
@@ -75,7 +75,7 @@ describe('BuddyService', () => {
                 })
                 .catch(done);
 
-            httpMock.expectNone(`${serviceUrl}/buddy/`);
+            httpMock.expectNone(`${serviceUrl}/buddies/`);
         });
 
         it('Should request after clear cache', () => {
@@ -86,7 +86,7 @@ describe('BuddyService', () => {
                 expect(d).not.toEqual(testData);
                 expect(d).toBe(newDat);
             });
-            const _req = httpMock.expectOne(`${serviceUrl}/buddy/`);
+            const _req = httpMock.expectOne(`${serviceUrl}/buddies/`);
             expect(_req.request.method).toEqual('GET');
             _req.flush(newDat);
         });
@@ -124,7 +124,7 @@ describe('BuddyService', () => {
             .catch(done);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/buddy/full`,
+            url: `${serviceUrl}/buddies/`,
             method: 'GET',
         });
         req.flush(testData);
@@ -147,7 +147,7 @@ describe('BuddyService', () => {
             .catch(done.fail);
 
         req = httpMock.expectOne({
-            url: `${serviceUrl}/buddy/5`,
+            url: `${serviceUrl}/buddies/5`,
             method: 'DELETE',
         });
         req.flush(JSON.stringify(testData));
@@ -177,7 +177,7 @@ describe('BuddyService', () => {
             .catch(done);
 
         req = httpMock.expectOne({
-            url: `${serviceUrl}/buddy/${testData.buddy_id}`,
+            url: `${serviceUrl}/buddies/${testData.buddy_id}`,
             method: 'PUT',
         });
         req.flush(testData);
@@ -213,7 +213,7 @@ describe('BuddyService', () => {
             .catch(done.fail);
 
         req = httpMock.expectOne({
-            url: `${serviceUrl}/buddy/`,
+            url: `${serviceUrl}/buddies/`,
             method: 'POST',
         });
         req.flush(resData);

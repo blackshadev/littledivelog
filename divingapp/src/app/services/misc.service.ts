@@ -28,28 +28,4 @@ export class MiscService {
     public getUploaderUrl(os: OS): string {
         return  `${serviceUrl}/uploader/latest/${urlExtension(os)}`;
     }
-
-    public getUploader(os: OS): Observable<string> {
-        return this.http
-            .get(
-               this.getUploaderUrl(os),
-                {
-                    observe: 'response',
-                    responseType: 'blob',
-                },
-            )
-            .pipe(
-                flatMap((res) => {
-                    const fileName = MiscService.getFilename(
-                        res.headers.get('Content-Disposition'),
-                    );
-                    this.downloadFile(res.body, fileName);
-                    return fileName;
-                }),
-            );
-    }
-
-    protected downloadFile(blob: Blob, fileName: string) {
-        FileSaver.saveAs(blob, fileName);
-    }
 }

@@ -162,7 +162,7 @@ describe('ProfileService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/auth/refresh-token`,
+            url: `${serviceUrl}/auth/sessions`,
             method: 'GET',
         });
         req.flush(sampleData);
@@ -173,7 +173,8 @@ describe('ProfileService', () => {
         service.deleteSession(sampleToken).then(done).catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/auth/refresh-token/${sampleToken}`,
+            url: `${serviceUrl}/auth/sessions/${sampleToken}`,
+            method: 'DELETE'
         });
         req.flush('');
     });

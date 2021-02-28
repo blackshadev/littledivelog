@@ -40,7 +40,7 @@ describe('TagService', () => {
             })
             .catch(done.fail);
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag`,
+            url: `${serviceUrl}/tags`,
             method: 'GET',
         });
         req.flush(sampleData);
@@ -67,18 +67,18 @@ describe('TagService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag`,
+            url: `${serviceUrl}/tags`,
             method: 'GET',
         });
         req.flush(sampleData);
 
         httpMock.expectNone({
-            url: `${serviceUrl}/tag`,
+            url: `${serviceUrl}/tags`,
             method: 'GET',
         });
     });
 
-    it('FullList should request tag/full', done => {
+    it('FullList should request tags', done => {
         const sampleData: ITagStat[] = [
             {
                 color: '#fff',
@@ -96,7 +96,7 @@ describe('TagService', () => {
             })
             .catch(done.fail);
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag/full`,
+            url: `${serviceUrl}/tags`,
             method: 'GET',
         });
         req.flush(sampleData);
@@ -125,7 +125,7 @@ describe('TagService', () => {
                 const prom = service.list();
 
                 const req2 = httpMock.expectOne({
-                    url: `${serviceUrl}/tag`,
+                    url: `${serviceUrl}/tags`,
                     method: 'GET',
                 });
                 req2.flush(sampleData_2);
@@ -140,7 +140,7 @@ describe('TagService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag`,
+            url: `${serviceUrl}/tags`,
             method: 'GET',
         });
         req.flush(sampleData);
@@ -164,7 +164,7 @@ describe('TagService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag/${sampleData.tag_id}`,
+            url: `${serviceUrl}/tags/${sampleData.tag_id}`,
             method: 'PUT',
         });
         req.flush(sampleData);
@@ -188,7 +188,7 @@ describe('TagService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag`,
+            url: `${serviceUrl}/tags`,
             method: 'POST',
         });
         const res = Object.assign({}, sampleData, { tag_id: 10 });
@@ -206,7 +206,7 @@ describe('TagService', () => {
             .catch(done.fail);
 
         const req = httpMock.expectOne({
-            url: `${serviceUrl}/tag/${1}`,
+            url: `${serviceUrl}/tags/${1}`,
             method: 'DELETE',
         });
         req.flush('TRUE');

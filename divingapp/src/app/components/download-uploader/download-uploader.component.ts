@@ -44,8 +44,4 @@ export class DownloadUploaderComponent {
             return +b.isActive - +a.isActive;
         });
     }
-
-    public async download(os: OS) {
-        this.miscService.getUploader(os).subscribe(() => {});
-    }
 }

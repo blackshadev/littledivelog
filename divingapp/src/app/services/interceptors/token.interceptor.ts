@@ -13,16 +13,31 @@ import 'rxjs/add/operator/switchMap';
 import { switchMap } from 'rxjs/operators/switchMap';
 import { serviceUrl } from '../../shared/config';
 import 'rxjs/add/observable/throw';
+import { endpointFromRequest, hasEndpoint, IEndpoint } from 'app/shared/serviceUrlHelpers';
 
 let iX = 0;
 @Injectable()
 export class TokenInterceptor implements HttpInterceptor {
+
+    private static publicEndpoints: IEndpoint[] = [
+        { method: 'POST', path: '/auth/register' },
+        { method: 'POST', path: '/auth/sessions' }
+    ];
+    private static refreshTokenEndpoints: IEndpoint[] = [
+        { method: 'GET', path: '/auth/sessions/refresh' },
+        { method: 'DELETE', path: '/auth/sessions' }
+    ];
+
     constructor(public auth: AuthService) { }
 
     public intercept(
         request: HttpRequest<any>,
         next: HttpHandler,
     ): Observable<HttpEvent<any>> {
+        if (iX++ > 5) {
+            throw new Error("stop");
+        }
+        console.log(iX, request.url, this.shouldIntercept(request)  );
         if (!this.shouldIntercept(request)) {
             return next.handle(request);
         }
@@ -44,30 +59,27 @@ export class TokenInterceptor implements HttpInterceptor {
     }
 
     public shouldIntercept(request: HttpRequest<any>): boolean {
-        let shouldIntercept = request.url.indexOf(serviceUrl) > -1 &&
-            request.url.indexOf('/auth/sessions') === -1 &&
-            request.url.indexOf('/auth/register') === -1;
-
-            
-        if (
-            request.url.indexOf('/auth/sessions') !== -1 &&
-            (request.method === 'GET' || request.method === 'DELETE')
-        )  {
-            return true;
-        }
-
-        return shouldIntercept;
+        const endpoint = endpointFromRequest(request);
+        return !this.isPublicEndpoint(endpoint) && !this.isRefreshEndpoint(endpoint);
     }
 
     public fetchAccessToken(request: HttpRequest<any>, next: HttpHandler) {
         return from(this.auth.fetchAccessToken())
-            .catch(() => {
-                return from(this.auth.logout());
-            })
+            // .catch(() => {
+            //     // return from(this.auth.logout());
+            // })
             .pipe(
                 switchMap(() => {
                     return this.intercept(request, next);
                 }),
             );
+    }
+
+    private isPublicEndpoint(endpoint: IEndpoint): boolean {
+        return hasEndpoint(endpoint, TokenInterceptor.publicEndpoints);
+    }
+
+    private isRefreshEndpoint(endpoint: IEndpoint): boolean {
+        return hasEndpoint(endpoint, TokenInterceptor.refreshTokenEndpoints);
     }
 }

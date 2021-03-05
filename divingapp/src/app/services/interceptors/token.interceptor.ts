@@ -51,7 +51,6 @@ export class TokenInterceptor implements HttpInterceptor {
                 return throwError(err);
             }
         });
-
     }
 
     public shouldIntercept(request: HttpRequest<any>): boolean {
@@ -61,9 +60,9 @@ export class TokenInterceptor implements HttpInterceptor {
 
     public fetchAccessToken(request: HttpRequest<any>, next: HttpHandler) {
         return from(this.auth.fetchAccessToken())
-            // .catch(() => {
-            //     // return from(this.auth.logout());
-            // })
+            .catch(() => {
+                return from(this.auth.logout());
+            })
             .pipe(
                 switchMap(() => {
                     return this.intercept(request, next);

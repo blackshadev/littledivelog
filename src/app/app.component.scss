@@ -1,0 +1,176 @@
+@import './shared/global.scss';
+
+body {
+    background: $color-primary;
+}
+
+@media screen and (max-width: $min-width-menu-collapsable) {
+    .content {
+        padding-left: $width-menu-collapsed !important;
+    }
+}
+
+.content {
+    transition: padding 1s;
+    padding-left: $width-menu-expanded;
+
+    &.menu-collapsed {
+        padding-left: $width-menu-collapsed;
+    }
+}
+
+::ng-deep ng2-auto-complete,
+::ng-deep .ng2-auto-complete {
+    z-index: 5 !important;
+}
+
+::ng-deep .input-group-addon.input-group-addon-color i {
+    width: 16px;
+    height: 16px;
+}
+
+::ng-deep .collapsed-input-group {
+    .form-control {
+        &:not(:last-child) {
+            border-bottom-left-radius: 0;
+            border-bottom-right-radius: 0;
+            margin-bottom: -1px;
+        }
+
+        &:not(:first-child) {
+            border-top-left-radius: 0;
+            border-top-right-radius: 0;
+        }
+    }
+}
+
+::ng-deep .error-text.has-danger {
+    display: none;
+    color: #a94442;
+    margin-left: 7px;
+}
+
+::ng-deep .has-danger .error-text {
+    display: block;
+}
+
+:host ::ng-deep .manual-radius {
+    & ::ng-deep .left-control {
+        border-radius: 4px 0 0 4px !important;
+    }
+
+    & ::ng-deep .right-control {
+        border-radius: 0 4px 4px 0 !important;
+    }
+
+    & ::ng-deep .middle-control {
+        border-radius: 0px !important;
+    }
+}
+
+::ng-deep .input-group app-autocomplete {
+    flex: auto;
+
+    & ::ng-deep .ng2-auto-complete-wrapper {
+        display: flex;
+    }
+}
+
+::ng-deep .input-group .ng2-auto-complete-wrapper {
+    display: flex;
+}
+
+::ng-deep .input-group-group {
+    .input-group {
+
+        .form-control,
+        .input-group-text,
+        .btn {
+            border-radius: 0;
+            border-top-width: 0;
+        }
+
+        .input-group-btn .btn {
+            border-top-width: 1px;
+            border-top-color: transparent;
+        }
+
+        &:first-child {
+
+            .form-control,
+            .input-group-text,
+            .input-group-btn .btn,
+            .btn.dropdown-toggle {
+                border-top-width: 1px;
+            }
+
+            .form-control:first-child,
+            .input-group-prepend:first-child .input-group-text,
+            .input-group-prepend:first-child .btn {
+                border-top-left-radius: 0.25rem;
+            }
+
+            .form-control:last-child,
+            .input-group-append:last-child .input-group-text,
+            .input-group-append:last-child .btn {
+                border-top-right-radius: 0.25rem;
+            }
+        }
+
+        &:last-child {
+
+            .form-control:first-child,
+            .input-group-prepend:first-child .input-group-text,
+            .input-group-prepend:first-child .btn {
+                border-bottom-left-radius: 0.25rem;
+            }
+
+            .form-control:last-child,
+            .input-group-append:last-child .input-group-text,
+            .input-group-append:last-child .btn {
+                border-bottom-right-radius: 0.25rem;
+            }
+        }
+    }
+}
+
+
+::ng-deep .btn-outline-formcontrol {
+    border-color: #ced4da;
+    color: #495057;
+}
+
+::ng-deep .clear-fix {
+    clear: both;
+}
+
+
+::ng-deep .fab {
+    position: absolute;
+    right: 24px;
+    bottom: 24px;
+    height: 64px;
+    width: 64px;
+
+    border-radius: 50%;
+    box-shadow: 0 6px 10px 0 #666;
+    transition: all 0.1s ease-in-out;
+    font-size: 37px;
+    line-height: 70px;
+    text-align: center;
+    padding: 0;
+
+    &:hover {
+        box-shadow: 0 6px 14px 0 #666;
+        transform: scale(1.05);
+    }
+}
+
+::ng-deep .fab.fab-secondary {
+    bottom: 95px;
+    right: 30px;
+    height: 52px;
+    width: 52px;
+    font-size: 25px;
+    line-height: 55px;
+}

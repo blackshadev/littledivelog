@@ -1,0 +1,41 @@
+<div class="row m-4">
+    <div class="col">
+        <div class="jumbotron">
+            <h1 class="display-4">Dive Uploader</h1>
+            <p class="lead">
+                A simple tool for uploading your dives!
+            </p>
+            <hr class="my-4">
+            <p>
+                This tool can download dives from various dive computers and upload them to your dive log account.
+            </p>
+            <p>
+                The tool uses an external library called <a href="http://www.libdivecomputer.org/"
+                    target="_blank">libdivecomputer</a> to download dives from various dive computers.
+                If you like this functionality please conciser donating to his project.
+                If your dive computer is not (yet) supported, please contact me and I will try my best to
+            </p>
+            <hr class="my-4">
+
+            <p *ngFor="let platform of platforms">
+                <a class="btn btn-lg" 
+                    [class.btn-primary]="platform.isActive"
+                    [class.btn-outline-secondary]="!platform.isActive" type="button"
+                    href="{{ platform.url }}" 
+                >
+                    <i [ngClass]="platform.icon"></i>
+                    Download
+                </a>
+            </p>
+
+        </div>
+    </div>
+    <div class="col">
+        <div class="row screenshots">
+            <div class="col-lg-6 col-md-12">
+                <img src="assets/dive-uploader.png" title="Dive Log Uploader Main Screen"
+                    alt="Dive Log Uploader Main Screen" class="img-thumbnail" />
+            </div>
+        </div>
+    </div>
+</div>

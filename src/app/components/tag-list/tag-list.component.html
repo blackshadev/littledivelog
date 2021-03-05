@@ -1,0 +1,47 @@
+<ng-template #listTemplate>
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    Number of dives
+                </td>
+                <td>
+                    Last dive
+                </td>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let tag of tags"
+                [ngClass]="{ 'table-active': selected !== undefined && tag.tag_id === selected.tag_id  }"
+                [attr.data-tag_id]="tag.tag_id" (click)="select(tag.tag_id)">
+                <td>
+                    <app-tag [color]="tag.color" fontSize="100%">
+                        {{ tag.text }}
+                    </app-tag>
+                </td>
+                <td>{{ tag.dive_count }}</td>
+                <td>{{ tag.last_dive | date:'y-MM-dd HH:mm:ss' }}</td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <button class="fab btn btn-primary" [routerLink]="['/buddy/new/']" appHideWhen=">=md"><i
+            class="fa fa-plus"></i></button>
+</ng-template>
+
+<ng-template #detailTemplate>
+    <app-tag-detail #detail [tag]="selected" (onDataChanged)="dataChanged($event)"></app-tag-detail>
+</ng-template>
+
+<ng-template #menuTemplate>
+    <button class="btn btn-primary" [routerLink]="['/tag/new/']" appHideWhen="<md">
+        <i class="fa fa-plus"></i>
+    </button>
+</ng-template>
+
+<app-list-detail [listTemplate]="listTemplate" [detailTemplate]="detailTemplate" [menuTemplate]="menuTemplate"
+    [selected]="selected"></app-list-detail>

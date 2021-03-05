@@ -1,0 +1,40 @@
+@import '../../../shared/global.scss';
+
+.graph {
+    ::ng-deep .temperature-pointer line {
+        stroke: #000;
+    }
+
+    ::ng-deep .temperature-pointer text {
+        font-size: 0.8em;
+    }
+
+    ::ng-deep g.graph {
+        ::ng-deep .line path {
+            fill: none;
+            // stroke: $color-accent;
+            stroke: url(#line-gradient);
+        }
+
+        ::ng-deep .hover {
+            display: none;
+            line {
+                stroke: lighten($color-accent, 25%);
+            }
+        }
+
+        ::ng-deep .select {
+            display: none;
+
+            circle {
+                fill: none;
+                stroke: $color-accent;
+                stroke-width: 3px;
+            }
+        }
+
+        ::ng-deep .events circle {
+            fill: darken($color-accent, 25%);
+        }
+    }
+}

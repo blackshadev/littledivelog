@@ -1,0 +1,35 @@
+@import "../../../shared/global.scss";
+
+.list-menu {
+    padding: 0.6em 0 0.4em 0.3em;
+
+    .btn {
+        background-color: $color-accent;
+        border-color:  $color-accent;
+    }
+}
+
+.list-component {
+    position: relative;
+    height: 100vh;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    .list-menu {
+        padding-left: 15px;
+        padding-right: 15px;
+    }
+    .list-view {
+        flex-grow: 1;
+        overflow-y: scroll;
+    }
+
+}
+
+.detail-component {
+    position: relative;
+    min-height: 100vh;
+    height: 100%;
+    border-left: 1px solid $color-accent;
+}

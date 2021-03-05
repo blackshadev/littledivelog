@@ -1,0 +1,76 @@
+<div class="menu-container" #menuContainer>
+    <nav>
+        <ul class="nav nav-pills nav-stacked">
+            <ng-container *ngIf="isLoggedIn">
+                <li>
+                    <a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']">
+                        <i class="fa fa-fw fa-dashboard"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['dive']" [routerLinkActive]="['is-active']">
+                        <i class="fa fa-fw fa-tint"></i>
+                        <span>Dives</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['computer']" [routerLinkActive]="['is-active']">
+                        <i class="fa fa-fw fa-desktop"></i>
+                        <span>Computers</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['buddy']" [routerLinkActive]="['is-active']">
+                        <i class="fa fa-fw fa-users"></i>
+                        <span>Buddies</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['tag']" [routerLinkActive]="['is-active']">
+                        <i class="fa fa-fw fa-tag"></i>
+                        <span>Tags</span>
+                    </a>
+                </li>
+                <li>
+                    <a [routerLink]="['uploader']" [routerLinkActive]="['is-active']">
+                        <i class="fa fa-fw fa-upload"></i>
+                        <span>Uploader</span>
+                    </a>
+                </li>
+
+            </ng-container>
+        </ul>
+        <div class="bottom-menu">
+            <ul class="nav nav-pills nav-stacked">
+                <ng-container *ngIf="!isLoggedIn">
+                    <li data-test-name="login">
+                        <a [routerLink]="['login']">
+                            <i class="fa fa-fw fa-sign-in"></i>
+                            <span>Sign in</span>
+                        </a>
+                    </li>
+                </ng-container>
+                <ng-container *ngIf="isLoggedIn">
+                    <li data-test-name="profile">
+                        <a [routerLink]="['profile']">
+                            <i class="fa fa-fw fa-user"></i>
+                            <span>Profile</span>
+                        </a>
+                    </li>
+                    <li data-test-name="logout">
+                        <a (click)="logout()">
+                            <i class="fa fa-fw fa-sign-out"></i>
+                            <span>Sign out</span>
+                        </a>
+                    </li>
+                </ng-container>
+            </ul>
+            <div class="toggle-container">
+                <a (click)="toggle()">
+                    <i class="fa fa-fw fa-chevron-left"></i>
+                </a>
+            </div>
+        </div>
+    </nav>
+</div>

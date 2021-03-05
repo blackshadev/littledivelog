@@ -1,0 +1,39 @@
+name: deploy
+
+on:
+  push:
+    branches:
+    - master
+
+jobs:
+  tests:
+    name: Deploy ${{ matrix.php }}
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [14.x]
+    
+    steps:
+      - uses: actions/checkout@v2
+      - name: Cache node modules
+        uses: actions/cache@v1
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+      - name: Node ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Yarn install
+        run: yarn
+      - name: build
+        run: yarn build:prod
+      - name: Upload
+        uses: sebastianpopp/ftp-action@releases/v2
+        with:
+          host: dive.littledev.nl
+          user: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          localDir: "dist"

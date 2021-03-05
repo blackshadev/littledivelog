@@ -27,4 +27,4 @@ jobs:
       - name: Yarn install
         run: yarn
       - name: Test
-        run: ng test
+        run: yarn test

@@ -34,10 +34,6 @@ export class TokenInterceptor implements HttpInterceptor {
         request: HttpRequest<any>,
         next: HttpHandler,
     ): Observable<HttpEvent<any>> {
-        if (iX++ > 5) {
-            throw new Error("stop");
-        }
-        console.log(iX, request.url, this.shouldIntercept(request)  );
         if (!this.shouldIntercept(request)) {
             return next.handle(request);
         }

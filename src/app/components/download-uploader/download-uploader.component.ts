@@ -29,14 +29,14 @@ export class DownloadUploaderComponent {
                 OSName: "Linux",
                 icon: "fa fa-linux",
                 isActive: browserService.isLinux,
-                url: this.miscService.getUploaderUrl(OS.Linux),
+                url: "https://github.com/blackshadev/electron-dive-downloader/releases/download/v0.0.5/DiveDownloader-0.0.5.AppImage",
             },
             {
                 OS: OS.Window,
                 OSName: "Windows",
                 icon: "fa fa-windows",
                 isActive: browserService.isWindows,
-                url: this.miscService.getUploaderUrl(OS.Window),
+                url: "https://github.com/blackshadev/electron-dive-downloader/releases/download/v0.0.5/DiveDownloader-Setup-0.0.5.exe",
             },
         ];
 

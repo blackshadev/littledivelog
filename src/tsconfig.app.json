@@ -6,7 +6,7 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "es5",
-        "lib": ["es2016", "dom"],
+        "lib": ["es2017", "dom"],
         // "strict": true,
         "outDir": "../out-tsc/app",
         "module": "es2020",

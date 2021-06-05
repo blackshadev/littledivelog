@@ -1,6 +1,5 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { AuthService } from "./auth.service";
-import { Http } from "@angular/http";
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -15,11 +14,13 @@ describe("AuthService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [Http, AuthService],
+            providers: [AuthService],
         });
 
-        service = TestBed.get(AuthService);
-        httpMock = TestBed.get(HttpTestingController);
+        service = TestBed.inject(AuthService) as AuthService & {
+            reloadWindow: () => void;
+        };
+        httpMock = TestBed.inject(HttpTestingController);
         service.reloadWindow = () => {};
     });
 

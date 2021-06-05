@@ -4,7 +4,7 @@
         "declaration": false,
         "moduleResolution": "node",
         "experimentalDecorators": true,
-        "lib": ["es2016", "dom"],
+        "lib": ["es2017", "dom"],
         "outDir": "../out-tsc/spec",
         "module": "es2020",
         "target": "es5",

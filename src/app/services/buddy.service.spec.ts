@@ -1,6 +1,5 @@
 import { TestBed, inject } from "@angular/core/testing";
 import { BuddyService, IBuddyStat } from "./buddy.service";
-import { Http } from "@angular/http";
 import {
     HttpClientTestingModule,
     HttpTestingController,
@@ -15,11 +14,11 @@ describe("BuddyService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [Http, BuddyService],
+            providers: [BuddyService],
         });
 
-        service = TestBed.get(BuddyService);
-        httpMock = TestBed.get(HttpTestingController);
+        service = TestBed.inject(BuddyService);
+        httpMock = TestBed.inject(HttpTestingController);
     });
 
     it("should be created", inject([BuddyService], (b: BuddyService) => {

@@ -8,30 +8,29 @@ import {
     Output,
     EventEmitter,
     ViewChild,
-} from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { CustomValidators } from 'app/shared/validators';
-import { TagService, ITagStat } from 'app/services/tag.service';
-import { Router } from '@angular/router';
-import { IDataChanged } from 'app/shared/datachanged.interface';
-import { markFormGroupTouched } from 'app/shared/common';
-import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
+} from "@angular/core";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { CustomValidators } from "app/shared/validators";
+import { TagService, ITagStat } from "app/services/tag.service";
+import { Router } from "@angular/router";
+import { IDataChanged } from "app/shared/datachanged.interface";
+import { markFormGroupTouched } from "app/shared/common";
+import { DetailComponentComponent } from "app/components/controls/detail-component/detail-component.component";
 
 @Component({
-    selector: 'app-tag-detail',
-    templateUrl: './tag-detail.component.html',
-    styleUrls: ['./tag-detail.component.scss'],
+    selector: "app-tag-detail",
+    templateUrl: "./tag-detail.component.html",
+    styleUrls: ["./tag-detail.component.scss"],
 })
 export class TagDetailComponent {
-    @Output() onDataChanged: EventEmitter<IDataChanged> = new EventEmitter<
-        IDataChanged
-    >();
+    @Output() onDataChanged: EventEmitter<IDataChanged> =
+        new EventEmitter<IDataChanged>();
 
     @Input()
     public tag: ITagStat;
 
     public form: FormGroup;
-    @ViewChild('detailComponent')
+    @ViewChild("detailComponent")
     public detailComponent: DetailComponentComponent;
 
     public get color(): string {
@@ -54,8 +53,8 @@ export class TagDetailComponent {
         private router: Router,
     ) {
         this.form = this._fb.group({
-            text: ['', [Validators.required]],
-            color: ['', [Validators.required, CustomValidators.color]],
+            text: ["", [Validators.required]],
+            color: ["", [Validators.required, CustomValidators.color]],
         });
     }
 
@@ -74,7 +73,7 @@ export class TagDetailComponent {
             text: dat.text,
         });
         this.onDataChanged.emit({
-            type: this.tag.tag_id === undefined ? 'insert' : 'update',
+            type: this.tag.tag_id === undefined ? "insert" : "update",
             key: tag.tag_id,
         });
         this.tag.tag_id = tag.tag_id;
@@ -90,7 +89,7 @@ export class TagDetailComponent {
     }
 
     public back() {
-        this.router.navigate(['/tag']);
+        this.router.navigate(["/tag"]);
     }
 
     public async delete() {
@@ -100,7 +99,7 @@ export class TagDetailComponent {
         } else {
             await this.service.delete(this.tag.tag_id);
             this.onDataChanged.emit({
-                type: 'delete',
+                type: "delete",
                 key: this.tag.tag_id,
             });
             this.back();

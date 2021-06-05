@@ -1,16 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { BaseModalComponent } from './base-modal.component';
+import { BaseModalComponent } from "./base-modal.component";
 
-describe('BaseComponent', () => {
+describe("BaseComponent", () => {
     let component: BaseModalComponent;
     let fixture: ComponentFixture<BaseModalComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [BaseModalComponent],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [BaseModalComponent],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(BaseModalComponent);
@@ -18,7 +20,7 @@ describe('BaseComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });

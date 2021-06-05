@@ -1,4 +1,4 @@
-import { HideWhenDirective } from './hide-when.directive';
+import { HideWhenDirective } from "./hide-when.directive";
 
 // describe('HideWhenDirective', () => {
 //     it('should create an instance', () => {

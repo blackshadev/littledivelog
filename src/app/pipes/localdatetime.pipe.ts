@@ -1,8 +1,8 @@
-import { Pipe, PipeTransform } from '@angular/core';
-import * as moment from 'moment-timezone';
+import { Pipe, PipeTransform } from "@angular/core";
+import * as moment from "moment-timezone";
 
 @Pipe({
-    name: 'localdatetime',
+    name: "localdatetime",
 })
 export class LocaldatetimePipe implements PipeTransform {
     private static tz: string;
@@ -10,7 +10,7 @@ export class LocaldatetimePipe implements PipeTransform {
         LocaldatetimePipe.tz = LocaldatetimePipe.tz ?? moment.tz.guess();
         targetTz = targetTz ?? LocaldatetimePipe.tz;
 
-        value = value.replace(' ', 'T');
+        value = value.replace(" ", "T");
         return moment.utc(value).tz(targetTz).format(format);
     }
 }

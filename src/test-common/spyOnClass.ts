@@ -14,5 +14,5 @@ export function spyOnClass<T>(spiedClass: Function): Spied<T> {
         })
         .map(([name]) => name);
     // return spy object
-    return jasmine.createSpyObj('spy', [...methods]);
+    return jasmine.createSpyObj("spy", [...methods]);
 }

@@ -1,14 +1,14 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { TagService, ITagStat } from './tag.service';
+import { TestBed, inject } from "@angular/core/testing";
+import { TagService, ITagStat } from "./tag.service";
 import {
     HttpClientTestingModule,
     HttpTestingController,
-} from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
-import { serviceUrl } from '../shared/config';
-import { ITag } from '../components/controls/tags/tags.component';
+} from "@angular/common/http/testing";
+import { HttpClient } from "@angular/common/http";
+import { serviceUrl } from "../shared/config";
+import { ITag } from "../components/controls/tags/tags.component";
 
-describe('TagService', () => {
+describe("TagService", () => {
     let service: TagService;
     let httpMock: HttpTestingController;
 
@@ -21,45 +21,45 @@ describe('TagService', () => {
         httpMock = TestBed.get(HttpTestingController);
     });
 
-    it('Should be created', inject([TagService], (s: TagService) => {
+    it("Should be created", inject([TagService], (s: TagService) => {
         expect(s).toBeTruthy();
         expect(s).toBe(service);
     }));
 
-    it('List should request get tag', done => {
+    it("List should request get tag", (done) => {
         const sampleData: ITag[] = [
-            { tag_id: 1, text: 'Test', color: '#9914ff' },
-            { tag_id: 2, text: 'Test2', color: '#687bd5' },
+            { tag_id: 1, text: "Test", color: "#9914ff" },
+            { tag_id: 2, text: "Test2", color: "#687bd5" },
         ];
 
         service
             .list()
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(sampleData);
                 done();
             })
             .catch(done.fail);
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(sampleData);
     });
 
-    it('List should rely on cache the second call', done => {
+    it("List should rely on cache the second call", (done) => {
         const sampleData: ITag[] = [
-            { tag_id: 1, text: 'Test', color: '#9914ff' },
-            { tag_id: 2, text: 'Test2', color: '#687bd5' },
+            { tag_id: 1, text: "Test", color: "#9914ff" },
+            { tag_id: 2, text: "Test2", color: "#687bd5" },
         ];
 
         let _d: ITag[];
         service
             .list()
-            .then(d => {
+            .then((d) => {
                 _d = d;
                 return service.list();
             })
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(_d);
                 expect(d).toBe(sampleData);
                 done();
@@ -68,57 +68,57 @@ describe('TagService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(sampleData);
 
         httpMock.expectNone({
             url: `${serviceUrl}/tags`,
-            method: 'GET',
+            method: "GET",
         });
     });
 
-    it('FullList should request tags', done => {
+    it("FullList should request tags", (done) => {
         const sampleData: ITagStat[] = [
             {
-                color: '#fff',
+                color: "#fff",
                 dive_count: 1,
-                last_dive: new Date('2018-01-01'),
+                last_dive: new Date("2018-01-01"),
                 tag_id: 1,
-                text: 'test',
+                text: "test",
             },
         ];
         service
             .fullList()
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(sampleData);
                 done();
             })
             .catch(done.fail);
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(sampleData);
     });
 
-    it('Clear cache should clear cache and request new data', done => {
+    it("Clear cache should clear cache and request new data", (done) => {
         const sampleData: ITag[] = [
-            { tag_id: 1, text: 'Test', color: '#9914ff' },
-            { tag_id: 2, text: 'Test2', color: '#687bd5' },
+            { tag_id: 1, text: "Test", color: "#9914ff" },
+            { tag_id: 2, text: "Test2", color: "#687bd5" },
         ];
 
         const sampleData_2: ITag[] = JSON.parse(JSON.stringify(sampleData));
-        sampleData_2[0].text = 'new tag';
+        sampleData_2[0].text = "new tag";
 
         let _d: ITag[];
         service
             .list()
-            .then(d => {
+            .then((d) => {
                 _d = d;
                 return service.list();
             })
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(_d);
                 expect(d).toBe(sampleData);
                 service.clearCache();
@@ -126,13 +126,13 @@ describe('TagService', () => {
 
                 const req2 = httpMock.expectOne({
                     url: `${serviceUrl}/tags`,
-                    method: 'GET',
+                    method: "GET",
                 });
                 req2.flush(sampleData_2);
 
                 return prom;
             })
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(sampleData_2);
                 expect(d).not.toBe(sampleData);
                 done();
@@ -141,22 +141,22 @@ describe('TagService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(sampleData);
     });
 
-    it('Update should update tag and clear cache', done => {
+    it("Update should update tag and clear cache", (done) => {
         const sampleData: ITag = {
             tag_id: 1,
-            color: '#fff',
-            text: 'tester',
+            color: "#fff",
+            text: "tester",
         };
 
-        spyOn(service, 'clearCache');
+        spyOn(service, "clearCache");
         service
             .update(sampleData)
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(sampleData);
                 expect(service.clearCache).toHaveBeenCalled();
                 done();
@@ -165,22 +165,22 @@ describe('TagService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags/${sampleData.tag_id}`,
-            method: 'PUT',
+            method: "PUT",
         });
         req.flush(sampleData);
     });
 
-    it('Insert should post tag and clear cache', done => {
+    it("Insert should post tag and clear cache", (done) => {
         const sampleData: ITag = {
             tag_id: undefined,
-            color: '#fff',
-            text: 'tester',
+            color: "#fff",
+            text: "tester",
         };
 
-        spyOn(service, 'clearCache');
+        spyOn(service, "clearCache");
         service
             .update(sampleData)
-            .then(d => {
+            .then((d) => {
                 expect(d).toBe(sampleData);
                 expect(service.clearCache).toHaveBeenCalled();
                 done();
@@ -189,17 +189,17 @@ describe('TagService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags`,
-            method: 'POST',
+            method: "POST",
         });
         const res = Object.assign({}, sampleData, { tag_id: 10 });
         req.flush(sampleData);
     });
-    it('Delete should delete tag and clear cache', done => {
-        spyOn(service, 'clearCache');
+    it("Delete should delete tag and clear cache", (done) => {
+        spyOn(service, "clearCache");
         service
             .delete(1)
-            .then(d => {
-                expect(d as any).toBe('TRUE');
+            .then((d) => {
+                expect(d as any).toBe("TRUE");
                 expect(service.clearCache).toHaveBeenCalled();
                 done();
             })
@@ -207,8 +207,8 @@ describe('TagService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/tags/${1}`,
-            method: 'DELETE',
+            method: "DELETE",
         });
-        req.flush('TRUE');
+        req.flush("TRUE");
     });
 });

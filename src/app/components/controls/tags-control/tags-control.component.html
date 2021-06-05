@@ -19,15 +19,12 @@
 <div *ngIf="source === undefined" class="input-group">
     <span class="input-group-btn">
         <button
-            (click)="addTag({ 'text': tagInput.value, 'color': randomColor() })"
+            (click)="addTag({ text: tagInput.value, color: randomColor() })"
             class="btn btn-default"
             type="button"
         >
             <i class="glyphicon glyphicon-plus"></i>
         </button>
     </span>
-    <input #tagInput
-        [placeholder]="placeholder"
-        class="form-control"
-    />
+    <input #tagInput [placeholder]="placeholder" class="form-control" />
 </div>

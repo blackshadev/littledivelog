@@ -1,16 +1,32 @@
 <div class="modal" tabindex="-1" role="dialog">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header" *ngIf="titleText">
-        <h5 class="modal-title">{{titleText}}</h5>
-      </div>
-      <div class="modal-body">
-        <ng-content></ng-content>
-      </div>
-      <div class="modal-footer">
-        <button *ngIf="confirmText" type="button" #confirmButton class="btn btn-primary" (click)="onClick($event, true)">{{confirmText}}</button>
-        <button *ngIf="cancelText" type="button" #cancelButton class="btn btn-secondary" (click)="onClick($event, false)">{{cancelText}}</button>
-      </div>
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header" *ngIf="titleText">
+                <h5 class="modal-title">{{ titleText }}</h5>
+            </div>
+            <div class="modal-body">
+                <ng-content></ng-content>
+            </div>
+            <div class="modal-footer">
+                <button
+                    *ngIf="confirmText"
+                    type="button"
+                    #confirmButton
+                    class="btn btn-primary"
+                    (click)="onClick($event, true)"
+                >
+                    {{ confirmText }}
+                </button>
+                <button
+                    *ngIf="cancelText"
+                    type="button"
+                    #cancelButton
+                    class="btn btn-secondary"
+                    (click)="onClick($event, false)"
+                >
+                    {{ cancelText }}
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </div>

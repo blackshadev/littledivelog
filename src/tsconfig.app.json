@@ -3,7 +3,6 @@
         "sourceMap": true,
         "declaration": false,
         "moduleResolution": "node",
-        "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "target": "es5",
         "lib": ["es2017", "dom"],
@@ -19,10 +18,6 @@
             "core-js/es6/*": ["../node_modules/core-js/es/*"]
         }
     },
-    "files": [
-        "main.ts",
-        "polyfills.ts",
-        "fuse.js.d.ts"
-    ],
+    "files": ["main.ts", "polyfills.ts", "fuse.js.d.ts"],
     "include": []
 }

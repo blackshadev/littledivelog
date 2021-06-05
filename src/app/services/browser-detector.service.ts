@@ -1,13 +1,13 @@
-import { Injectable, PLATFORM_ID, Inject } from '@angular/core';
-import { isPlatformBrowser } from '@angular/common';
-import { OS, OS_Rules, detectOS } from './browser-detector.constants';
+import { Injectable, PLATFORM_ID, Inject } from "@angular/core";
+import { isPlatformBrowser } from "@angular/common";
+import { OS, OS_Rules, detectOS } from "./browser-detector.constants";
 
 export interface DeviceInfo {
     os: OS;
 }
 
 @Injectable({
-    providedIn: 'root',
+    providedIn: "root",
 })
 export class BrowserDetectorService {
     private _userAgent: string;

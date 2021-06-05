@@ -1,8 +1,6 @@
-import { Injectable } from '@angular/core';
-import { AuthService } from 'app/services/auth.service';
-import { Response } from '@angular/http';
-import { serviceUrl } from 'app/shared/config';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { serviceUrl } from "app/shared/config";
+import { HttpClient } from "@angular/common/http";
 
 export interface ITagStat {
     tag_id: number;
@@ -22,7 +20,7 @@ export interface ITag {
 export class TagService {
     private __cache?: ITag[];
 
-    constructor(protected http: HttpClient) { }
+    constructor(protected http: HttpClient) {}
 
     public clearCache() {
         this.__cache = undefined;

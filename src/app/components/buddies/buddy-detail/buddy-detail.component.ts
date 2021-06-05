@@ -8,30 +8,29 @@ import {
     EventEmitter,
     Output,
     ViewChild,
-} from '@angular/core';
-import { FormBuilder, Validators, FormGroup } from '@angular/forms';
-import { CustomValidators } from 'app/shared/validators';
-import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
-import { Router } from '@angular/router';
-import { IDataChanged } from 'app/shared/datachanged.interface';
-import { markFormGroupTouched } from 'app/shared/common';
-import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
+} from "@angular/core";
+import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { CustomValidators } from "app/shared/validators";
+import { IBuddyStat, BuddyService } from "app/services/buddy.service";
+import { Router } from "@angular/router";
+import { IDataChanged } from "app/shared/datachanged.interface";
+import { markFormGroupTouched } from "app/shared/common";
+import { DetailComponentComponent } from "app/components/controls/detail-component/detail-component.component";
 
 @Component({
-    selector: 'app-buddy-detail',
-    templateUrl: './buddy-detail.component.html',
-    styleUrls: ['./buddy-detail.component.css'],
+    selector: "app-buddy-detail",
+    templateUrl: "./buddy-detail.component.html",
+    styleUrls: ["./buddy-detail.component.css"],
 })
 export class BuddyDetailComponent {
-    @Output() public onDataChanged: EventEmitter<
-        IDataChanged
-    > = new EventEmitter<IDataChanged>();
+    @Output() public onDataChanged: EventEmitter<IDataChanged> =
+        new EventEmitter<IDataChanged>();
 
     @Input()
     public buddy: IBuddyStat;
     public form: FormGroup;
 
-    @ViewChild('detailComponent')
+    @ViewChild("detailComponent")
     public detailComponent: DetailComponentComponent;
 
     public get isNew() {
@@ -54,9 +53,9 @@ export class BuddyDetailComponent {
         private router: Router,
     ) {
         this.form = this._fb.group({
-            text: ['', [Validators.required]],
-            color: ['', [Validators.required, CustomValidators.color]],
-            email: ['', [CustomValidators.optionalEmail]],
+            text: ["", [Validators.required]],
+            color: ["", [Validators.required, CustomValidators.color]],
+            email: ["", [CustomValidators.optionalEmail]],
         });
     }
 
@@ -77,7 +76,7 @@ export class BuddyDetailComponent {
         });
 
         this.onDataChanged.emit({
-            type: this.isNew ? 'insert' : 'update',
+            type: this.isNew ? "insert" : "update",
             key: bud.buddy_id,
         });
         this.buddy.buddy_id = bud.buddy_id;
@@ -94,7 +93,7 @@ export class BuddyDetailComponent {
     }
 
     public back() {
-        this.router.navigateByUrl('/buddy');
+        this.router.navigateByUrl("/buddy");
     }
 
     async delete() {
@@ -104,7 +103,7 @@ export class BuddyDetailComponent {
         } else {
             await this.service.delete(this.buddy.buddy_id);
             this.onDataChanged.emit({
-                type: 'delete',
+                type: "delete",
                 key: this.buddy.buddy_id,
             });
             this.buddy = undefined;

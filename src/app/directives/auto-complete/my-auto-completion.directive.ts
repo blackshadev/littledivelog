@@ -6,10 +6,10 @@ import {
     HostBinding,
     HostListener,
     ElementRef,
-} from '@angular/core';
+} from "@angular/core";
 
 @Directive({
-    selector: '[appAutoCompletion]',
+    selector: "[appAutoCompletion]",
 })
 export class MyAutoCompletionDirective {
     @Output() valueChanged: EventEmitter<string> = new EventEmitter<string>();
@@ -19,7 +19,7 @@ export class MyAutoCompletionDirective {
         this.element = el;
     }
 
-    @HostListener('valueChanged', ['$event'])
+    @HostListener("valueChanged", ["$event"])
     private onvalueChanged(e) {
         this.valueChanged.emit(e);
     }

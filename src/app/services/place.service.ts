@@ -1,9 +1,7 @@
-import { Injectable } from '@angular/core';
-import { serviceUrl } from 'app/shared/config';
-import { AuthService } from 'app/services/auth.service';
-import { Response } from '@angular/http';
-import { IPlace } from 'app/shared/dive';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { serviceUrl } from "app/shared/config";
+import { IPlace } from "app/shared/dive";
+import { HttpClient } from "@angular/common/http";
 
 export interface ICountry {
     code: string;
@@ -29,7 +27,7 @@ export class PlaceService {
     private __countries?: ICountry[];
 
     public static transformCountries(all: IDbCountry[]): ICountry[] {
-        return all.map(c => {
+        return all.map((c) => {
             return { code: c.iso2, description: c.name };
         });
     }
@@ -59,7 +57,7 @@ export class PlaceService {
             .get<IDbCountry[]>(`${serviceUrl}/countries`)
             .toPromise();
 
-        this.__countries = all.map(c => {
+        this.__countries = all.map((c) => {
             return { code: c.iso2, description: c.name };
         });
 

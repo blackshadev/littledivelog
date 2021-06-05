@@ -70,7 +70,7 @@
                             <p class="form-control-static">
                                 {{
                                     user.inserted
-                                        | localdatetime: 'YYYY-MM-DD HH:mm:ss'
+                                        | localdatetime: "YYYY-MM-DD HH:mm:ss"
                                 }}
                             </p>
                         </div>
@@ -132,14 +132,10 @@
                     <div class="col-sm-10">
                         <div class="row">
                             <div class="col">
-                                <label>
-                                    Tank Volume
-                                </label>
+                                <label> Tank Volume </label>
                             </div>
                             <div class="col">
-                                <label>
-                                    Ogygen percentage
-                                </label>
+                                <label> Ogygen percentage </label>
                             </div>
                         </div>
                         <div class="input-group-group" formGroupName="tank">
@@ -183,7 +179,10 @@
                                 <div class="input-group-append">
                                     <button
                                         type="button"
-                                        class="btn btn-outline-formcontrol dropdown-toggle"
+                                        class="
+                                            btn btn-outline-formcontrol
+                                            dropdown-toggle
+                                        "
                                         data-toggle="dropdown"
                                         aria-haspopup="true"
                                         aria-expanded="false"
@@ -194,7 +193,9 @@
                                         }}
                                     </button>
                                     <div
-                                        class="dropdown-menu dropdown-menu-right"
+                                        class="
+                                            dropdown-menu dropdown-menu-right
+                                        "
                                     >
                                         <a
                                             class="dropdown-item"
@@ -220,14 +221,10 @@
                         </div>
                         <div class="row">
                             <div class="col">
-                                <label>
-                                    Start Pressure
-                                </label>
+                                <label> Start Pressure </label>
                             </div>
                             <div class="col">
-                                <label>
-                                    End Pressure
-                                </label>
+                                <label> End Pressure </label>
                             </div>
                         </div>
 
@@ -403,21 +400,11 @@
                 <table class="table table-hover">
                     <thead>
                         <tr>
-                            <td>
-                                Description
-                            </td>
-                            <td>
-                                Last used
-                            </td>
-                            <td>
-                                Last IP
-                            </td>
-                            <td class="d-none d-lg-table-cell">
-                                Created
-                            </td>
-                            <td class="d-none d-lg-table-cell">
-                                Created by
-                            </td>
+                            <td>Description</td>
+                            <td>Last used</td>
+                            <td>Last IP</td>
+                            <td class="d-none d-lg-table-cell">Created</td>
+                            <td class="d-none d-lg-table-cell">Created by</td>
                             <td></td>
                         </tr>
                     </thead>
@@ -427,14 +414,14 @@
                             <td>
                                 {{
                                     sess.last_used
-                                        | localdatetime: 'YYYY-MM-DD HH:mm:ss'
+                                        | localdatetime: "YYYY-MM-DD HH:mm:ss"
                                 }}
                             </td>
                             <td>{{ sess.last_ip }}</td>
                             <td class="d-none d-lg-table-cell">
                                 {{
                                     sess.inserted
-                                        | localdatetime: 'YYYY-MM-DD HH:mm:ss'
+                                        | localdatetime: "YYYY-MM-DD HH:mm:ss"
                                 }}
                             </td>
                             <td class="d-none d-lg-table-cell">

@@ -1,23 +1,14 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    OnDestroy,
-    AfterViewInit,
-    ViewChild,
-} from '@angular/core';
-import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { TagService, ITagStat } from 'app/services/tag.service';
-import { TagDetailComponent } from 'app/components/tag-list/tag-detail/tag-detail.component';
-import { IDataChanged } from 'app/shared/datachanged.interface';
-import { TagsControlComponent } from 'app/components/controls/tags-control/tags-control.component';
+import { Component, OnInit, Input, OnDestroy } from "@angular/core";
+import { ActivatedRoute, Router } from "@angular/router";
+import { Subscription } from "rxjs";
+import { TagService, ITagStat } from "app/services/tag.service";
+import { IDataChanged } from "app/shared/datachanged.interface";
+import { TagsControlComponent } from "app/components/controls/tags-control/tags-control.component";
 
 @Component({
-    selector: 'app-tag-list',
-    templateUrl: './tag-list.component.html',
-    styleUrls: ['./tag-list.component.scss'],
+    selector: "app-tag-list",
+    templateUrl: "./tag-list.component.html",
+    styleUrls: ["./tag-list.component.scss"],
 })
 export class TagListComponent implements OnInit, OnDestroy {
     @Input()
@@ -37,8 +28,8 @@ export class TagListComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.sub = this.route.params.subscribe((params) => {
-            const id = params['id'] !== undefined ? +params['id'] : undefined;
-            if (params['id'] === 'new') {
+            const id = params["id"] !== undefined ? +params["id"] : undefined;
+            if (params["id"] === "new") {
                 this.selected = {
                     tag_id: undefined,
                     text: null,
@@ -57,10 +48,10 @@ export class TagListComponent implements OnInit, OnDestroy {
     }
 
     public async dataChanged(ev: IDataChanged) {
-        if (ev.type === 'delete') {
+        if (ev.type === "delete") {
             this._id = undefined;
             this.selected = undefined;
-        } else if (ev.type === 'insert') {
+        } else if (ev.type === "insert") {
             this._id = ev.key;
         }
         await this.refresh();
@@ -76,7 +67,7 @@ export class TagListComponent implements OnInit, OnDestroy {
     }
 
     select(id?: number) {
-        this.router.navigateByUrl(`/tag/${id || ''}`);
+        this.router.navigateByUrl(`/tag/${id || ""}`);
         this._id = id;
 
         if (id === undefined) {

@@ -1,12 +1,12 @@
-import { divetime } from '../../../shared/formatters';
+import { divetime } from "../../../shared/formatters";
 import {
     Dive,
     ISample,
     ISampleEvent,
     SampleEventType,
     SampleEventFlag,
-} from '../../../shared/dive';
-import { DiveService } from '../../../services/dive.service';
+} from "../../../shared/dive";
+import { DiveService } from "../../../services/dive.service";
 import {
     Component,
     OnInit,
@@ -17,13 +17,13 @@ import {
     HostListener,
     EventEmitter,
     Output,
-} from '@angular/core';
-import * as d3 from 'd3';
+} from "@angular/core";
+import * as d3 from "d3";
 
 @Component({
-    selector: 'app-dive-profile',
-    templateUrl: './dive-profile.component.html',
-    styleUrls: ['./dive-profile.component.scss'],
+    selector: "app-dive-profile",
+    templateUrl: "./dive-profile.component.html",
+    styleUrls: ["./dive-profile.component.scss"],
 })
 export class DiveProfileComponent implements OnInit, AfterViewInit {
     get selectedItem(): ISample {
@@ -105,7 +105,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     protected bisect = d3.bisector<ISample, number>((d: ISample) => d.Time)
         .left;
     protected selectedIndex: number | undefined;
-    @ViewChild('container') protected container!: ElementRef;
+    @ViewChild("container") protected container!: ElementRef;
     protected isReady = false;
 
     constructor(
@@ -119,9 +119,9 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 .scaleLinear<d3.RGBColor, string>()
                 .interpolate(d3.interpolateHcl as any)
                 .range([
-                    d3.rgb('#0000ff'),
-                    d3.rgb('#00ff00'),
-                    d3.rgb('#ff0000'),
+                    d3.rgb("#0000ff"),
+                    d3.rgb("#00ff00"),
+                    d3.rgb("#ff0000"),
                 ]),
             temperatureRev: d3.scaleLinear(),
         };
@@ -141,15 +141,15 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     ngOnInit() {}
 
     public formatEvent(e: ISampleEvent) {
-        if (typeof e.Type === 'string') {
+        if (typeof e.Type === "string") {
             return e.Type;
         }
 
         if (e.Type === SampleEventType.Heading) {
-            return 'Heading set to ' + e.Value;
+            return "Heading set to " + e.Value;
         }
         if (e.Flags !== SampleEventFlag.None) {
-            return SampleEventFlag[e.Flags] + ' of ' + e.Name;
+            return SampleEventFlag[e.Flags] + " of " + e.Name;
         }
 
         return e.Name;
@@ -163,8 +163,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this.selectedIndex = index;
         const dive = this.data[index || -1];
         this.groups.select.style(
-            'display',
-            this.selectedIndex === undefined ? 'none' : 'inline',
+            "display",
+            this.selectedIndex === undefined ? "none" : "inline",
         );
 
         this.onselect.emit({ item: dive, index });
@@ -180,54 +180,54 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 y: this._scale.y(d.Depth),
             };
             this.groups.select
-                .select('circle')
-                .attr('cx', pos.x)
-                .attr('cy', pos.y);
+                .select("circle")
+                .attr("cx", pos.x)
+                .attr("cy", pos.y);
             this.setTemperaturePointer(this.data[index].Temperature);
         }
     }
 
     public setTemperaturePointer(v?: number) {
         const line = this.groups.tempeturePointer
-            .selectAll('line')
+            .selectAll("line")
             .data(v ? [v] : []);
 
         line.enter()
-            .append('line')
-            .attr('x1', -8)
-            .attr('x2', 5)
-            .attr('y1', this._scale.temperatureRev)
-            .attr('y2', this._scale.temperatureRev);
+            .append("line")
+            .attr("x1", -8)
+            .attr("x2", 5)
+            .attr("y1", this._scale.temperatureRev)
+            .attr("y2", this._scale.temperatureRev);
 
         line.exit().remove();
 
         line.transition()
             .duration(500)
-            .attr('x1', -8)
-            .attr('x2', 5)
-            .attr('y1', this._scale.temperatureRev)
-            .attr('y2', this._scale.temperatureRev);
+            .attr("x1", -8)
+            .attr("x2", 5)
+            .attr("y1", this._scale.temperatureRev)
+            .attr("y2", this._scale.temperatureRev);
 
         const text = this.groups.tempeturePointer
-            .selectAll('text')
+            .selectAll("text")
             .data(v ? [v] : []);
 
         text.enter()
-            .append('text')
-            .attr('text-anchor', 'end')
-            .attr('alignment-baseline', 'middle')
-            .attr('x', -10)
-            .attr('y', this._scale.temperatureRev);
+            .append("text")
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", -10)
+            .attr("y", this._scale.temperatureRev);
 
         text.exit().remove();
 
         text.transition()
-            .attr('text-anchor', 'end')
-            .attr('alignment-baseline', 'middle')
-            .attr('x', -10)
+            .attr("text-anchor", "end")
+            .attr("alignment-baseline", "middle")
+            .attr("x", -10)
             .text((_v) => _v.toFixed(1))
             .duration(500)
-            .attr('y', this._scale.temperatureRev);
+            .attr("y", this._scale.temperatureRev);
     }
 
     public async update() {
@@ -260,7 +260,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this._scale.y.domain([minDepth, maxDepth]);
         this._scale.temperature
             .domain([minTemp, medianTemp, maxTemp])
-            .range([d3.rgb('#0000ff'), d3.rgb('#00ff00'), d3.rgb('#ff0000')]);
+            .range([d3.rgb("#0000ff"), d3.rgb("#00ff00"), d3.rgb("#ff0000")]);
         this._scale.temperatureRev.domain([maxTemp, minTemp]);
 
         this.allEvents = [];
@@ -285,7 +285,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this.repaintEvents();
     }
 
-    @HostListener('window:resize', ['$event'])
+    @HostListener("window:resize", ["$event"])
     public resize() {
         const el = (this.parentEl.nativeElement as Element).parentElement;
         if (!el) {
@@ -294,8 +294,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
         const width = el.clientWidth;
         const height = width / 2;
-        this.svg.attr('width', Math.max(0, width));
-        this.svg.attr('height', height);
+        this.svg.attr("width", Math.max(0, width));
+        this.svg.attr("height", height);
 
         this._boundingbox.width =
             width - this._margin.left - this._margin.right;
@@ -307,40 +307,40 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         }
 
         this.groups.leftAxis.attr(
-            'transform',
+            "transform",
             `translate(50, ${this._margin.top})`,
         );
 
         this.groups.topAxis.attr(
-            'transform',
+            "transform",
             `translate(${this._margin.left}, 50)`,
         );
         this.groups.tempetureGroup.attr(
-            'transform',
+            "transform",
             `translate(${width - this._margin.right + 10}, ${
                 this._margin.top
             })`,
         );
         this.groups.tempetureLegend
-            .select('rect')
-            .attr('height', this._boundingbox.height);
-        this.groups.hover.select('line.x').attr('y2', height);
-        this.groups.hover.select('line.y').attr('x2', width);
+            .select("rect")
+            .attr("height", this._boundingbox.height);
+        this.groups.hover.select("line.x").attr("y2", height);
+        this.groups.hover.select("line.y").attr("x2", width);
 
         this.groups.labels.x.attr(
-            'transform',
+            "transform",
             `translate(${this._boundingbox.width / 2 + this._margin.left}, 20)`,
         );
 
         this.groups.labels.y.attr(
-            'transform',
+            "transform",
             `translate(20, ${
                 this._boundingbox.height / 2 + this._margin.top
             })rotate(-90)`,
         );
 
         this.groups.labels.temperature.attr(
-            'transform',
+            "transform",
             `translate(${width - 20}, ${
                 this._boundingbox.height / 2 + this._margin.top
             })rotate(90)`,
@@ -364,49 +364,49 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     }
 
     protected initCanvas() {
-        this.svg = d3.select(this.container.nativeElement).append('svg');
+        this.svg = d3.select(this.container.nativeElement).append("svg");
 
         const graph = this.svg
-            .append('g')
-            .attr('class', 'graph')
+            .append("g")
+            .attr("class", "graph")
             .attr(
-                'transform',
+                "transform",
                 `translate(${this._margin.left},${this._margin.top})`,
             );
-        const labels = this.svg.append('g').attr('class', 'labels');
-        const tempGroup = this.svg.append('g').attr('class', 'temperature');
+        const labels = this.svg.append("g").attr("class", "labels");
+        const tempGroup = this.svg.append("g").attr("class", "temperature");
 
         this.groups = {
             graph,
-            line: graph.append('g').attr('class', 'line'),
-            events: graph.append('g').attr('class', 'events'),
-            hover: graph.append('g').attr('class', 'hover'),
-            select: graph.append('g').attr('class', 'select'),
-            leftAxis: this.svg.append('g').attr('class', 'left-axis'),
-            topAxis: this.svg.append('g').attr('class', 'top-axis'),
+            line: graph.append("g").attr("class", "line"),
+            events: graph.append("g").attr("class", "events"),
+            hover: graph.append("g").attr("class", "hover"),
+            select: graph.append("g").attr("class", "select"),
+            leftAxis: this.svg.append("g").attr("class", "left-axis"),
+            topAxis: this.svg.append("g").attr("class", "top-axis"),
             tempetureOverlay: graph
-                .append('linearGradient')
-                .attr('id', 'line-gradient'),
+                .append("linearGradient")
+                .attr("id", "line-gradient"),
             tempetureGroup: tempGroup,
             tempetureLegend: tempGroup
-                .append('g')
-                .attr('class', 'temperature-legend'),
+                .append("g")
+                .attr("class", "temperature-legend"),
             tempeturePointer: tempGroup
-                .append('g')
-                .attr('class', 'temperature-pointer'),
+                .append("g")
+                .attr("class", "temperature-pointer"),
             labels: {
                 x: labels
-                    .append('text')
-                    .attr('text-anchor', 'middle')
-                    .text('Time'),
+                    .append("text")
+                    .attr("text-anchor", "middle")
+                    .text("Time"),
                 y: labels
-                    .append('text')
-                    .attr('text-anchor', 'middle')
-                    .text('Depth in Meters'),
+                    .append("text")
+                    .attr("text-anchor", "middle")
+                    .text("Depth in Meters"),
                 temperature: labels
-                    .append('text')
-                    .attr('text-anchor', 'middle')
-                    .text('Temperature in ℃'),
+                    .append("text")
+                    .attr("text-anchor", "middle")
+                    .text("Temperature in ℃"),
             },
         };
         this._axes = {
@@ -421,7 +421,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
                 .tickFormat(((v: number) => v.toFixed(1)) as any),
         };
 
-        this.groups.line.append('path').attr('class', 'line');
+        this.groups.line.append("path").attr("class", "line");
 
         this.createTempetureLegend();
         this.createHover();
@@ -431,31 +431,31 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
 
     protected createTempetureLegend() {
         const tempLegendGradient = this.svg
-            .append('linearGradient')
-            .attr('id', 'line-gradient-legend')
-            .attr('x2', '0%')
-            .attr('y2', '100%');
+            .append("linearGradient")
+            .attr("id", "line-gradient-legend")
+            .attr("x2", "0%")
+            .attr("y2", "100%");
         tempLegendGradient
-            .append('stop')
-            .attr('offset', '0%')
-            .attr('stop-color', '#ff0000');
+            .append("stop")
+            .attr("offset", "0%")
+            .attr("stop-color", "#ff0000");
         tempLegendGradient
-            .append('stop')
-            .attr('offset', '50%')
-            .attr('stop-color', '#00ff00');
+            .append("stop")
+            .attr("offset", "50%")
+            .attr("stop-color", "#00ff00");
         tempLegendGradient
-            .append('stop')
-            .attr('offset', '100%')
-            .attr('stop-color', '#0000ff');
+            .append("stop")
+            .attr("offset", "100%")
+            .attr("stop-color", "#0000ff");
 
         this.groups.tempetureLegend
-            .append('rect')
-            .attr('width', 5)
-            .attr('transform', 'translate(-5, 0)')
-            .style('fill', 'url(#line-gradient-legend)');
+            .append("rect")
+            .attr("width", 5)
+            .attr("transform", "translate(-5, 0)")
+            .style("fill", "url(#line-gradient-legend)");
 
-        this.groups.tempeturePointer.append('line');
-        this.groups.tempeturePointer.append('text');
+        this.groups.tempeturePointer.append("line");
+        this.groups.tempeturePointer.append("text");
     }
 
     protected fixData() {
@@ -514,7 +514,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             return d === null || d === undefined;
         }
 
-        const fixData = (prop: 'Temperature' | 'Depth') => {
+        const fixData = (prop: "Temperature" | "Depth") => {
             let iNextSample = 0;
             let iPrevSample = 0;
 
@@ -550,8 +550,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             }
         };
 
-        fixData('Depth');
-        fixData('Temperature');
+        fixData("Depth");
+        fixData("Temperature");
     }
 
     protected async getSamples() {
@@ -565,36 +565,36 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     }
 
     protected repaintLine() {
-        const line = this.groups.line.selectAll('path').data([this.data]);
+        const line = this.groups.line.selectAll("path").data([this.data]);
 
-        line.enter().append('path').attr('d', this._line(this.data));
+        line.enter().append("path").attr("d", this._line(this.data));
 
-        line.transition().duration(500).attr('d', this._line(this.data));
+        line.transition().duration(500).attr("d", this._line(this.data));
 
         line.exit().remove();
     }
 
     protected repaintGradient() {
         const gradient = this.groups.tempetureOverlay
-            .selectAll('stop')
+            .selectAll("stop")
             .data(this.data);
 
         gradient
             .enter()
-            .append('stop')
-            .attr('offset', (d, iX) => {
-                return (iX / this.data.length) * 100 + '%';
+            .append("stop")
+            .attr("offset", (d, iX) => {
+                return (iX / this.data.length) * 100 + "%";
             })
-            .attr('stop-color', (d: ISample) => {
+            .attr("stop-color", (d: ISample) => {
                 return this._scale.temperature(d.Temperature);
             });
         gradient
             .transition()
             .duration(500)
-            .attr('offset', (d, iX) => {
-                return (iX / this.data.length) * 100 + '%';
+            .attr("offset", (d, iX) => {
+                return (iX / this.data.length) * 100 + "%";
             })
-            .attr('stop-color', (d: ISample) => {
+            .attr("stop-color", (d: ISample) => {
                 return this._scale.temperature(d.Temperature);
             });
         gradient.exit().remove();
@@ -605,38 +605,38 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
             (d, iX) => d.Events && d.Events.length > 0,
         );
 
-        const events = this.groups.events.selectAll('circle').data(eventData);
+        const events = this.groups.events.selectAll("circle").data(eventData);
 
         events.exit().remove();
         events
             .enter()
-            .append('circle')
-            .attr('r', '5')
+            .append("circle")
+            .attr("r", "5")
             .merge(events as any)
-            .attr('cx', (s: ISample) => this._scale.x(s.Time))
-            .attr('cy', (s: ISample) => this._scale.y(s.Depth));
+            .attr("cx", (s: ISample) => this._scale.x(s.Time))
+            .attr("cy", (s: ISample) => this._scale.y(s.Depth));
     }
 
     protected createHover() {
         this.groups.hover
-            .append('line')
-            .attr('class', 'x')
-            .attr('y1', 0)
-            .attr('y2', 0);
+            .append("line")
+            .attr("class", "x")
+            .attr("y1", 0)
+            .attr("y2", 0);
         this.groups.hover
-            .append('line')
-            .attr('class', 'y')
-            .attr('x1', 0)
-            .attr('x2', 0);
+            .append("line")
+            .attr("class", "y")
+            .attr("x1", 0)
+            .attr("x2", 0);
 
         this.svg
-            .on('mouseover', () => {
-                this.groups.hover.style('display', 'inline');
+            .on("mouseover", () => {
+                this.groups.hover.style("display", "inline");
             })
-            .on('mouseout', () => {
-                this.groups.hover.style('display', 'none');
+            .on("mouseout", () => {
+                this.groups.hover.style("display", "none");
             })
-            .on('mousemove', () => {
+            .on("mousemove", () => {
                 const mouse = d3.pointer(this.svg.node());
                 if (mouse) {
                     const index = this.getClosestIndex(mouse[0]);
@@ -655,7 +655,7 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         // work out which date value is closest to the mouse
         const index = mouseTime - t0 > t1 - mouseTime ? iX - 1 : iX;
         if (!this.data[index]) {
-            console.error('No index', index, t0, t1);
+            console.error("No index", index, t0, t1);
         }
         return index;
     }
@@ -668,8 +668,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
         this.onhover.emit({ item: d, index });
 
         const focusCrosshair = {
-            x: this.groups.hover.select('line.x'),
-            y: this.groups.hover.select('line.y'),
+            x: this.groups.hover.select("line.x"),
+            y: this.groups.hover.select("line.y"),
         };
         const pos = {
             x: this._scale.x(d.Time),
@@ -680,8 +680,8 @@ export class DiveProfileComponent implements OnInit, AfterViewInit {
     }
 
     protected createSelection() {
-        this.groups.select.append('circle').attr('r', 5);
-        this.svg.on('click', () => {
+        this.groups.select.append("circle").attr("r", 5);
+        this.svg.on("click", () => {
             const mouse = d3.pointer(this.svg.node());
             if (mouse) {
                 const index = this.getClosestIndex(mouse[0]);

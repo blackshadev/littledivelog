@@ -1,9 +1,7 @@
-import { Response } from '@angular/http';
-import { Injectable } from '@angular/core';
-import { AuthService } from 'app/services/auth.service';
-import { IBuddy } from 'app/shared/dive';
-import { serviceUrl } from 'app/shared/config';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { IBuddy } from "app/shared/dive";
+import { serviceUrl } from "app/shared/config";
+import { HttpClient } from "@angular/common/http";
 
 export interface IBuddyStat {
     buddy_id: number;
@@ -18,7 +16,7 @@ export interface IBuddyStat {
 @Injectable()
 export class BuddyService {
     private __cache?: IBuddy[];
-    constructor(protected http: HttpClient) { }
+    constructor(protected http: HttpClient) {}
 
     public clearCache() {
         this.__cache = undefined;

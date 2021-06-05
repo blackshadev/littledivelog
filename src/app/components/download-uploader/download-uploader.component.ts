@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { MiscService } from 'app/services/misc.service';
-import { BrowserDetectorService } from 'app/services/browser-detector.service';
-import { OS } from 'app/services/browser-detector.constants';
+import { Component, OnInit } from "@angular/core";
+import { MiscService } from "app/services/misc.service";
+import { BrowserDetectorService } from "app/services/browser-detector.service";
+import { OS } from "app/services/browser-detector.constants";
 
 interface Platform {
     OS: OS;
@@ -12,9 +12,9 @@ interface Platform {
 }
 
 @Component({
-    selector: 'app-download-uploader',
-    templateUrl: './download-uploader.component.html',
-    styleUrls: ['./download-uploader.component.scss'],
+    selector: "app-download-uploader",
+    templateUrl: "./download-uploader.component.html",
+    styleUrls: ["./download-uploader.component.scss"],
 })
 export class DownloadUploaderComponent {
     public platforms: Platform[];
@@ -26,17 +26,17 @@ export class DownloadUploaderComponent {
         this.platforms = [
             {
                 OS: OS.Linux,
-                OSName: 'Linux',
-                icon: 'fa fa-linux',
+                OSName: "Linux",
+                icon: "fa fa-linux",
                 isActive: browserService.isLinux,
-                url: this.miscService.getUploaderUrl(OS.Linux)
+                url: this.miscService.getUploaderUrl(OS.Linux),
             },
             {
                 OS: OS.Window,
-                OSName: 'Windows',
-                icon: 'fa fa-windows',
+                OSName: "Windows",
+                icon: "fa fa-windows",
                 isActive: browserService.isWindows,
-                url: this.miscService.getUploaderUrl(OS.Window)
+                url: this.miscService.getUploaderUrl(OS.Window),
             },
         ];
 

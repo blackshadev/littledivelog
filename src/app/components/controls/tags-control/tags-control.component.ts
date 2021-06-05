@@ -1,6 +1,6 @@
-import { AutocompleteComponent } from '../autocomplete/autocomplete.component';
-import { ITag } from '../tags/tags.component';
-import { leftpad } from '../../../shared/formatters';
+import { AutocompleteComponent } from "../autocomplete/autocomplete.component";
+import { ITag } from "../tags/tags.component";
+import { leftpad } from "../../../shared/formatters";
 import {
     Component,
     ElementRef,
@@ -10,13 +10,13 @@ import {
     OnInit,
     Output,
     ViewChild,
-} from '@angular/core';
-import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+} from "@angular/core";
+import { ControlValueAccessor, NG_VALUE_ACCESSOR } from "@angular/forms";
 
 @Component({
-    selector: 'app-tags-control',
-    templateUrl: './tags-control.component.html',
-    styleUrls: ['./tags-control.component.scss'],
+    selector: "app-tags-control",
+    templateUrl: "./tags-control.component.html",
+    styleUrls: ["./tags-control.component.scss"],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -28,15 +28,15 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 export class TagsControlComponent implements OnInit, ControlValueAccessor {
     @Input() source: (keyword: string) => Promise<ITag[]>;
     @Input() tags: ITag[];
-    @Input() placeholder = '';
+    @Input() placeholder = "";
     @Input() keyField;
 
     @Output() change = new EventEmitter<ITag[]>();
     @Output() touched = new EventEmitter<ITag[]>();
 
-    @ViewChild('tagInput') private tagInput: ElementRef;
+    @ViewChild("tagInput") private tagInput: ElementRef;
 
-    @ViewChild('tagAutocomplete')
+    @ViewChild("tagAutocomplete")
     private tagAutocomplete: AutocompleteComponent;
 
     private onChange: (v: ITag[]) => void;
@@ -68,7 +68,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
         }
 
         let res = await this.source(keyword);
-        res = res.filter(v => {
+        res = res.filter((v) => {
             return !v[this.keyField] || !map[v[this.keyField]];
         });
 
@@ -103,20 +103,20 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
     }
 
     public setDisabledState(isDisabled: boolean): void {
-        throw new Error('Method not implemented.');
+        throw new Error("Method not implemented.");
     }
 
     public clearInput() {
         if (this.tagInput) {
             const el = this.tagInput.nativeElement as HTMLInputElement;
-            el.value = '';
+            el.value = "";
         } else if (this.tagAutocomplete) {
             this.tagAutocomplete.clear();
         }
     }
 
     private fontColor(color: string) {
-        if (color[0] === '#') {
+        if (color[0] === "#") {
             color = color.substr(1);
         }
 
@@ -124,7 +124,7 @@ export class TagsControlComponent implements OnInit, ControlValueAccessor {
         const g = parseInt(color.substr(2, 2), 16);
         const b = parseInt(color.substr(4, 2), 16);
         const yiq = (r * 299 + g * 587 + b * 114) / 1000;
-        return yiq >= 128 ? 'black' : 'white';
+        return yiq >= 128 ? "black" : "white";
     }
 
     private doChange() {

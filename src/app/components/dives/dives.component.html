@@ -10,12 +10,24 @@
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let d of dives" (click)="clickDive(d)"
-                [ngClass]="{ 'table-active': dive !== undefined && d.id === dive.id }">
-                <td *ngIf="selectionMode"><input type="checkbox" ng-disabled="d.id !== undefined"
-                        [(ngModel)]="d.selected" /></td>
+            <tr
+                *ngFor="let d of dives"
+                (click)="clickDive(d)"
+                [ngClass]="{
+                    'table-active': dive !== undefined && d.id === dive.id
+                }"
+            >
+                <td *ngIf="selectionMode">
+                    <input
+                        type="checkbox"
+                        ng-disabled="d.id !== undefined"
+                        [(ngModel)]="d.selected"
+                    />
+                </td>
                 <td>{{ d.date | date: "y-MM-dd HH:mm:ss" }}</td>
-                <td class="d-none d-xl-table-cell">{{ d.divetime.toString() }}</td>
+                <td class="d-none d-xl-table-cell">
+                    {{ d.divetime.toString() }}
+                </td>
                 <td>
                     <app-tags [tags]="d.tags"></app-tags>
                 </td>
@@ -23,61 +35,100 @@
             </tr>
         </tbody>
     </table>
-    <button class="fab fab-secondary btn btn-secondary" (click)="toggleMerge()" appHideWhen=">=md"><i
-            class="fa fa-link"></i></button>
+    <button
+        class="fab fab-secondary btn btn-secondary"
+        (click)="toggleMerge()"
+        appHideWhen=">=md"
+    >
+        <i class="fa fa-link"></i>
+    </button>
 
-    <button class="fab btn btn-primary" (click)="gotoNewDive()" appHideWhen=">=md"><i class="fa fa-plus"></i></button>
-
+    <button
+        class="fab btn btn-primary"
+        (click)="gotoNewDive()"
+        appHideWhen=">=md"
+    >
+        <i class="fa fa-plus"></i>
+    </button>
 </ng-template>
 
 <ng-template #detailTemplate>
-    <app-dive-detail #diveDetail [dive]="dive" (onDiveChanged)="diveChanged($event)" (onBack)="goBack()">
+    <app-dive-detail
+        #diveDetail
+        [dive]="dive"
+        (onDiveChanged)="diveChanged($event)"
+        (onBack)="goBack()"
+    >
     </app-dive-detail>
 </ng-template>
 
-
 <ng-template #menuButtonsTemplate>
-    <button type="button" class="btn"
-        [ngClass]="{ 'btn-outline-secondary': this.mode !== 'merge', 'btn-success': this.mode === 'merge'  }"
-        appHideWhen="<md" (click)="toggleMerge()">
+    <button
+        type="button"
+        class="btn"
+        [ngClass]="{
+            'btn-outline-secondary': this.mode !== 'merge',
+            'btn-success': this.mode === 'merge'
+        }"
+        appHideWhen="<md"
+        (click)="toggleMerge()"
+    >
         <i class="fa fa-link"></i>
     </button>
-    <button type="button" class="btn" class="btn btn-outline-secondary" (click)="gotoNewDive()" appHideWhen="<md">
+    <button
+        type="button"
+        class="btn"
+        class="btn btn-outline-secondary"
+        (click)="gotoNewDive()"
+        appHideWhen="<md"
+    >
         <i class="fa fa-plus"></i>
     </button>
-
 </ng-template>
 
 <ng-template #menuTemplate>
-    <app-dive-search (filterChanged)="filters = $event; this.refresh()" [extraButtons]="menuButtonsTemplate">
+    <app-dive-search
+        (filterChanged)="filters = $event; this.refresh()"
+        [extraButtons]="menuButtonsTemplate"
+    >
     </app-dive-search>
 </ng-template>
 
-
-<app-list-detail [listTemplate]="listTemplate" [detailTemplate]="detailTemplate" [menuTemplate]="menuTemplate"
-    [selected]="dive">
+<app-list-detail
+    [listTemplate]="listTemplate"
+    [detailTemplate]="detailTemplate"
+    [menuTemplate]="menuTemplate"
+    [selected]="dive"
+>
 </app-list-detail>
 
-<app-base-modal id="dives-unsaved-changes" titleText="Are you sure?" confirmText="Save changes"
-    cancelText="Discard changes">
-    <p>
-        You have unsaved changes, what do you want to do.
-    </p>
+<app-base-modal
+    id="dives-unsaved-changes"
+    titleText="Are you sure?"
+    confirmText="Save changes"
+    cancelText="Discard changes"
+>
+    <p>You have unsaved changes, what do you want to do.</p>
 </app-base-modal>
 
-<app-base-modal id="dives-unsaved-changes-invalid" titleText="Are you sure?" confirmText="Discard changed"
-    cancelText="Cancel">
-    <p>
-        Some changes cannot be saved because they are invalid.
-    </p>
-    <p>
-        Are you sure you want to leave this page and cancel all changes?
-    </p>
+<app-base-modal
+    id="dives-unsaved-changes-invalid"
+    titleText="Are you sure?"
+    confirmText="Discard changed"
+    cancelText="Cancel"
+>
+    <p>Some changes cannot be saved because they are invalid.</p>
+    <p>Are you sure you want to leave this page and cancel all changes?</p>
 </app-base-modal>
 
-
-<app-base-modal id="merge" titleText="Are you sure?" confirmText="Yes, merge dives" cancelText="Cancel">
+<app-base-modal
+    id="merge"
+    titleText="Are you sure?"
+    confirmText="Yes, merge dives"
+    cancelText="Cancel"
+>
     <p>
-        Are you sure you want to merge these dives? This operation is irreversible.
+        Are you sure you want to merge these dives? This operation is
+        irreversible.
     </p>
 </app-base-modal>

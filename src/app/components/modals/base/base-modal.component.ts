@@ -9,13 +9,13 @@ import {
     EventEmitter,
     AfterViewInit,
     ApplicationRef,
-} from '@angular/core';
-import { ModalService } from '../../../services/modal.service';
+} from "@angular/core";
+import { ModalService } from "../../../services/modal.service";
 
 @Component({
-    selector: 'app-base-modal',
-    templateUrl: './base-modal.component.html',
-    styleUrls: ['./base-modal.component.css'],
+    selector: "app-base-modal",
+    templateUrl: "./base-modal.component.html",
+    styleUrls: ["./base-modal.component.css"],
 })
 export class BaseModalComponent implements OnInit, OnDestroy {
     @Input() titleText;
@@ -29,19 +29,23 @@ export class BaseModalComponent implements OnInit, OnDestroy {
 
     private element: HTMLElement;
 
-    @ViewChild('confirmButton')
+    @ViewChild("confirmButton")
     private confirmButton: ElementRef;
-    @ViewChild('cancelButton')
+    @ViewChild("cancelButton")
     private cancelButton: ElementRef;
 
-    constructor(private modalService: ModalService, private el: ElementRef, private appRef: ApplicationRef) {
+    constructor(
+        private modalService: ModalService,
+        private el: ElementRef,
+        private appRef: ApplicationRef,
+    ) {
         this.element = el.nativeElement;
     }
 
     ngOnInit(): void {
         // ensure id attribute exists
         if (!this.id) {
-            console.error('modal must have an id');
+            console.error("modal must have an id");
             return;
         }
 
@@ -68,11 +72,11 @@ export class BaseModalComponent implements OnInit, OnDestroy {
 
     open(extra?: any): void {
         this.appRef.tick();
-        $('.modal', this.element).modal('show');
+        $(".modal", this.element).modal("show");
     }
 
     close(): void {
-        $('.modal', this.element).modal('hide');
+        $(".modal", this.element).modal("hide");
         this.onCloseHandle = undefined;
     }
 }

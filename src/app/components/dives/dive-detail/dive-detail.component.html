@@ -14,199 +14,374 @@
 
 <ng-template #detailTemplate>
     <form [formGroup]="form">
-
-        <div class="form-group row"
-            [ngClass]="{ 'has-danger': !form.controls.date.valid && form.controls.date.touched }">
+        <div
+            class="form-group row"
+            [ngClass]="{
+                'has-danger':
+                    !form.controls.date.valid && form.controls.date.touched
+            }"
+        >
             <label class="col-sm-2 control-label">Date</label>
             <div class="col-sm-10">
-                <input class="form-control" formControlName="date" placeholder="{{ CurrentDate }}" />
+                <input
+                    class="form-control"
+                    formControlName="date"
+                    placeholder="{{ CurrentDate }}"
+                />
 
-                <small class="has-danger error-text" *ngIf="form.controls.date.errors?.required">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="form.controls.date.errors?.required"
+                >
                     Date is required
                 </small>
-                <small class="has-danger error-text" *ngIf="form.controls.date.errors?.invalid">
-                    Date must be a valid date (time). Accepted values are: 2017-07-22 22:59:59, 2017-07-22, 2017-07-22
-                    22, 2017-07-22 22:59.
+                <small
+                    class="has-danger error-text"
+                    *ngIf="form.controls.date.errors?.invalid"
+                >
+                    Date must be a valid date (time). Accepted values are:
+                    2017-07-22 22:59:59, 2017-07-22, 2017-07-22 22, 2017-07-22
+                    22:59.
                 </small>
             </div>
         </div>
-        <div class="form-group row"
-            [ngClass]="{ 'has-danger': !form.controls.divetime.valid && form.controls.divetime.touched }">
+        <div
+            class="form-group row"
+            [ngClass]="{
+                'has-danger':
+                    !form.controls.divetime.valid &&
+                    form.controls.divetime.touched
+            }"
+        >
             <label class="col-sm-2 control-label">Dive time</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" formControlName="divetime" placeholder="00:00:00" />
-                <small class="has-danger error-text" *ngIf="form.controls.divetime.errors?.required">
+                <input
+                    type="text"
+                    class="form-control"
+                    formControlName="divetime"
+                    placeholder="00:00:00"
+                />
+                <small
+                    class="has-danger error-text"
+                    *ngIf="form.controls.divetime.errors?.required"
+                >
                     Divetime is required
                 </small>
-                <small class="has-danger error-text" *ngIf="form.controls.divetime.errors?.invalid">
-                    Divetime must be a valid duration; Accepted values are: 00:00:00 or 00:00
+                <small
+                    class="has-danger error-text"
+                    *ngIf="form.controls.divetime.errors?.invalid"
+                >
+                    Divetime must be a valid duration; Accepted values are:
+                    00:00:00 or 00:00
                 </small>
             </div>
         </div>
-        <div class="form-group row"
-            [ngClass]="{ 'has-danger': !form.controls.maxDepth.valid && form.controls.maxDepth.touched }">
+        <div
+            class="form-group row"
+            [ngClass]="{
+                'has-danger':
+                    !form.controls.maxDepth.valid &&
+                    form.controls.maxDepth.touched
+            }"
+        >
             <label class="col-sm-2 control-label">Max depth</label>
             <div class="col-sm-10">
-                <input type="text" class="form-control" formControlName="maxDepth" placeholder="0.00" />
+                <input
+                    type="text"
+                    class="form-control"
+                    formControlName="maxDepth"
+                    placeholder="0.00"
+                />
 
-                <small class="has-danger error-text" *ngIf="form.controls.maxDepth.errors?.required">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="form.controls.maxDepth.errors?.required"
+                >
                     Max depth is required
                 </small>
-                <small class="has-danger error-text" *ngIf="form.controls.maxDepth.errors?.invalid">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="form.controls.maxDepth.errors?.invalid"
+                >
                     Max depth must be a valid number; Accepted values are: 10.05
                 </small>
             </div>
         </div>
-        <div class="form-group row"
-            [ngClass]="{ 'has-danger': !form.controls.tank.valid && form.controls.tank.touched }">
+        <div
+            class="form-group row"
+            [ngClass]="{
+                'has-danger':
+                    !form.controls.tank.valid && form.controls.tank.touched
+            }"
+        >
             <label class="hidden-xs col-sm-2 control-label">Tank</label>
             <div class="col-sm-10">
-
                 <div class="row">
                     <div class="col">
-                        <label>
-                            Tank Volume
-                        </label>
+                        <label> Tank Volume </label>
                     </div>
                     <div class="col">
-                        <label>
-                            Ogygen percentage
-                        </label>
+                        <label> Ogygen percentage </label>
                     </div>
                 </div>
                 <div class="input-group-group" formGroupName="tank">
                     <div class="input-group">
-                        <input type="text" class="form-control" formControlName="volume" placeholder="10" required />
+                        <input
+                            type="text"
+                            class="form-control"
+                            formControlName="volume"
+                            placeholder="10"
+                            required
+                        />
                         <div class="input-group-append">
                             <span class="input-group-text">L</span>
                         </div>
-                        <input type="text" class="form-control" formControlName="airPercentage" placeholder="21"
-                            required />
+                        <input
+                            type="text"
+                            class="form-control"
+                            formControlName="airPercentage"
+                            placeholder="21"
+                            required
+                        />
                         <div class="input-group-append">
                             <span class="input-group-text">%</span>
                         </div>
                     </div>
                     <div class="input-group">
-                        <input type="text" class="form-control" formControlName="pressureStart" placeholder="200"
-                            required />
-                        <input type="text" class="form-control" formControlName="pressureEnd" placeholder="50"
-                            required />
+                        <input
+                            type="text"
+                            class="form-control"
+                            formControlName="pressureStart"
+                            placeholder="200"
+                            required
+                        />
+                        <input
+                            type="text"
+                            class="form-control"
+                            formControlName="pressureEnd"
+                            placeholder="50"
+                            required
+                        />
                         <div class="input-group-append">
-                            <button type="button" class="btn btn-outline-formcontrol dropdown-toggle"
-                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                {{ form.controls.tank.controls.pressureType.value }}
+                            <button
+                                type="button"
+                                class="
+                                    btn btn-outline-formcontrol
+                                    dropdown-toggle
+                                "
+                                data-toggle="dropdown"
+                                aria-haspopup="true"
+                                aria-expanded="false"
+                            >
+                                {{
+                                    form.controls.tank.controls.pressureType
+                                        .value
+                                }}
                             </button>
                             <div class="dropdown-menu dropdown-menu-right">
-                                <a class="dropdown-item"
-                                    (click)="form.controls.tank.controls.pressureType.setValue('bar')">bar</a>
-                                <a class="dropdown-item"
-                                    (click)="form.controls.tank.controls.pressureType.setValue('psi')">psi</a>
-
+                                <a
+                                    class="dropdown-item"
+                                    (click)="
+                                        form.controls.tank.controls.pressureType.setValue(
+                                            'bar'
+                                        )
+                                    "
+                                    >bar</a
+                                >
+                                <a
+                                    class="dropdown-item"
+                                    (click)="
+                                        form.controls.tank.controls.pressureType.setValue(
+                                            'psi'
+                                        )
+                                    "
+                                    >psi</a
+                                >
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col">
-                        <label>
-                            Start Pressure
-                        </label>
+                        <label> Start Pressure </label>
                     </div>
                     <div class="col">
-                        <label>
-                            End Pressure
-                        </label>
+                        <label> End Pressure </label>
                     </div>
                 </div>
 
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.volume.errors?.required && form.controls.tank.controls.volume.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.volume.errors?.required &&
+                        form.controls.tank.controls.volume.touched
+                    "
+                >
                     Tank volume is required
                 </small>
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.volume.errors?.invalid && form.controls.tank.controls.volume.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.volume.errors?.invalid &&
+                        form.controls.tank.controls.volume.touched
+                    "
+                >
                     Tank volume must be a valid integer; eg 10
                 </small>
 
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.airPercentage.errors?.required && form.controls.tank.controls.airPercentage.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.airPercentage.errors
+                            ?.required &&
+                        form.controls.tank.controls.airPercentage.touched
+                    "
+                >
                     Oxygen percentage is required
                 </small>
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.airPercentage.errors?.invalid && form.controls.tank.controls.airPercentage.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.airPercentage.errors
+                            ?.invalid &&
+                        form.controls.tank.controls.airPercentage.touched
+                    "
+                >
                     Oxygen percentage must be an integer number; eg 21
                 </small>
 
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.pressureStart.errors?.required && form.controls.tank.controls.pressureStart.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.pressureStart.errors
+                            ?.required &&
+                        form.controls.tank.controls.pressureStart.touched
+                    "
+                >
                     Start pressure is required
                 </small>
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.pressureStart.errors?.invalid && form.controls.tank.controls.pressureStart.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.pressureStart.errors
+                            ?.invalid &&
+                        form.controls.tank.controls.pressureStart.touched
+                    "
+                >
                     Start pressure must be a valid number; eg 10.05
                 </small>
 
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.pressureEnd.errors?.required && form.controls.tank.controls.pressureEnd.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.pressureEnd.errors
+                            ?.required &&
+                        form.controls.tank.controls.pressureEnd.touched
+                    "
+                >
                     End pressure is required
                 </small>
-                <small class="has-danger error-text"
-                    *ngIf="form.controls.tank.controls.pressureEnd.errors?.invalid && form.controls.tank.controls.pressureEnd.touched">
+                <small
+                    class="has-danger error-text"
+                    *ngIf="
+                        form.controls.tank.controls.pressureEnd.errors
+                            ?.invalid &&
+                        form.controls.tank.controls.pressureEnd.touched
+                    "
+                >
                     End pressure must be a valid number; eg 10.05
                 </small>
-
             </div>
         </div>
-        <div class="form-group row"
-            [ngClass]="{ 'has-danger': !form.controls.place.valid && form.controls.place.touched }">
+        <div
+            class="form-group row"
+            [ngClass]="{
+                'has-danger':
+                    !form.controls.place.valid && form.controls.place.touched
+            }"
+        >
             <label class="col-sm-2 control-label">Divespot</label>
             <div class="col-sm-10">
-
-                <div class="input-group manual-radius" style="width: 100%" formGroupName="place">
-                    <app-autocomplete placeholder="Name" inputClass="form-control left-control"
-                        [value]="form.controls.place.controls.name.value" [source]="getDivespots.bind(this)"
-                        [newItem]="newDiveSpot.bind(this)" (changed)="diveSpotChanged($event)" displayItem="name">
+                <div
+                    class="input-group manual-radius"
+                    style="width: 100%"
+                    formGroupName="place"
+                >
+                    <app-autocomplete
+                        placeholder="Name"
+                        inputClass="form-control left-control"
+                        [value]="form.controls.place.controls.name.value"
+                        [source]="getDivespots.bind(this)"
+                        [newItem]="newDiveSpot.bind(this)"
+                        (changed)="diveSpotChanged($event)"
+                        displayItem="name"
+                    >
                     </app-autocomplete>
-                    <app-autocomplete placeholder="Country" inputClass="form-control right-control"
-                        formControlName="country" [source]="getCountries.bind(this)"
-                        (changed)="diveCountryChanged($event)" displayItem="code" keyItem="code" listItem="description"
-                        forceSelection="true"></app-autocomplete>
+                    <app-autocomplete
+                        placeholder="Country"
+                        inputClass="form-control right-control"
+                        formControlName="country"
+                        [source]="getCountries.bind(this)"
+                        (changed)="diveCountryChanged($event)"
+                        displayItem="code"
+                        keyItem="code"
+                        listItem="description"
+                        forceSelection="true"
+                    ></app-autocomplete>
                 </div>
                 <small class="has-danger error-text">
                     Both or none need to be filled
                 </small>
-
             </div>
         </div>
         <div class="form-group row">
             <label class="col-sm-2 control-label">Buddies</label>
             <div class="col-sm-10">
-                <app-tags-control keyField="buddy_id" formControlName="buddies" placeholder="Myke"
-                    [source]="getBuddies.bind(this)"></app-tags-control>
+                <app-tags-control
+                    keyField="buddy_id"
+                    formControlName="buddies"
+                    placeholder="Myke"
+                    [source]="getBuddies.bind(this)"
+                ></app-tags-control>
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-sm-2 control-label">Tags</label>
             <div class="col-sm-10">
-                <app-tags-control keyField="tag_id" formControlName="tags" placeholder="Deco"
-                    [source]="getTags.bind(this)"></app-tags-control>
+                <app-tags-control
+                    keyField="tag_id"
+                    formControlName="tags"
+                    placeholder="Deco"
+                    [source]="getTags.bind(this)"
+                ></app-tags-control>
             </div>
         </div>
-
     </form>
 </ng-template>
 
-<app-detail-component #detailComponent [pages]="{
-        'Detail': detailTemplate,
-        'Profile': profileTemplate,
-        'Delete': deleteTemplate
-    }" [form]="form" defaultPage="Detail" [data]="diveFormData" [isNew]="dive.isNew" *ngIf="dive !== undefined"
-    (onSubmit)="onSubmit($event)" (onBack)="goBack()">
+<app-detail-component
+    #detailComponent
+    [pages]="{
+        Detail: detailTemplate,
+        Profile: profileTemplate,
+        Delete: deleteTemplate
+    }"
+    [form]="form"
+    defaultPage="Detail"
+    [data]="diveFormData"
+    [isNew]="dive.isNew"
+    *ngIf="dive !== undefined"
+    (onSubmit)="onSubmit($event)"
+    (onBack)="goBack()"
+>
 </app-detail-component>
 
-<app-base-modal id="dive-detail-unsaved-changes" titleText="Are you sure?" confirmText="Yes" cancelText="Cancel">
-    <p>
-        There are unsaved changed, are you sure?
-    </p>
+<app-base-modal
+    id="dive-detail-unsaved-changes"
+    titleText="Are you sure?"
+    confirmText="Yes"
+    cancelText="Cancel"
+>
+    <p>There are unsaved changed, are you sure?</p>
 </app-base-modal>

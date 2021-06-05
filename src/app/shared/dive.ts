@@ -1,7 +1,7 @@
-import * as moment from 'moment';
+import * as moment from "moment";
 
 function formatNumber(n: number) {
-    return ('0' + n).slice(-2);
+    return ("0" + n).slice(-2);
 }
 
 export interface IPlace {
@@ -34,22 +34,22 @@ export enum SampleEventType {
     Violation,
     Bookmark,
     Surface,
-    'Safety Stop',
-    'Gas Change',
-    'Voluntary Safety Stop',
-    'Mandatory Safety Stop',
-    'Deep Stop',
-    'Ceiling (safety stop)',
-    'Floor',
+    "Safety Stop",
+    "Gas Change",
+    "Voluntary Safety Stop",
+    "Mandatory Safety Stop",
+    "Deep Stop",
+    "Ceiling (safety stop)",
+    "Floor",
     Divetime,
-    'Max Depth',
+    "Max Depth",
     OLF,
     PO2,
-    'Air Time',
+    "Air Time",
     RGBM,
     Heading,
-    'Tissue level warning',
-    'gaschange2',
+    "Tissue level warning",
+    "gaschange2",
 }
 
 export enum SampleEventFlag {
@@ -78,11 +78,11 @@ export class Duration {
     seconds: number;
 
     static Parse(str: Duration | string | number): Duration {
-        if (typeof str === 'string') {
-            const parts = str.split(':').map((s) => parseInt(s, 10));
+        if (typeof str === "string") {
+            const parts = str.split(":").map((s) => parseInt(s, 10));
             const d = new Duration(...parts);
             return d;
-        } else if (typeof str === 'number') {
+        } else if (typeof str === "number") {
             return new Duration(0, 0, str);
         } else {
             return str;
@@ -105,8 +105,8 @@ export class Duration {
         this.hours =
             all.length > 2
                 ? (((all[all.length - 1] / 60) | (0 + all[all.length - 2])) /
-                    60) |
-                (0 + all[all.length - 3])
+                      60) |
+                  (0 + all[all.length - 3])
                 : 0;
 
         // tslint:enable:no-bitwise
@@ -156,7 +156,7 @@ export class Dive {
         dive.divetime = Duration.Parse(d.DiveTime);
         dive.maxDepth = d.MaxDepth;
         dive.samples = d.Samples;
-        dive.place = { name: '', country_code: '' };
+        dive.place = { name: "", country_code: "" };
         dive.tags = [];
         dive.buddies = [];
         dive.tanks = [];
@@ -171,11 +171,11 @@ export class Dive {
         dive.divetime = Duration.Parse(d.divetime);
         dive.maxDepth = Number(d.max_depth);
         dive.samples = d.samples;
-        d.place = d.place || { name: '', country_code: '' };
+        d.place = d.place || { name: "", country_code: "" };
         dive.place = {
             place_id: d.place.place_id,
-            name: d.place.name || '',
-            country_code: d.place.country_code || '',
+            name: d.place.name || "",
+            country_code: d.place.country_code || "",
         };
         dive.tanks = d.tanks || [];
         dive.buddies = d.buddies || [];
@@ -197,8 +197,8 @@ export class Dive {
 
     get placeStr() {
         return (
-            (this.place.name || '') +
-            (this.place.country_code ? ', ' + this.place.country_code : '')
+            (this.place.name || "") +
+            (this.place.country_code ? ", " + this.place.country_code : "")
         );
     }
 
@@ -213,10 +213,10 @@ export class Dive {
             samples: this.samples,
             place: this.place
                 ? {
-                    place_id: this.place.place_id,
-                    name: this.place.name,
-                    country_code: this.place.country_code,
-                }
+                      place_id: this.place.place_id,
+                      name: this.place.name,
+                      country_code: this.place.country_code,
+                  }
                 : undefined,
             tanks: this.tanks,
             tags: this.tags,
@@ -229,7 +229,7 @@ export interface ITank {
     volume: number;
     oxygen: number;
     pressure: {
-        type: 'bar' | 'psi';
+        type: "bar" | "psi";
         begin: number;
         end: number;
     };

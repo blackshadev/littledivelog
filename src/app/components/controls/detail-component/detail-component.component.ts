@@ -9,16 +9,16 @@ import {
     ViewChild,
     OnChanges,
     SimpleChanges,
-} from '@angular/core';
-import { FormGroup } from '@angular/forms';
+} from "@angular/core";
+import { FormGroup } from "@angular/forms";
 
 @Component({
-    selector: 'app-detail-component',
-    templateUrl: './detail-component.component.html',
-    styleUrls: ['./detail-component.component.scss'],
+    selector: "app-detail-component",
+    templateUrl: "./detail-component.component.html",
+    styleUrls: ["./detail-component.component.scss"],
 })
 export class DetailComponentComponent implements OnInit {
-    @Input() deleteTab = 'Delete';
+    @Input() deleteTab = "Delete";
 
     @Input() form: FormGroup;
     @Input() isNew = false;
@@ -28,7 +28,7 @@ export class DetailComponentComponent implements OnInit {
     @Input() defaultPage;
     @Input() showDebug = true;
 
-    @ViewChild('content', { static: true }) private content;
+    @ViewChild("content", { static: true }) private content;
     private _data: any;
     @Input() set data(v: any) {
         this._data = v;
@@ -70,12 +70,12 @@ export class DetailComponentComponent implements OnInit {
 
         // tab on enter
         const contentEl = this.content.nativeElement as HTMLElement;
-        const currentTab = contentEl.querySelector('.tab-pane.active');
+        const currentTab = contentEl.querySelector(".tab-pane.active");
 
         if (currentTab && e.target instanceof HTMLInputElement) {
             e.target.blur();
             const all = currentTab.querySelectorAll(
-                'input.form-control',
+                "input.form-control",
             ) as NodeListOf<HTMLInputElement>;
 
             let iX: number;

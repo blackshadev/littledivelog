@@ -1,12 +1,12 @@
-import { Subscription, SubscriptionLike } from 'rxjs';
-import { Dive } from '../../shared/dive';
+import { Subscription, SubscriptionLike } from "rxjs";
+import { Dive } from "../../shared/dive";
 import {
     ActivatedRoute,
     Params,
     Router,
     RoutesRecognized,
-} from '@angular/router';
-import { DiveService, TFilterKeys } from '../../services/dive.service';
+} from "@angular/router";
+import { DiveService, TFilterKeys } from "../../services/dive.service";
 import {
     Component,
     OnDestroy,
@@ -15,23 +15,23 @@ import {
     ElementRef,
     AfterViewInit,
     Input,
-} from '@angular/core';
-import { DiveDetailComponent } from 'app/components/dives/dive-detail/dive-detail.component';
-import { Location } from '@angular/common';
-import { ProfileService } from 'app/services/profile.service';
-import { IFilter } from 'app/components/dives/search/search.component';
-import { flatMap } from 'rxjs/operators';
-import { ModalService } from '../../services/modal.service';
-import { filter, pairwise } from 'rxjs/operators';
+} from "@angular/core";
+import { DiveDetailComponent } from "app/components/dives/dive-detail/dive-detail.component";
+import { Location } from "@angular/common";
+import { ProfileService } from "app/services/profile.service";
+import { IFilter } from "app/components/dives/search/search.component";
+import { flatMap } from "rxjs/operators";
+import { ModalService } from "../../services/modal.service";
+import { filter, pairwise } from "rxjs/operators";
 
 @Component({
-    selector: 'app-dives',
-    templateUrl: './dives.component.html',
-    styleUrls: ['./dives.component.scss'],
+    selector: "app-dives",
+    templateUrl: "./dives.component.html",
+    styleUrls: ["./dives.component.scss"],
 })
 export class DivesComponent implements OnInit, OnDestroy {
     @Input()
-    public mode: 'normal' | 'merge' = 'normal';
+    public mode: "normal" | "merge" = "normal";
 
     public dive?: Dive;
     public dives: Dive[];
@@ -39,12 +39,12 @@ export class DivesComponent implements OnInit, OnDestroy {
     private subs: SubscriptionLike[] = [];
     private filters: IFilter[] = [];
 
-    @ViewChild('diveDetail')
+    @ViewChild("diveDetail")
     private diveDetail: DiveDetailComponent;
     private _lastWasDive = false;
 
     public get selectionMode(): boolean {
-        return this.mode === 'merge';
+        return this.mode === "merge";
     }
 
     constructor(
@@ -62,13 +62,13 @@ export class DivesComponent implements OnInit, OnDestroy {
             this.route.params
                 .pipe(
                     flatMap(async (params: Params) => {
-                        if (params['id'] === 'new') {
+                        if (params["id"] === "new") {
                             return await this.newDive();
                         }
-                        if (params['id'] === undefined) {
+                        if (params["id"] === undefined) {
                             return undefined;
                         } else {
-                            return await this.service.get(+params['id']);
+                            return await this.service.get(+params["id"]);
                         }
                     }),
                 )
@@ -77,7 +77,7 @@ export class DivesComponent implements OnInit, OnDestroy {
                 }),
             this.location.subscribe((e) => {
                 // TODO: use the router or something else
-                if (e.url === '/dive') {
+                if (e.url === "/dive") {
                     this.activateDive(undefined);
                 }
             }),
@@ -85,7 +85,7 @@ export class DivesComponent implements OnInit, OnDestroy {
     }
 
     clickDive(d: Dive) {
-        if (this.mode === 'merge') {
+        if (this.mode === "merge") {
             this.toggleDive(d);
         }
         this.activateDive(d);
@@ -117,7 +117,7 @@ export class DivesComponent implements OnInit, OnDestroy {
 
         if (this.diveDetail.form.dirty && !forced) {
             // ask to save
-            this.modal.open('dives-unsaved-changes', (shouldSave) => {
+            this.modal.open("dives-unsaved-changes", (shouldSave) => {
                 if (shouldSave) {
                     const saved = this.diveDetail.save();
                     if (saved) {
@@ -125,7 +125,7 @@ export class DivesComponent implements OnInit, OnDestroy {
                     } else {
                         // Save failed, ask to discard
                         this.modal.open(
-                            'dives-unsaved-changes-invalid',
+                            "dives-unsaved-changes-invalid",
                             (shouldDiscard) => {
                                 if (shouldDiscard) {
                                     this.activateDive(d, true);
@@ -143,41 +143,41 @@ export class DivesComponent implements OnInit, OnDestroy {
 
         if (d === undefined) {
             this.dive = undefined;
-            this.location.go('/dive');
+            this.location.go("/dive");
         } else {
             this.dive = await this.service.get(d.id);
-            this.location.go('/dive/' + d.id);
+            this.location.go("/dive/" + d.id);
         }
     }
 
     toggleMerge() {
-        if (this.mode === 'normal') {
+        if (this.mode === "normal") {
             this.dives.forEach((d) => (d.selected = false));
-            this.mode = 'merge';
-        } else if (this.mode === 'merge') {
+            this.mode = "merge";
+        } else if (this.mode === "merge") {
             const selected = this.dives.filter((d) => d.selected && d.id);
 
             if (selected.length === 0) {
-                this.mode = 'normal';
+                this.mode = "normal";
                 return;
             }
 
-            this.modal.open('merge', (b: boolean) => {
+            this.modal.open("merge", (b: boolean) => {
                 if (!b) {
-                    this.mode = 'normal';
+                    this.mode = "normal";
                     return;
                 }
 
                 this.service
                     .merge(selected.map((d) => ({ dive_id: d.id! })))
                     .then(() => {
-                        this.mode = 'normal';
+                        this.mode = "normal";
                         this.refresh();
                     })
                     .catch((err) => {
                         const msg =
                             (err.error && err.error.error) || err.message;
-                        this.modal.open('error', {
+                        this.modal.open("error", {
                             extra: {
                                 message: msg,
                             },
@@ -196,14 +196,14 @@ export class DivesComponent implements OnInit, OnDestroy {
         } else {
             prom = this.service.list();
         }
-        
+
         prom.then((dives) => {
             this.dives = dives;
-        })
+        });
     }
 
     async gotoNewDive() {
-        this.location.go('/dive/new');
+        this.location.go("/dive/new");
         this.dive = await this.newDive();
     }
 
@@ -225,24 +225,24 @@ export class DivesComponent implements OnInit, OnDestroy {
 
         for (const flt of filters) {
             switch (flt.name) {
-                case 'buddy':
+                case "buddy":
                     o.buddies = o.buddies || [];
                     o.buddies.push(flt.value);
                     break;
-                case 'tag':
+                case "tag":
                     o.tags = o.tags || [];
                     o.tags.push(flt.value);
                     break;
-                case 'place':
+                case "place":
                     o.place = flt.value;
                     break;
-                case 'dateTill':
+                case "dateTill":
                     o.till = flt.value;
                     break;
-                case 'dateFrom':
+                case "dateFrom":
                     o.till = flt.value;
                     break;
-                case 'dateOn':
+                case "dateOn":
                     o.date = flt.value;
                     break;
             }

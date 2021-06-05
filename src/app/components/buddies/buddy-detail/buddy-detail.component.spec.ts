@@ -1,47 +1,51 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { BuddyDetailComponent } from './buddy-detail.component';
-import { BuddyService, IBuddyStat } from 'app/services/buddy.service';
-import { FormBuilder, ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { ColorPickerModule } from 'ngx-color-picker';
-import { RouterTestingModule } from '@angular/router/testing';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
+import { BuddyDetailComponent } from "./buddy-detail.component";
+import { BuddyService, IBuddyStat } from "app/services/buddy.service";
+import { FormBuilder, ReactiveFormsModule, FormsModule } from "@angular/forms";
+import { ColorPickerModule } from "ngx-color-picker";
+import { RouterTestingModule } from "@angular/router/testing";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { DetailComponentComponent } from "app/components/controls/detail-component/detail-component.component";
 
-describe('BuddyDetailComponent', () => {
+describe("BuddyDetailComponent", () => {
     let component: BuddyDetailComponent;
     let fixture: ComponentFixture<BuddyDetailComponent>;
     let service: jasmine.SpyObj<BuddyService>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [
-                ColorPickerModule,
-                ReactiveFormsModule,
-                FormsModule,
-                RouterTestingModule.withRoutes([]),
-                HttpClientTestingModule,
-            ],
-            declarations: [BuddyDetailComponent, DetailComponentComponent],
-            providers: [BuddyService, FormBuilder],
-        }).compileComponents();
-        service = spyOnAllFunctions<BuddyService>(TestBed.get(BuddyService));
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [
+                    ColorPickerModule,
+                    ReactiveFormsModule,
+                    FormsModule,
+                    RouterTestingModule.withRoutes([]),
+                    HttpClientTestingModule,
+                ],
+                declarations: [BuddyDetailComponent, DetailComponentComponent],
+                providers: [BuddyService, FormBuilder],
+            }).compileComponents();
+            service = spyOnAllFunctions<BuddyService>(
+                TestBed.get(BuddyService),
+            );
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(BuddyDetailComponent);
         component = fixture.componentInstance;
-        spyOn(component.onDataChanged, 'emit');
-        spyOn(component, 'back');
+        spyOn(component.onDataChanged, "emit");
+        spyOn(component, "back");
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 
-    describe('with new tag', () => {
+    describe("with new tag", () => {
         const tag: IBuddyStat = {
-            color: '#33ee00',
+            color: "#33ee00",
             email: null,
             buddy_id: undefined,
             buddy_user_id: null,
@@ -54,30 +58,30 @@ describe('BuddyDetailComponent', () => {
             fixture.detectChanges();
         });
 
-        it('form should be invalid', () => {
+        it("form should be invalid", () => {
             expect(component.form.invalid).toBeTrue();
         });
 
-        describe('delete', () => {
+        describe("delete", () => {
             beforeEach(async () => {
                 await component.delete();
             });
 
-            it('should not call service delete ', () => {
+            it("should not call service delete ", () => {
                 expect(service.delete).not.toHaveBeenCalled();
             });
 
-            it('should call back', () => {
+            it("should call back", () => {
                 expect(component.back).toHaveBeenCalled();
             });
         });
 
-        describe('insert', () => {
+        describe("insert", () => {
             const newBuddyValues = {
                 buddy_id: -2,
-                color: '#fefefe',
-                text: 'TestColor',
-                email: 'tester@tester.nl',
+                color: "#fefefe",
+                text: "TestColor",
+                email: "tester@tester.nl",
             };
             beforeEach(async () => {
                 service.update.and.resolveTo(newBuddyValues);
@@ -87,7 +91,7 @@ describe('BuddyDetailComponent', () => {
                 await component.submit();
             });
 
-            it('Should call update service', () => {
+            it("Should call update service", () => {
                 expect(service.update).toHaveBeenCalledWith({
                     buddy_id: undefined,
                     text: newBuddyValues.text,
@@ -96,7 +100,7 @@ describe('BuddyDetailComponent', () => {
                 });
             });
 
-            it('Should update tag', () => {
+            it("Should update tag", () => {
                 expect(component.buddy).toEqual(
                     jasmine.objectContaining({
                         text: newBuddyValues.text,
@@ -105,23 +109,23 @@ describe('BuddyDetailComponent', () => {
                 );
             });
 
-            it('should call onDataChanged', () => {
+            it("should call onDataChanged", () => {
                 expect(component.onDataChanged.emit).toHaveBeenCalledWith({
-                    type: 'insert',
+                    type: "insert",
                     key: newBuddyValues.buddy_id,
                 });
             });
         });
     });
 
-    describe('with existing tag', () => {
+    describe("with existing tag", () => {
         const buddy: IBuddyStat = {
             buddy_id: -1,
-            color: '#ff0000',
+            color: "#ff0000",
             dive_count: 5,
-            last_dive: new Date('2019-12-12T12:12:12'),
-            text: 'TestTag',
-            email: 'test@test.nl',
+            last_dive: new Date("2019-12-12T12:12:12"),
+            text: "TestTag",
+            email: "test@test.nl",
             buddy_user_id: null,
         };
         beforeEach(() => {
@@ -129,68 +133,68 @@ describe('BuddyDetailComponent', () => {
             fixture.detectChanges();
         });
 
-        it('should fill form', () => {
+        it("should fill form", () => {
             expect(component.form.value).toEqual({
                 text: buddy.text,
                 color: buddy.color,
-                email: 'test@test.nl',
+                email: "test@test.nl",
             });
         });
 
-        it('should not submit on invalid form', () => {
-            component.form.controls.color.setValue('invalid-color');
+        it("should not submit on invalid form", () => {
+            component.form.controls.color.setValue("invalid-color");
             component.submit();
             expect(service.update).not.toHaveBeenCalled();
         });
 
-        describe('Update', () => {
+        describe("Update", () => {
             beforeEach(async () => {
-                spyOn(component.detailComponent, 'reset');
-                component.form.controls.color.setValue('#0000ff');
+                spyOn(component.detailComponent, "reset");
+                component.form.controls.color.setValue("#0000ff");
                 service.update.and.resolveTo(buddy);
                 await component.submit();
             });
 
-            it('Should call service update', () => {
+            it("Should call service update", () => {
                 expect(service.update).toHaveBeenCalled();
             });
 
-            it('Should call detailcomponent reset', () => {
+            it("Should call detailcomponent reset", () => {
                 expect(component.detailComponent.reset).toHaveBeenCalled();
             });
 
-            it('Should hold new data', () => {
+            it("Should hold new data", () => {
                 expect(component.buddy).toEqual(
                     jasmine.objectContaining({
-                        color: '#0000ff',
+                        color: "#0000ff",
                     }),
                 );
             });
 
-            it('should called onDatachange event', () => {
+            it("should called onDatachange event", () => {
                 expect(component.onDataChanged.emit).toHaveBeenCalledWith({
-                    type: 'update',
+                    type: "update",
                     key: buddy.buddy_id,
                 });
             });
         });
 
-        describe('Delete', () => {
+        describe("Delete", () => {
             beforeEach(async () => {
                 await component.delete();
             });
 
-            it('should call delete service', async () => {
+            it("should call delete service", async () => {
                 expect(service.delete).toHaveBeenCalledWith(buddy.buddy_id);
             });
 
-            it('should call back', async () => {
+            it("should call back", async () => {
                 expect(component.back).toHaveBeenCalled();
             });
 
-            it('should called onDatachange event', () => {
+            it("should called onDatachange event", () => {
                 expect(component.onDataChanged.emit).toHaveBeenCalledWith({
-                    type: 'delete',
+                    type: "delete",
                     key: buddy.buddy_id,
                 });
             });

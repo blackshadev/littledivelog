@@ -5,13 +5,13 @@ import {
     Output,
     TemplateRef,
     Input,
-} from '@angular/core';
-import { Observable } from 'rxjs';
-import { BuddyService } from 'app/services/buddy.service';
-import { TagService } from 'app/services/tag.service';
-import { PlaceService } from 'app/services/place.service';
-import { ValidatorFn, AbstractControl } from '@angular/forms';
-import { CustomValidators } from 'app/shared/validators';
+} from "@angular/core";
+import { Observable } from "rxjs";
+import { BuddyService } from "app/services/buddy.service";
+import { TagService } from "app/services/tag.service";
+import { PlaceService } from "app/services/place.service";
+import { ValidatorFn, AbstractControl } from "@angular/forms";
+import { CustomValidators } from "app/shared/validators";
 
 interface ISearchItem {
     text: string;
@@ -32,9 +32,9 @@ export interface IFilter {
 }
 
 @Component({
-    selector: 'app-dive-search',
-    templateUrl: './search.component.html',
-    styleUrls: ['./search.component.scss'],
+    selector: "app-dive-search",
+    templateUrl: "./search.component.html",
+    styleUrls: ["./search.component.scss"],
 })
 export class SearchComponent implements OnInit {
     @Input() extraButtons: TemplateRef<any>;
@@ -44,7 +44,7 @@ export class SearchComponent implements OnInit {
         IFilter[]
     >();
 
-    public searchValue: any = '';
+    public searchValue: any = "";
     public currentTopic: ITopic;
     public currentFilters: IFilter[] = [];
 
@@ -57,39 +57,39 @@ export class SearchComponent implements OnInit {
     ) {
         this.topics = [
             {
-                caption: 'Date on',
-                name: 'dateOn',
+                caption: "Date on",
+                name: "dateOn",
                 validate: CustomValidators.datetime,
             },
             {
-                caption: 'Date before',
-                name: 'dateFrom',
+                caption: "Date before",
+                name: "dateFrom",
                 validate: CustomValidators.datetime,
             },
             {
-                caption: 'Date After',
-                name: 'dateTill',
+                caption: "Date After",
+                name: "dateTill",
                 validate: CustomValidators.datetime,
             },
             {
-                caption: 'With buddy',
-                name: 'buddy',
+                caption: "With buddy",
+                name: "buddy",
                 source: async () => {
                     const buds = await this.buddyService.list();
                     return buds.map((b) => ({ text: b.text, key: b.buddy_id }));
                 },
             },
             {
-                caption: 'With tag',
-                name: 'tag',
+                caption: "With tag",
+                name: "tag",
                 source: async () => {
                     const tags = await this.tagService.list();
                     return tags.map((t) => ({ text: t.text, key: t.tag_id }));
                 },
             },
             {
-                caption: 'On place',
-                name: 'place',
+                caption: "On place",
+                name: "place",
                 source: async () => {
                     const plc = await this.placeService.list();
                     return plc.map((p) => ({ text: p.name, key: p.place_id }));
@@ -103,7 +103,7 @@ export class SearchComponent implements OnInit {
     public addSearch() {
         let value: string;
         let displayValue: string | undefined;
-        if (typeof this.searchValue === 'string') {
+        if (typeof this.searchValue === "string") {
             value = this.searchValue;
         } else {
             value = this.searchValue.key;

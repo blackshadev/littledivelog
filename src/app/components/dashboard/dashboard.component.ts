@@ -1,19 +1,19 @@
-import { Component, Input, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { ProfileService, IProfile } from 'app/services/profile.service';
-import { randomInt } from 'app/shared/common';
+import { Component, Input, OnInit, ViewChild, ElementRef } from "@angular/core";
+import { ProfileService, IProfile } from "app/services/profile.service";
+import { randomInt } from "app/shared/common";
 
 const welcomeMessages = [
-    'Ready to log some more?',
-    'Happy logging',
+    "Ready to log some more?",
+    "Happy logging",
     'Tried uploading your dive computer logs with our <a href="/uploader">uploader</a> tool?',
-    'Do you have improvement suggestions? Contact me!',
-    'Live, dive, log, repeat.',
+    "Do you have improvement suggestions? Contact me!",
+    "Live, dive, log, repeat.",
 ];
 
 @Component({
-    selector: 'app-dashboard',
-    templateUrl: './dashboard.component.html',
-    styleUrls: ['./dashboard.component.scss'],
+    selector: "app-dashboard",
+    templateUrl: "./dashboard.component.html",
+    styleUrls: ["./dashboard.component.scss"],
 })
 export class DashboardComponent implements OnInit {
     public profile: IProfile;
@@ -29,6 +29,6 @@ export class DashboardComponent implements OnInit {
     }
 
     refresh() {
-        this.profileService.get().then(p => (this.profile = p));
+        this.profileService.get().then((p) => (this.profile = p));
     }
 }

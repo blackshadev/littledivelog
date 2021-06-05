@@ -1,9 +1,9 @@
-import { BaseModalComponent } from '../base/base-modal.component';
-import { Input, Component } from '@angular/core';
+import { BaseModalComponent } from "../base/base-modal.component";
+import { Input, Component } from "@angular/core";
 
 @Component({
-    selector: 'app-error-modal',
-    templateUrl: './error-modal.component.html',
+    selector: "app-error-modal",
+    templateUrl: "./error-modal.component.html",
     styles: [
         `
             .panel {

@@ -1,13 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { DashboardComponent } from './dashboard.component';
-import { ProfileService, IProfile } from 'app/services/profile.service';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
-import { LocaldatetimePipe } from 'app/pipes/localdatetime.pipe';
-import { HideWhenDirective } from 'app/directives/hide-when/hide-when.directive';
-import { By } from '@angular/platform-browser';
+import { DashboardComponent } from "./dashboard.component";
+import { ProfileService, IProfile } from "app/services/profile.service";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
+import { LocaldatetimePipe } from "app/pipes/localdatetime.pipe";
+import { HideWhenDirective } from "app/directives/hide-when/hide-when.directive";
+import { By } from "@angular/platform-browser";
 
-describe('DashboardComponent', () => {
+describe("DashboardComponent", () => {
     let component: DashboardComponent;
     let fixture: ComponentFixture<DashboardComponent>;
     let profile: jasmine.SpyObj<ProfileService>;
@@ -15,23 +15,25 @@ describe('DashboardComponent', () => {
         buddy_count: 2,
         computer_count: 1,
         dive_count: 91,
-        email: 'test@test.com',
-        inserted: new Date('2019-12-12T13:00:00Z'),
-        name: 'Test',
+        email: "test@test.com",
+        inserted: new Date("2019-12-12T13:00:00Z"),
+        name: "Test",
         tag_count: 2,
     };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [
-                DashboardComponent,
-                LocaldatetimePipe,
-                HideWhenDirective,
-            ],
-            providers: [ProfileService],
-            imports: [HttpClientTestingModule],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [
+                    DashboardComponent,
+                    LocaldatetimePipe,
+                    HideWhenDirective,
+                ],
+                providers: [ProfileService],
+                imports: [HttpClientTestingModule],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         profile = spyOnAllFunctions(TestBed.get(ProfileService));
@@ -48,20 +50,20 @@ describe('DashboardComponent', () => {
         }, 10);
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 
-    it('should be called', () => {
+    it("should be called", () => {
         expect(profile.get).toHaveBeenCalled();
     });
 
-    it('should see dive count', () => {
+    it("should see dive count", () => {
         const element = fixture.debugElement.query(
             By.css('span[data-test-name="dive-count"]'),
         );
         expect(element.nativeElement.textContent.trim()).toEqual(
-            profileResult.dive_count + '',
+            profileResult.dive_count + "",
         );
     });
 });

@@ -9,9 +9,9 @@ import {
     HostListener,
     ElementRef,
     ViewChild,
-} from '@angular/core';
-import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { Observable } from 'rxjs';
+} from "@angular/core";
+import { NG_VALUE_ACCESSOR, ControlValueAccessor } from "@angular/forms";
+import { Observable } from "rxjs";
 
 interface IItem {
     key: any;
@@ -22,9 +22,9 @@ interface IItem {
 type SourceFunction = (keyword: string) => Promise<any[]>;
 
 @Component({
-    selector: 'app-autocomplete',
-    templateUrl: './autocomplete.component.html',
-    styleUrls: ['./autocomplete.component.css'],
+    selector: "app-autocomplete",
+    templateUrl: "./autocomplete.component.html",
+    styleUrls: ["./autocomplete.component.css"],
     providers: [
         {
             provide: NG_VALUE_ACCESSOR,
@@ -40,7 +40,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     @Input() inputClass: string;
     @Input() set source(v: SourceFunction) {
         if (!(v instanceof Function)) {
-            throw new Error('Expected source to be a async function');
+            throw new Error("Expected source to be a async function");
         }
         this._source = v;
     }
@@ -79,7 +79,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
         const val = this._selectedValue
             ? this._selectedValue.value
             : this._value;
-        if (val && typeof val === 'object' && this._displayItem) {
+        if (val && typeof val === "object" && this._displayItem) {
             return val[this._displayItem];
         } else {
             return val;
@@ -88,10 +88,10 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
     @Input() newItem: (keyword: string) => any;
     @Input() disabled = false;
-    @Input() placeholder = '';
+    @Input() placeholder = "";
     @Input() set forceSelection(v: any) {
-        if (typeof v === 'string') {
-            v = v === 'true' || v === '1';
+        if (typeof v === "string") {
+            v = v === "true" || v === "1";
         }
         this._forceSelection = v;
     }
@@ -101,13 +101,13 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
     private _forceSelection: boolean;
     private _source: SourceFunction;
-    private _value: any = '';
+    private _value: any = "";
     private _displayItem: string;
     private _listItem: string;
     private _keyItem: string;
     private _selectedValue: IItem;
     private _items: IItem[] = [];
-    @ViewChild('input') private inputElement: ElementRef;
+    @ViewChild("input") private inputElement: ElementRef;
 
     private ignoreAfterTab = false;
     private getItem: (isNew: boolean, v: any) => IItem;
@@ -123,7 +123,7 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
     ngOnInit() {}
 
     public valueSelected(v: IItem, e?) {
-        if (typeof v !== 'object') {
+        if (typeof v !== "object") {
             return;
         }
 
@@ -156,8 +156,8 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
 
     public clear(): void {
         this._selectedValue = undefined;
-        this._value = '';
-        this.inputElement.nativeElement.value = '';
+        this._value = "";
+        this.inputElement.nativeElement.value = "";
     }
 
     public filter(keyword: string) {
@@ -174,11 +174,11 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
             const p = this._source(keyword);
             if (!(p instanceof Promise)) {
                 console.error(
-                    'Expected source function to be async (must return a promise)',
+                    "Expected source function to be async (must return a promise)",
                 );
                 obs.error(
                     new Error(
-                        'Expected source function to be async (must return a promise)',
+                        "Expected source function to be async (must return a promise)",
                     ),
                 );
                 obs.complete();
@@ -232,17 +232,17 @@ export class AutocompleteComponent implements OnInit, ControlValueAccessor {
         const listItem = this._listItem || this._displayItem || this._keyItem;
 
         const displayGetter = `v${
-            this._displayItem ? '.' + this._displayItem : ''
+            this._displayItem ? "." + this._displayItem : ""
         }`;
-        const listGetter = `v${listItem ? '.' + listItem : ''}`;
+        const listGetter = `v${listItem ? "." + listItem : ""}`;
         this.getItem = new Function(
-            'isNew',
-            'v',
+            "isNew",
+            "v",
             `return {
                 isNew: isNew,
                 listValue: (isNew ? "(new) " : "") + ${listGetter},
                 value: ${displayGetter},
-                key: v${this._keyItem ? '.' + this._keyItem : ''}
+                key: v${this._keyItem ? "." + this._keyItem : ""}
             }`,
         ) as (
             v: any,

@@ -1,7 +1,7 @@
-import { Directive, ElementRef, HostListener, Input } from '@angular/core';
+import { Directive, ElementRef, HostListener, Input } from "@angular/core";
 
-const sizes = ['xs', 'sm', 'md', 'lg', 'xl'] as const;
-const operators = ['<', '>', '<=', '>=', '='] as const;
+const sizes = ["xs", "sm", "md", "lg", "xl"] as const;
+const operators = ["<", ">", "<=", ">=", "="] as const;
 type TSize = typeof sizes[number];
 type TOperator = typeof operators[number];
 
@@ -13,20 +13,20 @@ const sizesInPixels = {
 };
 
 const hideWhenRegExp = new RegExp(
-    `^(${operators.map((c) => `\\${c}`).join('|')})(${sizes.join('|')})$`,
-    'i',
+    `^(${operators.map((c) => `\\${c}`).join("|")})(${sizes.join("|")})$`,
+    "i",
 );
 
 @Directive({
-    selector: '[appHideWhen]',
+    selector: "[appHideWhen]",
 })
 export class HideWhenDirective {
-    private _size: TSize = 'sm';
-    private _operator: TOperator = '<';
+    private _size: TSize = "sm";
+    private _operator: TOperator = "<";
     private _expression: (w: number) => boolean;
     private _isEnabled = true;
 
-    @Input('appHideWhen') set condition(condition: string) {
+    @Input("appHideWhen") set condition(condition: string) {
         const [_, operator, size] = hideWhenRegExp.exec(condition);
 
         this._size = size as TSize;
@@ -36,7 +36,7 @@ export class HideWhenDirective {
         this.apply();
     }
 
-    @Input('appHideWhen-enabled') set enabled(b: boolean) {
+    @Input("appHideWhen-enabled") set enabled(b: boolean) {
         this._isEnabled = b;
         this.apply();
     }
@@ -47,21 +47,21 @@ export class HideWhenDirective {
 
     constructor(private el: ElementRef) {}
 
-    @HostListener('window:resize', ['$event'])
+    @HostListener("window:resize", ["$event"])
     onResize(event) {
         this.apply();
     }
 
     private createExpression() {
         this._expression = new Function(
-            'w',
+            "w",
             `return w ${this._operator} ${sizesInPixels[this._size]}`,
         ) as (w: number) => boolean;
     }
 
     private apply() {
         (<HTMLElement>this.el.nativeElement).style.display = this.isActive
-            ? 'none'
-            : '';
+            ? "none"
+            : "";
     }
 }

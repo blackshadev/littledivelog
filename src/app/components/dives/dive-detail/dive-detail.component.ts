@@ -1,9 +1,9 @@
-import { ITag } from '../../controls/tags/tags.component';
-import { DiveProfileComponent } from '../dive-profile/dive-profile.component';
-import { Validators, FormBuilder, FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
-import { DiveService } from '../../../services/dive.service';
-import { Dive, Duration, IPlace, IBuddy } from '../../../shared/dive';
+import { ITag } from "../../controls/tags/tags.component";
+import { DiveProfileComponent } from "../dive-profile/dive-profile.component";
+import { Validators, FormBuilder, FormGroup } from "@angular/forms";
+import { Router } from "@angular/router";
+import { DiveService } from "../../../services/dive.service";
+import { Dive, Duration, IPlace, IBuddy } from "../../../shared/dive";
 import {
     OnInit,
     Component,
@@ -12,20 +12,21 @@ import {
     ElementRef,
     Output,
     EventEmitter,
-} from '@angular/core';
-import * as moment from 'moment';
-import { CustomValidators } from 'app/shared/validators';
-import { BuddyService } from 'app/services/buddy.service';
-import { markFormGroupTouched } from 'app/shared/common';
-import { PlaceService } from 'app/services/place.service';
-import { TagService } from 'app/services/tag.service';
-import { DetailComponentComponent } from 'app/components/controls/detail-component/detail-component.component';
-import { ModalService } from 'app/services/modal.service';
+} from "@angular/core";
+import * as moment from "moment";
+import { CustomValidators } from "app/shared/validators";
+import { BuddyService } from "app/services/buddy.service";
+import { markFormGroupTouched } from "app/shared/common";
+import { PlaceService } from "app/services/place.service";
+import { TagService } from "app/services/tag.service";
+import { DetailComponentComponent } from "app/components/controls/detail-component/detail-component.component";
+import { ModalService } from "app/services/modal.service";
+import { parseNumberOrNull } from "app/shared/parsers";
 
 @Component({
-    selector: 'app-dive-detail',
-    templateUrl: './dive-detail.component.html',
-    styleUrls: ['./dive-detail.component.scss'],
+    selector: "app-dive-detail",
+    templateUrl: "./dive-detail.component.html",
+    styleUrls: ["./dive-detail.component.scss"],
 })
 export class DiveDetailComponent implements OnInit {
     public diveFormData: any;
@@ -34,11 +35,11 @@ export class DiveDetailComponent implements OnInit {
     @Output() onBack = new EventEmitter<void>();
 
     public form: FormGroup;
-    public CurrentDate: string = moment().format('YYYY-MM-DD HH:mm:ss');
+    public CurrentDate: string = moment().format("YYYY-MM-DD HH:mm:ss");
 
-    @ViewChild('diveProfile')
+    @ViewChild("diveProfile")
     public diveProfile: DiveProfileComponent;
-    @ViewChild('detailComponent')
+    @ViewChild("detailComponent")
     public detailComponent: DetailComponentComponent;
     private _dive: Dive;
 
@@ -61,55 +62,55 @@ export class DiveDetailComponent implements OnInit {
         private hostElement: ElementRef,
     ) {
         this.form = this._fb.group({
-            date: ['', [Validators.required, CustomValidators.datetime]],
-            divetime: ['', [Validators.required, CustomValidators.duration]],
-            maxDepth: ['', [Validators.required, CustomValidators.decimal]],
+            date: ["", [Validators.required, CustomValidators.datetime]],
+            divetime: ["", [Validators.required, CustomValidators.duration]],
+            maxDepth: ["", [Validators.required, CustomValidators.decimal]],
             place: this._fb.group(
                 {
-                    id: [''],
-                    name: [''],
-                    country: [''],
+                    id: [""],
+                    name: [""],
+                    country: [""],
                 },
                 {
                     validator: (g: FormGroup) => {
-                        const name = g.controls.name.value || '';
-                        const country = g.controls.country.value || '';
+                        const name = g.controls.name.value || "";
+                        const country = g.controls.country.value || "";
 
                         const isValid =
                             (name.length === 0 && country.length === 0) ||
                             (name.length !== 0 && country.length !== 0);
 
-                        return isValid ? null : { 'both-required': true };
+                        return isValid ? null : { "both-required": true };
                     },
                 },
             ),
             tank: this._fb.group({
-                volume: ['', [Validators.required, CustomValidators.integer]],
+                volume: ["", [Validators.required, CustomValidators.integer]],
                 pressureStart: [
-                    '',
+                    "",
                     [Validators.required, CustomValidators.decimal],
                 ],
                 pressureEnd: [
-                    '',
+                    "",
                     [Validators.required, CustomValidators.decimal],
                 ],
                 pressureType: [
-                    '',
+                    "",
                     [Validators.required, Validators.pattern(/bar|psi/)],
                 ],
                 airPercentage: [
-                    '',
+                    "",
                     [Validators.required, CustomValidators.integer],
                 ],
             }),
-            buddies: [''],
-            tags: [''],
+            buddies: [""],
+            tags: [""],
         });
     }
 
     ngOnInit(): void {
         $(this.hostElement.nativeElement).on(
-            'shown.bs.tab',
+            "shown.bs.tab",
             'a[data-toggle="tab"][aria-controls="Profile"]',
             () => {
                 this.diveProfile.resize();
@@ -124,15 +125,15 @@ export class DiveDetailComponent implements OnInit {
 
         this.diveFormData = {
             date: this.dive.date
-                ? moment(this.dive.date).format('YYYY-MM-DD HH:mm:ss')
-                : '',
-            divetime: this.dive.divetime ? this.dive.divetime.toString() : '',
-            maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : '',
+                ? moment(this.dive.date).format("YYYY-MM-DD HH:mm:ss")
+                : "",
+            divetime: this.dive.divetime ? this.dive.divetime.toString() : "",
+            maxDepth: this.dive.maxDepth ? this.dive.maxDepth.toFixed(1) : "",
             place: this.dive.place
                 ? {
                       id: this.dive.place.place_id || null,
-                      name: this.dive.place.name || '',
-                      country: this.dive.place.country_code || '',
+                      name: this.dive.place.name || "",
+                      country: this.dive.place.country_code || "",
                   }
                 : {
                       id: null,
@@ -140,19 +141,19 @@ export class DiveDetailComponent implements OnInit {
                       country: null,
                   },
             tank: {
-                volume: this.dive.tanks.length ? this.dive.tanks[0].volume : '',
+                volume: this.dive.tanks.length ? this.dive.tanks[0].volume : "",
                 airPercentage: this.dive.tanks.length
                     ? this.dive.tanks[0].oxygen
-                    : '',
+                    : "",
                 pressureStart: this.dive.tanks.length
                     ? this.dive.tanks[0].pressure.begin
-                    : '',
+                    : "",
                 pressureEnd: this.dive.tanks.length
                     ? this.dive.tanks[0].pressure.end
-                    : '',
+                    : "",
                 pressureType: this.dive.tanks.length
                     ? this.dive.tanks[0].pressure.type
-                    : 'bar',
+                    : "bar",
             },
             buddies: this.dive.buddies.map((b) => {
                 return { buddy_id: b.buddy_id, text: b.text, color: b.color };
@@ -164,7 +165,7 @@ export class DiveDetailComponent implements OnInit {
     }
 
     diveSpotChanged(place: IPlace) {
-        if (place === null || typeof place === 'string') {
+        if (place === null || typeof place === "string") {
             return;
         }
 
@@ -195,8 +196,8 @@ export class DiveDetailComponent implements OnInit {
             shouldSort: true,
             maxPatternLength: 32,
             keys: [
-                { name: 'code', weight: 0.7 },
-                { name: 'description', weight: 0.3 },
+                { name: "code", weight: 0.7 },
+                { name: "description", weight: 0.3 },
             ],
         });
         const result = fuse.search(keyword).map((item) => item.item);
@@ -217,7 +218,7 @@ export class DiveDetailComponent implements OnInit {
             location: 0,
             shouldSort: true,
             maxPatternLength: 32,
-            keys: ['name'],
+            keys: ["name"],
         });
         return fuse.search(keyword).slice(0, 10);
     }
@@ -239,7 +240,7 @@ export class DiveDetailComponent implements OnInit {
             location: 0,
             shouldSort: true,
             maxPatternLength: 32,
-            keys: ['text'],
+            keys: ["text"],
         });
         const list = keyword
             ? fuse
@@ -265,7 +266,7 @@ export class DiveDetailComponent implements OnInit {
             location: 0,
             shouldSort: true,
             maxPatternLength: 32,
-            keys: ['text'],
+            keys: ["text"],
         });
         const list = keyword
             ? fuse
@@ -316,11 +317,11 @@ export class DiveDetailComponent implements OnInit {
 
         d.tanks = [
             {
-                oxygen: dat.tank.airPercentage,
-                volume: dat.tank.volume,
+                oxygen: parseNumberOrNull(dat.tank.airPercentage),
+                volume: parseNumberOrNull(dat.tank.volume),
                 pressure: {
-                    begin: dat.tank.pressureStart,
-                    end: dat.tank.pressureEnd,
+                    begin: parseNumberOrNull(dat.tank.pressureStart),
+                    end: parseNumberOrNull(dat.tank.pressureEnd),
                     type: dat.tank.pressureType,
                 },
             },
@@ -352,7 +353,7 @@ export class DiveDetailComponent implements OnInit {
     public goBack(forced: boolean = false) {
         // Check if the form has changes, if so ask for confirmation
         if (!forced && this.detailComponent.form.dirty) {
-            this.modalService.open('dive-detail-unsaved-changes', (b) => {
+            this.modalService.open("dive-detail-unsaved-changes", (b) => {
                 if (b) {
                     this.goBack(true);
                 }

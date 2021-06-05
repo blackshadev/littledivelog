@@ -1,17 +1,26 @@
 <div class="container-fluid">
-
     <div class="row">
-        <div class="list-component col-lg-6 col-md-12 p-0" appHideWhen="<md" [appHideWhen-enabled]="!!selected">
+        <div
+            class="list-component col-lg-6 col-md-12 p-0"
+            appHideWhen="<md"
+            [appHideWhen-enabled]="!!selected"
+        >
             <div *ngIf="menuTemplate" class="list-menu">
                 <template *ngTemplateOutlet="menuTemplate"></template>
             </div>
-            <div class="list-view" [ngClass]="{ 'list-view-with-menu': !!menuTemplate }">
+            <div
+                class="list-view"
+                [ngClass]="{ 'list-view-with-menu': !!menuTemplate }"
+            >
                 <template *ngTemplateOutlet="listTemplate"></template>
             </div>
         </div>
-        <div class="detail-component col-lg-6 col-md-12" appHideWhen="<md" [appHideWhen-enabled]="!selected">
+        <div
+            class="detail-component col-lg-6 col-md-12"
+            appHideWhen="<md"
+            [appHideWhen-enabled]="!selected"
+        >
             <template *ngTemplateOutlet="detailTemplate"></template>
         </div>
     </div>
-
 </div>

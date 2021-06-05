@@ -1,7 +1,7 @@
-import { Injectable } from '@angular/core';
-import { AuthService } from 'app/services/auth.service';
-import { serviceUrl } from 'app/shared/config';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from "@angular/core";
+import { AuthService } from "app/services/auth.service";
+import { serviceUrl } from "app/shared/config";
+import { HttpClient } from "@angular/common/http";
 
 export interface IProfile {
     name: string;
@@ -20,7 +20,7 @@ export interface IEquipment {
         pressure: {
             begin: number;
             end: number;
-            type: 'bar' | 'psi';
+            type: "bar" | "psi";
         };
     }>;
 }

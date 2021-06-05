@@ -1,6 +1,6 @@
-import { ErrorHandler, Injectable } from '@angular/core';
-import { ModalService } from '../services/modal.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import { ErrorHandler, Injectable } from "@angular/core";
+import { ModalService } from "../services/modal.service";
+import { HttpErrorResponse } from "@angular/common/http";
 
 @Injectable()
 export class GlobalErrorHandler implements ErrorHandler {
@@ -18,7 +18,7 @@ export class GlobalErrorHandler implements ErrorHandler {
         } catch {}
 
         this.modal.open(
-            'error',
+            "error",
             {
                 extra: new Error(errorMessage),
             },

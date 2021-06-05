@@ -1,19 +1,19 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { DiveService, IComputer } from './dive.service';
+import { TestBed, inject } from "@angular/core/testing";
+import { DiveService, IComputer } from "./dive.service";
 import {
     HttpClientTestingModule,
     HttpTestingController,
     TestRequest,
-} from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
-import { BuddyService } from './buddy.service';
-import { TagService } from './tag.service';
-import { IDbDive, Dive } from '../shared/dive';
-import { serviceUrl } from '../shared/config';
+} from "@angular/common/http/testing";
+import { HttpClient } from "@angular/common/http";
+import { BuddyService } from "./buddy.service";
+import { TagService } from "./tag.service";
+import { IDbDive, Dive } from "../shared/dive";
+import { serviceUrl } from "../shared/config";
 
-const sampleDives: IDbDive[] = require('./dive.samples.json');
+const sampleDives: IDbDive[] = require("./dive.samples.json");
 
-describe('DiveService', () => {
+describe("DiveService", () => {
     let service: DiveService;
     let httpMock: HttpTestingController;
     let buddyService: BuddyService;
@@ -30,13 +30,13 @@ describe('DiveService', () => {
         httpMock = TestBed.get(HttpTestingController);
     });
 
-    it('Should be created', inject([DiveService], (ser: DiveService) => {
+    it("Should be created", inject([DiveService], (ser: DiveService) => {
         expect(ser).toBeTruthy();
         expect(ser).toBe(service);
     }));
 
-    describe('List', () => {
-        it('Should parse dives', (done) => {
+    describe("List", () => {
+        it("Should parse dives", (done) => {
             service
                 .list()
                 .then((res) => {
@@ -47,7 +47,7 @@ describe('DiveService', () => {
                 .catch(done.fail);
             const req = httpMock.expectOne({
                 url: `${serviceUrl}/dives/`,
-                method: 'GET',
+                method: "GET",
             });
             req.flush(sampleDives);
         });
@@ -77,7 +77,7 @@ describe('DiveService', () => {
         // });
     });
 
-    it('Get dive should parse dive', (done) => {
+    it("Get dive should parse dive", (done) => {
         service
             .get(2)
             .then((d) => {
@@ -88,12 +88,12 @@ describe('DiveService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/dives/2`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(sampleDives[2]);
     });
 
-    it('Get dive on error', (done) => {
+    it("Get dive on error", (done) => {
         service.get(2).catch((err) => {
             expect(err.status).toEqual(400);
             done();
@@ -101,15 +101,15 @@ describe('DiveService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/dives/2`,
-            method: 'GET',
+            method: "GET",
         });
-        req.error(new ErrorEvent('errr'), {
+        req.error(new ErrorEvent("errr"), {
             status: 400,
         });
     });
 
-    it('Get samples', (done) => {
-        const samples = require('./divesamples.json');
+    it("Get samples", (done) => {
+        const samples = require("./divesamples.json");
 
         service
             .samples(2)
@@ -121,12 +121,12 @@ describe('DiveService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/dives/2/samples`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(samples);
     });
 
-    it('Get samples', (done) => {
+    it("Get samples", (done) => {
         service
             .samples()
             .then((d) => {
@@ -137,18 +137,18 @@ describe('DiveService', () => {
 
         httpMock.expectNone({
             url: `${serviceUrl}/dives/2/samples`,
-            method: 'GET',
+            method: "GET",
         });
     });
 
-    it('listComputers', (done) => {
+    it("listComputers", (done) => {
         const comp: IComputer[] = [
             {
                 computer_id: 1,
                 dive_count: 2,
-                name: 'Test Comp',
-                last_read: new Date('2018-02-03T15:15:33'),
-                vendor: 'Test',
+                name: "Test Comp",
+                last_read: new Date("2018-02-03T15:15:33"),
+                vendor: "Test",
             },
         ];
         service
@@ -161,12 +161,12 @@ describe('DiveService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/computers`,
-            method: 'GET',
+            method: "GET",
         });
         req.flush(comp);
     });
 
-    it('Delete', (done) => {
+    it("Delete", (done) => {
         const value = true;
         service
             .delete(3)
@@ -178,39 +178,39 @@ describe('DiveService', () => {
 
         const req = httpMock.expectOne({
             url: `${serviceUrl}/dives/3`,
-            method: 'DELETE',
+            method: "DELETE",
         });
         req.flush(JSON.stringify(value));
     });
 
-    describe('Save', () => {
+    describe("Save", () => {
         const saveSample: IDbDive = {
             dive_id: 1,
             buddies: [
                 {
-                    email: 'xxx',
-                    color: '#fff',
-                    text: 'test',
+                    email: "xxx",
+                    color: "#fff",
+                    text: "test",
                     buddy_id: 1,
                 },
             ],
-            date: new Date('2018-01-01'),
-            divetime: '01:01:01',
+            date: new Date("2018-01-01"),
+            divetime: "01:01:01",
             max_depth: 7,
             place: {
-                country_code: 'NL',
-                name: 'mahPlace',
+                country_code: "NL",
+                name: "mahPlace",
             },
             samples: [],
             tags: [
                 {
-                    color: '#fff',
-                    text: 'test',
+                    color: "#fff",
+                    text: "test",
                     tag_id: 1,
                 },
             ],
         };
-        it('Insert', (done) => {
+        it("Insert", (done) => {
             service
                 .save(saveSample)
                 .then((d) => {
@@ -220,12 +220,12 @@ describe('DiveService', () => {
                 .catch(done.fail);
             const req = httpMock.expectOne({
                 url: `${serviceUrl}/dives`,
-                method: 'POST',
+                method: "POST",
             });
             req.flush(saveSample);
         });
 
-        it('Update', (done) => {
+        it("Update", (done) => {
             service
                 .save(saveSample, 2)
                 .then((d) => {
@@ -235,25 +235,25 @@ describe('DiveService', () => {
                 .catch(done.fail);
             const req = httpMock.expectOne({
                 url: `${serviceUrl}/dives/2`,
-                method: 'PUT',
+                method: "PUT",
             });
             req.flush(saveSample);
         });
 
-        it('Should clear buddy cache with new buddies', (done) => {
+        it("Should clear buddy cache with new buddies", (done) => {
             const sample = Object.assign({}, saveSample, {
                 dive_id: undefined,
             });
             sample.buddies = [
                 {
-                    color: '#ff0000',
-                    email: 'tester@tester.te',
-                    text: 'TEster tester',
+                    color: "#ff0000",
+                    email: "tester@tester.te",
+                    text: "TEster tester",
                 },
             ];
 
-            const budSpy = spyOn(buddyService, 'clearCache');
-            const tagSpy = spyOn(tagService, 'clearCache');
+            const budSpy = spyOn(buddyService, "clearCache");
+            const tagSpy = spyOn(tagService, "clearCache");
             service
                 .save(sample)
                 .then((d) => {
@@ -267,24 +267,24 @@ describe('DiveService', () => {
 
             const req = httpMock.expectOne({
                 url: `${serviceUrl}/dives`,
-                method: 'POST',
+                method: "POST",
             });
             req.flush(sample);
         });
 
-        it('Should clear tags cache with new tags', (done) => {
+        it("Should clear tags cache with new tags", (done) => {
             const sample = Object.assign({}, saveSample, {
                 dive_id: undefined,
             });
             sample.tags = [
                 {
-                    color: '#ff0000',
-                    text: 'TEster tester',
+                    color: "#ff0000",
+                    text: "TEster tester",
                 },
             ];
 
-            const budSpy = spyOn(buddyService, 'clearCache');
-            const tagSpy = spyOn(tagService, 'clearCache');
+            const budSpy = spyOn(buddyService, "clearCache");
+            const tagSpy = spyOn(tagService, "clearCache");
             service
                 .save(sample)
                 .then((d) => {
@@ -298,7 +298,7 @@ describe('DiveService', () => {
 
             const req = httpMock.expectOne({
                 url: `${serviceUrl}/dives`,
-                method: 'POST',
+                method: "POST",
             });
             req.flush(sample);
         });

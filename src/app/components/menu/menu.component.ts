@@ -6,18 +6,18 @@ import {
     Output,
     EventEmitter,
     Input,
-} from '@angular/core';
-import { AuthService } from 'app/services/auth.service';
+} from "@angular/core";
+import { AuthService } from "app/services/auth.service";
 
 @Component({
-    selector: 'app-menu',
-    templateUrl: './menu.component.html',
-    styleUrls: ['./menu.component.scss'],
+    selector: "app-menu",
+    templateUrl: "./menu.component.html",
+    styleUrls: ["./menu.component.scss"],
 })
 export class MenuComponent {
-    @ViewChild('menuContainer', { static: true }) menuContainer: ElementRef;
+    @ViewChild("menuContainer", { static: true }) menuContainer: ElementRef;
     @Output() ontoggle = new EventEmitter<boolean>();
-    @Input('state')
+    @Input("state")
     set state(v: boolean) {
         this.toggle(v);
     }
@@ -30,12 +30,12 @@ export class MenuComponent {
 
     toggle(state?: boolean) {
         const hElm = <HTMLElement>this.menuContainer.nativeElement;
-        const isCollapsed = hElm.classList.contains('collapsed');
+        const isCollapsed = hElm.classList.contains("collapsed");
         state = state === undefined ? !isCollapsed : state;
         if (state) {
-            hElm.classList.add('collapsed');
+            hElm.classList.add("collapsed");
         } else {
-            hElm.classList.remove('collapsed');
+            hElm.classList.remove("collapsed");
         }
         this.ontoggle.emit(state);
     }

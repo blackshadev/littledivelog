@@ -1,16 +1,18 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { TagsControlComponent } from './tags-control.component';
+import { TagsControlComponent } from "./tags-control.component";
 
-describe('TagsComponent', () => {
+describe("TagsComponent", () => {
     let component: TagsControlComponent;
     let fixture: ComponentFixture<TagsControlComponent>;
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            declarations: [TagsControlComponent]
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                declarations: [TagsControlComponent],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         fixture = TestBed.createComponent(TagsControlComponent);
@@ -18,7 +20,7 @@ describe('TagsComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 });

@@ -1,10 +1,10 @@
 export enum OS {
-    WindowsPhone = 'windows phone',
-    Window = 'windows',
-    Linux = 'linux',
-    Unix = 'unix',
-    MacOS = 'macos',
-    Other = 'other',
+    WindowsPhone = "windows phone",
+    Window = "windows",
+    Linux = "linux",
+    Unix = "unix",
+    MacOS = "macos",
+    Other = "other",
 }
 export const allOSes = [
     OS.WindowsPhone,

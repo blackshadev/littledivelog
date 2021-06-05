@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from "@angular/core";
 
 export interface ITag {
     tag_id?: number;
@@ -7,9 +7,9 @@ export interface ITag {
 }
 
 @Component({
-    selector: 'app-tags',
-    templateUrl: './tags.component.html',
-    styleUrls: ['./tags.component.scss'],
+    selector: "app-tags",
+    templateUrl: "./tags.component.html",
+    styleUrls: ["./tags.component.scss"],
     providers: [],
 })
 export class TagsComponent {

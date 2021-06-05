@@ -1,23 +1,23 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from "@angular/core/testing";
 
-import { ProfileComponent } from './profile.component';
-import { ProfileService } from 'app/services/profile.service';
-import { FormBuilder } from '@angular/forms';
-import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { ProfileComponent } from "./profile.component";
+import { ProfileService } from "app/services/profile.service";
+import { FormBuilder } from "@angular/forms";
+import { HttpClientTestingModule } from "@angular/common/http/testing";
 
-describe('ProfileComponent', () => {
+describe("ProfileComponent", () => {
     let component: ProfileComponent;
     let fixture: ComponentFixture<ProfileComponent>;
     let service: jasmine.SpyObj<ProfileService>;
 
     const data = {
         profile: {
-            name: 'tester',
+            name: "tester",
             buddy_count: 1,
             computer_count: 1,
             dive_count: 1,
-            email: 'tester@tester.com',
-            inserted: new Date('2020-12-12T12:12:12'),
+            email: "tester@tester.com",
+            inserted: new Date("2020-12-12T12:12:12"),
             tag_count: 1,
         },
         equipment: {
@@ -27,7 +27,7 @@ describe('ProfileComponent', () => {
                     pressure: {
                         begin: 190,
                         end: 60,
-                        type: 'bar' as 'bar',
+                        type: "bar" as "bar",
                     },
                     volume: 10,
                 },
@@ -35,24 +35,26 @@ describe('ProfileComponent', () => {
         },
         sessions: [
             {
-                description: 'test',
-                insert_ip: '127.0.0.1',
-                inserted: new Date('2020-12-12T12:12:12'),
-                last_ip: '127.0.0.1',
-                last_used: new Date('2020-12-12T12:12:12'),
-                token: 'xxx-xxx',
+                description: "test",
+                insert_ip: "127.0.0.1",
+                inserted: new Date("2020-12-12T12:12:12"),
+                last_ip: "127.0.0.1",
+                last_used: new Date("2020-12-12T12:12:12"),
+                token: "xxx-xxx",
                 user_id: -1,
             },
         ],
     };
 
-    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            declarations: [ProfileComponent],
-            providers: [ProfileService, FormBuilder],
-        }).compileComponents();
-    }));
+    beforeEach(
+        waitForAsync(() => {
+            TestBed.configureTestingModule({
+                imports: [HttpClientTestingModule],
+                declarations: [ProfileComponent],
+                providers: [ProfileService, FormBuilder],
+            }).compileComponents();
+        }),
+    );
 
     beforeEach(() => {
         service = spyOnAllFunctions(TestBed.get(ProfileService));
@@ -66,34 +68,34 @@ describe('ProfileComponent', () => {
         fixture.detectChanges();
     });
 
-    it('should create', () => {
+    it("should create", () => {
         expect(component).toBeTruthy();
     });
 
-    describe('refresh', () => {
+    describe("refresh", () => {
         beforeEach(async () => {
             await component.refresh();
             await component.refreshSessions();
         });
-        it('should call get service', () => {
+        it("should call get service", () => {
             expect(service.get).toHaveBeenCalled();
         });
 
-        it('should call equipment service', () => {
+        it("should call equipment service", () => {
             expect(service.equipment).toHaveBeenCalled();
         });
 
-        it('should call session service', () => {
+        it("should call session service", () => {
             expect(service.getSessions).toHaveBeenCalled();
         });
 
-        it('should fill profile', () => {
+        it("should fill profile", () => {
             expect(component.profileForm.value).toEqual({
                 name: data.profile.name,
             });
         });
 
-        it('should fill equipment', () => {
+        it("should fill equipment", () => {
             expect(component.equipmentForm.value).toEqual({
                 tank: {
                     volume: data.equipment.tanks[0].volume,
@@ -108,99 +110,99 @@ describe('ProfileComponent', () => {
         });
     });
 
-    describe('change password', () => {
-        describe('Valid', () => {
+    describe("change password", () => {
+        describe("Valid", () => {
             beforeEach(async () => {
                 component.passwordForm.setValue({
-                    currentPassword: 'test',
-                    newPassword: 'test',
-                    confirmNewPassword: 'test',
+                    currentPassword: "test",
+                    newPassword: "test",
+                    confirmNewPassword: "test",
                 });
                 await component.changePassword();
             });
 
-            it('Should call service', () =>
+            it("Should call service", () =>
                 expect(service.changePassword).toHaveBeenCalled());
 
-            it('Should set alertMessage', () =>
+            it("Should set alertMessage", () =>
                 expect(component.alertMessage).toEqual(
                     jasmine.objectContaining({
-                        for: 'password',
-                        type: 'success',
-                        text: 'Password changed',
+                        for: "password",
+                        type: "success",
+                        text: "Password changed",
                     }),
                 ));
 
-            it('set error message on rejection', async () => {
+            it("set error message on rejection", async () => {
                 service.changePassword.and.rejectWith({
                     json() {
-                        return { msg: 'Test Fail' };
+                        return { msg: "Test Fail" };
                     },
                 });
                 await component.changePassword();
 
                 expect(component.alertMessage).toEqual({
-                    for: 'password',
-                    type: 'error',
-                    text: 'Test Fail',
+                    for: "password",
+                    type: "error",
+                    text: "Test Fail",
                 });
             });
         });
 
-        describe('Invalid', () => {
+        describe("Invalid", () => {
             beforeEach(async () => {
                 component.passwordForm.setValue({
-                    currentPassword: 'test',
-                    newPassword: 'test2',
-                    confirmNewPassword: 'test',
+                    currentPassword: "test",
+                    newPassword: "test2",
+                    confirmNewPassword: "test",
                 });
                 await component.changePassword();
             });
 
-            it('should not call service', () =>
+            it("should not call service", () =>
                 expect(service.changePassword).not.toHaveBeenCalled());
 
-            it('Form should be invalid', () =>
+            it("Form should be invalid", () =>
                 expect(component.passwordForm.valid).toBeFalse());
         });
     });
 
-    describe('Delete sessions', () => {
-        beforeEach(async () => await component.deleteSession('tok'));
+    describe("Delete sessions", () => {
+        beforeEach(async () => await component.deleteSession("tok"));
 
-        it('Should call delete session', () =>
-            expect(service.deleteSession).toHaveBeenCalledWith('tok'));
-        it('Should call refresh session', () =>
+        it("Should call delete session", () =>
+            expect(service.deleteSession).toHaveBeenCalledWith("tok"));
+        it("Should call refresh session", () =>
             expect(service.getSessions).toHaveBeenCalled());
     });
 
-    describe('change equipment', () => {
+    describe("change equipment", () => {
         beforeEach(async () => {
             await component.changeEquipment();
         });
 
-        it('call service', () =>
+        it("call service", () =>
             expect(service.changeEquipment).toHaveBeenCalled());
 
-        it('alert message set', () =>
+        it("alert message set", () =>
             expect(component.alertMessage).toEqual({
-                for: 'equipment',
-                type: 'success',
-                text: 'Equipment changed',
+                for: "equipment",
+                type: "success",
+                text: "Equipment changed",
             }));
 
-        it('set error message on rejection', async () => {
+        it("set error message on rejection", async () => {
             service.changeEquipment.and.rejectWith({
                 json() {
-                    return { msg: 'Test Fail' };
+                    return { msg: "Test Fail" };
                 },
             });
             await component.changeEquipment();
 
             expect(component.alertMessage).toEqual({
-                for: 'equipment',
-                type: 'error',
-                text: 'Test Fail',
+                for: "equipment",
+                type: "error",
+                text: "Test Fail",
             });
         });
     });

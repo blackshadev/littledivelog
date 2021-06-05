@@ -3,42 +3,59 @@
         <ul class="nav nav-pills nav-stacked">
             <ng-container *ngIf="isLoggedIn">
                 <li>
-                    <a [routerLink]="['dashboard']" [routerLinkActive]="['is-active']">
+                    <a
+                        [routerLink]="['dashboard']"
+                        [routerLinkActive]="['is-active']"
+                    >
                         <i class="fa fa-fw fa-dashboard"></i>
                         <span>Dashboard</span>
                     </a>
                 </li>
                 <li>
-                    <a [routerLink]="['dive']" [routerLinkActive]="['is-active']">
+                    <a
+                        [routerLink]="['dive']"
+                        [routerLinkActive]="['is-active']"
+                    >
                         <i class="fa fa-fw fa-tint"></i>
                         <span>Dives</span>
                     </a>
                 </li>
                 <li>
-                    <a [routerLink]="['computer']" [routerLinkActive]="['is-active']">
+                    <a
+                        [routerLink]="['computer']"
+                        [routerLinkActive]="['is-active']"
+                    >
                         <i class="fa fa-fw fa-desktop"></i>
                         <span>Computers</span>
                     </a>
                 </li>
                 <li>
-                    <a [routerLink]="['buddy']" [routerLinkActive]="['is-active']">
+                    <a
+                        [routerLink]="['buddy']"
+                        [routerLinkActive]="['is-active']"
+                    >
                         <i class="fa fa-fw fa-users"></i>
                         <span>Buddies</span>
                     </a>
                 </li>
                 <li>
-                    <a [routerLink]="['tag']" [routerLinkActive]="['is-active']">
+                    <a
+                        [routerLink]="['tag']"
+                        [routerLinkActive]="['is-active']"
+                    >
                         <i class="fa fa-fw fa-tag"></i>
                         <span>Tags</span>
                     </a>
                 </li>
                 <li>
-                    <a [routerLink]="['uploader']" [routerLinkActive]="['is-active']">
+                    <a
+                        [routerLink]="['uploader']"
+                        [routerLinkActive]="['is-active']"
+                    >
                         <i class="fa fa-fw fa-upload"></i>
                         <span>Uploader</span>
                     </a>
                 </li>
-
             </ng-container>
         </ul>
         <div class="bottom-menu">

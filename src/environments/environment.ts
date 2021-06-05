@@ -5,5 +5,5 @@
 
 export const environment = {
     production: false,
-    apiURL: 'https://api.dive.littledev.nl/api',
+    apiURL: "https://api.dive.littledev.nl/api",
 };

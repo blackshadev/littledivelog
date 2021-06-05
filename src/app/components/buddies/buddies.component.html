@@ -2,47 +2,64 @@
     <table class="table table-hover">
         <thead>
             <tr>
-                <td>
-                    Name
-                </td>
-                <td>
-                    Number of dives
-                </td>
-                <td>
-                    Last dive
-                </td>
+                <td>Name</td>
+                <td>Number of dives</td>
+                <td>Last dive</td>
             </tr>
         </thead>
         <tbody>
-            <tr *ngFor="let bud of buddies"
-                [ngClass]="{ 'table-active': selected !== undefined && bud.buddy_id === selected.buddy_id  }"
-                [attr.data-buddy_id]="bud.buddy_id" (click)="select(bud.buddy_id)">
+            <tr
+                *ngFor="let bud of buddies"
+                [ngClass]="{
+                    'table-active':
+                        selected !== undefined &&
+                        bud.buddy_id === selected.buddy_id
+                }"
+                [attr.data-buddy_id]="bud.buddy_id"
+                (click)="select(bud.buddy_id)"
+            >
                 <td>
                     <app-tag [color]="bud.color" fontSize="100%">
                         {{ bud.text }}
                     </app-tag>
                 </td>
                 <td>{{ bud.dive_count }}</td>
-                <td>{{ bud.last_dive | date:'y-MM-dd HH:mm:ss' }}</td>
+                <td>{{ bud.last_dive | date: "y-MM-dd HH:mm:ss" }}</td>
                 <td></td>
             </tr>
         </tbody>
     </table>
 
-    <button class="fab btn btn-primary" [routerLink]="['/buddy/new/']" appHideWhen=">=md"><i
-            class="fa fa-plus"></i></button>
-
-</ng-template>
-
-<ng-template #detailTemplate>
-    <app-buddy-detail #detail [buddy]="selected" (onDataChanged)="dataChanged($event)"></app-buddy-detail>
-</ng-template>
-
-<ng-template #menuTemplate>
-    <button class="btn btn-primary" [routerLink]="['/buddy/new/']" appHideWhen="<md">
+    <button
+        class="fab btn btn-primary"
+        [routerLink]="['/buddy/new/']"
+        appHideWhen=">=md"
+    >
         <i class="fa fa-plus"></i>
     </button>
 </ng-template>
 
-<app-list-detail [listTemplate]="listTemplate" [detailTemplate]="detailTemplate" [menuTemplate]="menuTemplate"
-    [selected]="selected"></app-list-detail>
+<ng-template #detailTemplate>
+    <app-buddy-detail
+        #detail
+        [buddy]="selected"
+        (onDataChanged)="dataChanged($event)"
+    ></app-buddy-detail>
+</ng-template>
+
+<ng-template #menuTemplate>
+    <button
+        class="btn btn-primary"
+        [routerLink]="['/buddy/new/']"
+        appHideWhen="<md"
+    >
+        <i class="fa fa-plus"></i>
+    </button>
+</ng-template>
+
+<app-list-detail
+    [listTemplate]="listTemplate"
+    [detailTemplate]="detailTemplate"
+    [menuTemplate]="menuTemplate"
+    [selected]="selected"
+></app-list-detail>

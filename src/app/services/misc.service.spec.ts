@@ -1,16 +1,16 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from "@angular/core/testing";
 
-import { MiscService } from './misc.service';
+import { MiscService } from "./misc.service";
 import {
     HttpClientTestingModule,
     HttpTestingController,
-} from '@angular/common/http/testing';
-import { HttpClient } from '@angular/common/http';
-import { serviceUrl } from '../shared/config';
-import * as FileSaver from 'file-saver';
-import { OS } from './browser-detector.constants';
+} from "@angular/common/http/testing";
+import { HttpClient } from "@angular/common/http";
+import { serviceUrl } from "../shared/config";
+import * as FileSaver from "file-saver";
+import { OS } from "./browser-detector.constants";
 
-describe('MiscService', () => {
+describe("MiscService", () => {
     let service: MiscService;
     let httpMock: HttpTestingController;
 
@@ -24,8 +24,7 @@ describe('MiscService', () => {
         httpMock = TestBed.get(HttpTestingController);
     });
 
-    it('Should be created', () => {
+    it("Should be created", () => {
         expect(service).toBeTruthy();
     });
-
 });

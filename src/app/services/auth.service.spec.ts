@@ -1,14 +1,14 @@
-import { TestBed, inject } from '@angular/core/testing';
-import { AuthService } from './auth.service';
-import { Http } from '@angular/http';
+import { TestBed, inject } from "@angular/core/testing";
+import { AuthService } from "./auth.service";
+import { Http } from "@angular/http";
 import {
     HttpClientTestingModule,
     HttpTestingController,
     TestRequest,
-} from '@angular/common/http/testing';
-import { serviceUrl } from '../shared/config';
+} from "@angular/common/http/testing";
+import { serviceUrl } from "../shared/config";
 
-describe('AuthService', () => {
+describe("AuthService", () => {
     let service: AuthService & { reloadWindow: () => void };
     let httpMock: HttpTestingController;
 
@@ -27,95 +27,95 @@ describe('AuthService', () => {
         service.resetSessions();
     });
 
-    it('should be created', inject([AuthService], (s: AuthService) => {
+    it("should be created", inject([AuthService], (s: AuthService) => {
         expect(s).toBeTruthy();
         expect(s).toEqual(service);
     }));
 
-    it('Should not be logged in', () => {
+    it("Should not be logged in", () => {
         expect(service.isLoggedIn).toBe(false);
     });
 
-    describe('Logged in', () => {
-        const accessToken = 'myAccessToken';
-        const refreshToken = 'myRefreshToken';
+    describe("Logged in", () => {
+        const accessToken = "myAccessToken";
+        const refreshToken = "myRefreshToken";
 
-        beforeEach(done => {
+        beforeEach((done) => {
             service
-                .login('dive@littledev.nl', 'superSecret')
+                .login("dive@littledev.nl", "superSecret")
                 .then(() => done());
             const req = httpMock.expectOne({
                 url: `${serviceUrl}/auth/sessions`,
-                method: 'POST',
+                method: "POST",
             });
             req.flush({ refresh_token: refreshToken });
         });
 
-        it('Should be isLoggedIn', () => {
+        it("Should be isLoggedIn", () => {
             expect(service.isLoggedIn).toBe(true);
         });
 
-        it('Empty access token', () => {
+        it("Empty access token", () => {
             expect(service.accessToken).toBeUndefined();
         });
 
-        describe('Logout', () => {
+        describe("Logout", () => {
             let req: TestRequest;
-            beforeEach(done => {
-                spyOn(service, 'reloadWindow');
+            beforeEach((done) => {
+                spyOn(service, "reloadWindow");
                 service.logout().then(done);
 
                 req = httpMock.expectOne({
                     url: `${serviceUrl}/auth/sessions`,
-                    method: 'DELETE',
+                    method: "DELETE",
                 });
-                req.flush('true');
+                req.flush("true");
             });
 
-            it('Delete request should contain refresh token', () => {
-                expect(req.request.headers.get('Authorization')).toEqual(
-                    'Bearer ' + refreshToken,
+            it("Delete request should contain refresh token", () => {
+                expect(req.request.headers.get("Authorization")).toEqual(
+                    "Bearer " + refreshToken,
                 );
             });
 
-            it('Should have reloadedWindow', () => {
+            it("Should have reloadedWindow", () => {
                 expect(service.reloadWindow).toHaveBeenCalled();
             });
 
-            it('Should not be loggedin', () => {
+            it("Should not be loggedin", () => {
                 expect(service.isLoggedIn).toEqual(false);
             });
 
-            it('Should empty access token', () => {
+            it("Should empty access token", () => {
                 expect(service.accessToken).toBeNull();
             });
         });
 
-        describe('Access token', () => {
+        describe("Access token", () => {
             let accessReq: TestRequest;
 
-            beforeEach(done => {
+            beforeEach((done) => {
                 service.fetchAccessToken().then(() => done());
                 accessReq = httpMock.expectOne({
                     url: `${serviceUrl}/auth/sessions/refresh`,
-                    method: 'GET',
+                    method: "GET",
                 });
                 accessReq.flush({ access_token: accessToken });
             });
 
-            it('Should set refresh token in request', () => {
-                expect(accessReq.request.headers.get('Authorization')).toEqual(
-                    'Bearer ' + refreshToken,
+            it("Should set refresh token in request", () => {
+                expect(accessReq.request.headers.get("Authorization")).toEqual(
+                    "Bearer " + refreshToken,
                 );
             });
 
-            it('Should have access token', () => {
+            it("Should have access token", () => {
                 expect(service.accessToken).toEqual(accessToken);
             });
 
-            it('Should have authorization header', () => {
+            it("Should have authorization header", () => {
                 expect(service.accessHeader).toEqual({
-                    Authorization: 'Bearer ' + accessToken,
+                    Authorization: "Bearer " + accessToken,
                 });
             });
         });

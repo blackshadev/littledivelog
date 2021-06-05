@@ -1,13 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from "@angular/core";
 import {
     ProfileService,
     IProfile,
     IEquipment,
-} from 'app/services/profile.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { markFormGroupTouched } from 'app/shared/common';
-import { CustomValidators } from 'app/shared/validators';
-import { ITank } from 'app/shared/dive';
+} from "app/services/profile.service";
+import { FormBuilder, FormGroup, Validators } from "@angular/forms";
+import { markFormGroupTouched } from "app/shared/common";
+import { CustomValidators } from "app/shared/validators";
+import { ITank } from "app/shared/dive";
 
 const DEFAULT_TANK: ITank = {
     volume: null,
@@ -15,14 +15,14 @@ const DEFAULT_TANK: ITank = {
     pressure: {
         begin: null,
         end: null,
-        type: 'bar'
-    }
+        type: "bar",
+    },
 };
 
 @Component({
-    selector: 'app-profile',
-    templateUrl: './profile.component.html',
-    styleUrls: ['./profile.component.scss'],
+    selector: "app-profile",
+    templateUrl: "./profile.component.html",
+    styleUrls: ["./profile.component.scss"],
 })
 export class ProfileComponent implements OnInit {
     public user: IProfile;
@@ -34,8 +34,8 @@ export class ProfileComponent implements OnInit {
 
     public alertMessage:
         | {
-              for: 'profile' | 'password' | 'equipment';
-              type: 'error' | 'success';
+              for: "profile" | "password" | "equipment";
+              type: "error" | "success";
               text: string;
           }
         | undefined;
@@ -45,28 +45,28 @@ export class ProfileComponent implements OnInit {
     constructor(private profileService: ProfileService, fb: FormBuilder) {
         this.passwordForm = fb.group(
             {
-                currentPassword: ['', Validators.required],
-                newPassword: ['', Validators.required],
-                confirmNewPassword: ['', Validators.required],
+                currentPassword: ["", Validators.required],
+                newPassword: ["", Validators.required],
+                confirmNewPassword: ["", Validators.required],
             },
             {
                 validator: CustomValidators.sameValue([
-                    'newPassword',
-                    'confirmNewPassword',
+                    "newPassword",
+                    "confirmNewPassword",
                 ]),
             },
         );
         this.profileForm = fb.group({
-            name: [''],
+            name: [""],
         });
         this.equipmentForm = fb.group({
             tank: fb.group({
-                volume: ['', CustomValidators.integer],
-                oxygen: ['', CustomValidators.integer],
+                volume: ["", CustomValidators.integer],
+                oxygen: ["", CustomValidators.integer],
                 pressure: fb.group({
-                    begin: ['', CustomValidators.decimal],
-                    end: ['', CustomValidators.decimal],
-                    type: ['bar', Validators.pattern(/bar|psi/)],
+                    begin: ["", CustomValidators.decimal],
+                    end: ["", CustomValidators.decimal],
+                    type: ["bar", Validators.pattern(/bar|psi/)],
                 }),
             }),
         });
@@ -107,16 +107,16 @@ export class ProfileComponent implements OnInit {
             });
         } catch (err) {
             this.alertMessage = {
-                for: 'profile',
-                type: 'error',
+                for: "profile",
+                type: "error",
                 text: err.json().msg,
             };
             return;
         }
         this.alertMessage = {
-            for: 'profile',
-            type: 'success',
-            text: 'Profile changed',
+            for: "profile",
+            type: "success",
+            text: "Profile changed",
         };
     }
 
@@ -133,16 +133,16 @@ export class ProfileComponent implements OnInit {
             });
         } catch (err) {
             this.alertMessage = {
-                for: 'password',
-                type: 'error',
+                for: "password",
+                type: "error",
                 text: err.json().msg,
             };
             return;
         }
         this.alertMessage = {
-            for: 'password',
-            type: 'success',
-            text: 'Password changed',
+            for: "password",
+            type: "success",
+            text: "Password changed",
         };
     }
 
@@ -160,16 +160,16 @@ export class ProfileComponent implements OnInit {
             });
         } catch (err) {
             this.alertMessage = {
-                for: 'equipment',
-                type: 'error',
+                for: "equipment",
+                type: "error",
                 text: err.json().msg,
             };
             return;
         }
         this.alertMessage = {
-            for: 'equipment',
-            type: 'success',
-            text: 'Equipment changed',
+            for: "equipment",
+            type: "success",
+            text: "Equipment changed",
         };
     }
 

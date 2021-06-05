@@ -1,4 +1,4 @@
-@import './shared/global.scss';
+@import "./shared/global.scss";
 
 body {
     background: $color-primary;
@@ -82,7 +82,6 @@ body {
 
 ::ng-deep .input-group-group {
     .input-group {
-
         .form-control,
         .input-group-text,
         .btn {
@@ -96,7 +95,6 @@ body {
         }
 
         &:first-child {
-
             .form-control,
             .input-group-text,
             .input-group-btn .btn,
@@ -118,7 +116,6 @@ body {
         }
 
         &:last-child {
-
             .form-control:first-child,
             .input-group-prepend:first-child .input-group-text,
             .input-group-prepend:first-child .btn {
@@ -134,7 +131,6 @@ body {
     }
 }
 
-
 ::ng-deep .btn-outline-formcontrol {
     border-color: #ced4da;
     color: #495057;
@@ -143,7 +139,6 @@ body {
 ::ng-deep .clear-fix {
     clear: both;
 }
-
 
 ::ng-deep .fab {
     position: absolute;

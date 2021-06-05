@@ -1,6 +1,6 @@
 <div class="tags">
-    <app-tag *ngFor="let tag of tags; let iX = index;" [color]="tag.color">
-        {{tag.text}}
+    <app-tag *ngFor="let tag of tags; let iX = index" [color]="tag.color">
+        {{ tag.text }}
         <a *ngIf="canremove" (click)="onremove.emit({ tag: tag, index: iX })">
             <i class="fa fa-remove"></i>
         </a>

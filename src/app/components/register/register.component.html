@@ -1,4 +1,4 @@
-<div class="container" style="margin-top: 23px;">
+<div class="container" style="margin-top: 23px">
     <div class="jumbotron">
         <h1>Join the club!</h1>
         <hr />
@@ -7,17 +7,28 @@
                 <label>Email address</label>
                 <input
                     class="form-control"
-                    [ngClass]="{ 'is-invalid': form.controls.email.invalid && form.controls.email.dirty }"
+                    [ngClass]="{
+                        'is-invalid':
+                            form.controls.email.invalid &&
+                            form.controls.email.dirty
+                    }"
                     formControlName="email"
                     type="email"
                     appHelpOnFocus
                     aria-describedby="emailHelp"
                     placeholder="tom@domain.tld"
+                />
+                <small
+                    id="emailHelp"
+                    class="form-text text-muted"
+                    style="display: none"
                 >
-                <small id="emailHelp" class="form-text text-muted" style="display: none;">
                     Your email is used for: Authorization, password resets.
-                    <br /> Your email is not used for: Marketing, sharing with 3rth parties.
-                    <br /> Your email maybe used for (personal preference): Notifications and newsletters.
+                    <br />
+                    Your email is not used for: Marketing, sharing with 3rth
+                    parties. <br />
+                    Your email maybe used for (personal preference):
+                    Notifications and newsletters.
                     <br />
                 </small>
             </div>
@@ -25,22 +36,31 @@
                 <label>Password</label>
                 <input
                     class="form-control"
-                    [ngClass]="{ 'is-invalid': form.controls.password.dirty && form.controls.password.invalid }"
+                    [ngClass]="{
+                        'is-invalid':
+                            form.controls.password.dirty &&
+                            form.controls.password.invalid
+                    }"
                     formControlName="password"
                     type="password"
                     class="form-control"
                     placeholder="xxxxxxx"
-                >
+                />
             </div>
             <div class="form-group">
                 <label>Confirm Password</label>
                 <input
                     class="form-control"
-                    [ngClass]="{ 'is-invalid': form.controls.confirmPassword.dirty && form.controls.password.invalid || form.hasError('mismatchedPasswords') }"
+                    [ngClass]="{
+                        'is-invalid':
+                            (form.controls.confirmPassword.dirty &&
+                                form.controls.password.invalid) ||
+                            form.hasError('mismatchedPasswords')
+                    }"
                     formControlName="confirmPassword"
                     type="password"
                     placeholder="xxxxxxx"
-                >
+                />
             </div>
             <div class="form-group">
                 <label>Display name</label>
@@ -49,13 +69,19 @@
                     type="name"
                     class="form-control"
                     placeholder="Thomas Andersson"
-                >
+                />
             </div>
             <div class="form-group">
                 <div *ngIf="errorMsg" class="alert alert-danger" role="alert">
-                    {{errorMsg}}
+                    {{ errorMsg }}
                 </div>
-                <button type="submit" class="btn btn-primary" [disabled]="!form.valid">Register</button>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    [disabled]="!form.valid"
+                >
+                    Register
+                </button>
             </div>
         </form>
     </div>

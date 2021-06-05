@@ -7,13 +7,16 @@ export interface IEndpoint {
 }
 
 export function getServiceEndpointPrefix(): string {
-    return (new URL(serviceUrl)).pathname;
+    return new URL(serviceUrl).pathname;
 }
 
 export function hasEndpoint(target: IEndpoint, array: IEndpoint[]): boolean {
     const prefix = getServiceEndpointPrefix();
     for (const endpoint of array) {
-        if (target.path === prefix + endpoint.path && target.method === endpoint.method) {
+        if (
+            target.path === prefix + endpoint.path &&
+            target.method === endpoint.method
+        ) {
             return true;
         }
     }
@@ -26,5 +29,5 @@ export function endpointFromRequest(request: HttpRequest<any>): IEndpoint {
     return {
         method: request.method,
         path: url.pathname,
-    }
+    };
 }

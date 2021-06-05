@@ -5,19 +5,19 @@ import {
     OnDestroy,
     ViewChild,
     AfterViewInit,
-} from '@angular/core';
-import { Location } from '@angular/common';
-import { ActivatedRoute, Router } from '@angular/router';
-import { IBuddyStat, BuddyService } from 'app/services/buddy.service';
-import { Subscription } from 'rxjs';
-import { BuddyDetailComponent } from 'app/components/buddies/buddy-detail/buddy-detail.component';
-import { TagsControlComponent } from 'app/components/controls/tags-control/tags-control.component';
-import { IDataChanged } from 'app/shared/datachanged.interface';
+} from "@angular/core";
+import { Location } from "@angular/common";
+import { ActivatedRoute, Router } from "@angular/router";
+import { IBuddyStat, BuddyService } from "app/services/buddy.service";
+import { Subscription } from "rxjs";
+import { BuddyDetailComponent } from "app/components/buddies/buddy-detail/buddy-detail.component";
+import { TagsControlComponent } from "app/components/controls/tags-control/tags-control.component";
+import { IDataChanged } from "app/shared/datachanged.interface";
 
 @Component({
-    selector: 'app-buddies',
-    templateUrl: './buddies.component.html',
-    styleUrls: ['./buddies.component.scss'],
+    selector: "app-buddies",
+    templateUrl: "./buddies.component.html",
+    styleUrls: ["./buddies.component.scss"],
 })
 export class BuddiesComponent implements OnInit, OnDestroy {
     @Input()
@@ -36,7 +36,7 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     }
 
     select(id?: number) {
-        this.router.navigateByUrl(`/buddy/${id || ''}`);
+        this.router.navigateByUrl(`/buddy/${id || ""}`);
         this._id = id;
 
         if (id === undefined) {
@@ -48,8 +48,8 @@ export class BuddiesComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.sub = this.route.params.subscribe((params) => {
-            const id = params['id'] !== undefined ? +params['id'] : undefined;
-            if (params['id'] === 'new') {
+            const id = params["id"] !== undefined ? +params["id"] : undefined;
+            if (params["id"] === "new") {
                 this.selected = {
                     buddy_id: undefined,
                     color: TagsControlComponent.randomColor(),
@@ -78,10 +78,10 @@ export class BuddiesComponent implements OnInit, OnDestroy {
     }
 
     async dataChanged(ev: IDataChanged) {
-        if (ev.type === 'delete') {
+        if (ev.type === "delete") {
             this._id = undefined;
             this.selected = undefined;
-        } else if (ev.type === 'insert') {
+        } else if (ev.type === "insert") {
             this._id = ev.key;
         }
         await this.refresh();

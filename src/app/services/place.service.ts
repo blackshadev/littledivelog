@@ -48,6 +48,17 @@ export class PlaceService {
         return all;
     }
 
+    public async search(keywords: string, country?: string): Promise<IPlace[]> {
+        return await this.http
+            .get<IPlace[]>(`${serviceUrl}/places/_search`, {
+                params: {
+                    keywords,
+                    country,
+                },
+            })
+            .toPromise();
+    }
+
     public async countries(): Promise<ICountry[]> {
         if (this.__countries) {
             return this.__countries;

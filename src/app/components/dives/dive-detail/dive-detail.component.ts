@@ -205,22 +205,13 @@ export class DiveDetailComponent implements OnInit {
     }
 
     async getDivespots(keyword: string) {
-        const c = (this.form.controls.place as FormGroup).controls.country
+        const country = (this.form.controls.place as FormGroup).controls.country
             .value;
-        const spots = await this.placeService.list(c);
 
         if (!keyword) {
-            return spots;
+            return await this.placeService.list(country);
         }
-        const fuse = new Fuse(spots, {
-            threshold: 0.6,
-            distance: 100,
-            location: 0,
-            shouldSort: true,
-            maxPatternLength: 32,
-            keys: ["name"],
-        });
-        return fuse.search(keyword).slice(0, 10);
+        return await this.placeService.search(keyword, country);
     }
 
     newDiveSpot(name: string): IPlace {

@@ -9,6 +9,7 @@ import {
     EventEmitter,
     AfterViewInit,
     ApplicationRef,
+    ChangeDetectorRef,
 } from "@angular/core";
 import { ModalService } from "../../../services/modal.service";
 
@@ -37,7 +38,7 @@ export class BaseModalComponent implements OnInit, OnDestroy {
     constructor(
         private modalService: ModalService,
         private el: ElementRef,
-        private appRef: ApplicationRef,
+        private appRef: ChangeDetectorRef,
     ) {
         this.element = el.nativeElement;
     }
@@ -71,7 +72,7 @@ export class BaseModalComponent implements OnInit, OnDestroy {
     }
 
     open(extra?: any): void {
-        this.appRef.tick();
+        this.appRef.detectChanges();
         $(".modal", this.element).modal("show");
     }
 
